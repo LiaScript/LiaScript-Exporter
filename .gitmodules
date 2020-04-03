@@ -1,0 +1,3 @@
+[submodule "LiaScript"]
+	path = LiaScript
+	url = https://github.com/LiaScript/LiaScript
