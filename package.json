@@ -4,7 +4,7 @@
   "description": "An generic exporter for LiaScript",
   "main": "index.js",
   "scripts": {
-    "preinstall": "cd LiaScript && npm i && npm run build:scorm1.2 && cp -r dist ../assets/",
+    "preinstall": "cd LiaScript && npm i && npm run build:scorm1.2 && cp -r dist ../assets/scorm1.2",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "npx parcel build --target node src/index.js",
     "build:debug": "npx parcel build --target node --no-minify --log-level 5 src/index.js"
@@ -18,7 +18,7 @@
   "license": "ISC",
   "dependencies": {
     "fs": "0.0.1-security",
-    "simple-scorm-packager": "^0.2.5"
+    "simple-scorm-packager": "git+https://github.com/andre-dietrich/simple-scorm-packager.git"
   },
   "devDependencies": {
     "parcel": "^1.12.4"
