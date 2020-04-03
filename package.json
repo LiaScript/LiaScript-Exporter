@@ -1,8 +1,12 @@
 {
-  "name": "liascript-exporter",
+  "name": "liascript-export",
   "version": "1.0.0",
   "description": "An generic exporter for LiaScript",
-  "main": "index.js",
+  "main": "src/index.js",
+  "bin": {
+    "liascript-export": "src/index.js",
+    "liaex": "src/index.js"
+  },
   "scripts": {
     "preinstall": "cd LiaScript && npm i && npm run build:scorm1.2 && cp -r dist ../assets/scorm1.2",
     "test": "echo \"Error: no test specified\" && exit 1",
