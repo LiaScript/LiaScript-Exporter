@@ -1,6 +1,6 @@
 {
   "name": "liascript-exporter",
-  "version": "1.0.10",
+  "version": "1.0.11",
   "description": "An generic exporter for LiaScript",
   "main": "src/index.js",
   "bin": {
@@ -29,6 +29,7 @@
     "minimist": "^1.2.5",
     "path": "^0.12.7",
     "simple-scorm-packager": "git+https://github.com/andre-dietrich/simple-scorm-packager.git",
+    "xhr2": "^0.2.0",
     "xmlhttprequest": "^1.8.0"
   },
   "devDependencies": {
