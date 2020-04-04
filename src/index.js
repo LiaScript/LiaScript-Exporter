@@ -23,6 +23,107 @@ function help() {
   console.log("-k", "--key", "            responsive voice key ")
 }
 
+function tmpDir () {
+  return new Promise((resolve, reject) => {
+    temp.mkdir("lia", function(err, tmpPath) {
+      console.warn(err, tmpPath);
+      if (err)
+        reject(err)
+      else
+        resolve(tmpPath)
+    })
+  })
+}
+
+
+function writeFile(filename, content) {
+  return new Promise((resolve, reject) => {
+    fs.writeFile(filename, content, function (err) {
+      if (err)  reject(err)
+      else resolve("ok")
+    })
+  })
+}
+
+
+async function scrom1_2(argv, json) {
+
+  // input
+  let readme = argv.i || argv.input
+  let output = argv.o || argv.output || "output"
+  let path_  = argv.p || argv.path
+
+  if (!path_) {
+    path_  = path.dirname(readme)
+    readme = path.basename(readme)
+  }
+
+  // make temp folder
+  let tmp = await tmpDir()
+
+  let tmpPath = path.join(tmp, "pro")
+
+  // copy assets to temp
+  await fs.copy(path.join(__dirname, './assets/scorm1.2'), tmpPath)
+
+
+  // change responsive key
+  let key = argv.k || argv.key
+  if (key) {
+    let index = fs.readFileSync(path.join(tmpPath, 'index.html'), 'utf8')
+    index = index.replace(
+      "https://code.responsivevoice.org/responsivevoice.js",
+      "https://code.responsivevoice.org/responsivevoice.js?key="+key
+    )
+
+    try {
+      await writeFile(path.join(tmpPath, 'index.html'), index)
+    } catch (e) {
+      console.warn(e);
+      return
+    }
+  }
+
+  // copy base path or readme-directory into temp
+  await fs.copy(path_, tmpPath)
+
+
+  let config = {
+    version: '1.2',
+    organization: 'LiaScript',
+    title: json.str_title,
+    language: json.definition.language,
+    //masteryScore: 80,
+    startingPage: 'index.html',
+    startingParameters: readme,
+    source: path.join(tmp, 'pro'),
+    package: {
+      version: json.definition.version,
+      zip: true,
+      name: path.basename(output),
+      author: json.definition.author,
+      outputFolder: path.dirname(output),
+      description: json.comment,
+      //keywords: ['scorm', 'test', 'course'],
+      //typicalDuration: 'PT0H5M0S',
+      //rights: `©${new Date().getFullYear()} My Amazing Company. All right reserved.`,
+      vcard: {
+        author: json.definition.author,
+        //org: 'My Amazing Company',
+        //tel: '(000) 000-0000',
+        //address: 'my address',
+        mail: json.definition.email
+        //url: 'https://mydomain.com'
+      }
+    }
+  };
+
+  scopackager(config, function(msg){
+    console.log(msg);
+    process.exit(0);
+  });
+
+}
 
 if (argv.h || argv.help) {
   help()
@@ -128,10 +229,15 @@ if (argv.h || argv.help) {
               })
             })
           })
-        
+
 
         break;
       }
+      case "scorm2": {
+        scrom1_2(argv, JSON.parse(string))
+        break
+      }
+
       default: {
         console.warn("unknown output format", format);
       }
