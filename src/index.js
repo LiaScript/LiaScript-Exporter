@@ -5,6 +5,7 @@ var path = require('path');
 
 var fs = require('fs-extra');
 var argv = require('minimist')(process.argv.slice(2));
+var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 
 console.warn(argv);
 
