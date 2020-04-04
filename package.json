@@ -1,6 +1,6 @@
 {
   "name": "liascript-exporter",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "An generic exporter for LiaScript",
   "main": "src/index.js",
   "bin": {
@@ -11,15 +11,13 @@
     "__preinstall": "cd LiaScript && npm i && npm run build:scorm1.2 && cp -r dist ../assets/scorm1.2",
     "test": "echo \"Error: no test specified\" && exit 1",
 
-    "postinstall": "npm run build",
-
-    "build": "npx parcel build --target node src/index.js",
+    "build": "npx parcel build --target --no-source-maps node src/index.js",
     "build:debug": "npx parcel build --target node --no-minify --log-level 5 src/index.js",
 
     "build:assets": "npm run asset:scorm1.2 && npm run asset:web",
 
-    "asset:scorm1.2": "cd LiaScript && npm i && npm run build:scorm1.2 && cp -r dist ../assets/scorm1.2",
-    "asset:web": "cd LiaScript && npm i && npm run build:editor && cp -r dist ../assets/web"
+    "asset:scorm1.2": "cd LiaScript && npm i && npm run build:scorm1.2 && cp -r dist ../dist/assets/scorm1.2",
+    "asset:web": "cd LiaScript && npm i && npm run build:editor && cp -r dist ../dist/assets/web"
   },
   "keywords": [
     "LiaScript",

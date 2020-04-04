@@ -82,7 +82,7 @@ if (argv.h || argv.help) {
         };
 
         fs.copy(
-            path.join(__dirname, '../assets/scorm1.2'),
+            path.join(__dirname, './assets/scorm1.2'),
             path.join(__dirname, '../build')
           )
           .then(() => {
