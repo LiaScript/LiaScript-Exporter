@@ -1,6 +1,6 @@
 {
   "name": "liascript-exporter",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "An generic exporter for LiaScript",
   "main": "src/index.js",
   "bin": {
@@ -11,12 +11,9 @@
   "scripts": {
     "__preinstall": "cd LiaScript && npm i && npm run build:scorm1.2 && cp -r dist ../assets/scorm1.2",
     "test": "echo \"Error: no test specified\" && exit 1",
-
-    "build": "npx parcel build --target --no-source-maps node src/index.js",
+    "build": "npx parcel build --target node --no-minify --no-source-maps node src/index.js",
     "build:debug": "npx parcel build --target node --no-minify --log-level 5 src/index.js",
-
     "build:assets": "npm run asset:scorm1.2 && npm run asset:web",
-
     "asset:scorm1.2": "cd LiaScript && npm i && npm run build:scorm1.2 && cp -r dist ../dist/assets/scorm1.2",
     "asset:web": "cd LiaScript && npm i && npm run build:editor && cp -r dist ../dist/assets/web"
   },
@@ -28,7 +25,9 @@
   "author": "André Dietrich",
   "license": "ISC",
   "dependencies": {
-    "fs": "0.0.1-security",
+    "fs-extra": "^9.0.0",
+    "minimist": "^1.2.5",
+    "path": "^0.12.7",
     "simple-scorm-packager": "git+https://github.com/andre-dietrich/simple-scorm-packager.git"
   },
   "devDependencies": {

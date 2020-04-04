@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 import { Elm } from '../LiaScript/src/elm/Worker.elm'
 
 var scopackager = require('simple-scorm-packager');
