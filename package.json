@@ -1,6 +1,6 @@
 {
   "name": "liascript-exporter",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "An generic exporter for LiaScript",
   "main": "src/index.js",
   "bin": {
@@ -28,18 +28,19 @@
     "fs-extra": "^9.0.0",
     "minimist": "^1.2.5",
     "path": "^0.12.7",
-    "simple-scorm-packager": "git+https://github.com/andre-dietrich/simple-scorm-packager.git"
+    "simple-scorm-packager": "git+https://github.com/andre-dietrich/simple-scorm-packager.git",
+    "xmlhttprequest": "^1.8.0"
   },
   "devDependencies": {
     "parcel": "^1.12.4",
     "parcel-plugin-shebang": "^1.2.8"
   },
   "shebang": [
-  {
-    "interpreter": "node",
-    "files": [
-      "./src/index.js"
-    ]
-  }
-]
+    {
+      "interpreter": "node",
+      "files": [
+        "./src/index.js"
+      ]
+    }
+  ]
 }
