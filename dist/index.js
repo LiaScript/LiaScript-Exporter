@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-// modules are defined as an array
+// modules#!/usr/bin/env node are defined as an array
 // [ module function, map of requires ]
 //
 // map of requires is short require name -> numeric require
@@ -10922,7 +10922,6 @@ _Platform_export({'Worker':{'init':$author$project$Worker$main(
 		},
 		A2($elm$json$Json$Decode$field, 'cmd', $elm$json$Json$Decode$string)))(0)}});}(this));
 },{}],"Focm":[function(require,module,exports) {
-#!/usr/bin/env node
 "use strict";
 
 var _Worker = require("../LiaScript/src/elm/Worker.elm");
