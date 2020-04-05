@@ -95,7 +95,7 @@ async function scrom1_2(argv, json) {
     language: json.definition.language,
     //masteryScore: 80,
     startingPage: 'index.html',
-    startingParameters: readme,
+    startingParameters: "./"+readme,
     source: path.join(tmp, 'pro'),
     package: {
       version: json.definition.version,
