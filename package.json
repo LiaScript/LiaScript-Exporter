@@ -10,12 +10,14 @@
   "preferGlobal": true,
   "scripts": {
     "__preinstall": "cd LiaScript && npm i && npm run build:scorm1.2 && cp -r dist ../assets/scorm1.2",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "npx parcel build --target node --no-source-maps node src/index.js",
-    "build:debug": "npx parcel build --target node --no-minify --log-level 5 src/index.js",
-    "build:assets": "npm run asset:scorm1.2 && npm run asset:web",
+
+    "build:assets": "npm run clean &&npm run asset:scorm1.2 && npm run asset:web",
+    "clean": "rm -rf dist/assets/*",
+    "asset:web": "cd LiaScript && npm i && npm run build:editor && cp -r dist ../dist/assets/web",
     "asset:scorm1.2": "cd LiaScript && npm i && npm run build:scorm1.2 && cp -r dist ../dist/assets/scorm1.2",
-    "asset:web": "cd LiaScript && npm i && npm run build:editor && cp -r dist ../dist/assets/web"
+
+    "build": "npx parcel build --target node --no-source-maps node src/index.js",
+    "build:debug": "npx parcel build --target node --no-minify --log-level 5 src/index.js"
   },
   "keywords": [
     "LiaScript",
