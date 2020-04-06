@@ -18,9 +18,10 @@ function help() {
   console.log("-i", "--input", "          file to be used as input")
   console.log("-p", "--path", "           path to be packed, if not set, the path of the input file is used")
   console.log("-o", "--output", "         output file name (default is output), the ending is define by the format")
-  console.log("-f", "--format", "         scorm1.2, json, web (default is json)")
+  console.log("-f", "--format", "         scorm1.2, json, fullJson, web (default is json)")
   //console.log("-b", "--base", "           define a base-path, default is './' ")
   console.log("-k", "--key", "            responsive voice key ")
+  console.log("--masteryScore", "         set the scorm masteryScore default is 80 ")
 }
 
 function tmpDir () {
@@ -67,22 +68,33 @@ async function scrom1_2(argv, json) {
   await fs.copy(path.join(__dirname, './assets/scorm1.2'), tmpPath)
 
 
+  await writeFile(path.join(tmpPath, 'config.js'), "window.config_ = " + JSON.stringify(json) + ";" )
+
+
+
+  let index = fs.readFileSync(path.join(tmpPath, 'index.html'), 'utf8')
+
   // change responsive key
   let key = argv.k || argv.key
   if (key) {
-    let index = fs.readFileSync(path.join(tmpPath, 'index.html'), 'utf8')
     index = index.replace(
       "https://code.responsivevoice.org/responsivevoice.js",
       "https://code.responsivevoice.org/responsivevoice.js?key="+key
     )
-
-    try {
-      await writeFile(path.join(tmpPath, 'index.html'), index)
-    } catch (e) {
-      console.warn(e);
-      return
-    }
   }
+
+  index = index.replace(
+    "</head>",
+    "<script src=\"config.js\"></script></head>"
+  )
+
+  try {
+    await writeFile(path.join(tmpPath, 'index.html'), index)
+  } catch (e) {
+    console.warn(e);
+    return
+  }
+
 
   // copy base path or readme-directory into temp
   await fs.copy(path_, tmpPath)
@@ -91,28 +103,28 @@ async function scrom1_2(argv, json) {
   let config = {
     version: '1.2',
     organization: 'LiaScript',
-    title: json.str_title,
-    language: json.definition.language,
-    //masteryScore: 80,
+    title: json.lia.str_title,
+    language: json.lia.definition.language,
+    masteryScore: argv.masteryScore || 80,
     startingPage: 'index.html',
     startingParameters: "./"+readme,
     source: path.join(tmp, 'pro'),
     package: {
-      version: json.definition.version,
+      version: json.lia.definition.version,
       zip: true,
       name: path.basename(output),
-      author: json.definition.author,
+      author: json.lia.definition.author,
       outputFolder: path.dirname(output),
-      description: json.comment,
+      description: json.lia.comment,
       //keywords: ['scorm', 'test', 'course'],
       //typicalDuration: 'PT0H5M0S',
       //rights: `©${new Date().getFullYear()} My Amazing Company. All right reserved.`,
       vcard: {
-        author: json.definition.author,
+        author: json.lia.definition.author,
         //org: 'My Amazing Company',
         //tel: '(000) 000-0000',
         //address: 'my address',
-        mail: json.definition.email
+        mail: json.lia.definition.email
         //url: 'https://mydomain.com'
       }
     }
@@ -150,6 +162,13 @@ if (argv.h || argv.help) {
         })
         break
       }
+      case "fullJson": {
+        fs.writeFile(output + ".json", string, function (err) {
+          if (err)
+            console.error(err)
+        })
+        break
+      }
       case "scorm1.2": {
         scrom1_2(argv, JSON.parse(string))
         break
@@ -163,7 +182,7 @@ if (argv.h || argv.help) {
 
   try {
     const data = fs.readFileSync(argv.i || argv.input, 'utf8')
-    app.ports.input.send(["string2Json", data])
+    app.ports.input.send(["fullJson", data])
   } catch (err) {
     console.error(err)
   }
