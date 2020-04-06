@@ -19,9 +19,13 @@ function help() {
   console.log("-p", "--path", "           path to be packed, if not set, the path of the input file is used")
   console.log("-o", "--output", "         output file name (default is output), the ending is define by the format")
   console.log("-f", "--format", "         scorm1.2, json, fullJson, web (default is json)")
-  //console.log("-b", "--base", "           define a base-path, default is './' ")
-  console.log("-k", "--key", "            responsive voice key ")
-  console.log("--masteryScore", "         set the scorm masteryScore default is 80 ")
+
+  console.log("\n-k", "--key", "            responsive voice key ")
+
+  console.log("\nSCORM 1.2 settings:")
+  console.log("")
+  console.log("--organization", "         set the organization title")
+  console.log("--masteryScore", "         set the scorm masteryScore, default is 80 ")
 }
 
 function tmpDir () {
@@ -102,7 +106,7 @@ async function scrom1_2(argv, json) {
 
   let config = {
     version: '1.2',
-    organization: 'LiaScript',
+    organization: argv.organization || 'LiaScript',
     title: json.lia.str_title,
     language: json.lia.definition.language,
     masteryScore: argv.masteryScore || 80,
@@ -117,11 +121,11 @@ async function scrom1_2(argv, json) {
       outputFolder: path.dirname(output),
       description: json.lia.comment,
       //keywords: ['scorm', 'test', 'course'],
-      //typicalDuration: 'PT0H5M0S',
+      typicalDuration: 'PT0H5M0S',
       //rights: `©${new Date().getFullYear()} My Amazing Company. All right reserved.`,
       vcard: {
         author: json.lia.definition.author,
-        //org: 'My Amazing Company',
+        org: argv.organization || 'LiaScript',
         //tel: '(000) 000-0000',
         //address: 'my address',
         mail: json.lia.definition.email
@@ -182,7 +186,16 @@ if (argv.h || argv.help) {
 
   try {
     const data = fs.readFileSync(argv.i || argv.input, 'utf8')
-    app.ports.input.send(["fullJson", data])
+
+    let format = argv.f || argv.format || "json"
+
+    if (format == "json") {
+      app.ports.input.send(["json", data])
+    } else {
+      app.ports.input.send(["fullJson", data])
+    }
+
+
   } catch (err) {
     console.error(err)
   }
