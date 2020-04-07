@@ -25,7 +25,7 @@ function help() {
   console.log("\nSCORM 1.2 settings:")
   console.log("")
   console.log("--organization", "         set the organization title")
-  console.log("--masteryScore", "         set the scorm masteryScore, default is 80 ")
+  console.log("--masteryScore", "         set the scorm masteryScore (a value between 0 -- 100), default is 80")
 }
 
 function tmpDir () {
@@ -149,8 +149,10 @@ if (argv.h || argv.help) {
 
   app.ports.output.subscribe(function (event) {
     let [ok, string] = event
-    let format = argv.f || argv.format || "json"
     let output = argv.o || argv.output || "output"
+    let format = argv.f || argv.format || "json"
+
+    format = format.toLowerCase()
 
 
     if (!ok) {
@@ -166,7 +168,7 @@ if (argv.h || argv.help) {
         })
         break
       }
-      case "fullJson": {
+      case "fulljson": {
         fs.writeFile(output + ".json", string, function (err) {
           if (err)
             console.error(err)
