@@ -25,7 +25,8 @@ function help() {
   console.log("\nSCORM 1.2 settings:")
   console.log("")
   console.log("--organization", "         set the organization title")
-  console.log("--masteryScore", "         set the scorm masteryScore (a value between 0 -- 100), default is 80")
+  console.log("--masteryScore", "         set the scorm masteryScore (a value between 0 -- 100), default is 0")
+  console.log("--typicalDuration", "      set the scorm duration, default is PT0H5M0S")
 }
 
 function tmpDir () {
@@ -109,7 +110,7 @@ async function scrom1_2(argv, json) {
     organization: argv.organization || 'LiaScript',
     title: json.lia.str_title,
     language: json.lia.definition.language,
-    masteryScore: argv.masteryScore || 80,
+    masteryScore: argv.masteryScore || 0,
     startingPage: 'index.html',
     startingParameters: "./"+readme,
     source: path.join(tmp, 'pro'),
@@ -121,7 +122,7 @@ async function scrom1_2(argv, json) {
       outputFolder: path.dirname(output),
       description: json.lia.comment,
       //keywords: ['scorm', 'test', 'course'],
-      typicalDuration: 'PT0H5M0S',
+      typicalDuration: argv.typicalDuration || 'PT0H5M0S',
       //rights: `©${new Date().getFullYear()} My Amazing Company. All right reserved.`,
       vcard: {
         author: json.lia.definition.author,
