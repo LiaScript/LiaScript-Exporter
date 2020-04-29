@@ -11,7 +11,7 @@ email:    andre.dietrich@ovgu.de
 version:  0.3.15
 
 language: en
-narrator: US English Female
+narrator: Deutsch Male
 
 logo: logo.png
 
@@ -39,15 +39,27 @@ ggg: bla bla bla
 
 
 
+| Header 1             | Header 2                               |
+|:-------------------- |:-------------------------------------- |
+| {|>}{ich gehe}       | {|> UK English Female}{I go}           |
+| {|>}{du gehst}       | {|> UK English Female}{you go}         |
+| {|>}{er/sie/es geht} | {|> UK English Female}{he/she/it goes} |
+| {|>}{wir gehen}      | {|> UK English Female}{we go}          |
+| {|>}{ihr geht}       | {|> UK English Female}{you go}         |
+| {|>}{sie gehen}      | {|> UK English Female}{they go}        |
 
 
-sasfdsa
+
+            {{|>}}
+dies ist ein {|> Deutsch Female 1-2}{kleiner} test jahu
 
 
-[[afdafsd | (___asfdas___)]]
+            {{|> 3}}
+dies ist ein kleiner test jahu
 
 
-adfadsf
+{{2}} ddd
+
 
 ## Quizze
 
@@ -1729,12 +1741,12 @@ https://ivanceras.github.io/svgbob-editor/
 
 ``````````````````````````````
        HO
-        \       
-         \      
+        \
+         \
           \____________
-          /------------ O     
+          /------------ O
          /
-   _____/        
+   _____/
  H2N
 ``````````````````````````````
 
