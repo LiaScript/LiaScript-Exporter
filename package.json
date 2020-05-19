@@ -1,6 +1,6 @@
 {
   "name": "liascript-exporter",
-  "version": "1.0.23",
+  "version": "1.0.24",
   "description": "An generic exporter for LiaScript",
   "main": "src/index.js",
   "bin": {
@@ -34,7 +34,7 @@
   },
   "devDependencies": {
     "parcel": "^1.12.4",
-    "parcel-plugin-shebang": "^1.2.8"
+    "parcel-plugin-shebang": "^1.2.9"
   },
   "shebang": [
     {
