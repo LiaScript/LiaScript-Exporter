@@ -1,6 +1,6 @@
 {
   "name": "liascript-exporter",
-  "version": "1.0.27",
+  "version": "1.0.28",
   "description": "An generic exporter for LiaScript",
   "main": "src/index.js",
   "bin": {
