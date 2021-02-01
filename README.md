@@ -5,7 +5,8 @@ This shall be a generic LiaScript-Exporter that can export educational content
 into different formats, so that LiaScript courses can also be utilized in
 different Learning Management Systems (LMS) or Readers for static content (PDF,
 ePub, ...). At the moment there is only support for SCORM1.2, as the most
-wide-spread exchange format. See the last section [LMS Support List](#LMS-Support-List)
+wide-spread exchange format. See the last section
+[LMS Support List](#LMS-Support-List)
 
 > __But__, it is still the easiest way to share your courses via
 > __`https://LiaScript.github.io/course/?YOUR_REPO`__. The LiaScript course
@@ -26,6 +27,22 @@ https://nodejs.org/en/download/
 
 Afterwards you can open your terminal and type in the following command, this
 will install the LiaScript-Exporter as a global application on your system.
+
+**Install from npm:**
+
+``` bash
+$ npm install -g --verbose @liascript/exporter
+```
+
+Depending on your configuration, you might need to run this command with root
+privileges. In my case on Linux it is simply:
+
+``` bash
+$ sudo npm install -g --verbose @liascript/exporter
+```
+
+**Install from github:** Similar to the code above...
+
 
 ``` bash
 $ npm install -g --verbose https://github.com/liaScript/LiaScript-Exporter

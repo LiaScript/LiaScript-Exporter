@@ -1,11 +1,20 @@
 {
-  "name": "liascript-exporter",
-  "version": "1.0.40",
-  "description": "An generic exporter for LiaScript",
-  "main": "src/index.js",
+  "name": "@liascript/exporter",
+  "version": "1.0.41--0.8.12",
+  "description": "A generic exporter for LiaScript",
+  "main": "dist/index.js",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/liascript/liascript-exporter.git"
+  },
+  "bugs": {
+    "url": "https://github.com/LiaScript/LiaScript-Exporter/issues",
+    "email": "LiaScript@web.de"
+  },
+  "homepage": "https://github.com/LiaScript/LiaScript-Exporter/README.md",
   "bin": {
-    "liascript-exporter": "./dist/index.js",
-    "liaex": "./dist/index.js"
+    "liascript-exporter": "dist/index.js",
+    "liaex": "dist/index.js"
   },
   "preferGlobal": true,
   "scripts": {
@@ -20,21 +29,23 @@
   "keywords": [
     "LiaScript",
     "SCORM",
+    "OER",
+    "Markdown",
     "OER"
   ],
   "author": "André Dietrich",
   "license": "ISC",
   "dependencies": {
-    "fs-extra": "^9.0.1",
-    "minimist": "^1.2.5",
-    "path": "^0.12.7",
-    "simple-scorm-packager": "git+https://github.com/andre-dietrich/simple-scorm-packager.git",
     "temp": "^0.9.1",
-    "xhr2": "^0.2.0"
+    "xhr2": "^0.2.0",
+    "fs-extra": "^9.0.1",
+    "path": "^0.12.7",
+    "simple-scorm-packager": "git+https://github.com/andre-dietrich/simple-scorm-packager.git"
   },
   "devDependencies": {
     "parcel": "^1.12.4",
-    "parcel-plugin-shebang": "^1.3.0"
+    "parcel-plugin-shebang": "^1.3.0",
+    "minimist": "^1.2.5"
   },
   "shebang": [
     {
