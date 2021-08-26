@@ -1,3 +1,4 @@
+// @ts-ignore
 import { Elm } from '../LiaScript/src/elm/Worker.elm'
 
 global.XMLHttpRequest = require('xhr2')
@@ -149,6 +150,55 @@ async function scrom1_2(argv, json) {
   })
 }
 
+async function web(argv, json) {
+  // input
+  let readme = argv.i || argv.input
+  let output = argv.o || argv.output || 'output'
+  let path_ = argv.p || argv.path
+
+  if (!path_) {
+    path_ = path.dirname(readme)
+    readme = path.basename(readme)
+  }
+
+  // make temp folder
+  let tmp = await tmpDir()
+
+  let tmpPath = path.join(tmp, 'pro')
+
+  // copy assets to temp
+  await fs.copy(path.join(__dirname, './assets/web'), tmpPath)
+
+  let index = fs.readFileSync(path.join(tmpPath, 'index.html'), 'utf8')
+
+  // change responsive key
+  let key = argv.k || argv.key
+  if (key) {
+    index = index.replace(
+      'https://code.responsivevoice.org/responsivevoice.js',
+      'https://code.responsivevoice.org/responsivevoice.js?key=' + key
+    )
+  }
+
+  index = index.replace(
+    '<head>',
+    '<head><script>window.liaDefaultCourse="' +
+      path.basename(readme) +
+      '"</script>'
+  )
+
+  try {
+    await writeFile(path.join(tmpPath, 'index.html'), index)
+  } catch (e) {
+    console.warn(e)
+    return
+  }
+
+  // copy base path or readme-directory into temp
+  await fs.copy(path_, tmpPath)
+  await fs.move(tmpPath, output)
+}
+
 if (argv.v || argv.version) {
   console.log('version: 1.0.42--0.9.29')
 } else if (argv.h || argv.help) {
@@ -183,6 +233,10 @@ if (argv.v || argv.version) {
       }
       case 'scorm1.2': {
         scrom1_2(argv, JSON.parse(string))
+        break
+      }
+      case 'web': {
+        web(argv, JSON.parse(string))
         break
       }
 
