@@ -23,8 +23,8 @@
     "clean": "rm -rf dist/assets/*",
     "asset:web": "cd LiaScript && npm i && npm run build:base && cp -r dist ../dist/assets/web",
     "asset:scorm1.2": "cd LiaScript && npm i && npm run build:scorm1.2 && cp -r dist ../dist/assets/scorm1.2",
-    "build": "npx parcel build --target node --no-source-maps node src/index.js",
-    "build:debug": "npx parcel build --target node --no-minify --log-level 5 src/index.js"
+    "build": "npx parcel build --target node --no-source-maps node src/index.ts",
+    "build:debug": "npx parcel build --target node --no-minify --log-level 5 src/index.ts"
   },
   "keywords": [
     "LiaScript",
@@ -45,7 +45,8 @@
   "devDependencies": {
     "minimist": "^1.2.5",
     "parcel": "^1.12.4",
-    "parcel-plugin-shebang": "^1.3.3"
+    "parcel-plugin-shebang": "^1.3.3",
+    "typescript": "^4.3.5"
   },
   "shebang": [
     {
