@@ -18,7 +18,7 @@ function help() {
   console.log("-i", "--input", "          file to be used as input")
   console.log("-p", "--path", "           path to be packed, if not set, the path of the input file is used")
   console.log("-o", "--output", "         output file name (default is output), the ending is define by the format")
-  console.log("-f", "--format", "         scorm1.2, json, fullJson, web (default is json)")
+  console.log("-f", "--format", "         scorm1.2, json, fullJson (default is json)")
 
   console.log("\n-k", "--key", "            responsive voice key ")
 
