@@ -73,7 +73,7 @@ LiaScript-Exporter
 -i --input           file to be used as input
 -p --path            path to be packed, if not set, the path of the input file is used
 -o --output          output file name (default is output), the ending is define by the format
--f --format          scorm1.2, json, fullJson (default is json)
+-f --format          scorm1.2, web, json, fullJson (default is json)
 
 -k --key             responsive voice key
 
@@ -150,6 +150,28 @@ relative to path paramter.
 __`--organization`__
 
 This paramter simply sets the organization paramter in your SCORM imsmanifest file. All other parameters are taken from the course
+
+
+### web
+
+This format will generate an autonomous & standalone web-project that can be uploaded
+to any webserver.
+
+```
+$ liaex --format web -i project/README.md -o outputFolder
+updating title ...
+updating description ...
+updating logo ...
+```
+
+All required sources as well as your project are copied into the `outputFolder` and
+your course-file will be used as the default course. If you have defined the macros
+`comment` and `logo` within your course, these information will also be injected into
+the index.html. Such that, if you share your project via facebook or twitter, this
+information is used to generate preview cards properly.
+
+If you want your site to speak the text out loud, then you will have to add your
+responsivevoice-key via `--key`.
 
 ## TODOs & Contributions
 
