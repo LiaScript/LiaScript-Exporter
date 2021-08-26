@@ -19,6 +19,7 @@ function help() {
   console.log("-p", "--path", "           path to be packed, if not set, the path of the input file is used")
   console.log("-o", "--output", "         output file name (default is output), the ending is define by the format")
   console.log("-f", "--format", "         scorm1.2, json, fullJson (default is json)")
+  console.log("-v", "--version", "        output the current version")
 
   console.log("\n-k", "--key", "            responsive voice key ")
 
@@ -142,7 +143,9 @@ async function scrom1_2(argv, json) {
 
 }
 
-if (argv.h || argv.help) {
+if (argv.v || argv.version) {
+  console.log("version: 1.0.42--0.9.29")
+} else if (argv.h || argv.help) {
   help()
 } else if (argv.i || argv.input) {
 
