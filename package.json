@@ -52,7 +52,7 @@
     {
       "interpreter": "node",
       "files": [
-        "./src/index.js"
+        "./src/index.ts"
       ]
     }
   ]
