@@ -73,7 +73,7 @@ LiaScript-Exporter
 -i --input           file to be used as input
 -p --path            path to be packed, if not set, the path of the input file is used
 -o --output          output file name (default is output), the ending is define by the format
--f --format          scorm1.2, web, json, fullJson (default is json)
+-f --format          scorm1.2, web, json, fullJson, fullJson2 (default is json)
 
 -k --key             responsive voice key
 
