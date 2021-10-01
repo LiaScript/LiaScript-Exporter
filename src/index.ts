@@ -29,7 +29,7 @@ function help() {
   console.log(
     '-f',
     '--format',
-    '         scorm1.2, json, fullJson (default is json)'
+    '         scorm1.2, json, fullJson, fullJson2 (default is json)'
   )
   console.log('-v', '--version', '        output the current version')
 
@@ -237,7 +237,7 @@ async function web(argv, json) {
 }
 
 if (argv.v || argv.version) {
-  console.log('version: 1.0.42--0.9.35')
+  console.log('version: 1.0.42--0.9.37')
 } else if (argv.h || argv.help) {
   help()
 } else if (argv.i || argv.input) {
@@ -268,6 +268,12 @@ if (argv.v || argv.version) {
         })
         break
       }
+      case 'fulljson2': {
+        fs.writeFile(output + '.json', string, function (err) {
+          if (err) console.error(err)
+        })
+        break
+      }
       case 'scorm1.2': {
         scrom1_2(argv, JSON.parse(string))
         break
@@ -288,11 +294,7 @@ if (argv.v || argv.version) {
 
     let format = argv.f || argv.format || 'json'
 
-    if (format == 'json') {
-      app.ports.input.send(['json', data])
-    } else {
-      app.ports.input.send(['fullJson', data])
-    }
+    app.ports.input.send([format, data])
   } catch (err) {
     console.error(err)
   }
