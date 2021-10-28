@@ -294,6 +294,10 @@ if (argv.v || argv.version) {
 
     let format = argv.f || argv.format || 'json'
 
+    if (format == 'scorm1.2') {
+      format = 'fullJson'
+    }
+
     app.ports.input.send([format, data])
   } catch (err) {
     console.error(err)
