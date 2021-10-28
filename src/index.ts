@@ -29,7 +29,7 @@ function help() {
   console.log(
     '-f',
     '--format',
-    '         scorm1.2, json, fullJson, fullJson2 (default is json)'
+    '         scorm1.2, json, fullJson, fullJson2, web (default is json)'
   )
   console.log('-v', '--version', '        output the current version')
 
@@ -294,7 +294,7 @@ if (argv.v || argv.version) {
 
     let format = argv.f || argv.format || 'json'
 
-    if (format == 'scorm1.2') {
+    if (format == 'scorm1.2' || format == 'web') {
       format = 'fullJson'
     }
 
