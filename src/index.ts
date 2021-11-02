@@ -3,7 +3,7 @@ import { Elm } from '../LiaScript/src/elm/Worker.elm'
 
 global.XMLHttpRequest = require('xhr2')
 
-var scormPackager = require('simple-scorm-packager'),
+var scormPackager = require('@liascript/simple-scorm-packager'),
   path = require('path'),
   temp = require('temp'),
   fs = require('fs-extra'),
