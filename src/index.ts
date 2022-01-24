@@ -237,7 +237,7 @@ async function web(argv, json) {
 }
 
 if (argv.v || argv.version) {
-  console.log('version: 1.0.51--0.9.47')
+  console.log('version: 1.0.51--0.9.49')
 } else if (argv.h || argv.help) {
   help()
 } else if (argv.i || argv.input) {
