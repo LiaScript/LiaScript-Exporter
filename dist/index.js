@@ -1,6 +1,12651 @@
-#!/usr/bin/env node
-parcelRequire=function(e,r,t,n){var i,o="function"==typeof parcelRequire&&parcelRequire,u="function"==typeof require&&require;function f(t,n){if(!r[t]){if(!e[t]){var i="function"==typeof parcelRequire&&parcelRequire;if(!n&&i)return i(t,!0);if(o)return o(t,!0);if(u&&"string"==typeof t)return u(t);var c=new Error("Cannot find module '"+t+"'");throw c.code="MODULE_NOT_FOUND",c}p.resolve=function(r){return e[t][1][r]||r},p.cache={};var l=r[t]=new f.Module(t);e[t][0].call(l.exports,p,l,l.exports,this)}return r[t].exports;function p(e){return f(p.resolve(e))}}f.isParcelRequire=!0,f.Module=function(e){this.id=e,this.bundle=f,this.exports={}},f.modules=e,f.cache=r,f.parent=o,f.register=function(r,t){e[r]=[function(e,r){r.exports=t},{}]};for(var c=0;c<t.length;c++)try{f(t[c])}catch(e){i||(i=e)}if(t.length){var l=f(t[t.length-1]);"object"==typeof exports&&"undefined"!=typeof module?module.exports=l:"function"==typeof define&&define.amd?define(function(){return l}):n&&(this[n]=l)}if(parcelRequire=f,i)throw i;return f}({"clwS":[function(require,module,exports) {
-!function(r){"use strict";function n(r,n,t){return t.a=r,t.f=n,t}function t(r){return n(2,r,function(n){return function(t){return r(n,t)}})}function e(r){return n(3,r,function(n){return function(t){return function(e){return r(n,t,e)}}})}function u(r){return n(4,r,function(n){return function(t){return function(e){return function(u){return r(n,t,e,u)}}}})}function a(r){return n(5,r,function(n){return function(t){return function(e){return function(u){return function(a){return r(n,t,e,u,a)}}}}})}function i(r){return n(6,r,function(n){return function(t){return function(e){return function(u){return function(a){return function(i){return r(n,t,e,u,a,i)}}}}}})}function c(r){return n(7,r,function(n){return function(t){return function(e){return function(u){return function(a){return function(i){return function(c){return r(n,t,e,u,a,i,c)}}}}}}})}function o(r){return n(8,r,function(n){return function(t){return function(e){return function(u){return function(a){return function(i){return function(c){return function(o){return r(n,t,e,u,a,i,c,o)}}}}}}}})}function f(r){return n(9,r,function(n){return function(t){return function(e){return function(u){return function(a){return function(i){return function(c){return function(o){return function(f){return r(n,t,e,u,a,i,c,o,f)}}}}}}}}})}function s(r,n,t){return 2===r.a?r.f(n,t):r(n)(t)}function b(r,n,t,e){return 3===r.a?r.f(n,t,e):r(n)(t)(e)}function l(r,n,t,e,u){return 4===r.a?r.f(n,t,e,u):r(n)(t)(e)(u)}function d(r,n,t,e,u,a){return 5===r.a?r.f(n,t,e,u,a):r(n)(t)(e)(u)(a)}function p(r,n,t,e,u,a,i){return 6===r.a?r.f(n,t,e,u,a,i):r(n)(t)(e)(u)(a)(i)}function v(r,n,t,e,u,a,i,c){return 7===r.a?r.f(n,t,e,u,a,i,c):r(n)(t)(e)(u)(a)(i)(c)}function g(r,n,t,e,u,a,i,c,o){return 8===r.a?r.f(n,t,e,u,a,i,c,o):r(n)(t)(e)(u)(a)(i)(c)(o)}function h(r,n,t,e,u,a,i,c,o,f){return 9===r.a?r.f(n,t,e,u,a,i,c,o,f):r(n)(t)(e)(u)(a)(i)(c)(o)(f)}var m=e(function(r,n,t){for(var e=[],u=0;r>u;u++)e[u]=t(n+u);return e}),$=t(function(r,n){for(var t=[],e=0;r>e&&n.b;e++)t[e]=n.a,n=n.b;return t.length=e,O(t,n)}),w=t(function(r,n){return n[r]}),y=e(function(r,n,t){for(var e=t.length,u=[],a=0;e>a;a++)u[a]=t[a];return u[r]=n,u}),q=t(function(r,n){for(var t=n.length,e=[],u=0;t>u;u++)e[u]=n[u];return e[t]=r,e}),k=e(function(r,n,t){for(var e=t.length,u=0;e>u;u++)n=s(r,t[u],n);return n}),x=e(function(r,n,t){for(var e=t.length-1;e>=0;e--)n=s(r,t[e],n);return n}),L=t(function(r,n){for(var t=n.length,e=[],u=0;t>u;u++)e[u]=r(n[u]);return e}),E=e(function(r,n,t){return t.slice(r,n)}),A=e(function(r,n,t){var e=n.length,u=r-e;u>t.length&&(u=t.length);for(var a=[],i=0;e>i;i++)a[i]=n[i];for(i=0;u>i;i++)a[i+e]=t[i];return a});function S(r){throw Error("https://github.com/elm/core/blob/1.0.0/hints/"+r+".md")}function T(r,n){for(var t,e=[],u=R(r,n,0,e);u&&(t=e.pop());u=R(t.a,t.b,0,e));return u}function R(r,n,t,e){if(r===n)return!0;if("object"!=typeof r||null===r||null===n)return"function"==typeof r&&S(5),!1;if(t>100)return e.push(O(r,n)),!0;for(var u in 0>r.$&&(r=kn(r),n=kn(n)),r)if(!R(r[u],n[u],t+1,e))return!1;return!0}var D=t(T),C=t(function(r,n){return!T(r,n)});function V(r,n,t){if("object"!=typeof r)return r===n?0:n>r?-1:1;if(void 0===r.$)return(t=V(r.a,n.a))?t:(t=V(r.b,n.b))?t:V(r.c,n.c);for(;r.b&&n.b&&!(t=V(r.a,n.a));r=r.b,n=n.b);return t||(r.b?1:n.b?-1:0)}var N=t(function(r,n){return 1>V(r,n)}),B=t(function(r,n){var t=V(r,n);return 0>t?En:t?Ln:xn}),M=0;function O(r,n){return{a:r,b:n}}function U(r,n,t){return{a:r,b:n,c:t}}function I(r){return r}function H(r,n){var t={};for(var e in r)t[e]=r[e];for(var e in n)t[e]=n[e];return t}var P=t(z);function z(r,n){if("string"==typeof r)return r+n;if(!r.b)return n;var t=_(r.a,n);r=r.b;for(var e=t;r.b;r=r.b)e=e.b=_(r.a,n);return t}var j={$:0};function _(r,n){return{$:1,a:r,b:n}}var G=t(_);function X(r){for(var n=j,t=r.length;t--;)n=_(r[t],n);return n}function Z(r){for(var n=[];r.b;r=r.b)n.push(r.a);return n}var F=e(function(r,n,t){for(var e=[];n.b&&t.b;n=n.b,t=t.b)e.push(s(r,n.a,t.a));return X(e)}),Q=t(function(r,n){return X(Z(n).sort(function(n,t){return V(r(n),r(t))}))}),J=t(function(r,n){return r+n}),W=t(Math.pow),K=t(function(r,n){var t=n%r;return 0===r?S(11):t>0&&0>r||0>t&&r>0?t+r:t}),Y=Math.ceil,rr=Math.floor,nr=Math.log,tr=t(function(r,n){return r+n}),er=t(function(r,n){return r+n}),ur=e(function(r,n,t){for(var e=t.length,u=0;e>u;){var a=t[u],i=t.charCodeAt(u);u++,55296>i||i>56319||(a+=t[u],u++),n=s(r,I(a),n)}return n}),ar=e(function(r,n,t){for(var e=t.length;e--;){var u=t[e],a=t.charCodeAt(e);56320>a||a>57343||(u=t[--e]+u),n=s(r,I(u),n)}return n}),ir=t(function(r,n){return n.split(r)}),cr=t(function(r,n){return n.join(r)}),or=e(function(r,n,t){return t.slice(r,n)}),fr=t(function(r,n){return 0===n.indexOf(r)}),sr=t(function(r,n){return n.length>=r.length&&n.lastIndexOf(r)===n.length-r.length}),br=t(function(r,n){var t=r.length;if(1>t)return j;for(var e=0,u=[];(e=n.indexOf(r,e))>-1;)u.push(e),e+=t;return X(u)});function lr(r){return{$:2,b:r}}var dr=lr(function(r){return"number"!=typeof r?Ar("an INT",r):r>-2147483647&&2147483647>r&&(0|r)===r?Dn(r):!isFinite(r)||r%1?Ar("an INT",r):Dn(r)}),pr=lr(function(r){return"boolean"==typeof r?Dn(r):Ar("a BOOL",r)}),vr=(lr(function(r){return"number"==typeof r?Dn(r):Ar("a FLOAT",r)}),lr(function(r){return Dn(Tr(r))}),lr(function(r){return"string"==typeof r?Dn(r):r instanceof String?Dn(r+""):Ar("a STRING",r)})),gr=t(function(r,n){return{$:6,d:r,b:n}});function hr(r,n){return{$:9,f:r,g:n}}var mr=t(function(r,n){return{$:10,b:n,h:r}}),$r=t(function(r,n){return hr(r,[n])}),wr=e(function(r,n,t){return hr(r,[n,t])}),yr=f(function(r,n,t,e,u,a,i,c,o){return hr(r,[n,t,e,u,a,i,c,o])}),qr=t(function(r,n){return kr(r,Rr(n))});function kr(r,n){switch(r.$){case 2:return r.b(n);case 5:return null===n?Dn(r.c):Ar("null",n);case 3:return Lr(n)?xr(r.b,n,X):Ar("a LIST",n);case 4:return Lr(n)?xr(r.b,n,Er):Ar("an ARRAY",n);case 6:var t=r.d;if("object"!=typeof n||null===n||!(t in n))return Ar("an OBJECT with a field named `"+t+"`",n);var e=kr(r.b,n[t]);return ht(e)?e:An(s(Tn,t,e.a));case 7:var u=r.e;return Lr(n)?n.length>u?(e=kr(r.b,n[u]),ht(e)?e:An(s(Rn,u,e.a))):Ar("a LONGER array. Need index "+u+" but only see "+n.length+" entries",n):Ar("an ARRAY",n);case 8:if("object"!=typeof n||null===n||Lr(n))return Ar("an OBJECT",n);var a=j;for(var i in n)if(n.hasOwnProperty(i)){if(e=kr(r.b,n[i]),!ht(e))return An(s(Tn,i,e.a));a=_(O(i,e.a),a)}return Dn(Fn(a));case 9:for(var c=r.f,o=r.g,f=0;o.length>f;f++){if(e=kr(o[f],n),!ht(e))return e;c=c(e.a)}return Dn(c);case 10:return e=kr(r.b,n),ht(e)?kr(r.h(e.a),n):e;case 11:for(var b=j,l=r.g;l.b;l=l.b){if(e=kr(l.a,n),ht(e))return e;b=_(e.a,b)}return An(Cn(Fn(b)));case 1:return An(s(Sn,r.a,Tr(n)));case 0:return Dn(r.a)}}function xr(r,n,t){for(var e=n.length,u=[],a=0;e>a;a++){var i=kr(r,n[a]);if(!ht(i))return An(s(Rn,a,i.a));u[a]=i.a}return Dn(t(u))}function Lr(r){return Array.isArray(r)||"undefined"!=typeof FileList&&r instanceof FileList}function Er(r){return s(gt,r.length,function(n){return r[n]})}function Ar(r,n){return An(s(Sn,"Expecting "+r,Tr(n)))}var Sr=t(function(r,n){return JSON.stringify(Rr(n),null,r)+""});function Tr(r){return r}function Rr(r){return r}var Dr=e(function(r,n,t){return t[r]=Rr(n),t});function Cr(r){return t(function(n,t){return t.push(Rr(r(n))),t})}var Vr=Tr(null),Nr=t(function(r,n){var t="g";r.cI&&(t+="m"),r.bZ&&(t+="i");try{return Nn(RegExp(n,t))}catch(r){return Bn}}),Br=e(function(r,n,t){for(var e,u=[],a=0,i=t,c=n.lastIndex,o=-1;a++<r&&(e=n.exec(i))&&o!=n.lastIndex;){for(var f=e.length-1,s=[];f>0;){var b=e[f];s[--f]=b?Nn(b):Bn}u.push(l(Be,e[0],e.index,a,X(s))),o=n.lastIndex}return n.lastIndex=c,X(u)}),Mr=u(function(r,n,t,e){var u=0;return e.replace(n,function(n){if(u++>=r)return n;for(var e=arguments.length-3,a=[];e>0;){var i=arguments[e];a[--e]=i?Nn(i):Bn}return t(l(Be,n,arguments[arguments.length-2],u,X(a)))})});function Or(r){return{$:0,a:r}}function Ur(r){return{$:2,b:r,c:null}}var Ir=t(function(r,n){return{$:3,b:r,d:n}}),Hr=0;function Pr(r){var n={$:0,e:Hr++,f:r,g:null,h:[]};return Zr(n),n}function zr(r){return Ur(function(n){n(Or(Pr(r)))})}function jr(r,n){r.h.push(n),Zr(r)}var _r=t(function(r,n){return Ur(function(t){jr(r,n),t(Or(M))})}),Gr=!1,Xr=[];function Zr(r){if(Xr.push(r),!Gr){for(Gr=!0;r=Xr.shift();)Fr(r);Gr=!1}}function Fr(r){for(;r.f;){var n=r.f.$;if(0===n||1===n){for(;r.g&&r.g.$!==n;)r.g=r.g.i;if(!r.g)return;r.f=r.g.b(r.f.a),r.g=r.g.i}else{if(2===n)return void(r.f.c=r.f.b(function(n){r.f=n,Zr(r)}));if(5===n){if(0===r.h.length)return;r.f=r.f.b(r.h.shift())}else r.g={$:3===n?0:1,b:r.f.b,i:r.g},r.f=r.f.d}}}function Qr(r){return Ur(function(n){var t=setTimeout(function(){n(Or(M))},r);return function(){clearTimeout(t)}})}var Jr=u(function(r,n,t,e){return function(r,n,t,e,u){var a=s(qr,r,Tr(n?n.flags:void 0));ht(a)||S(2);var i={},c=t(a.a),o=c.a,f=function(){},b=function(r,n){var t;for(var e in Wr){var u=Wr[e];u.a&&((t=t||{})[e]=u.a(e,n)),r[e]=Yr(u,n)}return t}(i,l);function l(r,n){var t=s(e,r,o);f(o=t.a,n),an(i,t.b,u(o))}return an(i,c.b,u(o)),b?{ports:b}:{}}(n,e,r.eQ,r.bQ,r.f$)}),Wr={};function Kr(r,n,t,e,u){return{b:r,c:n,d:t,e:e,f:u}}function Yr(r,n){var t={g:n,h:void 0},e=r.c,u=r.d,a=r.e,i=r.f;function c(r){return s(Ir,c,{$:5,b:function(n){var c=n.a;return 0===n.$?b(u,t,c,r):a&&i?l(e,t,c.i,c.j,r):b(e,t,a?c.i:c.j,r)}})}return t.h=Pr(s(Ir,c,r.b))}var rn=t(function(r,n){return Ur(function(t){r.g(n),t(Or(M))})}),nn=t(function(r,n){return s(_r,r.h,{$:0,a:n})});function tn(r){return function(n){return{$:1,k:r,l:n}}}var en=[],un=!1;function an(r,n,t){if(en.push({p:r,q:n,r:t}),!un){un=!0;for(var e;e=en.shift();)cn(e.p,e.q,e.r);un=!1}}function cn(r,n,t){var e={};for(var u in on(!0,n,e,null),on(!1,t,e,null),r)jr(r[u],{$:"fx",a:e[u]||{i:j,j:j}})}function on(r,n,t,e){switch(n.$){case 1:var u=n.k,a=function(r,t,e){function u(r){for(var n=e;n;n=n.t)r=n.s(r);return r}return s(r?Wr[t].e:Wr[t].f,u,n.l)}(r,u,e);return void(t[u]=function(r,n,t){return t=t||{i:j,j:j},r?t.i=_(n,t.i):t.j=_(n,t.j),t}(r,a,t[u]));case 2:for(var i=n.m;i.b;i=i.b)on(r,i.a,t,e);return;case 3:return void on(r,n.o,t,{s:n.n,t:e})}}function fn(r){Wr[r]&&S(3)}var sn=t(function(r,n){return n});var bn=t(function(r,n){return function(t){return r(n(t))}});function ln(r,n){var t=j,u=Wr[r].u,a=Or(null);return Wr[r].b=a,Wr[r].c=e(function(r,n){return t=n,a}),{send:function(r){var e=s(qr,u,Tr(r));ht(e)||S(4);for(var a=e.a,i=t;i.b;i=i.b)n(i.a(a))}}}var dn=e(function(r,n,t){return Ur(function(e){function u(r){e(n(t.er.a(r)))}var a=new XMLHttpRequest;a.addEventListener("error",function(){u(ms)}),a.addEventListener("timeout",function(){u(ys)}),a.addEventListener("load",function(){u(function(r,n){return s(n.status>=200&&300>n.status?hs:vs,function(r){return{gg:r.responseURL,fW:r.status,fX:r.statusText,eF:pn(r.getAllResponseHeaders())}}(n),r(n.response))}(t.er.b,a))}),qs(t.dt)&&function(r,n,t){n.upload.addEventListener("progress",function(e){n.c||Pr(s(ks,r,O(t,ws({fN:e.loaded,fR:e.total}))))}),n.addEventListener("progress",function(e){n.c||Pr(s(ks,r,O(t,$s({fC:e.loaded,fR:e.lengthComputable?Nn(e.total):Bn}))))})}(r,a,t.dt.a);try{a.open(t.fb,t.gg,!0)}catch(r){return u(gs(t.gg))}return function(r,n){for(var t=n.eF;t.b;t=t.b)r.setRequestHeader(t.a.a,t.a.b);r.timeout=n.ga.a||0,r.responseType=n.er.d,r.withCredentials=n.dI}(a,t),t.dR.a&&a.setRequestHeader("Content-Type",t.dR.a),a.send(t.dR.b),function(){a.c=!0,a.abort()}})});function pn(r){if(!r)return Ot;for(var n=Ot,t=r.split("\r\n"),e=t.length;e--;){var u=t[e],a=u.indexOf(": ");if(a>0){var i=u.substring(0,a),c=u.substring(a+2);n=b(Ds,i,function(r){return Nn(qs(r)?c+", "+r.a:c)},n)}}return n}var vn=e(function(r,n,t){return{$:0,d:r,b:n,a:t}}),gn=t(function(r,n){return{$:0,d:n.d,b:n.b,a:function(t){return r(n.a(t))}}}),hn=function(r){return{$:0,a:r}},mn=G,$n=x,wn=e(function(r,n,e){var u=e.c,a=e.d,i=t(function(n,t){return b($n,n.$?r:i,t,n.a)});return b($n,i,b($n,r,n,a),u)}),yn=function(r){return b(wn,mn,j,r)},qn=e(function(r,n,t){for(;;){if(-2===t.$)return n;var e=t.d,u=r,a=b(r,t.b,t.c,b(qn,r,n,t.e));r=u,n=a,t=e}}),kn=function(r){return b(qn,e(function(r,n,t){return s(mn,O(r,n),t)}),j,r)},xn=1,Ln=2,En=0,An=function(r){return{$:1,a:r}},Sn=t(function(r,n){return{$:3,a:r,b:n}}),Tn=t(function(r,n){return{$:0,a:r,b:n}}),Rn=t(function(r,n){return{$:1,a:r,b:n}}),Dn=function(r){return{$:0,a:r}},Cn=function(r){return{$:2,a:r}},Vn=J,Nn=function(r){return{$:0,a:r}},Bn={$:1},Mn=P,On=Sr,Un=function(r){return r+""},In=t(function(r,n){return s(cr,r,Z(n))}),Hn=t(function(r,n){return X(s(ir,r,n))}),Pn=e(function(r,n,t){for(;;){if(!t.b)return n;var e=t.b,u=r,a=s(r,t.a,n);r=u,n=a,t=e}}),zn=function(r){return b(Pn,t(function(r,n){return n+1}),0,r)},jn=F,_n=N,Gn=e(function(r,n,t){for(;;){if(V(r,n)>=1)return t;var e=r,u=n-1,a=s(mn,n,t);r=e,n=u,t=a}}),Xn=t(function(r,n){return b(Gn,r,n,j)}),Zn=t(function(r,n){return b(jn,r,s(Xn,0,zn(n)-1),n)}),Fn=function(r){return b(Pn,mn,j,r)},Qn=u(function(r,n,t,e){return{$:0,a:r,b:n,c:t,d:e}}),Jn=[],Wn=Y,Kn=t(function(r,n){return nr(n)/nr(r)}),Yn=function(r){return r},rt=Wn(s(Kn,2,32)),nt=l(Qn,0,rt,Jn,Jn),tt=m,et=function(r){return{$:1,a:r}},ut=t(function(r,n){return n(r)}),at=D,it=rr,ct=function(r){return r.length},ot=t(function(r,n){return V(r,n)>0?r:n}),ft=function(r){return{$:0,a:r}},st=$,bt=t(function(r,n){for(;;){var t=s(st,32,r),e=t.b,u=s(mn,ft(t.a),n);if(!e.b)return Fn(u);r=e,n=u}}),lt=function(r){return r.a},dt=t(function(r,n){for(;;){var t=Wn(n/32);if(1===t)return s(st,32,r).a;r=s(bt,r,j),n=t}}),pt=t(function(r,n){if(n.h){var t=32*n.h,e=it(s(Kn,32,t-1)),u=r?Fn(n.k):n.k,a=s(dt,u,n.h);return l(Qn,ct(n.j)+t,s(ot,5,e*rt),a,n.j)}return l(Qn,ct(n.j),rt,Jn,n.j)}),vt=a(function(r,n,t,e,u){for(;;){if(0>n)return s(pt,!1,{k:e,h:t/32|0,j:u});var a=et(b(tt,32,n,r));r=r,n-=32,t=t,e=s(mn,a,e),u=u}}),gt=t(function(r,n){if(r>0){var t=r%32;return d(vt,n,r-t-32,r,j,b(tt,t,r-t,n))}return nt}),ht=function(r){return!r.$},mt=mr,$t=gr,wt={$:0},yt=u(function(r,n,t,e){return{Q:n,dX:t,e$:e,fV:r}}),qt=e(function(r,n,t){return n(r(t))}),kt=e(function(r,n,t){for(;;){if(-2===t.$)return n;var e=t.e,u=r,a=b(r,t.b,t.c,b(kt,r,n,t.d));r=u,n=a,t=e}}),xt=e(function(r,n,t){return Tr(b(kt,e(function(t,e,u){return b(Dr,r(t),n(e),u)}),{},t))}),Lt=function(r){return Tr(b(Pn,t(function(r,n){return b(Dr,r.a,r.b,n)}),{},r))},Et=Tr,At=function(r){return Lt(X([O(r.$?"Script":"Link",Et(r.a))]))},St=Tr,Tt=function(r){return r},Rt=t(function(r,n){return Tr(b(Pn,Cr(r),[],n))}),Dt=u(function(r,n,t,e){if(e.b){var u=e.a,a=e.b;if(a.b){var i=a.a,c=a.b;if(c.b){var o=c.a,f=c.b;if(f.b){var d=f.b;return s(r,u,s(r,i,s(r,o,s(r,f.a,t>500?b(Pn,r,n,Fn(d)):l(Dt,r,n,t+1,d)))))}return s(r,u,s(r,i,s(r,o,n)))}return s(r,u,s(r,i,n))}return s(r,u,n)}return n}),Ct=e(function(r,n,t){return l(Dt,r,n,0,t)}),Vt=t(function(r,n){return b(Ct,t(function(n,t){return s(mn,r(n),t)}),j,n)}),Nt=Vr,Bt=function(r){return r.b?s(Rt,Tt,s(Vt,function(r){return s(Rt,Et,X([r.a,r.b]))},r)):Nt},Mt={$:-2},Ot=Mt,Ut=a(function(r,n,t,e,u){return{$:-1,a:r,b:n,c:t,d:e,e:u}}),It=a(function(r,n,t,e,u){if(-1!==u.$||u.a){if(-1!==e.$||e.a||-1!==e.d.$||e.d.a)return d(Ut,r,n,t,e,u);var a=e.d;return i=e.e,d(Ut,0,e.b,e.c,d(Ut,1,a.b,a.c,a.d,a.e),d(Ut,1,n,t,i,u))}var i,c=u.b,o=u.c,f=u.d,s=u.e;return-1!==e.$||e.a?d(Ut,r,c,o,d(Ut,0,n,t,e,f),s):d(Ut,0,n,t,d(Ut,1,e.b,e.c,e.d,i=e.e),d(Ut,1,c,o,f,s))}),Ht=B,Pt=e(function(r,n,t){if(-2===t.$)return d(Ut,0,r,n,Mt,Mt);var e=t.a,u=t.b,a=t.c,i=t.d,c=t.e;switch(s(Ht,r,u)){case 0:return d(It,e,u,a,b(Pt,r,n,i),c);case 1:return d(Ut,e,u,n,i,c);default:return d(It,e,u,a,i,b(Pt,r,n,c))}}),zt=e(function(r,n,t){var e=b(Pt,r,n,t);return-1!==e.$||e.a?e:d(Ut,1,e.b,e.c,e.d,e.e)}),jt=function(r){return b(Pn,t(function(r,n){return b(zt,r.a,r.b,n)}),Ot,r)},_t=t(function(r,n){return Lt(function(){if(n.$)return X([O("node_inline",Et(n.a))]);var t=n.b,e=n.c;return X([O("node",Et(n.a)),O("attr",b(xt,Tt,Et,jt(t))),O("children",s(Rt,r,e))])}())}),Gt=Tr,Xt=t(function(r,n){return n.$?Bn:Nn(r(n.a))}),Zt=t(function(r,n){return n.$?r:n.a}),Ft=function(r){return Lt(function(){switch(r.$){case 0:var n=r.b;return X([O("Chars",Et(r.a)),O("a",Bt(n))]);case 1:return n=r.b,X([O("Symbol",Et(r.a)),O("a",Bt(n))]);case 2:return n=r.b,X([O("Bold",Ft(r.a)),O("a",Bt(n))]);case 3:return n=r.b,X([O("Italic",Ft(r.a)),O("a",Bt(n))]);case 4:return n=r.b,X([O("Strike",Ft(r.a)),O("a",Bt(n))]);case 5:return n=r.b,X([O("Underline",Ft(r.a)),O("a",Bt(n))]);case 6:return n=r.b,X([O("Superscript",Ft(r.a)),O("a",Bt(n))]);case 7:return n=r.b,X([O("Verbatim",Et(r.a)),O("a",Bt(n))]);case 8:var t=r.b;return n=r.c,X([O("Formula",Et(r.a)),O("body",Et(t)),O("a",Bt(n))]);case 9:return n=r.b,X([O("Ref",Wt(r.a)),O("a",Bt(n))]);case 10:return n=r.b,X([O("FootnoteMark",Et(r.a)),O("a",Bt(n))]);case 11:var e=r.a;return n=r.b,X([O("EInline",Yt(e.w)),O("begin",Gt(e.dP)),O("end",s(Zt,Nt,s(Xt,Gt,e.el))),O("playback",St(e.fy)),O("voice",Et(e.gk)),O("id",Gt(e.eM)),O("a",Bt(n))]);case 14:return n=r.b,X([O("Container",Yt(r.a)),O("a",Bt(n))]);case 13:return n=r.b,X([O("IHTML",s(_t,Ft,r.a)),O("a",Bt(n))]);default:return n=r.b,X([O("Script",Gt(r.a)),O("a",Bt(n))])}}())},Qt=u(function(r,n,t,e){var u=t.a,a=t.b;return Lt(X([O(r,Yt(n)),O("stream",St(u)),O("url",Et(a)),Kt(e)]))}),Jt=u(function(r,n,t,e){return Lt(X([O(r,Yt(n)),O("url",Et(t)),Kt(e)]))}),Wt=function(r){switch(r.$){case 0:return l(Jt,"Link",r.a,r.b,r.c);case 1:return l(Jt,"Mail",r.a,r.b,r.c);case 5:return l(Jt,"Embed",r.a,r.b,r.c);case 2:return l(Jt,"Image",r.a,r.b,r.c);case 3:return l(Qt,"Audio",r.a,r.b,r.c);case 4:return l(Qt,"Movie",r.a,r.b,r.c);case 6:return l(Jt,"Preview_Lia",j,r.a,Bn);case 7:return l(Jt,"Preview_Link",j,r.a,Bn);default:return l(Jt,"QR_Link",j,r.a,r.b)}},Kt=function(r){return O("title",s(Zt,Nt,s(Xt,Yt,r)))},Yt=function(r){return s(Rt,Ft,r)},re=function(r){return Lt(X([O("author",Et(r.dM)),O("date",Et(r.d5)),O("email",Et(r.ek)),O("language",Et(r.eW)),O("logo",Et(r.e4)),O("version",Et(r.gi)),O("base",Et(r.dO)),O("narrator",Et(r.fh)),O("onload",Et(r.fs)),O("comment",Yt(r.d$)),O("attributes",s(Rt,Yt,r.dL)),O("resources",s(Rt,At,r.fF)),O("translation",b(xt,Tt,Et,r.gd)),O("macro",b(xt,Tt,Et,r.e5))]))},ne=t(function(r,n){return n.$?An(n.a):Dn(r(n.a))}),te=t(function(r,n){return O(r,n)}),ee=function(r){return-r},ue=function(r){return{dL:j,dM:"",dO:r,d$:j,d5:"",d6:!1,ek:"",aU:j,eW:"en",e0:Bn,e4:"",e5:Ot,fd:Bn,fh:"US English Male",fs:"",fF:j,db:-1,gd:Ot,dv:-1,gi:"0.0.1"}},ae=e(function(r,n,t){return{dZ:t,e1:n,fU:r}}),ie=function(r){return r.length},ce=function(r){return b(e(function(r,n,t){r:for(;;){if(t.b){var e=t.a,u=t.b,a=ie(e),i=a+1;if(T(r,a))return b(ae,e,n,r);if(V(r,a)>0){r-=i,n+=1,t=u;continue r}return b(ae,e,n,r)}return b(ae,"",n,r)}}),r.O,0,s(Hn,"\n",r.b2))},oe=tr,fe=function(r){return s(oe,r,"")},se=e(function(r,n,t){return r>0?b(se,r>>1,z(n,n),1&r?z(t,n):t):t}),be=t(function(r,n){return b(se,r,n,"")}),le=e(function(r,n,t){return z(s(be,r-ie(t),fe(n)),t)}),de=t(function(r,n){var t=ie("\n "),e=ce(n),u=e.dZ+t+2;return"Parse error around line: "+Un(e.e1)+"\n "+e.fU+"\n"+b(le,u," ","^")+"\nI expected one of the following:\n\n  * "+s(In,"\n  * ",r)}),pe=t(function(r){return r}),ve=function(r){return r},ge=t(function(r,n){return t(function(t,e){var u=b(ve,n,t,e);if(u.c.$)return U(u.a,u.b,An(u.c.a));var a=u.a,i=u.b;return b(ve,r(u.c.a),a,i)})}),he=e(function(r,n,t){return s(r,t,n)}),me=e(function(r,n,e){return t(function(t,u){var a=b(ve,e,t,u);return U(a.a,a.b,a.c.$?An(n(a.c.a)):Dn(r(a.c.a)))})}),$e=t(function(r,n){return b(me,r,Tt,n)}),we=t(function(r,n){return s(ge,s(he,$e,r),n)}),ye=t(function(r,n){return s(we,r,s($e,pe,n))}),qe=s(t(function(r,n){return{cb:r,bp:n}}),nt,nt),ke=d(a(function(r,n,t,e,u){return{at:t,b9:n,eU:e,dh:u,dA:r}}),0,0,Ot,nt,Bn),xe=Ot,Le=t(function(r,n){return{am:qe,b5:n,ea:!1,bd:0,ei:ke,aR:X([0]),cf:xe,bm:nt,eO:j,cq:!1,bC:nt,da:s(Zt,Tt,r),bM:nt,bN:nt,bP:nt}}),Ee=t(function(r,n){return t(function(t,e){var u=b(ve,r,t,e);if(u.c.$){var a=u.c.a,i=b(ve,n,t,e);return i.c.$?U(t,e,An(z(a,i.c.a))):i}return u})}),Ae=t(function(r,n){return s(we,r,s($e,he(pe),n))}),Se=t(function(r,n){return e(function(t,e,u){for(;;){var a=b(ve,n,e,u);if(!a.c.$)return U(l=a.a,d=a.b,Dn(Fn(t)));var i=a.a,c=a.b,o=a.c.a,f=b(ve,r,e,u);if(f.c.$)return U(i,c,An(o));var l=f.a,d=f.b;t=s(mn,f.c.a,t),e=l,u=d}})(j)}),Te=or,Re=t(function(r,n){return 1>r?n:b(Te,r,ie(n),n)}),De=fr,Ce=function(r){return t(function(n,t){if(s(De,r,t.eT)){var e=ie(r),u=t.O+e;return U(n,H(t,{eT:s(Re,e,t.eT),O:u}),Dn(r))}return U(n,t,An(X(['expected "'+r+'"'])))})},Ve=me(Tt),Ne=t(function(r,n){return s(Ve,pe(X([r])),n)}),Be=u(function(r,n,t,e){return{eP:n,aZ:r,fp:t,fZ:e}}),Me=Nr,Oe=function(r){return s(Me,{bZ:!1,cI:!1},r)},Ue=Br,Ie=/.^/,He=a(function(r,n,t,e,u){var a=s(De,"^",t)?t:"^"+t,i=b(Ue,1,s(Zt,Ie,r(a)),u.eT);if(i.b&&!i.b.b){var c=i.a,o=ie(c.aZ),f=u.O+o;return U(e,H(u,{eT:s(Re,o,u.eT),O:f}),Dn(n(c)))}return U(e,u,An(X(["expected input matching Regexp /"+a+"/"])))}),Pe=s(qt,s(He,Oe,function(r){return r.aZ}),Tt),ze=s(Ne,"optional whitespace",Pe("\\s*")),je=function(r){return s(Ae,s(Se,r,Ce("--\x3e")),s(ye,ze,Ce("\x3c!--")))},_e=t(function(r,n){return U(r,n,An(j))}),Ge=function(r){return b(Ct,Ee,_e,r)},Xe=function(r){return t(function(n,t){var e=b(ve,r,n,t);return e.c.$?U(n,t,Dn(Bn)):U(e.a,e.b,Dn(Nn(e.c.a)))})},Ze=Xe(Ce("@")),Fe=s(Ae,Pe("\\w+[\\w\\-.\\d]*"),Ze),Qe=function(r){return s(In,"",r)},Je=t(function(r,n){if(n.b){var e=n.b;return s(mn,n.a,b(Ct,t(function(n,t){return s(mn,r,s(mn,n,t))}),j,e))}return j}),We=function(r){return X(r.trim().split(/\s+/g))},Ke=s(qt,We,s(qt,Je(" "),Qe)),Ye=s($e,Ke,Pe("([ \\t].*|[ \\t]*\\n)+")),ru=Tt,nu=function(r){return ru(t(function(n,t){var e,u,a="could not satisfy predicate",i=(u=(e=t.eT).charCodeAt(0),isNaN(u)?Bn:Nn(55296>u||u>56319?O(I(e[0]),e.slice(1)):O(I(e[0]+e[1]),e.slice(2))));if(i.$)return U(n,t,An(X([a])));var c=i.a,o=c.a,f=c.b;return r(o)?U(n,H(t,{eT:f,O:t.O+1}),Dn(o)):U(n,t,An(X([a])))}))},tu=s(Ne,"expected any character",nu(pe(!0))),eu=function(r){return Z(r).join("")},uu=function(r){return s($e,eu,s(Se,tu,r))},au=s($e,function(r){return s(De,"\n",r)?" "+r:r},uu(Ce("\n@end"))),iu=s(Ee,s(Ae,Ye,Pe("[\\t ]*:")),s(Ae,au,Pe("[\t ]*\\n"))),cu=s(we,iu,s($e,te,Fe)),ou=function(r){return $e(pe(r))},fu=function(r){return s(ou,0,r)},su=function(r){return{$:0,a:r}},bu=function(r){return{$:1,a:r}},lu=t(function(r,n){return H(n,{e5:b(zt,r.a,r.b,n.e5)})}),du=t(function(r,n){return n.b?b(Ct,mn,n,r):r}),pu=function(r){return r.b?Nn(r.a):Bn},vu=function(r){return r.toLowerCase()},gu=t(function(r,n){return function(r){switch(vu(s(Zt,"",pu(s(Hn,"://",r))))){case"https":case"http":case"file":case"hyper":case"dat":case"ipfs":case"ipns":return!0;default:return!1}}(n)||s(De,"#",n)?n:z(r,n)}),hu=u(function(r,n,t,e){return s(du,e,s(Vt,s(qt,gu(n),r),We(t)))}),mu=e(function(r,n,t){return H(t,{fF:l(hu,r,t.dO,n,t.fF)})}),$u=s(qt,Oe,Zt(Ie)),wu=t(function(r,n){var t=pu(b(Ue,1,$u(r),n));return t.$?Bn:s(Zt,Bn,pu(t.a.fZ))}),yu=t(function(r,n){r:for(;;){if(r.b){var t=r.a,e=r.b,u=s(wu,t.X,n);if(u.$){r=e,n=n;continue r}return O(!0,s(t.V,n,u.a))}return O(!1,n)}}),qu=e(function(r,n,t){return s(In,n,s(Hn,r,t))}),ku=Mn("(?:http(?:s)?://)?(?:www\\.)?"),xu=function(r){return r.b},Lu=s(qt,yu(X([{V:t(function(r,n){return"https://raw.githubusercontent.com/"+function(){var r=s(Hn,"/",n);r:for(;;){if(r.b&&r.b.b){if(r.b.b.b){if("tree"===r.b.b.a)return b(qu,"/tree/","/",n)+"/README.md";break r}return n+"/master/README.md"}break r}return b(qu,"/blob/","/",n)}()}),X:ku("github\\.com/(.*)")},{V:t(function(r,n){return"https://dl.dropbox.com/s/"+n}),X:ku("dropbox\\.com/s/(.*)")}])),xu),Eu=t(function(r,n){return H(n,{aU:l(hu,Lu,n.dO,r,n.aU)})}),Au=t(function(r,n){var t=We(r);return t.b&&t.b.b&&!t.b.b.b?H(n,{gd:b(zt,t.a,s(gu,n.dO,t.b.a),n.gd)}):n}),Su=e(function(r,n,t){return{$:3,a:r,b:n,c:t}}),Tu=t(function(r,n){return{$:2,a:r,b:n}}),Ru=t(function(r,n){return{$:11,a:r,b:n}}),Du=e(function(r,n,t){return{$:5,a:r,b:n,c:t}}),Cu=t(function(r,n){return{$:13,a:r,b:n}}),Vu=e(function(r,n,t){return{$:2,a:r,b:n,c:t}}),Nu=t(function(r,n){return{$:3,a:r,b:n}}),Bu=e(function(r,n,t){return{$:0,a:r,b:n,c:t}}),Mu=e(function(r,n,t){return{$:1,a:r,b:n,c:t}}),Ou=e(function(r,n,t){return{$:4,a:r,b:n,c:t}}),Uu=function(r){return{$:6,a:r}},Iu=function(r){return{$:7,a:r}},Hu=t(function(r,n){return{$:8,a:r,b:n}}),Pu=t(function(r,n){return{$:9,a:r,b:n}}),zu=t(function(r,n){return{$:12,a:r,b:n}}),ju=t(function(r,n){return{$:4,a:r,b:n}}),_u=t(function(r,n){return{$:6,a:r,b:n}}),Gu=t(function(r,n){return{$:5,a:r,b:n}}),Xu=t(function(r,n){return{$:0,a:r,b:n}}),Zu=e(function(r,n,t){return{aH:n,w:t,dA:r}}),Fu=t(function(r,n){return{w:n,fh:r}}),Qu=e(function(r,n,t){for(;;){var e=s(st,32,r),u=e.a,a=e.b;if(0>V(ct(u),32))return s(pt,!0,{k:n,h:t,j:u});r=a,n=s(mn,et(u),n),t+=1}}),Ju=function(r){return r.b?b(Qu,r,j,0):nt},Wu=t(function(r,n){r:for(;;){if(-2===n.$)return Bn;var t=n.c,e=n.d,u=n.e;switch(s(Ht,r,n.b)){case 0:r=r,n=e;continue r;case 1:return Nn(t);default:r=r,n=u;continue r}}}),Ku=function(r){return r.a},Yu=function(r){return t(function(n,t){return U(n,t,Dn(r))})},ra=function(r){return t(function(n,t){return b(ve,r(n),n,t)})},na=function(r){return t(function(n,t){return b(ve,Yu(0),r(n),t)})},ta=q,ea=4294967295>>>32-rt,ua=function(r){return[r]},aa=w,ia=y,ca=u(function(r,n,t,e){var u=ea&n>>>r;if(V(u,ct(e))>-1){if(5===r)return s(ta,et(t),e);var a=ft(l(ca,r-rt,n,t,Jn));return s(ta,a,e)}var i=s(aa,u,e);if(i.$)return a=ft(l(ca,r-rt,n,t,ua(i))),b(ia,u,a,e);a=ft(l(ca,r-rt,n,t,i.a));return b(ia,u,a,e)}),oa=t(function(r,n){var t=n.a,e=n.b,u=n.c,a=ct(n.d),i=ct(r),c=t+(i-a);if(T(i,32)){if(V(c>>>rt,1<<e)>0){var o=e+rt,f=l(ca,o,t,r,ua(ft(u)));return l(Qn,c,o,f,Jn)}return l(Qn,c,e,l(ca,e,t,r,u),Jn)}return l(Qn,c,e,u,r)}),fa=t(function(r,n){return s(oa,s(ta,r,n.d),n)}),sa=function(r){return r.trim()},ba=t(function(r,n){var t=n.a,e=n.b,u=n.c;return s(ge,function(r){return Yu(O(t,r))},s(Ae,function(r){return ra(function(n){return Yu((t=s(Wu,r,n.ei.at)).$?0:Ku(t.a.w)-1);var t})}(t),na(function(n){var a,i=s(Zt,n.b5.fh,s(Xt,sa,e));return H(n,{ei:(a=n.ei,H(a,{at:function(){var n=s(Wu,t,a.at);if(n.$)return b(zt,t,s(Fu,i,Ju(X([b(Zu,r,j,u)]))),a.at);var e=n.a;return b(zt,t,H(e,{w:s(fa,b(Zu,r,j,u),e.w)}),a.at)}()}))})})))}),la=function(r){for(var n=0,t=r.charCodeAt(0),e=43==t||45==t?1:0,u=e;r.length>u;++u){var a=r.charCodeAt(u);if(48>a||a>57)return Bn;n=10*n+a-48}return u==e?Bn:Nn(45==t?-n:n)},da=function(r){return t(function(n,t){return U(n,t,An(X([r])))})},pa=function(r){return r.$?da("impossible state in Combine.Num.unwrap"):Yu(r.a)},va=s(Ne,"expected an int",s(ge,pa,s($e,la,Pe("-?(?:0|[1-9]\\d*)")))),ga=s(ge,function(r){return s(Ae,Yu(r),na(function(n){return H(n,{ei:V(r,n.ei.b9)>0?H(n.ei,{b9:r}):n.ei,aR:s(mn,r,n.aR)})}))},va),ha=s($e,ie,Pe("(`){3,}")),ma=t(function(r,n){return H(n,{cq:r})}),$a=s(ye,na(ma(!1)),ra(function(r){return T(r.eO,j)?Yu(0):fu(r.cq?Yu(0):Pe(Qe(r.eO)))})),wa=function(r){return X([r])},ya=s($e,s(qt,Qe,wa),s(Se,s(Ae,Pe("(.(?!```))*\\n?"),Xe($a)),s(Ae,ha,Xe($a)))),qa=t(function(r,n){return r?"<lia-keep><pre id='ls'><code style='background: #CCCCCC; white-space: pre;'>"+n+"</code></pre></lia-keep>":n}),ka=Mr(1/0),xa=e(function(r,n,t){var e=Oe(r);return e.$?t:b(ka,e.a,n,t)}),La=C,Ea=t(function(r,n){var t=s(De,"@@",r)?U(!0,!0,s(Re,2,r)):s(De,"@-@",r)?U(!0,!1,s(Re,3,r)):U(!1,!1,s(Re,1,r)),e=t.a,u=t.b,a=t.c;return s(Xt,function(r){return U(e,u,r)},function(){switch(a){case"author":return Nn(n.dM);case"date":return Nn(n.d5);case"email":return Nn(n.ek);case"version":return Nn(n.gi);case"section":return Nn(Un(n.db));case"uid":return Nn(Un(n.db)+"_"+Un(n.dv));default:return s(Wu,a,n.e5)}}())}),Aa=function(r){return X(r.split(/\r\n|\r|\n/g))},Sa=function(r){var n=e(function(n,t,e){for(;;){var u=b(ve,r,t,e);if(u.c.$)return U(t,e,Fn(n));var a=u.a,i=u.b,c=u.c.a;if(T(e,i))return U(a,i,Fn(n));n=s(mn,c,n),t=a,e=i}});return t(function(r,t){var e=b(n,j,r,t);return U(e.a,e.b,Dn(e.c))})},Ta=function(r){return s(we,Sa(r),s($e,mn,r))},Ra=t(function(r,n){return s(Ee,n,Yu(r))}),Da=s(qt,Hn("\\"),In("\\\\")),Ca=s($e,Da,Ge(X([s(ye,ha,s(Ae,Pe("(([^`]+|(`[^`]+)|(``[^`]+))|\\n)+"),ha)),s(ye,Ce("`"),s(Ae,Pe("[^`\n]+"),Ce("`"))),Pe("[^),]+")]))),Va=e(function(r,n,t){return s(ye,n,s(Ae,t,r))}),Na=s(Va,Ce("("),Ce(")")),Ba=t(function(r,n){return s(we,Sa(s(Ae,n,r)),s($e,mn,n))}),Ma=t(function(r,n){return s(Ee,s(Ba,r,n),Yu(j))}),Oa=s(Ra,j,Na(s(Ma,Ce(","),Ca))),Ua=Pe("\\w[\\w\\d._]+"),Ia=s(we,s(Ra,!1,s(ou,!0,Ce("'"))),s($e,e(function(r,n,t){return O(z(r,t),n)}),Pe("@-?@?"))),Ha=s(we,Ua,Ia),Pa=function(r){return t(function(n,t){return b(ve,Yu(0),r,t)})},za=s(we,s(we,ra(s(qt,function(r){return r.b5},s(qt,function(r){return r.dO},Yu))),s(ye,Pe("(\\)|[^)]*\\))"),s(we,Pe("[^) ]*"),s($e,e(function(r,n,t){return s(du,r,X([s(gu,t,n)]))}),s(ye,Ce("]("),Oa))))),s($e,te,s(we,Ua,s(ye,Ce("["),Ia)))),ja=e(function(r,n,t){return{b2:r,eT:n,O:t}}),_a=e(function(r,n,t){var e=b(ve,r,n,function(r){return b(ja,r,r,0)}(t));return e.c.$?An(U(e.a,e.b,e.c.a)):Dn(U(e.a,e.b,e.c.a))}),Ga=s(we,Oa,s($e,te,Ha)),Xa=function(r){return b(qu,"\n","\\n",b(qu,"`","\\`",b(qu,"'","\\'",b(qu,'"','\\"',r))))},Za=s(ou,O(O("@uid",!1),j),s(Ae,na(function(r){var n=r.b5;return H(r,{b5:H(n,{dv:n.dv+1})})}),Ce("@uid"))),Fa=t(function(r,n){var t=n.b,e=n.c,u=s(Ja,n.a,r),a=u.b;return U(u.a,t+1,b(qu,"@"+Un(t),a,b(qu,"@'"+Un(t),Xa(a),e)))}),Qa=function(r){var n=r.a,e=n.a,u=n.b,a=r.b;return ra(function(r){var n=s(Ea,e,r.b5);if(n.$)return da("macro definition not found");var i,c,o=n.a,f=o.a,l=o.b,d=o.c,p=T(r.eO,j)?d:s(In,"\n"+b(qu,"*","",b(qu,"?","",Qe(r.eO))),Aa(d)),v=b(Pn,Fa,U(r,0,p),a),g=v.a,h=v.c;return s(Ae,Yu(0),s(Ae,Pa(g),(i=Mn((f?(c=l,s(qt,s(xa,"[*+`{}#^|$\\[\\]]",s(qt,function(r){return r.aZ},Mn("\\"))),s(qt,s(qu,"<","\\<"),s(qt,s(qu,">","\\>"),s(qt,s(qu,"\\\\`","`"),s(qt,s(qu,"\n","<br id='ls'>"),s(qt,s(xa,"@[a-zA-Z]+[\\w\\d._\\-]*",function(r){return"@input"!==r.aZ?"@-"+r.aZ:r.aZ}),s(qt,s(qu,"\\<br id='ls'\\>","<br id='ls'>"),qa(c))))))))):Tt)(u?Xa(h):h)),t(function(r,n){return b(ve,Yu(0),r,H(n,{eT:i(n.eT)}))}))))})},Ja=t(function(r,n){var t=b(_a,s($e,Qe,Ta(s(Ee,Pe("@input[^@]+"),s(Ae,Pe("[^@]+"),Wa())))),r,n);if(t.$)return O(r,n);var e=t.a;return O(e.a,e.c)});function Wa(){return fu(Xe(Ta(Ge(X([s(ge,Qa,Za),s(ge,Qa,Ga),s(ge,Qa,za),Ka()])))))}function Ka(){return s(ge,function(r){return s(ge,function(n){return s(ge,function(n){return Qa(O(r,n))},s($e,du(n),ya))},s(ye,Pe("[\t ]*\\n"),Oa))},s(Ae,Ha,s(Ae,Pe("[\t ]*[a-zA-Z0-9_]*[\t ]*"),ha)))}var Ya=Wa();Wa=function(){return Ya};var ri=Ka();Ka=function(){return ri};var ni,ti,ei=t(function(r,n){r:for(;;){if(r>0){if(n.b){r-=1,n=n.b;continue r}return n}return n}}),ui=na(function(r){return H(r,{aR:s(ei,1,r.aR)})}),ai=Pe("[\t ]+"),ii=fu(s(ge,ba(!1),s(ye,ui,s(we,s(Se,tu,Ce("--\x3e")),s(ye,Pe("}}--[\t ]*"),s(we,Xe(s(Ae,Pe("[A-Za-z0-9 ]+"),s(Ae,Ya,ai))),s($e,e(function(r,n,t){return U(r,n,X([s(Xu,sa(eu(t)),j)]))}),s(Ae,ga,Pe("\x3c!--[\t ]*--{{"))))))))),ci=fu(Sa(s(Ee,fu(je(tu)),ii))),oi=t(function(r,n){var t=n.a,e=n.b;return O(t,"src"===t||"href"===t||"data"===t||"data-src"===t||"formaction"===t||"poster"===t?s(gu,r,e):e)}),fi=jt(X([O("Aacute","Á"),O("aacute","á"),O("Abreve","Ă"),O("abreve","ă"),O("ac","∾"),O("acd","∿"),O("acE","∾̳"),O("Acirc","Â"),O("acirc","â"),O("acute","´"),O("Acy","А"),O("acy","а"),O("AElig","Æ"),O("aelig","æ"),O("af","⁡"),O("Afr","𝔄"),O("afr","𝔞"),O("Agrave","À"),O("agrave","à"),O("alefsym","ℵ"),O("aleph","ℵ"),O("Alpha","Α"),O("alpha","α"),O("Amacr","Ā"),O("amacr","ā"),O("amalg","⨿"),O("amp","&"),O("AMP","&"),O("andand","⩕"),O("And","⩓"),O("and","∧"),O("andd","⩜"),O("andslope","⩘"),O("andv","⩚"),O("ang","∠"),O("ange","⦤"),O("angle","∠"),O("angmsdaa","⦨"),O("angmsdab","⦩"),O("angmsdac","⦪"),O("angmsdad","⦫"),O("angmsdae","⦬"),O("angmsdaf","⦭"),O("angmsdag","⦮"),O("angmsdah","⦯"),O("angmsd","∡"),O("angrt","∟"),O("angrtvb","⊾"),O("angrtvbd","⦝"),O("angsph","∢"),O("angst","Å"),O("angzarr","⍼"),O("Aogon","Ą"),O("aogon","ą"),O("Aopf","𝔸"),O("aopf","𝕒"),O("apacir","⩯"),O("ap","≈"),O("apE","⩰"),O("ape","≊"),O("apid","≋"),O("apos","'"),O("ApplyFunction","⁡"),O("approx","≈"),O("approxeq","≊"),O("Aring","Å"),O("aring","å"),O("Ascr","𝒜"),O("ascr","𝒶"),O("Assign","≔"),O("ast","*"),O("asymp","≈"),O("asympeq","≍"),O("Atilde","Ã"),O("atilde","ã"),O("Auml","Ä"),O("auml","ä"),O("awconint","∳"),O("awint","⨑"),O("backcong","≌"),O("backepsilon","϶"),O("backprime","‵"),O("backsim","∽"),O("backsimeq","⋍"),O("Backslash","∖"),O("Barv","⫧"),O("barvee","⊽"),O("barwed","⌅"),O("Barwed","⌆"),O("barwedge","⌅"),O("bbrk","⎵"),O("bbrktbrk","⎶"),O("bcong","≌"),O("Bcy","Б"),O("bcy","б"),O("bdquo","„"),O("becaus","∵"),O("because","∵"),O("Because","∵"),O("bemptyv","⦰"),O("bepsi","϶"),O("bernou","ℬ"),O("Bernoullis","ℬ"),O("Beta","Β"),O("beta","β"),O("beth","ℶ"),O("between","≬"),O("Bfr","𝔅"),O("bfr","𝔟"),O("bigcap","⋂"),O("bigcirc","◯"),O("bigcup","⋃"),O("bigodot","⨀"),O("bigoplus","⨁"),O("bigotimes","⨂"),O("bigsqcup","⨆"),O("bigstar","★"),O("bigtriangledown","▽"),O("bigtriangleup","△"),O("biguplus","⨄"),O("bigvee","⋁"),O("bigwedge","⋀"),O("bkarow","⤍"),O("blacklozenge","⧫"),O("blacksquare","▪"),O("blacktriangle","▴"),O("blacktriangledown","▾"),O("blacktriangleleft","◂"),O("blacktriangleright","▸"),O("blank","␣"),O("blk12","▒"),O("blk14","░"),O("blk34","▓"),O("block","█"),O("bne","=⃥"),O("bnequiv","≡⃥"),O("bNot","⫭"),O("bnot","⌐"),O("Bopf","𝔹"),O("bopf","𝕓"),O("bot","⊥"),O("bottom","⊥"),O("bowtie","⋈"),O("boxbox","⧉"),O("boxdl","┐"),O("boxdL","╕"),O("boxDl","╖"),O("boxDL","╗"),O("boxdr","┌"),O("boxdR","╒"),O("boxDr","╓"),O("boxDR","╔"),O("boxh","─"),O("boxH","═"),O("boxhd","┬"),O("boxHd","╤"),O("boxhD","╥"),O("boxHD","╦"),O("boxhu","┴"),O("boxHu","╧"),O("boxhU","╨"),O("boxHU","╩"),O("boxminus","⊟"),O("boxplus","⊞"),O("boxtimes","⊠"),O("boxul","┘"),O("boxuL","╛"),O("boxUl","╜"),O("boxUL","╝"),O("boxur","└"),O("boxuR","╘"),O("boxUr","╙"),O("boxUR","╚"),O("boxv","│"),O("boxV","║"),O("boxvh","┼"),O("boxvH","╪"),O("boxVh","╫"),O("boxVH","╬"),O("boxvl","┤"),O("boxvL","╡"),O("boxVl","╢"),O("boxVL","╣"),O("boxvr","├"),O("boxvR","╞"),O("boxVr","╟"),O("boxVR","╠"),O("bprime","‵"),O("breve","˘"),O("Breve","˘"),O("brvbar","¦"),O("bscr","𝒷"),O("Bscr","ℬ"),O("bsemi","⁏"),O("bsim","∽"),O("bsime","⋍"),O("bsolb","⧅"),O("bsol","\\"),O("bsolhsub","⟈"),O("bull","•"),O("bullet","•"),O("bump","≎"),O("bumpE","⪮"),O("bumpe","≏"),O("Bumpeq","≎"),O("bumpeq","≏"),O("Cacute","Ć"),O("cacute","ć"),O("capand","⩄"),O("capbrcup","⩉"),O("capcap","⩋"),O("cap","∩"),O("Cap","⋒"),O("capcup","⩇"),O("capdot","⩀"),O("CapitalDifferentialD","ⅅ"),O("caps","∩︀"),O("caret","⁁"),O("caron","ˇ"),O("Cayleys","ℭ"),O("ccaps","⩍"),O("Ccaron","Č"),O("ccaron","č"),O("Ccedil","Ç"),O("ccedil","ç"),O("Ccirc","Ĉ"),O("ccirc","ĉ"),O("Cconint","∰"),O("ccups","⩌"),O("ccupssm","⩐"),O("Cdot","Ċ"),O("cdot","ċ"),O("cedil","¸"),O("Cedilla","¸"),O("cemptyv","⦲"),O("cent","¢"),O("centerdot","·"),O("CenterDot","·"),O("cfr","𝔠"),O("Cfr","ℭ"),O("CHcy","Ч"),O("chcy","ч"),O("check","✓"),O("checkmark","✓"),O("Chi","Χ"),O("chi","χ"),O("circ","ˆ"),O("circeq","≗"),O("circlearrowleft","↺"),O("circlearrowright","↻"),O("circledast","⊛"),O("circledcirc","⊚"),O("circleddash","⊝"),O("CircleDot","⊙"),O("circledR","®"),O("circledS","Ⓢ"),O("CircleMinus","⊖"),O("CirclePlus","⊕"),O("CircleTimes","⊗"),O("cir","○"),O("cirE","⧃"),O("cire","≗"),O("cirfnint","⨐"),O("cirmid","⫯"),O("cirscir","⧂"),O("ClockwiseContourIntegral","∲"),O("CloseCurlyDoubleQuote","”"),O("CloseCurlyQuote","’"),O("clubs","♣"),O("clubsuit","♣"),O("colon",":"),O("Colon","∷"),O("Colone","⩴"),O("colone","≔"),O("coloneq","≔"),O("comma",","),O("commat","@"),O("comp","∁"),O("compfn","∘"),O("complement","∁"),O("complexes","ℂ"),O("cong","≅"),O("congdot","⩭"),O("Congruent","≡"),O("conint","∮"),O("Conint","∯"),O("ContourIntegral","∮"),O("copf","𝕔"),O("Copf","ℂ"),O("coprod","∐"),O("Coproduct","∐"),O("copy","©"),O("COPY","©"),O("copysr","℗"),O("CounterClockwiseContourIntegral","∳"),O("crarr","↵"),O("cross","✗"),O("Cross","⨯"),O("Cscr","𝒞"),O("cscr","𝒸"),O("csub","⫏"),O("csube","⫑"),O("csup","⫐"),O("csupe","⫒"),O("ctdot","⋯"),O("cudarrl","⤸"),O("cudarrr","⤵"),O("cuepr","⋞"),O("cuesc","⋟"),O("cularr","↶"),O("cularrp","⤽"),O("cupbrcap","⩈"),O("cupcap","⩆"),O("CupCap","≍"),O("cup","∪"),O("Cup","⋓"),O("cupcup","⩊"),O("cupdot","⊍"),O("cupor","⩅"),O("cups","∪︀"),O("curarr","↷"),O("curarrm","⤼"),O("curlyeqprec","⋞"),O("curlyeqsucc","⋟"),O("curlyvee","⋎"),O("curlywedge","⋏"),O("curren","¤"),O("curvearrowleft","↶"),O("curvearrowright","↷"),O("cuvee","⋎"),O("cuwed","⋏"),O("cwconint","∲"),O("cwint","∱"),O("cylcty","⌭"),O("dagger","†"),O("Dagger","‡"),O("daleth","ℸ"),O("darr","↓"),O("Darr","↡"),O("dArr","⇓"),O("dash","‐"),O("Dashv","⫤"),O("dashv","⊣"),O("dbkarow","⤏"),O("dblac","˝"),O("Dcaron","Ď"),O("dcaron","ď"),O("Dcy","Д"),O("dcy","д"),O("ddagger","‡"),O("ddarr","⇊"),O("DD","ⅅ"),O("dd","ⅆ"),O("DDotrahd","⤑"),O("ddotseq","⩷"),O("deg","°"),O("Del","∇"),O("Delta","Δ"),O("delta","δ"),O("demptyv","⦱"),O("dfisht","⥿"),O("Dfr","𝔇"),O("dfr","𝔡"),O("dHar","⥥"),O("dharl","⇃"),O("dharr","⇂"),O("DiacriticalAcute","´"),O("DiacriticalDot","˙"),O("DiacriticalDoubleAcute","˝"),O("DiacriticalGrave","`"),O("DiacriticalTilde","˜"),O("diam","⋄"),O("diamond","⋄"),O("Diamond","⋄"),O("diamondsuit","♦"),O("diams","♦"),O("die","¨"),O("DifferentialD","ⅆ"),O("digamma","ϝ"),O("disin","⋲"),O("div","÷"),O("divide","÷"),O("divideontimes","⋇"),O("divonx","⋇"),O("DJcy","Ђ"),O("djcy","ђ"),O("dlcorn","⌞"),O("dlcrop","⌍"),O("dollar","$"),O("Dopf","𝔻"),O("dopf","𝕕"),O("Dot","¨"),O("dot","˙"),O("DotDot","⃜"),O("doteq","≐"),O("doteqdot","≑"),O("DotEqual","≐"),O("dotminus","∸"),O("dotplus","∔"),O("dotsquare","⊡"),O("doublebarwedge","⌆"),O("DoubleContourIntegral","∯"),O("DoubleDot","¨"),O("DoubleDownArrow","⇓"),O("DoubleLeftArrow","⇐"),O("DoubleLeftRightArrow","⇔"),O("DoubleLeftTee","⫤"),O("DoubleLongLeftArrow","⟸"),O("DoubleLongLeftRightArrow","⟺"),O("DoubleLongRightArrow","⟹"),O("DoubleRightArrow","⇒"),O("DoubleRightTee","⊨"),O("DoubleUpArrow","⇑"),O("DoubleUpDownArrow","⇕"),O("DoubleVerticalBar","∥"),O("DownArrowBar","⤓"),O("downarrow","↓"),O("DownArrow","↓"),O("Downarrow","⇓"),O("DownArrowUpArrow","⇵"),O("DownBreve","̑"),O("downdownarrows","⇊"),O("downharpoonleft","⇃"),O("downharpoonright","⇂"),O("DownLeftRightVector","⥐"),O("DownLeftTeeVector","⥞"),O("DownLeftVectorBar","⥖"),O("DownLeftVector","↽"),O("DownRightTeeVector","⥟"),O("DownRightVectorBar","⥗"),O("DownRightVector","⇁"),O("DownTeeArrow","↧"),O("DownTee","⊤"),O("drbkarow","⤐"),O("drcorn","⌟"),O("drcrop","⌌"),O("Dscr","𝒟"),O("dscr","𝒹"),O("DScy","Ѕ"),O("dscy","ѕ"),O("dsol","⧶"),O("Dstrok","Đ"),O("dstrok","đ"),O("dtdot","⋱"),O("dtri","▿"),O("dtrif","▾"),O("duarr","⇵"),O("duhar","⥯"),O("dwangle","⦦"),O("DZcy","Џ"),O("dzcy","џ"),O("dzigrarr","⟿"),O("Eacute","É"),O("eacute","é"),O("easter","⩮"),O("Ecaron","Ě"),O("ecaron","ě"),O("Ecirc","Ê"),O("ecirc","ê"),O("ecir","≖"),O("ecolon","≕"),O("Ecy","Э"),O("ecy","э"),O("eDDot","⩷"),O("Edot","Ė"),O("edot","ė"),O("eDot","≑"),O("ee","ⅇ"),O("efDot","≒"),O("Efr","𝔈"),O("efr","𝔢"),O("eg","⪚"),O("Egrave","È"),O("egrave","è"),O("egs","⪖"),O("egsdot","⪘"),O("el","⪙"),O("Element","∈"),O("elinters","⏧"),O("ell","ℓ"),O("els","⪕"),O("elsdot","⪗"),O("Emacr","Ē"),O("emacr","ē"),O("empty","∅"),O("emptyset","∅"),O("EmptySmallSquare","◻"),O("emptyv","∅"),O("EmptyVerySmallSquare","▫"),O("emsp13"," "),O("emsp14"," "),O("emsp"," "),O("ENG","Ŋ"),O("eng","ŋ"),O("ensp"," "),O("Eogon","Ę"),O("eogon","ę"),O("Eopf","𝔼"),O("eopf","𝕖"),O("epar","⋕"),O("eparsl","⧣"),O("eplus","⩱"),O("epsi","ε"),O("Epsilon","Ε"),O("epsilon","ε"),O("epsiv","ϵ"),O("eqcirc","≖"),O("eqcolon","≕"),O("eqsim","≂"),O("eqslantgtr","⪖"),O("eqslantless","⪕"),O("Equal","⩵"),O("equals","="),O("EqualTilde","≂"),O("equest","≟"),O("Equilibrium","⇌"),O("equiv","≡"),O("equivDD","⩸"),O("eqvparsl","⧥"),O("erarr","⥱"),O("erDot","≓"),O("escr","ℯ"),O("Escr","ℰ"),O("esdot","≐"),O("Esim","⩳"),O("esim","≂"),O("Eta","Η"),O("eta","η"),O("ETH","Ð"),O("eth","ð"),O("Euml","Ë"),O("euml","ë"),O("euro","€"),O("excl","!"),O("exist","∃"),O("Exists","∃"),O("expectation","ℰ"),O("exponentiale","ⅇ"),O("ExponentialE","ⅇ"),O("fallingdotseq","≒"),O("Fcy","Ф"),O("fcy","ф"),O("female","♀"),O("ffilig","ﬃ"),O("fflig","ﬀ"),O("ffllig","ﬄ"),O("Ffr","𝔉"),O("ffr","𝔣"),O("filig","ﬁ"),O("FilledSmallSquare","◼"),O("FilledVerySmallSquare","▪"),O("fjlig","fj"),O("flat","♭"),O("fllig","ﬂ"),O("fltns","▱"),O("fnof","ƒ"),O("Fopf","𝔽"),O("fopf","𝕗"),O("forall","∀"),O("ForAll","∀"),O("fork","⋔"),O("forkv","⫙"),O("Fouriertrf","ℱ"),O("fpartint","⨍"),O("frac12","½"),O("frac13","⅓"),O("frac14","¼"),O("frac15","⅕"),O("frac16","⅙"),O("frac18","⅛"),O("frac23","⅔"),O("frac25","⅖"),O("frac34","¾"),O("frac35","⅗"),O("frac38","⅜"),O("frac45","⅘"),O("frac56","⅚"),O("frac58","⅝"),O("frac78","⅞"),O("frasl","⁄"),O("frown","⌢"),O("fscr","𝒻"),O("Fscr","ℱ"),O("gacute","ǵ"),O("Gamma","Γ"),O("gamma","γ"),O("Gammad","Ϝ"),O("gammad","ϝ"),O("gap","⪆"),O("Gbreve","Ğ"),O("gbreve","ğ"),O("Gcedil","Ģ"),O("Gcirc","Ĝ"),O("gcirc","ĝ"),O("Gcy","Г"),O("gcy","г"),O("Gdot","Ġ"),O("gdot","ġ"),O("ge","≥"),O("gE","≧"),O("gEl","⪌"),O("gel","⋛"),O("geq","≥"),O("geqq","≧"),O("geqslant","⩾"),O("gescc","⪩"),O("ges","⩾"),O("gesdot","⪀"),O("gesdoto","⪂"),O("gesdotol","⪄"),O("gesl","⋛︀"),O("gesles","⪔"),O("Gfr","𝔊"),O("gfr","𝔤"),O("gg","≫"),O("Gg","⋙"),O("ggg","⋙"),O("gimel","ℷ"),O("GJcy","Ѓ"),O("gjcy","ѓ"),O("gla","⪥"),O("gl","≷"),O("glE","⪒"),O("glj","⪤"),O("gnap","⪊"),O("gnapprox","⪊"),O("gne","⪈"),O("gnE","≩"),O("gneq","⪈"),O("gneqq","≩"),O("gnsim","⋧"),O("Gopf","𝔾"),O("gopf","𝕘"),O("grave","`"),O("GreaterEqual","≥"),O("GreaterEqualLess","⋛"),O("GreaterFullEqual","≧"),O("GreaterGreater","⪢"),O("GreaterLess","≷"),O("GreaterSlantEqual","⩾"),O("GreaterTilde","≳"),O("Gscr","𝒢"),O("gscr","ℊ"),O("gsim","≳"),O("gsime","⪎"),O("gsiml","⪐"),O("gtcc","⪧"),O("gtcir","⩺"),O("gt",">"),O("GT",">"),O("Gt","≫"),O("gtdot","⋗"),O("gtlPar","⦕"),O("gtquest","⩼"),O("gtrapprox","⪆"),O("gtrarr","⥸"),O("gtrdot","⋗"),O("gtreqless","⋛"),O("gtreqqless","⪌"),O("gtrless","≷"),O("gtrsim","≳"),O("gvertneqq","≩︀"),O("gvnE","≩︀"),O("Hacek","ˇ"),O("hairsp"," "),O("half","½"),O("hamilt","ℋ"),O("HARDcy","Ъ"),O("hardcy","ъ"),O("harrcir","⥈"),O("harr","↔"),O("hArr","⇔"),O("harrw","↭"),O("Hat","^"),O("hbar","ℏ"),O("Hcirc","Ĥ"),O("hcirc","ĥ"),O("hearts","♥"),O("heartsuit","♥"),O("hellip","…"),O("hercon","⊹"),O("hfr","𝔥"),O("Hfr","ℌ"),O("HilbertSpace","ℋ"),O("hksearow","⤥"),O("hkswarow","⤦"),O("hoarr","⇿"),O("homtht","∻"),O("hookleftarrow","↩"),O("hookrightarrow","↪"),O("hopf","𝕙"),O("Hopf","ℍ"),O("horbar","―"),O("HorizontalLine","─"),O("hscr","𝒽"),O("Hscr","ℋ"),O("hslash","ℏ"),O("Hstrok","Ħ"),O("hstrok","ħ"),O("HumpDownHump","≎"),O("HumpEqual","≏"),O("hybull","⁃"),O("hyphen","‐"),O("Iacute","Í"),O("iacute","í"),O("ic","⁣"),O("Icirc","Î"),O("icirc","î"),O("Icy","И"),O("icy","и"),O("Idot","İ"),O("IEcy","Е"),O("iecy","е"),O("iexcl","¡"),O("iff","⇔"),O("ifr","𝔦"),O("Ifr","ℑ"),O("Igrave","Ì"),O("igrave","ì"),O("ii","ⅈ"),O("iiiint","⨌"),O("iiint","∭"),O("iinfin","⧜"),O("iiota","℩"),O("IJlig","Ĳ"),O("ijlig","ĳ"),O("Imacr","Ī"),O("imacr","ī"),O("image","ℑ"),O("ImaginaryI","ⅈ"),O("imagline","ℐ"),O("imagpart","ℑ"),O("imath","ı"),O("Im","ℑ"),O("imof","⊷"),O("imped","Ƶ"),O("Implies","⇒"),O("incare","℅"),O("in","∈"),O("infin","∞"),O("infintie","⧝"),O("inodot","ı"),O("intcal","⊺"),O("int","∫"),O("Int","∬"),O("integers","ℤ"),O("Integral","∫"),O("intercal","⊺"),O("Intersection","⋂"),O("intlarhk","⨗"),O("intprod","⨼"),O("InvisibleComma","⁣"),O("InvisibleTimes","⁢"),O("IOcy","Ё"),O("iocy","ё"),O("Iogon","Į"),O("iogon","į"),O("Iopf","𝕀"),O("iopf","𝕚"),O("Iota","Ι"),O("iota","ι"),O("iprod","⨼"),O("iquest","¿"),O("iscr","𝒾"),O("Iscr","ℐ"),O("isin","∈"),O("isindot","⋵"),O("isinE","⋹"),O("isins","⋴"),O("isinsv","⋳"),O("isinv","∈"),O("it","⁢"),O("Itilde","Ĩ"),O("itilde","ĩ"),O("Iukcy","І"),O("iukcy","і"),O("Iuml","Ï"),O("iuml","ï"),O("Jcirc","Ĵ"),O("jcirc","ĵ"),O("Jcy","Й"),O("jcy","й"),O("Jfr","𝔍"),O("jfr","𝔧"),O("jmath","ȷ"),O("Jopf","𝕁"),O("jopf","𝕛"),O("Jscr","𝒥"),O("jscr","𝒿"),O("Jsercy","Ј"),O("jsercy","ј"),O("Jukcy","Є"),O("jukcy","є"),O("Kappa","Κ"),O("kappa","κ"),O("kappav","ϰ"),O("Kcedil","Ķ"),O("kcedil","ķ"),O("Kcy","К"),O("kcy","к"),O("Kfr","𝔎"),O("kfr","𝔨"),O("kgreen","ĸ"),O("KHcy","Х"),O("khcy","х"),O("KJcy","Ќ"),O("kjcy","ќ"),O("Kopf","𝕂"),O("kopf","𝕜"),O("Kscr","𝒦"),O("kscr","𝓀"),O("lAarr","⇚"),O("Lacute","Ĺ"),O("lacute","ĺ"),O("laemptyv","⦴"),O("lagran","ℒ"),O("Lambda","Λ"),O("lambda","λ"),O("lang","⟨"),O("Lang","⟪"),O("langd","⦑"),O("langle","⟨"),O("lap","⪅"),O("Laplacetrf","ℒ"),O("laquo","«"),O("larrb","⇤"),O("larrbfs","⤟"),O("larr","←"),O("Larr","↞"),O("lArr","⇐"),O("larrfs","⤝"),O("larrhk","↩"),O("larrlp","↫"),O("larrpl","⤹"),O("larrsim","⥳"),O("larrtl","↢"),O("latail","⤙"),O("lAtail","⤛"),O("lat","⪫"),O("late","⪭"),O("lates","⪭︀"),O("lbarr","⤌"),O("lBarr","⤎"),O("lbbrk","❲"),O("lbrace","{"),O("lbrack","["),O("lbrke","⦋"),O("lbrksld","⦏"),O("lbrkslu","⦍"),O("Lcaron","Ľ"),O("lcaron","ľ"),O("Lcedil","Ļ"),O("lcedil","ļ"),O("lceil","⌈"),O("lcub","{"),O("Lcy","Л"),O("lcy","л"),O("ldca","⤶"),O("ldquo","“"),O("ldquor","„"),O("ldrdhar","⥧"),O("ldrushar","⥋"),O("ldsh","↲"),O("le","≤"),O("lE","≦"),O("LeftAngleBracket","⟨"),O("LeftArrowBar","⇤"),O("leftarrow","←"),O("LeftArrow","←"),O("Leftarrow","⇐"),O("LeftArrowRightArrow","⇆"),O("leftarrowtail","↢"),O("LeftCeiling","⌈"),O("LeftDoubleBracket","⟦"),O("LeftDownTeeVector","⥡"),O("LeftDownVectorBar","⥙"),O("LeftDownVector","⇃"),O("LeftFloor","⌊"),O("leftharpoondown","↽"),O("leftharpoonup","↼"),O("leftleftarrows","⇇"),O("leftrightarrow","↔"),O("LeftRightArrow","↔"),O("Leftrightarrow","⇔"),O("leftrightarrows","⇆"),O("leftrightharpoons","⇋"),O("leftrightsquigarrow","↭"),O("LeftRightVector","⥎"),O("LeftTeeArrow","↤"),O("LeftTee","⊣"),O("LeftTeeVector","⥚"),O("leftthreetimes","⋋"),O("LeftTriangleBar","⧏"),O("LeftTriangle","⊲"),O("LeftTriangleEqual","⊴"),O("LeftUpDownVector","⥑"),O("LeftUpTeeVector","⥠"),O("LeftUpVectorBar","⥘"),O("LeftUpVector","↿"),O("LeftVectorBar","⥒"),O("LeftVector","↼"),O("lEg","⪋"),O("leg","⋚"),O("leq","≤"),O("leqq","≦"),O("leqslant","⩽"),O("lescc","⪨"),O("les","⩽"),O("lesdot","⩿"),O("lesdoto","⪁"),O("lesdotor","⪃"),O("lesg","⋚︀"),O("lesges","⪓"),O("lessapprox","⪅"),O("lessdot","⋖"),O("lesseqgtr","⋚"),O("lesseqqgtr","⪋"),O("LessEqualGreater","⋚"),O("LessFullEqual","≦"),O("LessGreater","≶"),O("lessgtr","≶"),O("LessLess","⪡"),O("lesssim","≲"),O("LessSlantEqual","⩽"),O("LessTilde","≲"),O("lfisht","⥼"),O("lfloor","⌊"),O("Lfr","𝔏"),O("lfr","𝔩"),O("lg","≶"),O("lgE","⪑"),O("lHar","⥢"),O("lhard","↽"),O("lharu","↼"),O("lharul","⥪"),O("lhblk","▄"),O("LJcy","Љ"),O("ljcy","љ"),O("llarr","⇇"),O("ll","≪"),O("Ll","⋘"),O("llcorner","⌞"),O("Lleftarrow","⇚"),O("llhard","⥫"),O("lltri","◺"),O("Lmidot","Ŀ"),O("lmidot","ŀ"),O("lmoustache","⎰"),O("lmoust","⎰"),O("lnap","⪉"),O("lnapprox","⪉"),O("lne","⪇"),O("lnE","≨"),O("lneq","⪇"),O("lneqq","≨"),O("lnsim","⋦"),O("loang","⟬"),O("loarr","⇽"),O("lobrk","⟦"),O("longleftarrow","⟵"),O("LongLeftArrow","⟵"),O("Longleftarrow","⟸"),O("longleftrightarrow","⟷"),O("LongLeftRightArrow","⟷"),O("Longleftrightarrow","⟺"),O("longmapsto","⟼"),O("longrightarrow","⟶"),O("LongRightArrow","⟶"),O("Longrightarrow","⟹"),O("looparrowleft","↫"),O("looparrowright","↬"),O("lopar","⦅"),O("Lopf","𝕃"),O("lopf","𝕝"),O("loplus","⨭"),O("lotimes","⨴"),O("lowast","∗"),O("lowbar","_"),O("LowerLeftArrow","↙"),O("LowerRightArrow","↘"),O("loz","◊"),O("lozenge","◊"),O("lozf","⧫"),O("lpar","("),O("lparlt","⦓"),O("lrarr","⇆"),O("lrcorner","⌟"),O("lrhar","⇋"),O("lrhard","⥭"),O("lrm","‎"),O("lrtri","⊿"),O("lsaquo","‹"),O("lscr","𝓁"),O("Lscr","ℒ"),O("lsh","↰"),O("Lsh","↰"),O("lsim","≲"),O("lsime","⪍"),O("lsimg","⪏"),O("lsqb","["),O("lsquo","‘"),O("lsquor","‚"),O("Lstrok","Ł"),O("lstrok","ł"),O("ltcc","⪦"),O("ltcir","⩹"),O("lt","<"),O("LT","<"),O("Lt","≪"),O("ltdot","⋖"),O("lthree","⋋"),O("ltimes","⋉"),O("ltlarr","⥶"),O("ltquest","⩻"),O("ltri","◃"),O("ltrie","⊴"),O("ltrif","◂"),O("ltrPar","⦖"),O("lurdshar","⥊"),O("luruhar","⥦"),O("lvertneqq","≨︀"),O("lvnE","≨︀"),O("macr","¯"),O("male","♂"),O("malt","✠"),O("maltese","✠"),O("Map","⤅"),O("map","↦"),O("mapsto","↦"),O("mapstodown","↧"),O("mapstoleft","↤"),O("mapstoup","↥"),O("marker","▮"),O("mcomma","⨩"),O("Mcy","М"),O("mcy","м"),O("mdash","—"),O("mDDot","∺"),O("measuredangle","∡"),O("MediumSpace"," "),O("Mellintrf","ℳ"),O("Mfr","𝔐"),O("mfr","𝔪"),O("mho","℧"),O("micro","µ"),O("midast","*"),O("midcir","⫰"),O("mid","∣"),O("middot","·"),O("minusb","⊟"),O("minus","−"),O("minusd","∸"),O("minusdu","⨪"),O("MinusPlus","∓"),O("mlcp","⫛"),O("mldr","…"),O("mnplus","∓"),O("models","⊧"),O("Mopf","𝕄"),O("mopf","𝕞"),O("mp","∓"),O("mscr","𝓂"),O("Mscr","ℳ"),O("mstpos","∾"),O("Mu","Μ"),O("mu","μ"),O("multimap","⊸"),O("mumap","⊸"),O("nabla","∇"),O("Nacute","Ń"),O("nacute","ń"),O("nang","∠⃒"),O("nap","≉"),O("napE","⩰̸"),O("napid","≋̸"),O("napos","ŉ"),O("napprox","≉"),O("natural","♮"),O("naturals","ℕ"),O("natur","♮"),O("nbsp"," "),O("nbump","≎̸"),O("nbumpe","≏̸"),O("ncap","⩃"),O("Ncaron","Ň"),O("ncaron","ň"),O("Ncedil","Ņ"),O("ncedil","ņ"),O("ncong","≇"),O("ncongdot","⩭̸"),O("ncup","⩂"),O("Ncy","Н"),O("ncy","н"),O("ndash","–"),O("nearhk","⤤"),O("nearr","↗"),O("neArr","⇗"),O("nearrow","↗"),O("ne","≠"),O("nedot","≐̸"),O("NegativeMediumSpace","​"),O("NegativeThickSpace","​"),O("NegativeThinSpace","​"),O("NegativeVeryThinSpace","​"),O("nequiv","≢"),O("nesear","⤨"),O("nesim","≂̸"),O("NestedGreaterGreater","≫"),O("NestedLessLess","≪"),O("NewLine","\n"),O("nexist","∄"),O("nexists","∄"),O("Nfr","𝔑"),O("nfr","𝔫"),O("ngE","≧̸"),O("nge","≱"),O("ngeq","≱"),O("ngeqq","≧̸"),O("ngeqslant","⩾̸"),O("nges","⩾̸"),O("nGg","⋙̸"),O("ngsim","≵"),O("nGt","≫⃒"),O("ngt","≯"),O("ngtr","≯"),O("nGtv","≫̸"),O("nharr","↮"),O("nhArr","⇎"),O("nhpar","⫲"),O("ni","∋"),O("nis","⋼"),O("nisd","⋺"),O("niv","∋"),O("NJcy","Њ"),O("njcy","њ"),O("nlarr","↚"),O("nlArr","⇍"),O("nldr","‥"),O("nlE","≦̸"),O("nle","≰"),O("nleftarrow","↚"),O("nLeftarrow","⇍"),O("nleftrightarrow","↮"),O("nLeftrightarrow","⇎"),O("nleq","≰"),O("nleqq","≦̸"),O("nleqslant","⩽̸"),O("nles","⩽̸"),O("nless","≮"),O("nLl","⋘̸"),O("nlsim","≴"),O("nLt","≪⃒"),O("nlt","≮"),O("nltri","⋪"),O("nltrie","⋬"),O("nLtv","≪̸"),O("nmid","∤"),O("NoBreak","⁠"),O("NonBreakingSpace"," "),O("nopf","𝕟"),O("Nopf","ℕ"),O("Not","⫬"),O("not","¬"),O("NotCongruent","≢"),O("NotCupCap","≭"),O("NotDoubleVerticalBar","∦"),O("NotElement","∉"),O("NotEqual","≠"),O("NotEqualTilde","≂̸"),O("NotExists","∄"),O("NotGreater","≯"),O("NotGreaterEqual","≱"),O("NotGreaterFullEqual","≧̸"),O("NotGreaterGreater","≫̸"),O("NotGreaterLess","≹"),O("NotGreaterSlantEqual","⩾̸"),O("NotGreaterTilde","≵"),O("NotHumpDownHump","≎̸"),O("NotHumpEqual","≏̸"),O("notin","∉"),O("notindot","⋵̸"),O("notinE","⋹̸"),O("notinva","∉"),O("notinvb","⋷"),O("notinvc","⋶"),O("NotLeftTriangleBar","⧏̸"),O("NotLeftTriangle","⋪"),O("NotLeftTriangleEqual","⋬"),O("NotLess","≮"),O("NotLessEqual","≰"),O("NotLessGreater","≸"),O("NotLessLess","≪̸"),O("NotLessSlantEqual","⩽̸"),O("NotLessTilde","≴"),O("NotNestedGreaterGreater","⪢̸"),O("NotNestedLessLess","⪡̸"),O("notni","∌"),O("notniva","∌"),O("notnivb","⋾"),O("notnivc","⋽"),O("NotPrecedes","⊀"),O("NotPrecedesEqual","⪯̸"),O("NotPrecedesSlantEqual","⋠"),O("NotReverseElement","∌"),O("NotRightTriangleBar","⧐̸"),O("NotRightTriangle","⋫"),O("NotRightTriangleEqual","⋭"),O("NotSquareSubset","⊏̸"),O("NotSquareSubsetEqual","⋢"),O("NotSquareSuperset","⊐̸"),O("NotSquareSupersetEqual","⋣"),O("NotSubset","⊂⃒"),O("NotSubsetEqual","⊈"),O("NotSucceeds","⊁"),O("NotSucceedsEqual","⪰̸"),O("NotSucceedsSlantEqual","⋡"),O("NotSucceedsTilde","≿̸"),O("NotSuperset","⊃⃒"),O("NotSupersetEqual","⊉"),O("NotTilde","≁"),O("NotTildeEqual","≄"),O("NotTildeFullEqual","≇"),O("NotTildeTilde","≉"),O("NotVerticalBar","∤"),O("nparallel","∦"),O("npar","∦"),O("nparsl","⫽⃥"),O("npart","∂̸"),O("npolint","⨔"),O("npr","⊀"),O("nprcue","⋠"),O("nprec","⊀"),O("npreceq","⪯̸"),O("npre","⪯̸"),O("nrarrc","⤳̸"),O("nrarr","↛"),O("nrArr","⇏"),O("nrarrw","↝̸"),O("nrightarrow","↛"),O("nRightarrow","⇏"),O("nrtri","⋫"),O("nrtrie","⋭"),O("nsc","⊁"),O("nsccue","⋡"),O("nsce","⪰̸"),O("Nscr","𝒩"),O("nscr","𝓃"),O("nshortmid","∤"),O("nshortparallel","∦"),O("nsim","≁"),O("nsime","≄"),O("nsimeq","≄"),O("nsmid","∤"),O("nspar","∦"),O("nsqsube","⋢"),O("nsqsupe","⋣"),O("nsub","⊄"),O("nsubE","⫅̸"),O("nsube","⊈"),O("nsubset","⊂⃒"),O("nsubseteq","⊈"),O("nsubseteqq","⫅̸"),O("nsucc","⊁"),O("nsucceq","⪰̸"),O("nsup","⊅"),O("nsupE","⫆̸"),O("nsupe","⊉"),O("nsupset","⊃⃒"),O("nsupseteq","⊉"),O("nsupseteqq","⫆̸"),O("ntgl","≹"),O("Ntilde","Ñ"),O("ntilde","ñ"),O("ntlg","≸"),O("ntriangleleft","⋪"),O("ntrianglelefteq","⋬"),O("ntriangleright","⋫"),O("ntrianglerighteq","⋭"),O("Nu","Ν"),O("nu","ν"),O("num","#"),O("numero","№"),O("numsp"," "),O("nvap","≍⃒"),O("nvdash","⊬"),O("nvDash","⊭"),O("nVdash","⊮"),O("nVDash","⊯"),O("nvge","≥⃒"),O("nvgt",">⃒"),O("nvHarr","⤄"),O("nvinfin","⧞"),O("nvlArr","⤂"),O("nvle","≤⃒"),O("nvlt","<⃒"),O("nvltrie","⊴⃒"),O("nvrArr","⤃"),O("nvrtrie","⊵⃒"),O("nvsim","∼⃒"),O("nwarhk","⤣"),O("nwarr","↖"),O("nwArr","⇖"),O("nwarrow","↖"),O("nwnear","⤧"),O("Oacute","Ó"),O("oacute","ó"),O("oast","⊛"),O("Ocirc","Ô"),O("ocirc","ô"),O("ocir","⊚"),O("Ocy","О"),O("ocy","о"),O("odash","⊝"),O("Odblac","Ő"),O("odblac","ő"),O("odiv","⨸"),O("odot","⊙"),O("odsold","⦼"),O("OElig","Œ"),O("oelig","œ"),O("ofcir","⦿"),O("Ofr","𝔒"),O("ofr","𝔬"),O("ogon","˛"),O("Ograve","Ò"),O("ograve","ò"),O("ogt","⧁"),O("ohbar","⦵"),O("ohm","Ω"),O("oint","∮"),O("olarr","↺"),O("olcir","⦾"),O("olcross","⦻"),O("oline","‾"),O("olt","⧀"),O("Omacr","Ō"),O("omacr","ō"),O("Omega","Ω"),O("omega","ω"),O("Omicron","Ο"),O("omicron","ο"),O("omid","⦶"),O("ominus","⊖"),O("Oopf","𝕆"),O("oopf","𝕠"),O("opar","⦷"),O("OpenCurlyDoubleQuote","“"),O("OpenCurlyQuote","‘"),O("operp","⦹"),O("oplus","⊕"),O("orarr","↻"),O("Or","⩔"),O("or","∨"),O("ord","⩝"),O("order","ℴ"),O("orderof","ℴ"),O("ordf","ª"),O("ordm","º"),O("origof","⊶"),O("oror","⩖"),O("orslope","⩗"),O("orv","⩛"),O("oS","Ⓢ"),O("Oscr","𝒪"),O("oscr","ℴ"),O("Oslash","Ø"),O("oslash","ø"),O("osol","⊘"),O("Otilde","Õ"),O("otilde","õ"),O("otimesas","⨶"),O("Otimes","⨷"),O("otimes","⊗"),O("Ouml","Ö"),O("ouml","ö"),O("ovbar","⌽"),O("OverBar","‾"),O("OverBrace","⏞"),O("OverBracket","⎴"),O("OverParenthesis","⏜"),O("para","¶"),O("parallel","∥"),O("par","∥"),O("parsim","⫳"),O("parsl","⫽"),O("part","∂"),O("PartialD","∂"),O("Pcy","П"),O("pcy","п"),O("percnt","%"),O("period","."),O("permil","‰"),O("perp","⊥"),O("pertenk","‱"),O("Pfr","𝔓"),O("pfr","𝔭"),O("Phi","Φ"),O("phi","φ"),O("phiv","ϕ"),O("phmmat","ℳ"),O("phone","☎"),O("Pi","Π"),O("pi","π"),O("pitchfork","⋔"),O("piv","ϖ"),O("planck","ℏ"),O("planckh","ℎ"),O("plankv","ℏ"),O("plusacir","⨣"),O("plusb","⊞"),O("pluscir","⨢"),O("plus","+"),O("plusdo","∔"),O("plusdu","⨥"),O("pluse","⩲"),O("PlusMinus","±"),O("plusmn","±"),O("plussim","⨦"),O("plustwo","⨧"),O("pm","±"),O("Poincareplane","ℌ"),O("pointint","⨕"),O("popf","𝕡"),O("Popf","ℙ"),O("pound","£"),O("prap","⪷"),O("Pr","⪻"),O("pr","≺"),O("prcue","≼"),O("precapprox","⪷"),O("prec","≺"),O("preccurlyeq","≼"),O("Precedes","≺"),O("PrecedesEqual","⪯"),O("PrecedesSlantEqual","≼"),O("PrecedesTilde","≾"),O("preceq","⪯"),O("precnapprox","⪹"),O("precneqq","⪵"),O("precnsim","⋨"),O("pre","⪯"),O("prE","⪳"),O("precsim","≾"),O("prime","′"),O("Prime","″"),O("primes","ℙ"),O("prnap","⪹"),O("prnE","⪵"),O("prnsim","⋨"),O("prod","∏"),O("Product","∏"),O("profalar","⌮"),O("profline","⌒"),O("profsurf","⌓"),O("prop","∝"),O("Proportional","∝"),O("Proportion","∷"),O("propto","∝"),O("prsim","≾"),O("prurel","⊰"),O("Pscr","𝒫"),O("pscr","𝓅"),O("Psi","Ψ"),O("psi","ψ"),O("puncsp"," "),O("Qfr","𝔔"),O("qfr","𝔮"),O("qint","⨌"),O("qopf","𝕢"),O("Qopf","ℚ"),O("qprime","⁗"),O("Qscr","𝒬"),O("qscr","𝓆"),O("quaternions","ℍ"),O("quatint","⨖"),O("quest","?"),O("questeq","≟"),O("quot",'"'),O("QUOT",'"'),O("rAarr","⇛"),O("race","∽̱"),O("Racute","Ŕ"),O("racute","ŕ"),O("radic","√"),O("raemptyv","⦳"),O("rang","⟩"),O("Rang","⟫"),O("rangd","⦒"),O("range","⦥"),O("rangle","⟩"),O("raquo","»"),O("rarrap","⥵"),O("rarrb","⇥"),O("rarrbfs","⤠"),O("rarrc","⤳"),O("rarr","→"),O("Rarr","↠"),O("rArr","⇒"),O("rarrfs","⤞"),O("rarrhk","↪"),O("rarrlp","↬"),O("rarrpl","⥅"),O("rarrsim","⥴"),O("Rarrtl","⤖"),O("rarrtl","↣"),O("rarrw","↝"),O("ratail","⤚"),O("rAtail","⤜"),O("ratio","∶"),O("rationals","ℚ"),O("rbarr","⤍"),O("rBarr","⤏"),O("RBarr","⤐"),O("rbbrk","❳"),O("rbrace","}"),O("rbrack","]"),O("rbrke","⦌"),O("rbrksld","⦎"),O("rbrkslu","⦐"),O("Rcaron","Ř"),O("rcaron","ř"),O("Rcedil","Ŗ"),O("rcedil","ŗ"),O("rceil","⌉"),O("rcub","}"),O("Rcy","Р"),O("rcy","р"),O("rdca","⤷"),O("rdldhar","⥩"),O("rdquo","”"),O("rdquor","”"),O("rdsh","↳"),O("real","ℜ"),O("realine","ℛ"),O("realpart","ℜ"),O("reals","ℝ"),O("Re","ℜ"),O("rect","▭"),O("reg","®"),O("REG","®"),O("ReverseElement","∋"),O("ReverseEquilibrium","⇋"),O("ReverseUpEquilibrium","⥯"),O("rfisht","⥽"),O("rfloor","⌋"),O("rfr","𝔯"),O("Rfr","ℜ"),O("rHar","⥤"),O("rhard","⇁"),O("rharu","⇀"),O("rharul","⥬"),O("Rho","Ρ"),O("rho","ρ"),O("rhov","ϱ"),O("RightAngleBracket","⟩"),O("RightArrowBar","⇥"),O("rightarrow","→"),O("RightArrow","→"),O("Rightarrow","⇒"),O("RightArrowLeftArrow","⇄"),O("rightarrowtail","↣"),O("RightCeiling","⌉"),O("RightDoubleBracket","⟧"),O("RightDownTeeVector","⥝"),O("RightDownVectorBar","⥕"),O("RightDownVector","⇂"),O("RightFloor","⌋"),O("rightharpoondown","⇁"),O("rightharpoonup","⇀"),O("rightleftarrows","⇄"),O("rightleftharpoons","⇌"),O("rightrightarrows","⇉"),O("rightsquigarrow","↝"),O("RightTeeArrow","↦"),O("RightTee","⊢"),O("RightTeeVector","⥛"),O("rightthreetimes","⋌"),O("RightTriangleBar","⧐"),O("RightTriangle","⊳"),O("RightTriangleEqual","⊵"),O("RightUpDownVector","⥏"),O("RightUpTeeVector","⥜"),O("RightUpVectorBar","⥔"),O("RightUpVector","↾"),O("RightVectorBar","⥓"),O("RightVector","⇀"),O("ring","˚"),O("risingdotseq","≓"),O("rlarr","⇄"),O("rlhar","⇌"),O("rlm","‏"),O("rmoustache","⎱"),O("rmoust","⎱"),O("rnmid","⫮"),O("roang","⟭"),O("roarr","⇾"),O("robrk","⟧"),O("ropar","⦆"),O("ropf","𝕣"),O("Ropf","ℝ"),O("roplus","⨮"),O("rotimes","⨵"),O("RoundImplies","⥰"),O("rpar",")"),O("rpargt","⦔"),O("rppolint","⨒"),O("rrarr","⇉"),O("Rrightarrow","⇛"),O("rsaquo","›"),O("rscr","𝓇"),O("Rscr","ℛ"),O("rsh","↱"),O("Rsh","↱"),O("rsqb","]"),O("rsquo","’"),O("rsquor","’"),O("rthree","⋌"),O("rtimes","⋊"),O("rtri","▹"),O("rtrie","⊵"),O("rtrif","▸"),O("rtriltri","⧎"),O("RuleDelayed","⧴"),O("ruluhar","⥨"),O("rx","℞"),O("Sacute","Ś"),O("sacute","ś"),O("sbquo","‚"),O("scap","⪸"),O("Scaron","Š"),O("scaron","š"),O("Sc","⪼"),O("sc","≻"),O("sccue","≽"),O("sce","⪰"),O("scE","⪴"),O("Scedil","Ş"),O("scedil","ş"),O("Scirc","Ŝ"),O("scirc","ŝ"),O("scnap","⪺"),O("scnE","⪶"),O("scnsim","⋩"),O("scpolint","⨓"),O("scsim","≿"),O("Scy","С"),O("scy","с"),O("sdotb","⊡"),O("sdot","⋅"),O("sdote","⩦"),O("searhk","⤥"),O("searr","↘"),O("seArr","⇘"),O("searrow","↘"),O("sect","§"),O("semi",";"),O("seswar","⤩"),O("setminus","∖"),O("setmn","∖"),O("sext","✶"),O("Sfr","𝔖"),O("sfr","𝔰"),O("sfrown","⌢"),O("sharp","♯"),O("SHCHcy","Щ"),O("shchcy","щ"),O("SHcy","Ш"),O("shcy","ш"),O("ShortDownArrow","↓"),O("ShortLeftArrow","←"),O("shortmid","∣"),O("shortparallel","∥"),O("ShortRightArrow","→"),O("ShortUpArrow","↑"),O("shy","­"),O("Sigma","Σ"),O("sigma","σ"),O("sigmaf","ς"),O("sigmav","ς"),O("sim","∼"),O("simdot","⩪"),O("sime","≃"),O("simeq","≃"),O("simg","⪞"),O("simgE","⪠"),O("siml","⪝"),O("simlE","⪟"),O("simne","≆"),O("simplus","⨤"),O("simrarr","⥲"),O("slarr","←"),O("SmallCircle","∘"),O("smallsetminus","∖"),O("smashp","⨳"),O("smeparsl","⧤"),O("smid","∣"),O("smile","⌣"),O("smt","⪪"),O("smte","⪬"),O("smtes","⪬︀"),O("SOFTcy","Ь"),O("softcy","ь"),O("solbar","⌿"),O("solb","⧄"),O("sol","/"),O("Sopf","𝕊"),O("sopf","𝕤"),O("spades","♠"),O("spadesuit","♠"),O("spar","∥"),O("sqcap","⊓"),O("sqcaps","⊓︀"),O("sqcup","⊔"),O("sqcups","⊔︀"),O("Sqrt","√"),O("sqsub","⊏"),O("sqsube","⊑"),O("sqsubset","⊏"),O("sqsubseteq","⊑"),O("sqsup","⊐"),O("sqsupe","⊒"),O("sqsupset","⊐"),O("sqsupseteq","⊒"),O("square","□"),O("Square","□"),O("SquareIntersection","⊓"),O("SquareSubset","⊏"),O("SquareSubsetEqual","⊑"),O("SquareSuperset","⊐"),O("SquareSupersetEqual","⊒"),O("SquareUnion","⊔"),O("squarf","▪"),O("squ","□"),O("squf","▪"),O("srarr","→"),O("Sscr","𝒮"),O("sscr","𝓈"),O("ssetmn","∖"),O("ssmile","⌣"),O("sstarf","⋆"),O("Star","⋆"),O("star","☆"),O("starf","★"),O("straightepsilon","ϵ"),O("straightphi","ϕ"),O("strns","¯"),O("sub","⊂"),O("Sub","⋐"),O("subdot","⪽"),O("subE","⫅"),O("sube","⊆"),O("subedot","⫃"),O("submult","⫁"),O("subnE","⫋"),O("subne","⊊"),O("subplus","⪿"),O("subrarr","⥹"),O("subset","⊂"),O("Subset","⋐"),O("subseteq","⊆"),O("subseteqq","⫅"),O("SubsetEqual","⊆"),O("subsetneq","⊊"),O("subsetneqq","⫋"),O("subsim","⫇"),O("subsub","⫕"),O("subsup","⫓"),O("succapprox","⪸"),O("succ","≻"),O("succcurlyeq","≽"),O("Succeeds","≻"),O("SucceedsEqual","⪰"),O("SucceedsSlantEqual","≽"),O("SucceedsTilde","≿"),O("succeq","⪰"),O("succnapprox","⪺"),O("succneqq","⪶"),O("succnsim","⋩"),O("succsim","≿"),O("SuchThat","∋"),O("sum","∑"),O("Sum","∑"),O("sung","♪"),O("sup1","¹"),O("sup2","²"),O("sup3","³"),O("sup","⊃"),O("Sup","⋑"),O("supdot","⪾"),O("supdsub","⫘"),O("supE","⫆"),O("supe","⊇"),O("supedot","⫄"),O("Superset","⊃"),O("SupersetEqual","⊇"),O("suphsol","⟉"),O("suphsub","⫗"),O("suplarr","⥻"),O("supmult","⫂"),O("supnE","⫌"),O("supne","⊋"),O("supplus","⫀"),O("supset","⊃"),O("Supset","⋑"),O("supseteq","⊇"),O("supseteqq","⫆"),O("supsetneq","⊋"),O("supsetneqq","⫌"),O("supsim","⫈"),O("supsub","⫔"),O("supsup","⫖"),O("swarhk","⤦"),O("swarr","↙"),O("swArr","⇙"),O("swarrow","↙"),O("swnwar","⤪"),O("szlig","ß"),O("Tab","\t"),O("target","⌖"),O("Tau","Τ"),O("tau","τ"),O("tbrk","⎴"),O("Tcaron","Ť"),O("tcaron","ť"),O("Tcedil","Ţ"),O("tcedil","ţ"),O("Tcy","Т"),O("tcy","т"),O("tdot","⃛"),O("telrec","⌕"),O("Tfr","𝔗"),O("tfr","𝔱"),O("there4","∴"),O("therefore","∴"),O("Therefore","∴"),O("Theta","Θ"),O("theta","θ"),O("thetasym","ϑ"),O("thetav","ϑ"),O("thickapprox","≈"),O("thicksim","∼"),O("ThickSpace","  "),O("ThinSpace"," "),O("thinsp"," "),O("thkap","≈"),O("thksim","∼"),O("THORN","Þ"),O("thorn","þ"),O("tilde","˜"),O("Tilde","∼"),O("TildeEqual","≃"),O("TildeFullEqual","≅"),O("TildeTilde","≈"),O("timesbar","⨱"),O("timesb","⊠"),O("times","×"),O("timesd","⨰"),O("tint","∭"),O("toea","⤨"),O("topbot","⌶"),O("topcir","⫱"),O("top","⊤"),O("Topf","𝕋"),O("topf","𝕥"),O("topfork","⫚"),O("tosa","⤩"),O("tprime","‴"),O("trade","™"),O("TRADE","™"),O("triangle","▵"),O("triangledown","▿"),O("triangleleft","◃"),O("trianglelefteq","⊴"),O("triangleq","≜"),O("triangleright","▹"),O("trianglerighteq","⊵"),O("tridot","◬"),O("trie","≜"),O("triminus","⨺"),O("TripleDot","⃛"),O("triplus","⨹"),O("trisb","⧍"),O("tritime","⨻"),O("trpezium","⏢"),O("Tscr","𝒯"),O("tscr","𝓉"),O("TScy","Ц"),O("tscy","ц"),O("TSHcy","Ћ"),O("tshcy","ћ"),O("Tstrok","Ŧ"),O("tstrok","ŧ"),O("twixt","≬"),O("twoheadleftarrow","↞"),O("twoheadrightarrow","↠"),O("Uacute","Ú"),O("uacute","ú"),O("uarr","↑"),O("Uarr","↟"),O("uArr","⇑"),O("Uarrocir","⥉"),O("Ubrcy","Ў"),O("ubrcy","ў"),O("Ubreve","Ŭ"),O("ubreve","ŭ"),O("Ucirc","Û"),O("ucirc","û"),O("Ucy","У"),O("ucy","у"),O("udarr","⇅"),O("Udblac","Ű"),O("udblac","ű"),O("udhar","⥮"),O("ufisht","⥾"),O("Ufr","𝔘"),O("ufr","𝔲"),O("Ugrave","Ù"),O("ugrave","ù"),O("uHar","⥣"),O("uharl","↿"),O("uharr","↾"),O("uhblk","▀"),O("ulcorn","⌜"),O("ulcorner","⌜"),O("ulcrop","⌏"),O("ultri","◸"),O("Umacr","Ū"),O("umacr","ū"),O("uml","¨"),O("UnderBar","_"),O("UnderBrace","⏟"),O("UnderBracket","⎵"),O("UnderParenthesis","⏝"),O("Union","⋃"),O("UnionPlus","⊎"),O("Uogon","Ų"),O("uogon","ų"),O("Uopf","𝕌"),O("uopf","𝕦"),O("UpArrowBar","⤒"),O("uparrow","↑"),O("UpArrow","↑"),O("Uparrow","⇑"),O("UpArrowDownArrow","⇅"),O("updownarrow","↕"),O("UpDownArrow","↕"),O("Updownarrow","⇕"),O("UpEquilibrium","⥮"),O("upharpoonleft","↿"),O("upharpoonright","↾"),O("uplus","⊎"),O("UpperLeftArrow","↖"),O("UpperRightArrow","↗"),O("upsi","υ"),O("Upsi","ϒ"),O("upsih","ϒ"),O("Upsilon","Υ"),O("upsilon","υ"),O("UpTeeArrow","↥"),O("UpTee","⊥"),O("upuparrows","⇈"),O("urcorn","⌝"),O("urcorner","⌝"),O("urcrop","⌎"),O("Uring","Ů"),O("uring","ů"),O("urtri","◹"),O("Uscr","𝒰"),O("uscr","𝓊"),O("utdot","⋰"),O("Utilde","Ũ"),O("utilde","ũ"),O("utri","▵"),O("utrif","▴"),O("uuarr","⇈"),O("Uuml","Ü"),O("uuml","ü"),O("uwangle","⦧"),O("vangrt","⦜"),O("varepsilon","ϵ"),O("varkappa","ϰ"),O("varnothing","∅"),O("varphi","ϕ"),O("varpi","ϖ"),O("varpropto","∝"),O("varr","↕"),O("vArr","⇕"),O("varrho","ϱ"),O("varsigma","ς"),O("varsubsetneq","⊊︀"),O("varsubsetneqq","⫋︀"),O("varsupsetneq","⊋︀"),O("varsupsetneqq","⫌︀"),O("vartheta","ϑ"),O("vartriangleleft","⊲"),O("vartriangleright","⊳"),O("vBar","⫨"),O("Vbar","⫫"),O("vBarv","⫩"),O("Vcy","В"),O("vcy","в"),O("vdash","⊢"),O("vDash","⊨"),O("Vdash","⊩"),O("VDash","⊫"),O("Vdashl","⫦"),O("veebar","⊻"),O("vee","∨"),O("Vee","⋁"),O("veeeq","≚"),O("vellip","⋮"),O("verbar","|"),O("Verbar","‖"),O("vert","|"),O("Vert","‖"),O("VerticalBar","∣"),O("VerticalLine","|"),O("VerticalSeparator","❘"),O("VerticalTilde","≀"),O("VeryThinSpace"," "),O("Vfr","𝔙"),O("vfr","𝔳"),O("vltri","⊲"),O("vnsub","⊂⃒"),O("vnsup","⊃⃒"),O("Vopf","𝕍"),O("vopf","𝕧"),O("vprop","∝"),O("vrtri","⊳"),O("Vscr","𝒱"),O("vscr","𝓋"),O("vsubnE","⫋︀"),O("vsubne","⊊︀"),O("vsupnE","⫌︀"),O("vsupne","⊋︀"),O("Vvdash","⊪"),O("vzigzag","⦚"),O("Wcirc","Ŵ"),O("wcirc","ŵ"),O("wedbar","⩟"),O("wedge","∧"),O("Wedge","⋀"),O("wedgeq","≙"),O("weierp","℘"),O("Wfr","𝔚"),O("wfr","𝔴"),O("Wopf","𝕎"),O("wopf","𝕨"),O("wp","℘"),O("wr","≀"),O("wreath","≀"),O("Wscr","𝒲"),O("wscr","𝓌"),O("xcap","⋂"),O("xcirc","◯"),O("xcup","⋃"),O("xdtri","▽"),O("Xfr","𝔛"),O("xfr","𝔵"),O("xharr","⟷"),O("xhArr","⟺"),O("Xi","Ξ"),O("xi","ξ"),O("xlarr","⟵"),O("xlArr","⟸"),O("xmap","⟼"),O("xnis","⋻"),O("xodot","⨀"),O("Xopf","𝕏"),O("xopf","𝕩"),O("xoplus","⨁"),O("xotime","⨂"),O("xrarr","⟶"),O("xrArr","⟹"),O("Xscr","𝒳"),O("xscr","𝓍"),O("xsqcup","⨆"),O("xuplus","⨄"),O("xutri","△"),O("xvee","⋁"),O("xwedge","⋀"),O("Yacute","Ý"),O("yacute","ý"),O("YAcy","Я"),O("yacy","я"),O("Ycirc","Ŷ"),O("ycirc","ŷ"),O("Ycy","Ы"),O("ycy","ы"),O("yen","¥"),O("Yfr","𝔜"),O("yfr","𝔶"),O("YIcy","Ї"),O("yicy","ї"),O("Yopf","𝕐"),O("yopf","𝕪"),O("Yscr","𝒴"),O("yscr","𝓎"),O("YUcy","Ю"),O("yucy","ю"),O("yuml","ÿ"),O("Yuml","Ÿ"),O("Zacute","Ź"),O("zacute","ź"),O("Zcaron","Ž"),O("zcaron","ž"),O("Zcy","З"),O("zcy","з"),O("Zdot","Ż"),O("zdot","ż"),O("zeetrf","ℨ"),O("ZeroWidthSpace","​"),O("Zeta","Ζ"),O("zeta","ζ"),O("zfr","𝔷"),O("Zfr","ℨ"),O("ZHcy","Ж"),O("zhcy","ж"),O("zigrarr","⇝"),O("zopf","𝕫"),O("Zopf","ℤ"),O("Zscr","𝒵"),O("zscr","𝓏"),O("zwj","‍"),O("zwnj","‌")])),si=s($e,function(r){return s(Zt,"&"+r+";",s(Wu,r,fi))},Pe("[a-zA-Z]+")),bi=function(r){return I(0>r||r>1114111?"�":r>65535?String.fromCharCode(Math.floor((r-=65536)/1024)+55296,r%1024+56320):String.fromCharCode(r))},li=W,di=e(function(r,n,t){r:for(;;){if(!n.b)return Dn(t);var e=n.a,u=n.b;switch(e){case"0":r=a=r-1,n=i=u,t=c=t;continue r;case"1":var a=r-1,i=u,c=t+s(li,16,r);r=a,n=i,t=c;continue r;case"2":a=r-1,i=u,c=t+2*s(li,16,r),r=a,n=i,t=c;continue r;case"3":a=r-1,i=u,c=t+3*s(li,16,r),r=a,n=i,t=c;continue r;case"4":a=r-1,i=u,c=t+4*s(li,16,r),r=a,n=i,t=c;continue r;case"5":a=r-1,i=u,c=t+5*s(li,16,r),r=a,n=i,t=c;continue r;case"6":a=r-1,i=u,c=t+6*s(li,16,r),r=a,n=i,t=c;continue r;case"7":a=r-1,i=u,c=t+7*s(li,16,r),r=a,n=i,t=c;continue r;case"8":a=r-1,i=u,c=t+8*s(li,16,r),r=a,n=i,t=c;continue r;case"9":a=r-1,i=u,c=t+9*s(li,16,r),r=a,n=i,t=c;continue r;case"a":a=r-1,i=u,c=t+10*s(li,16,r),r=a,n=i,t=c;continue r;case"b":a=r-1,i=u,c=t+11*s(li,16,r),r=a,n=i,t=c;continue r;case"c":a=r-1,i=u,c=t+12*s(li,16,r),r=a,n=i,t=c;continue r;case"d":a=r-1,i=u,c=t+13*s(li,16,r),r=a,n=i,t=c;continue r;case"e":a=r-1,i=u,c=t+14*s(li,16,r),r=a,n=i,t=c;continue r;case"f":a=r-1,i=u,c=t+15*s(li,16,r),r=a,n=i,t=c;continue r;default:return An(fe(e)+" is not a valid hexadecimal character.")}}}),pi=function(r){return""===r},vi=t(function(r,n){return n.$?An(r(n.a)):Dn(n.a)}),gi=function(r){return r.b?Nn(r.b):Bn},hi=ar,mi=function(r){return b(hi,mn,j,r)},$i=s(ge,function(r){var n=function(r){if(pi(r))return An("Empty strings are not valid hexadecimal strings.");var n=function(){if(s(De,"-",r)){var n=s(Zt,j,gi(mi(r)));return s(ne,ee,b(di,zn(n)-1,n,0))}return b(di,ie(r)-1,mi(r),0)}();return s(vi,function(n){return s(In," ",X(['"'+r+'"',"is not a valid hexadecimal string because",n]))},n)}(vu(r));return n.$?da(n.a):Yu(n.a)},Pe("[0-9a-fA-F]+")),wi=(ni=Ge(X([s(Ae,$i,Pe("(x|X)")),s(Ae,va,Pe("0*"))])),s(Ae,s($e,s(qt,bi,fe),ni),Ce("#"))),yi=s(Ae,Ge(X([s(ye,Ce(";"),si),s(ye,Ce(";"),wi),Yu("&")])),Ce("&")),qi=function(r){return s(ye,Ce(r),s(Ae,s($e,Qe,Sa(Ge(X([s($e,s(qu,"\\"+r,r),Pe("([^"+r+"]*|\\\\"+r+"|\\\\)*")),yi])))),Ce(r)))},ki=s($e,Qe,Ta(Ge(X([Pe("[^\\s\"'=<>`&]+"),yi])))),xi=s(Ee,s(Ae,Ge(X([ki,qi('"'),qi("'")])),s(ye,ze,Ce("="))),Yu("")),Li=function(r){return s($e,oi(r),s(ye,ze,s(we,xi,s(ye,ze,s($e,s(qt,vu,te),Pe("[A-Za-z0-9_\\-]+"))))))},Ei=Pe("[\t ]*"),Ai=(ti=s(ge,Li,ra(s(qt,function(r){return r.b5},s(qt,function(r){return r.dO},Yu)))),s(ye,ci,s($e,Zt(j),Xe(s(Ae,je(ti),Ei))))),Si=t(function(r,n){return{$:1,a:r,b:n}}),Ti=s($e,Si,Ge(X([s(ou,"⟷",Ce("<--\x3e")),s(ou,"⟵",Ce("<--")),s(ou,"⟶",Ce("--\x3e")),s(ou,"↞",Ce("<<-")),s(ou,"↠",Ce("->>")),s(ou,"↔",Ce("<->")),s(ou,"↣",Ce(">->")),s(ou,"↢",Ce("<-<")),s(ou,"→",Ce("->")),s(ou,"←",Ce("<-")),s(ou,"↜",Ce("<~")),s(ou,"↝",Ce("~>")),s(ou,"⟺",Ce("<==>")),s(ou,"⟹",Ce("==>")),s(ou,"⟸",Ce("<==")),s(ou,"⇔",Ce("<=>")),s(ou,"⇒",Ce("=>")),s(ou,"⇐",Ce("<="))]))),Ri=t(function(r,n){return n.$?Bn:r(n.a)}),Di=t(function(r,n){return b(Ct,t(function(n,t){return r(n)?s(mn,n,t):t}),j,n)}),Ci=e(function(r,n,t){var e=r(n);return e.$?t:s(mn,e.a,t)}),Vi=t(function(r,n){return b(Ct,Ci(r),j,n)}),Ni=t(function(r,n){return z(n,s(Zt,"",s(Xt,Mn("#"),s(Ri,pu,gi(s(Hn,"#",r))))))}),Bi=function(r){var n=s(Zt,j,s(Xt,Hn("&"),s(Ri,pu,s(Xt,Hn("#"),s(Ri,pu,gi(s(Hn,"?",r)))))));return s(qt,Vi(function(r){var t=s(Di,De(r),n);return t.b?Nn(t.a):Bn}),s(qt,Je("&"),s(qt,Qe,s(qt,Mn("?"),s(qt,Ni(r),function(r){return"?"===r?"":r})))))},Mi=X(["autoplay","cc_lang_pref","color","disablekb","enablejsapi","end","fs","hl","iv_load_policy","list","listType","loop","modestbranding","mute","origin","playlist","playsinline","rel","start","widget_referrer"]),Oi=yu(X([{V:t(function(r,n){return"https://w.soundcloud.com/player/?url=https://soundcloud.com/"+n}),X:"https?:\\/\\/(?:w\\.|www\\.|)(?:soundcloud\\.com\\/)(?:(?:player\\/\\?url=https\\%3A\\/\\/api.soundcloud.com\\/tracks\\/)|)(((\\w|-)[^A-z]{7})|([A-Za-z0-9]+(?:[-_][A-Za-z0-9]+)*(?!\\/sets(?:\\/|$))(?:\\/[A-Za-z0-9]+(?:[-_][A-Za-z0-9]+)*){1,2}))"},{V:t(function(r,n){return"https://www.youtube.com/embed/"+(n+s(Bi,r,Mi))}),X:ku("music\\.(?:youtu\\.be/|youtube\\.com/(?:(?:watch)?\\?(?:.*&)?v(?:i)?=|(?:v|vi|user)/))([^\\?&\"'<> #]+)")}])),Ui=t(function(r,n){return{$:7,a:r,b:n}}),Ii=s($e,s(qt,s(qu,"\\`","`"),Ui),s(ye,Ce("`"),s(Ae,Pe("([^`\n\\\\]*|\\\\`|\\\\)+"),Ce("`")))),Hi=t(function(r,n){for(;;){var t=O(r,n);if(!t.a.b)return Fn(n);if(t.a.a.$||t.a.a.b.b||!t.b.b||t.b.a.$||t.b.a.b.b){var e=t.a;r=e.b,n=s(mn,e.a,n)}else{var u=t.a,a=t.b,i=a.b;r=u.b,n=s(mn,s(Xu,z(a.a.a,u.a.a),j),i)}}}),Pi=function(r){return s(Hi,r,j)},zi=t(function(r,n){return s(qt,s(He,Me({bZ:r,cI:n}),function(r){return r.aZ}),Tt)}),ji=s($e,Qe,s(Se,Ge(X([Pe("[^@\"'`</]+"),Pe("[ \t\n]+"),Ce("@'"),Ce("@"),Pe('"([^"]*|\\\\"|\\\\)*"'),Pe("'([^']*|\\\\'|\\\\)*'"),Pe("`([^`]*|\n|\\\\`|\\\\)*`"),Pe("<(?!/)"),Pe("//[^\n]*"),Ce("/")])),b(zi,!0,!1,"<\/script>"))),_i=function(){var r=s(ge,Li,ra(s(qt,function(r){return r.b5},s(qt,function(r){return r.dO},Yu))));return s(we,ji,s($e,te,s(ye,Ce(">"),s(Ae,Sa(s(Ae,r,ze)),b(zi,!0,!1,"<script")))))}(),Gi=t(function(r,n){var t=n.b;return O(r(n.a),t)}),Xi=function(r){return{$:1,a:r}},Zi=function(r){return b(Ct,du,j,r)},Fi=t(function(r,n){return Zi(s(Vt,r,n))}),Qi=Br(1/0),Ji=t(function(r,n){for(;;){if(!n.b)return Bn;var t=n.a,e=t.b,u=n.b;if(T(t.a,r))return Nn(e);r=r,n=u}}),Wi=function(r){return""===r||"1"===r||"true"===r},Ki=function(r){return s(qt,Ji(r),Xt(s(qt,sa,s(qt,vu,Wi))))},Yi=function(r){return s(qt,Ki(r),Zt(!1))},rc={$:0},nc={$:2},tc={$:3},ec={$:4},uc={$:5},ac={$:6},ic={$:7},cc={$:8},oc={$:9},fc={$:10},sc={$:11},bc={$:13},lc={$:14},dc={$:16},pc={$:17},vc={$:18},gc={$:19},hc={$:20},mc={$:21},$c=function(r){return!r},wc=s(qt,Ji("options"),s(qt,Xt(Hn("|")),s(qt,Zt(j),s(qt,Vt(sa),Di(s(qt,pi,$c)))))),yc=t(function(r,n){switch(n){case"button":return rc;case"checkbox":return{$:1,a:wc(r)};case"color":return nc;case"date":return tc;case"datetime-local":return ec;case"email":return uc;case"file":return ac;case"hidden":return ic;case"image":return cc;case"month":return oc;case"number":return fc;case"password":return sc;case"radio":return{$:12,a:wc(r)};case"range":return bc;case"search":return lc;case"select":return{$:15,a:wc(r)};case"submit":return rc;case"tel":return dc;case"textarea":return vc;case"time":return gc;case"url":return hc;case"week":return mc;default:return pc}}),qc=t(function(r,n){var t=O(n,r);if(!t.a.$)return t.a.a;if(1===t.b.$)return!1;switch(t.b.a.$){case 5:case 11:case 14:case 16:case 18:case 20:return!1;default:return!0}}),kc=function(r){var n=s(Zt,"",s(Ji,"value",r)),t=s(Xt,yc(r),s(Ji,"input",r)),e=s(Yi,"input-always-active",r);return{dF:!!e||s(Yi,"input-active",r),a6:e,d9:n,aD:t,dw:s(qc,t,s(Ki,"update-on-change",r)),aj:n}},xc=X(["calendar","datestyle","day","dayperiod","era","formatmatcher","fractionalseconddigits","hour","hour12","hourcycle","localematcher","minute","month","numberingsystem","second","timestyle","timezone","timezonename","weekday","year"]),Lc=X(["localematcher","type","localestyle"]),Ec=function(r){return s(qt,Ji("locale"),s(qt,Zt(r),te("locale")))},Ac=X(["compactdisplay","currency","currencydisplay","currencysign","localematcher","maximumfractiondigits","maximumsignificantdigits","minimumfractiondigits","minimumintegerdigits","minimumsignificantdigits","notation","numberingsystem","signdisplay","localestyle","unit","unitdisplay","usegrouping"]),Sc=X(["localematcher","type","minimumintegerdigits","minimumfractiondigits","maximumfractiondigits","minimumsignificantdigits","maximumsignificantdigits"]),Tc=X(["unit","localematcher","numeric","localestyle"]),Rc=t(function(r,n){for(;;){if(!n.b)return!1;var t=n.b;if(r(n.a))return!0;r=r,n=t}}),Dc=t(function(r,n){return s(Rc,function(n){return T(n,r)},n)}),Cc=t(function(r,n){return s(Dc,n.a,r)}),Vc=t(function(r,n){return s(qt,function(r){return Di(Cc(r))}(n),s(qt,mn(O("format",r)),Nn))}),Nc=t(function(r,n){return s(Xt,mn(s(Ec,r,n)),function(){var r=s(Xt,vu,s(Ji,"format",n));r:for(;!r.$;)switch(r.a){case"number":return b(Vc,"number",Ac,n);case"datetime":return b(Vc,"datetime",xc,n);case"relativetime":return b(Vc,"relativetime",Tc,n);case"list":return b(Vc,"list",Lc,n);case"pluralrules":return b(Vc,"pluralrules",Sc,n);default:break r}return Bn}())}),Bc=s(Zt,Ie,Oe("@input\\(`([^`]+)`\\)")),Mc=function(r){return s(qt,Ki(r),Zt(!0))},Oc=a(function(r,n,t,e,u){return s(fa,{a8:s(Yi,"block",t),b0:0,b7:!1,bd:n,eT:kc(t),aV:s(Vi,Tt,s(Fi,function(r){return r.fZ},s(Qi,Bc,e))),ct:s(Nc,r,t),cF:s(Mc,"modify",t),bz:s(Ji,"output",t),c1:s(Xt,Xi,s(Ji,"default",t)),c4:s(Yi,"run-once",t),c5:!1,bG:e,bQ:!1,dx:!1},u)}),Uc=s(qt,Ku,Vn(-1)),Ic=ra(s(qt,function(r){return r.ei},s(qt,function(r){return r.eU},s(qt,Uc,Yu)))),Hc=function(r){return s(we,Ic,s($e,te,s(ge,function(r){var n=r.a,t=r.b;return s(Ae,Yu(n),na(function(r){var e=r.ei;return H(r,{ei:H(e,{eU:d(Oc,r.b5.eW,s(Zt,0,pu(r.aR)),n,sa(t),e.eU)})})}))},s($e,Gi(function(n){return s(du,n,r)}),_i))))},Pc=s($e,Mn("mailto:"),s(Ae,Pe("[a-zA-Z0-9_.\\-]+@[a-zA-Z0-9_.\\-]+"),Xe(Ce("mailto:")))),zc=e(function(r,n,t){return{$:8,a:r,b:n,c:t}}),jc=s($e,zc("true"),s(Ae,uu(Ce("$$")),Ce("$$"))),_c=s($e,zc("false"),s(ye,Ce("$"),s(Ae,Pe("[^\\n$]+"),Ce("$")))),Gc=s(Ee,jc,_c),Xc=function(r){return s($e,function(n){return H(r,{dP:n})},ga)},Zc=function(r){return s($e,function(n){return H(r,{el:Nn(n)})},s(Ae,va,Pe("-[\t ]*")))},Fc=function(r){return s(Ae,Yu(H(r,{fy:!0})),s(Ee,Ce("!>"),Ce("|>")))},Qc=function(r){return s($e,function(n){return H(r,{gk:sa(n)})},s(Ae,Pe("([A-Za-z][A-Za-z0-9]+[ \t]*)+"),Ya))},Jc=function(r){return s(Ra,r,s(Ae,Ge(X([Zc(r),Xc(r),Fc(r),Qc(r)])),ze))},Wc=s(ge,function(r){return function(r){return!r.fy&&0>r.dP}(r)?da("no effect definition"):Yu(r)},s(ge,Jc,s(ge,Jc,s(ge,Jc,s(ge,Jc,s($e,function(r){return{dP:-1,w:j,el:Bn,eM:-1,fy:!1,gk:r}},ra(s(qt,function(r){return r.b5},s(qt,function(r){return r.fh},Yu))))))))),Kc=s(ye,na(function(r){return H(r,{bd:r.bd+1})}),ra(s(qt,function(r){return r.bd},Yu))),Yc=function(r){return s(we,Kc,s(ye,ui,s(we,s(Se,r,Ce("}")),s(ye,Ce("}{"),s($e,e(function(r,n,t){return H(r,{w:n,eM:t})}),s(Ae,Wc,Ce("{")))))))},ro=t(function(r,n){return{$:10,a:r,b:n}}),no=t(function(r,n){return{$:2,a:r,b:n}}),to=e(function(r,n,t){return b(zt,r,n,t)}),eo=function(r){var n=r.a,t=r.b;return na(function(r){return H(r,{cf:b(to,n,t,r.cf)})})},uo=function(r){var n=r.a,t=r.b;if(t.$)return Yu(ro(n));var e=t.a;return s(Ae,Yu(ro(n)),eo(O(n,X([s(no,j,e)]))))},ao=function(r){return s(ge,uo,s(we,Xe(s(we,ra(Yu),s($e,t(function(n,t){return s(r,t,n)}),s(Ae,uu(Ce(")")),Ce("("))))),s($e,te,s(Ae,uu(Ce("]")),Ce("[^")))))},io=function(r){return s($e,function(n){return s(gu,n,r)},ra(s(qt,function(r){return r.b5},s(qt,function(r){return r.dO},Yu))))},co=s(ge,io,Pe("[a-zA-Z]+://(/)?[a-zA-Z0-9\\.\\-\\_]+\\.([a-z\\.]{2,6})[^ \\]\\)\t\n]*")),oo=s($e,function(r){return Pu(b(Bu,X([s(Xu,r,j)]),r,Bn))},co),fo=function(r){return s(ge,r,Yu(0))},so=function(r){return s(qt,Se(r),ge(function(r){return r.b?Yu(r):da("not enough results")}))},bo=X(["key","width","height","autoplay","autolightsoff","loop","chapters","related","responsive","t"]),lo=X(["autopause","autoplay","background","byline","color","controls","dnt","keyboard","loop","muted","pip","playsinline","portrait","quality","speed","texttrack","title","transparent"]),po=yu(X([{V:t(function(r,n){return"https://www.youtube.com/embed/"+(n+s(Bi,r,Mi))}),X:ku("(?:youtu\\.be/|youtube\\.com/(?:(?:watch)?\\?(?:.*&)?v(?:i)?=|(?:v|vi|user)/))([^\\?&\"'<> #]+)")},{V:t(function(r,n){return"https://player.vimeo.com/video/"+(n+s(Bi,r,lo))}),X:ku("(?:player.)?(?:vimeo\\.com).*?(\\d+)")},{V:t(function(r,n){return"https://www.dailymotion.com/embed/video/"+n}),X:ku("(?:dailymotion\\.com(?:/embed)?/video/)(.+)")},{V:t(function(r,n){return"https://peertube.tv/videos/embed/"+n}),X:ku("(?:peertube\\.tv/videos/watch/)(.+)")},{V:t(function(r,n){return"https://www.teachertube.com/embed/video/"+n}),X:ku("(?:teachertube\\.com).*?(\\d+.*)")},{V:t(function(r,n){return"https://video.tu-freiberg.de/media/embed?key="+(n+s(Bi,r,bo))}),X:ku("(?:video\\.tu\\-freiberg\\.de/video/[^/]+/)(.+)")}])),vo=u(function(r,n,t,e){return b(r,n,t,e)}),go=s($e,function(r){return{$:1,a:r}},s(Ae,uu(Ce("</lia-keep>")),Ce("<lia-keep>"))),ho=e(function(r,n,t){return{$:0,a:r,b:n,c:t}}),mo=X(["area","base","br","col","embed","hr","img","input","link","meta","param","source","track","wbr"]),$o=s(ge,function(r){return"script"===r?da(""):Yu(r)},s($e,vu,Pe("\\w+(\\-\\w+)*"))),wo=s(qt,function(r){var n=s(ge,Li,ra(s(qt,function(r){return r.b5},s(qt,function(r){return r.dO},Yu))));return s(ge,function(n){var t=n.a,e=n.b;return function(r){return s(Dc,r,mo)}(t)?s(ye,Ce(">"),s(ye,ze,s(ye,Xe(Ce("/")),s(ye,ze,Yu(b(ho,t,e,j)))))):s(we,s(Se,s(ye,Pe("[\\n]*"),r),function(r){var n=s(ge,function(n){return T(vu(n),r)?Yu(0):da("closing tag does not match opening tag: "+r)},Pe("\\w+(\\-\\w+)*"));return s(ye,Pe("[ \\t\\n]*>"),s(Ae,n,Pe("[ \\t\\n]*</[ \\t]*")))}(t)),s(ye,Pe("[ \\t]*>[ \\t]*\\n*"),Yu(s(ho,t,e))))},s(we,Sa(n),s(ye,ze,s($e,te,s(Ae,$o,Pe("[ \\t]*<[ \\t]*"))))))},Ee(go)),yo=ra(s(qt,function(r){return r.da},Yu)),qo=Ge(X([co,s(we,Pe("#[^ \t\\)]+"),yo),s(ge,io,Pe('[^\\)\n "]*'))])),ko=s(Ee,co,s(we,Pe('[^\\)\n "]*'),s($e,Mn,ra(function(r){return Yu(r.b5.dO)})))),xo=s($e,Si,Ge(X([s(ou,"🙂",Ce(":-)")),s(ou,"😉",Ce(";-)")),s(ou,"😀",Ce(":-D")),s(ou,"😮",Ce(":-O")),s(ou,"🙁",Ce(":-(")),s(ou,"😐",Ce(":-|")),s(ou,"😕",Ce(":-/")),s(ou,"😕",Ce(":-\\")),s(ou,"😛",Ce(":-P")),s(ou,"😛",Ce(":-p")),s(ou,"😜",Ce(";-P")),s(ou,"😜",Ce(";-p")),s(ou,"😗",Ce(":-*")),s(ou,"😘",Ce(";-*")),s(ou,"😂",Ce(":')")),s(ou,"😢",Ce(":'(")),s(ou,"😭",Ce(":'[")),s(ou,"😠",Ce(":-[")),s(ou,"😷",Ce(":-#")),s(ou,"😷",Ce(":-X")),s(ou,"😖",Ce(":-§"))]))),Lo=s($e,Xu,Pe('[^\\[\\]\\(\\)@*+_~:;`\\^|{}\\\\\\n<>=$ "\\-]+')),Eo=s($e,Xu,Pe("[^\n*|<>+\\-]+")),Ao=s($e,Xu,Pe('[\\[\\]\\(\\)~:_;=${}\\-+"*]')),So=s($e,Xu,s(Ae,Pe("[@\\^*_+~`\\\\${}\\[\\]|#\\-]"),Ce("\\"))),To=s($e,Xu,Pe("[ \t]+")),Ro=t(function(r,n){return{$:14,a:r,b:n}}),Do=function(r){var n=Pi(r);return n.b&&!n.b.b?n.a:s(Ro,n,j)},Co=function(r){return s($e,s(qt,Pi,Do),s(Ae,s(so,rf(),Ce(r)),Ce(r)))},Vo=t(function(r,n){var t=b(_a,Yo(),r,b(qu,"\n"," ",n));return t.$?j:t.a.c}),No=e(function(r,n,t){return s(ye,Ce(")"),s(we,Zo(),s(we,t,s(ye,Ce("("),s($e,vo(r),n)))))});function Bo(){return s($e,Gu,Co("~~"))}function Mo(){return s($e,_u,Co("^"))}function Oo(){return s($e,ju,Co("~"))}function Uo(){return s($e,Nu,s(Ee,Co("*"),Co("_")))}function Io(){return s($e,Tu,s(Ee,Co("**"),Co("__")))}function Ho(){return s($e,Pu,Ge(X([Wo(),Po(),jo(),Jo(),Fo(),Xo(),Go(),Qo()])))}function Po(){return s(Ae,zo(),Ce("!?"))}function zo(){return s(ye,Ce(")"),s(we,Zo(),s(we,s($e,po,ko),s(ye,Ce("("),s($e,Ou,Ko())))))}function jo(){return s(Ae,_o(),Ce("?"))}function _o(){return s(ye,Ce(")"),s(we,Zo(),s(we,s($e,Oi,ko),s(ye,Ce("("),s($e,Su,Ko())))))}function Go(){return s(ye,Ce(")"),s(we,Zo(),s(we,qo,s(ye,Ce("("),s(ou,Hu,b(zi,!0,!1,"\\[\\w*qr-code\\w*]"))))))}function Xo(){return s(ye,Ce(")"),s(ye,Zo(),s(we,qo,s(ye,Ce("("),s(ye,Pe("\\w*]"),s(Ae,Ge(X([s(ou,Uu,b(zi,!0,!1,"lia")),s(ou,Iu,b(zi,!0,!1,"link"))])),b(zi,!0,!1,"\\[\\w*preview-")))))))}function Zo(){return Xe(s($e,Pi,s(ye,Ei,s(Ae,s(Se,rf(),Ce('"')),s(ye,Ce('"'),Ei)))))}function Fo(){return b(No,Mu,Ko(),Pc)}function Qo(){return b(No,Bu,Ko(),qo)}function Jo(){return s(Ae,b(No,Vu,Ko(),ko),Ce("!"))}function Wo(){return s(Ae,b(No,Du,Ko(),qo),Ce("??"))}function Ko(){return s($e,Pi,s(Ae,s(Se,rf(),Ce("]")),Ce("[")))}function Yo(){return s($e,Pi,Ta(rf()))}function rf(){return fo(function(){return s(Ae,s(Ee,s($e,function(r){return s(zu,r.b,r.a)},Hc(j)),s(we,s(Ae,Ai,Ya),Ge(X([Ii,ao(Vo),Ho(),Gc,s($e,Ru,Yc(rf())),nf()])))),Ya)})}function nf(){return fo(function(){return Ge(X([oo,Lo,Ti,xo,So,Io(),Uo(),Bo(),Oo(),Mo(),To,s($e,Cu,wo(rf())),Ao,Eo]))})}var tf=Bo();Bo=function(){return tf};var ef=Mo();Mo=function(){return ef};var uf=Oo();Oo=function(){return uf};var af=Uo();Uo=function(){return af};var cf=Io();Io=function(){return cf};var of=Ho();Ho=function(){return of};var ff=Po();Po=function(){return ff};var sf=zo();zo=function(){return sf};var bf=jo();jo=function(){return bf};var lf=_o();_o=function(){return lf};var df=Go();Go=function(){return df};var pf=Xo();Xo=function(){return pf};var vf=Zo();Zo=function(){return vf};var gf=Fo();Fo=function(){return gf};var hf=Qo();Qo=function(){return hf};var mf=Jo();Jo=function(){return mf};var $f=Wo();Wo=function(){return $f};var wf=Ko();Ko=function(){return wf};var yf=Yo();Yo=function(){return yf};var qf=rf();rf=function(){return qf};var kf=nf();nf=function(){return kf};var xf,Lf=t(function(r,n){var t=b(_a,yf,s(Le,Bn,r),b(qu,"\n"," ",n));return t.$?j:t.a.c}),Ef=function(r){return na(function(n){return H(n,{b5:r(n.b5)})})},Af=function(r){var n=r.a,t=r.b;switch(n){case"attribute":return Ef(function(r){return H(r,{dL:s(du,r.dL,X([s(Lf,r,t)]))})});case"author":return Ef(function(r){return H(r,{dM:t})});case"base":return Ef(function(r){return H(r,{dO:t})});case"comment":return Ef(function(r){var n=Ke(t);return s(lu,O("comment",n),H(r,{d$:s(Lf,r,n)}))});case"dark":return Ef(function(r){return H(r,{e0:function(){switch(vu(t)){case"true":return Nn(!1);case"false":return Nn(!0);default:return Bn}}()})});case"date":return Ef(function(r){return H(r,{d5:t})});case"email":return Ef(function(r){return H(r,{ek:t})});case"import":return Ef(Eu(t));case"language":return Ef(function(r){return H(r,{eW:t})});case"link":return Ef(s(mu,su,t));case"logo":return Ef(function(r){return H(r,{e4:s(gu,r.dO,t)})});case"narrator":return Ef(function(r){return H(r,{fh:t})});case"script":return Ef(s(mu,bu,t));case"translation":return Ef(Au(t));case"version":return Ef(function(r){return H(r,{gi:t})});case"mode":return Ef(function(r){return H(r,{fd:function(){switch(vu(t)){case"textbook":return Nn(2);case"presentation":return Nn(1);case"slides":return Nn(0);default:return Bn}}()})});case"debug":return Ef(function(r){return H(r,{d6:"true"===t})});case"onload":return Ef(function(r){return H(r,{fs:t})});case"icon":return Ef(function(r){return H(r,{e5:b(zt,"icon",s(gu,r.dO,t),r.e5)})});default:return Ef(lu(O(n,t)))}},Sf=Ge(X([fu(s(ye,au,Pe("@@@.*\n"))),fu(s(ye,Ye,Pe("@@.*\n"))),s(ge,Af,cu)])),Tf=fo(function(){return fu(je(s(ye,ze,Ta(s(Ae,Sf,ze)))))}),Rf=fu(s(ye,ze,Xe(s(Ae,na(function(r){return H(r,{ea:!0})}),Tf)))),Df=e(function(r,n,t){r:for(;;){if(r>0){if(n.b){var e=n.a;r-=1,n=n.b,t=s(mn,e,t);continue r}return t}return t}}),Cf=t(function(r,n){return Fn(b(Df,r,n,j))}),Vf=e(function(r,n,t){if(n>0){var e=O(n,t);r:for(;;){n:for(;;){if(!e.b.b)return t;if(!e.b.b.b){if(1===e.a)break r;break n}switch(e.a){case 1:break r;case 2:var u=e.b;return X([u.a,u.b.a]);case 3:if(e.b.b.b.b){var a=e.b,i=a.b;return X([a.a,i.a,i.b.a])}break n;default:if(e.b.b.b.b&&e.b.b.b.b.b){var c=e.b,o=c.b,f=o.b,l=f.b,d=l.b;return s(mn,c.a,s(mn,o.a,s(mn,f.a,s(mn,l.a,r>1e3?s(Cf,n-4,d):b(Vf,r+1,n-4,d)))))}break n}}return t}return X([e.b.a])}return j}),Nf=t(function(r,n){return b(Vf,0,r,n)}),Bf=t(function(r,n){return"\n> I was trying to parse the **first** part of the course, which is either an\n> HTML-comment or something else, until I reach the header (which is marked by\n> an `#`). But, everything I got was the following:\n\n```\n"+Qe(s(Je,"\n",s(Nf,15,Aa(r))))+"\n...\n```\n\n> I might be wrong, but in most cases this refers to a falsely loaded HTML page!\n>\n> Please make sure, that the course you try to load is a Markdown file, which\n> is served as a plain text file...\n\n---\n\n**Error Message:**\n\n```\n"+n+"\n```\n\n---\n\nIf it should work, and you think you have detected bug, please contact us. For\nmore information see the [last Section](#get-help?).\n"}),Mf=t(function(r,n){var t=b(_a,s(ye,s(Ee,Ce("#"),uu(Pe("\n#"))),Rf),s(Le,Bn,ue(r)),n+"\n");if(t.$){var e=t.a,u=e.b,a=e.c;return An(""===sa(n)?'> The file you want me to load does not contain any content. Everything I see is only an empty string...\n    \nIf you see this in message in an editor, try to copy and paste the following code:\n\n```` md\n\x3c!--\nauthor:   Your Name\n\nemail:    your@mail.org\n\nversion:  0.0.1\n\nlanguage: en\n\nnarrator: US English Female\n\ncomment:  Try to write a short comment about\n          your course, multiline is also okay.\n--\x3e\n\n# Course Main Title\n\nThis is your **course** initialization stub.\n\nPlease see the [Docs](https://LiaScript.github.io/course/?https://raw.githubusercontent.com/liaScript/docs/master/README.md)\nto find out what is possible in [LiaScript](https://LiaScript.github.io).\n\nIf you want to use instant help in your Atom IDE, please type **lia** to see all available shortcuts.\n\n## Markdown\n\nYou can use common [Markdown](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet) syntax to create your course, such as:\n\n1. Lists\n2. ordered or\n\n   * unordered\n   * ones ...\n\n\n| Header 1   | Header 2   |\n| :--------- | :--------- |\n| Item 1     | Item 2     |\n\n\nImages:\n\n![images](https://farm2.static.flickr.com/1618/26701766821_7bea494826.jpg)\n\n\n### Extensions\n\n     --{{0}}--\nBut you can also include other features such as spoken text.\n\n      --{{1}}--\nInsert any kind of audio file:\n\n       {{1}}\n?[audio](https://bigsoundbank.com/UPLOAD/mp3/1068.mp3)\n\n\n     --{{2}}--\nEven videos or change the language completely.\n\n       {{2-3}}\n!?[video](https://www.youtube.com/watch?v=bICfKRyKTwE)\n\n\n      --{{3 Russian Female}}--\nПервоначально создан в 2004 году Джоном Грубером (англ. John Gruber) и Аароном\nШварцем. Многие идеи языка были позаимствованы из существующих соглашений по\nразметке текста в электронных письмах...\n\n\n    {{3}}\nType "voice" to see a list of all available languages.\n\n\n### Styling\n\n\x3c!-- class = "animated rollIn" style = "animation-delay: 2s; color: purple" --\x3e\nThe whole text-block should appear in purple color and with a wobbling effect.\nWhich is a **bad** example, please use it with caution ...\n~~ only this is red ;-) ~~ \x3c!-- class = "animated infinite bounce" style = "color: red;" --\x3e\n\n## Charts\n\nUse ASCII-Art to draw diagrams:\n\n                                    Multiline\n    1.9 |    DOTS\n        |                 ***\n      y |               *     *\n      - | r r r r r r r*r r r r*r r r r r r r\n      a |             *         *\n      x |            *           *\n      i | B B B B B * B B B B B B * B B B B B\n      s |         *                 *\n        | *  * *                       * *  *\n     -1 +------------------------------------\n        0              x-axis               1\n\n## Quizzes\n\n### A Textquiz\n\nWhat did the **fish** say when he hit a **concrete wall**?\n\n    [[dam]]\n\n### Multiple Choice\n\nJust add as many points as you wish:\n\n    [[X]] Only the **X** marks the correct point.\n    [[ ]] Empty ones are wrong.\n    [[X]] ...\n\n### Single Choice\n\nJust add as many points as you wish:\n\n    [( )] ...\n    [(X)] <-- Only the **X** is allowed.\n    [( )] ...\n\n\n## Executable Code\n\nYou can make your code executable and define projects:\n\n``` js     -EvalScript.js\nlet who = data.first_name + " " + data.last_name;\n\nif(data.online) {\n  who + " is online"; }\nelse {\n  who + " is NOT online"; }\n```\n``` json    +Data.json\n{\n  "first_name" :  "Sammy",\n  "last_name"  :  "Shark",\n  "online"     :  true\n}\n```\n<script>\n  // insert the JSON dataset into the local variable data\n  let data = @input(1);\n\n  // eval the script that uses this dataset\n  eval(`@input(0)`);\n<\/script>\n\n\n## More\n\nFind out what you also can do ...\n\nhttps://LiaScript.github.io/course/?https://raw.githubusercontent.com/liaScript/docs/master/README.md\n````\n':s(Bf,n,s(de,a,u)))}var i=t.a;return Dn(O(i.a.b5,"#"+i.b.eT))}),Of=t(function(r,n){return n.$?r:n.a}),Uf=t(function(r,n){return{bT:Bn,d3:Bn,b8:"dreamweaver",ce:100,cl:r,eR:!1,eV:"default",aX:!0,fd:n,dg:!0,dh:!1,dm:!1,f2:!0,f9:"default",ds:!1,du:!1}}),If=b(qu,"?","\\?",b(qu,".","\\.","https://api.allorigins.win/raw?url=")),Hf=s(qt,yu(X([{V:t(function(r,n){return"https://github.com/"+function(){var r=s(Hn,"/",n);if(r.b&&r.b.b&&r.b.b.b){if("blob"===r.b.b.a&&r.b.b.b.b){var t=r.b;return r.a+"/"+t.a+"/tree/"+t.b.b.a}var e=r.b;return r.a+"/"+e.a+"/tree/"+e.b.a}return n}()}),X:ku("raw.githubusercontent\\.com/(.*)")},{V:t(function(r,n){return"https://gitlab.com/"+b(qu,"-/raw/","-/tree/",n)}),X:ku(If+"https://gitlab\\.com/(.*)")},{V:t(function(r,n){var t=s(Vt,Hn("."),s(Hn,"/",n));return t.b&&t.a.b&&t.a.b.b&&"gitlab"===t.a.b.a&&t.a.b.b.b&&"io"===t.a.b.b.a&&!t.a.b.b.b.b&&t.b.b&&t.b.a.b&&!t.b.a.b.b?"https://gitlab.com/"+t.a.a+"/"+t.b.a.a:"https://"+n}),X:ku("(.*\\.gitlab\\.io/.*)")},{V:t(function(r,n){return"https://dropbox.com/s/"+n}),X:ku("dl\\.dropbox\\.com/s/(.*)")}])),function(r){return r.a?Nn(b(qu,"https://api.allorigins.win/raw?url=","",r.b)):Bn}),Pf=pr,zf=qr,jf=dr,_f=$r,Gf=wr,Xf=yr,Zf=function(r){return{$:0,a:r}},Ff=vr,Qf=function(r){switch(r){case"Textbook":return Zf(2);case"Presentation":return Zf(1);case"Slides":return Zf(0);default:return{$:1,a:"unknown presentation mode"}}},Jf=function(r){return zf(b(Gf,ut,s(_f,Zt(!1),{$:11,g:X([s(_f,Nn,s($t,"tooltips",Pf)),Zf(Bn)])}),h(Xf,function(r){return function(n){return function(t){return function(e){return function(u){return function(a){return function(i){return function(c){return function(o){return function(f){return H(r,{b8:a,ce:i,eV:o,aX:u,fd:t,dg:c,f2:n,f9:e,ds:f})}}}}}}}}}}(r),s($t,"table_of_contents",Pf),s(mt,Qf,s($t,"mode",Ff)),s($t,"theme",Ff),s($t,"light",Pf),s($t,"editor",Ff),s($t,"font_size",jf),s($t,"sound",Pf),s($t,"lang",Ff))))},Wf=c(function(r,n,t,e,u,a,i){var c=s(Uf,r,1);return{bV:i,eb:ue(e),em:Bn,cr:"",cw:"en",cx:"en",e9:Ot,cE:Bn,fv:a,fB:u,cY:Hf(u),c0:j,da:Tt,fM:0,bH:nt,dc:H(s(Of,c,s(Jf,c,t)),{f2:n}),gb:"Lia",dr:j,gd:12,gg:e}}),Kf=function(r){return{$:2,m:r}},Yf=Kf(j),rs=(xf=function(r){var n=r.b;return s(Rt,Tt,X([St(r.a),Et(n)]))},fn("output"),Wr.output={e:sn,u:xf,a:function(r){var n=[],t=Wr[r].u,u=Qr(0);return Wr[r].b=u,Wr[r].c=e(function(r,e){for(;e.b;e=e.b)for(var a=n,i=Rr(t(e.a)),c=0;a.length>c;c++)a[c](i);return u}),{subscribe:function(r){n.push(r)},unsubscribe:function(r){var t=(n=n.slice()).indexOf(r);0>t||n.splice(t,1)}}}},tn("output")),ns=function(r,n){return fn("input"),Wr.input={f:bn,u:n,a:ln},tn("input")}(0,{$:3,b:Ff}),ts=t(function(r,n){return{$:2,a:r,b:n}}),es=t(function(r,n){return{$:4,a:4===r.$?s(du,r.a,X([n])):X([n])}}),us=t(function(r,n){return b(kt,zt,n,r)}),as=t(function(r,n){return H(r,{dL:s(du,r.dL,n.dL),e5:s(us,r.e5,n.e5),fs:sa(r.fs+"\n"+n.fs),fF:s(du,r.fF,n.fF)})}),is=e(function(r,n,t){return{fa:t,db:n,gc:r}}),cs=t(function(r,n){var t=s(Di,function(n){return!s(Dc,n,r)},n);return O(s(du,r,t),s(Vt,function(r){return b(is,"resource",0,s(Rt,Et,X(1===r.$?["script",r.a]:["link",r.a])))},t))}),os=t(function(r,n){var t=s(cs,n.c0,r.fF),e=t.a,u=t.b;return H(n,{eb:s(as,n.eb,r),c0:e,dr:s(du,n.dr,Fn(u))})}),fs=t(function(r,n){var t=s(Mf,r.gg,n);return t.$?r:s(os,t.a.a,r)}),ss=function(r){return s(qt,Mn("Error ("+r+") -> "),s(qt,te(!1),rs))},bs=function(r){switch(vu(r)){case"ar":return Nn(0);case"bg":return Nn(1);case"de":return Nn(2);case"es":return Nn(3);case"fa":return Nn(4);case"hy":return Nn(5);case"ko":return Nn(6);case"nl":return Nn(7);case"ru":return Nn(8);case"tw":return Nn(9);case"ua":return Nn(10);case"zh":return Nn(11);case"en":return Nn(12);default:return Bn}},ls=t(function(r,n){var t=s(Mf,r.fv,n);if(t.$)return U(H(r,{em:Nn(t.a)}),Bn,j);var e=t.a,u=e.a,a=e.b,i=r.dc;return U(s(os,u,H(r,{eb:H(u,{dL:j}),cw:u.eW,cx:u.eW,dc:H(i,{d3:s(Wu,"custom",u.e5),aX:s(Zt,i.aX,u.e0),fd:s(Zt,i.fd,u.fd)}),gd:s(Zt,12,bs(u.eW))})),Nn(a),u.aU)}),ds={$:1},ps=function(r){return{$:3,a:r}},vs=t(function(r,n){return{$:3,a:r,b:n}}),gs=function(r){return{$:0,a:r}},hs=t(function(r,n){return{$:4,a:r,b:n}}),ms={$:2},$s=function(r){return{$:1,a:r}},ws=function(r){return{$:0,a:r}},ys={$:1},qs=function(r){return!r.$},ks=nn,xs=function(r){if(-1===r.$&&-1===r.d.$&&-1===r.e.$){if(-1!==r.e.d.$||r.e.d.a){var n=r.d,t=r.e;return i=t.b,c=t.c,e=t.d,s=t.e,d(Ut,1,r.b,r.c,d(Ut,0,n.b,n.c,n.d,n.e),d(Ut,0,i,c,e,s))}var e,u=r.d,a=r.e,i=a.b,c=a.c,o=(e=a.d).d,f=e.e,s=a.e;return d(Ut,0,e.b,e.c,d(Ut,1,r.b,r.c,d(Ut,0,u.b,u.c,u.d,u.e),o),d(Ut,1,i,c,f,s))}return r},Ls=function(r){if(-1===r.$&&-1===r.d.$&&-1===r.e.$){if(-1!==r.d.d.$||r.d.d.a){var n=r.d,t=r.e;return f=t.b,s=t.c,b=t.d,l=t.e,d(Ut,1,e=r.b,u=r.c,d(Ut,0,n.b,n.c,n.d,c=n.e),d(Ut,0,f,s,b,l))}var e=r.b,u=r.c,a=r.d,i=a.d,c=a.e,o=r.e,f=o.b,s=o.c,b=o.d,l=o.e;return d(Ut,0,a.b,a.c,d(Ut,1,i.b,i.c,i.d,i.e),d(Ut,1,e,u,c,d(Ut,0,f,s,b,l)))}return r},Es=c(function(r,n,t,e,u,a,i){if(-1!==a.$||a.a){r:for(;;){if(-1===i.$&&1===i.a){if(-1===i.d.$){if(1===i.d.a)return Ls(n);break r}return Ls(n)}break r}return n}return d(Ut,t,a.b,a.c,a.d,d(Ut,0,e,u,a.e,i))}),As=function(r){if(-1===r.$&&-1===r.d.$){var n=r.a,t=r.b,e=r.c,u=r.d,a=u.d,i=r.e;if(1===u.a){if(-1!==a.$||a.a){var c=xs(r);if(-1===c.$){var o=c.e;return d(It,c.a,c.b,c.c,As(c.d),o)}return Mt}return d(Ut,n,t,e,As(u),i)}return d(Ut,n,t,e,As(u),i)}return Mt},Ss=t(function(r,n){if(-2===n.$)return Mt;var t=n.a,e=n.b,u=n.c,a=n.d,i=n.e;if(0>V(r,e)){if(-1===a.$&&1===a.a){var c=a.d;if(-1!==c.$||c.a){var o=xs(n);if(-1===o.$){var f=o.e;return d(It,o.a,o.b,o.c,s(Ss,r,o.d),f)}return Mt}return d(Ut,t,e,u,s(Ss,r,a),i)}return d(Ut,t,e,u,s(Ss,r,a),i)}return s(Ts,r,v(Es,r,n,t,e,u,a,i))}),Ts=t(function(r,n){if(-1===n.$){var t=n.a,e=n.b,u=n.c,a=n.d,i=n.e;if(T(r,e)){var c=function(r){for(;;){if(-1!==r.$||-1!==r.d.$)return r;r=r.d}}(i);return-1===c.$?d(It,t,c.b,c.c,a,As(i)):Mt}return d(It,t,e,u,a,s(Ss,r,i))}return Mt}),Rs=t(function(r,n){var t=s(Ss,r,n);return-1!==t.$||t.a?t:d(Ut,1,t.b,t.c,t.d,t.e)}),Ds=e(function(r,n,t){var e=n(s(Wu,r,t));return e.$?s(Rs,r,t):b(zt,r,e.a,t)}),Cs=t(function(r,n){return b(vn,"",Tt,s(qt,n,r))}),Vs=function(r){return{$:4,a:r}},Ns={$:2},Bs={$:1},Ms=t(function(r,n){switch(n.$){case 0:return An({$:0,a:n.a});case 1:return An(Bs);case 2:return An(Ns);case 3:return An({$:3,a:n.a.fW});default:return s(vi,Vs,r(n.b))}}),Os={$:0},Us=function(r){return{$:1,a:r}},Is=t(function(r,n){return{cZ:r,dl:n}}),Hs=Or,Ps=Hs(s(Is,Ot,j)),zs=Ir,js=function(r){return Ur(function(n){var t=r.f;2===t.$&&t.c&&t.c(),r.f=null,n(Or(M))})},_s=rn,Gs=zr,Xs=e(function(r,n,t){r:for(;;){if(n.b){var e=n.a,u=n.b;if(e.$){var a=e.a;return s(zs,function(n){var e=a.dt;return b(Xs,r,u,1===e.$?t:b(zt,e.a,n,t))},Gs(b(dn,r,_s(r),a)))}var i=e.a,c=s(Wu,i,t);if(1===c.$){r=r,n=u,t=t;continue r}return s(zs,function(){return b(Xs,r,u,s(Rs,i,t))},js(c.a))}return Hs(t)}}),Zs=u(function(r,n,t,e){return s(zs,function(r){return Hs(s(Is,r,t))},b(Xs,r,n,e.cZ))}),Fs=u(function(r,n,t,e){var u=e.b;return T(n,e.a)?Nn(s(_s,r,u(t))):Bn}),Qs=e(function(r,n,t){return s(zs,function(n){return s(zs,function(t){return Hs(s(r,n,t))},t)},n)}),Js=function(r){return b(Ct,Qs(mn),Hs(j),r)},Ws=e(function(r,n,t){return s(zs,function(){return Hs(t)},Js(s(Vi,b(Fs,r,n.a,n.b),t.dl)))}),Ks=t(function(r,n){if(n.$){var t=n.a;return Us({dI:t.dI,dR:t.dR,er:s(gn,r,t.er),eF:t.eF,fb:t.fb,ga:t.ga,dt:t.dt,gg:t.gg})}return{$:0,a:n.a}}),Ys=t(function(r,n){return{$:0,a:r,b:n}});Wr.Http=Kr(Ps,Zs,Ws,Ks,t(function(r,n){return s(Ys,n.a,s(qt,n.b,r))}));var rb=tn("Http"),nb=(tn("Http"),function(r){return function(r){return rb(Us({dI:!1,dR:r.dR,er:r.er,eF:r.eF,fb:r.fb,ga:r.ga,dt:r.dt,gg:r.gg}))}({dR:Os,er:r.er,eF:j,fb:"GET",ga:Bn,dt:Bn,gg:r.gg})}),tb=t(function(r,n){return nb({er:(t=r,s(Cs,t,Ms(Dn))),gg:n});var t}),eb=Hs(0),ub=t(function(r,n){return s(zs,function(n){return Hs(r(n))},n)}),ab=t(function(r,n){var t=n;return zr(s(zs,_s(r),t))});Wr.Task=Kr(eb,e(function(r,n){return s(ub,function(){return 0},Js(s(Vt,ab(r),n)))}),e(function(){return Hs(0)}),t(function(r,n){return s(ub,r,n)}));var ib,cb=tn("Task"),ob=t(function(r,n){return cb(s(ub,r,n))}),fb=Qr,sb=function(r){return s(ob,Tt,s(zs,pe(Hs(r)),fb(0)))},bb=u(function(r,n,t,e){var u=O(t,e);if(u.a.$)return O(H(r,{fV:s(es,r.fV,s(Zt,"",n.em))}),Yf);if(u.b.b){var a=u.b;return O(H(r,{dX:Nn(u.a.a),e$:n,fV:s(ts,!0,zn(a))}),Kf(s(mn,sb(ds),s(Vt,tb(ps),e))))}return O(H(r,{dX:Nn(u.a.a),e$:n,fV:s(ts,!0,0)}),sb(ds))}),lb=t(function(r,n){var t=s(ls,n.e$,b(qu,"\r","",r));return l(bb,n,t.a,t.b,t.c)}),db=function(r){switch(r.$){case 0:return"Bad Url "+r.a;case 1:return"Network timeout";case 3:return"Bad status "+Un(r.a);case 2:return"Network error";default:return"Bad body "+r.a}},pb=K,vb=s(qt,function(r){return r.bH},Ku),gb=t(function(r,n){return{dR:j,dX:n.dX,am:qe,eb:Bn,ei:ke,em:Bn,bk:Bn,cf:xe,bm:nt,eM:r,eO:n.eO,fw:!1,bC:nt,bM:nt,bN:nt,bP:nt,gb:n.gb,dA:!0}}),hb=e(function(r,n,t){return{dX:t,eO:r,gb:n}}),mb=s(qt,ce,function(r){return r.dZ}),$b=s($e,Qe,Sa(Ge(X([Pe("(?:[^#`<]+|[\\x0D\n]+|\x3c!--[\\S\\s]{0,1000}?--\x3e)"),Pe("(`{3,})[\\S\\s]*?\\1"),Pe("`.+?`"),Pe("(?:<([\\w+\\-]+)[\\S\\s]*?</\\1>|`|<)"),Pe("#+(\\w|[^\\u0000-\\u007F]|[ \t]*\n)"),s(Ae,Ce("#"),(ib=function(r){return r?Yu(0):da("")},t(function(r,n){return b(ve,ib(mb(n)),r,n)})))])))),wb=Ce("\n"),yb=s(ye,wb,yf),qb=s(ye,ai,s($e,ie,Pe("#+"))),kb=s(we,$b,s(we,yb,s($e,hb,qb))),xb=t(function(r,n){var t=b(_a,kb,s(Le,Bn,r),n);if(t.$){var e=t.a;return An(s(de,e.c,e.b))}var u=t.a;return Dn(O(u.c,u.b.eT))}),Lb=t(function(r,n){var t=s(xb,r.eb,n);if(t.$)return O(H(r,{em:Nn(t.a)}),Bn);var e=t.a,u=e.a,a=e.b;return O(H(r,{bH:s(fa,s(gb,vb(r),u),r.bH)}),pi(a)?Bn:Nn(a))}),Eb=k,Ab=e(function(r,n,e){var u=e.c,a=e.d,i=t(function(n,t){return b(Eb,n.$?r:i,t,n.a)});return b(Eb,r,b(Eb,i,n,u),a)}),Sb=t(function(r,n){return Tr(b(Ab,Cr(r),[],n))}),Tb=e(function(r,n,t){for(;;){var e=s(aa,ea&n>>>r,t);if(e.$)return s(aa,ea&n,e.a);r-=rt,n=n,t=e.a}}),Rb=function(r){return r>>>5<<5},Db=t(function(r,n){var t=n.a,e=n.b,u=n.c,a=n.d;return 0>r||V(r,t)>-1?Bn:V(r,Rb(t))>-1?Nn(s(aa,ea&r,a)):Nn(b(Tb,e,r,u))}),Cb=function(r){switch(r){case 0:return"ar";case 1:return"bg";case 2:return"de";case 3:return"es";case 4:return"fa";case 5:return"hy";case 6:return"ko";case 7:return"nl";case 8:return"ru";case 9:return"tw";case 10:return"ua";case 11:return"zh";default:return"en"}},Vb=t(function(r,n){var t=r.el;if(1===t.$)return 1>V(r.dP,n);var e=t.a;return 1>V(r.dP,n)&&V(e,n)>0}),Nb=t(function(r,n){return s(Zt,!0,s(Xt,Vb(n),r))}),Bb=function(r){return 1===r.$?Nn(r.a):Bn},Mb=e(function(r,n,t){r:for(;;){n:for(;;)switch(t.$){case 0:return t.a;case 2:case 3:case 4:case 5:case 6:r=r,n=n,t=t.a;continue r;case 7:return t.a;case 8:return t.b;case 9:return b(Ob,r,n,t.a);case 13:if(t.a.$)break n;return b(Ub,r,n,t.a.c);case 14:return b(Ub,r,n,t.a);case 11:var e=t.a;return s(Nb,n,e)?b(Ub,r,n,e.w):"";case 12:return s(Zt,"",s(Ri,Bb,s(Ri,function(r){return r.c1},s(Db,t.a,r))));default:break n}return""}}),Ob=e(function(r,n,t){switch(t.$){case 4:case 2:case 3:case 0:case 1:case 5:return b(Ub,r,n,t.a);case 6:return"preview-lia";case 7:return"preview-link";default:return"qr-code"}}),Ub=t(function(r,n){return s(qt,Vt(s(Mb,r,n)),Qe)}),Ib=s(Ub,nt,Bn),Hb=t(function(r,n){return Lt(X([O("title",Yt(s(Zt,X([s(Xu,n.gb,j)]),s(Xt,function(r){return r.gb},s(Db,0,n.bH))))),O("str_title",Et((t=n.bH,sa(s(Zt,"Lia",s(Xt,Ib,s(Xt,function(r){return r.gb},s(Db,0,t)))))))),O("definition",re(n.eb)),O("comment",Et(Ib(n.eb.d$))),O("readme",Et(n.fB)),O("url",Et(n.gg)),O("origin",Et(n.fv)),O("sections",s(Sb,r,n.bH)),O("section_active",Gt(n.fM)),O("version",Gt(s(Zt,0,la(s(Zt,"0",pu(s(Hn,".",n.eb.gi))))))),O("translation",Et(Cb(n.gd)))]));var t}),Pb=Hb(function(r){return Lt(X([O("title",Yt(r.gb)),O("code",Et(r.dX)),O("indentation",Gt(r.eO))]))}),zb=t(function(r,n){if(n.$)return O("InnerHtml",Et(n.a));var t=n.b,e=n.c;return O("Node",Lt(X([O("tag",Et(n.a)),O("a",Bt(t)),O("content",s(Rt,r,e))])))}),jb=function(r){return Lt(X(r.$?r.b.b&&!r.b.b.b?[O("Select",Gt(r.b.a))]:[O("Select",Gt(-1))]:[O("Text",Et(r.a))]))},_b=function(r){return Lt(X(r.$?[O("MultipleChoice",s(Rt,St,r.a))]:[O("SingleChoice",s(Rt,St,r.a))]))},Gb=function(r){return Lt(X([O("Matrix",s(Sb,_b,r))]))},Xb=function(r){return Lt(X([function(){var n=r.fA;switch(n.$){case 0:return O("Generic",Nt);case 1:return function(r){return O(r.df.$?"Select":"Text",Lt(X([O("options",s(Rt,Yt,r.fu)),O("solution",jb(r.df))])))}(n.a);case 2:return function(r){return O(r.df.$?"MultipleChoice":"SingleChoice",Lt(X([O("options",s(Rt,Yt,r.fu)),O("solution",_b(r.df))])))}(n.a);default:return function(r){return O("Matrix",Lt(X([O("headers",s(Rt,Yt,r.eF)),O("options",s(Rt,Yt,r.fu)),O("solution",Gb(r.df))])))}(n.a)}}(),O("id",Gt(r.eM)),O("hints",s(Rt,Yt,r.eL))]))},Zb=t(function(r,n){return O(n.a,r(n.b))}),Fb=function(r){return Lt(X([O("id",Gt(r.eM)),function(){var n=r.f0;switch(n.$){case 0:return O("Text",Gt(n.a));case 1:return O("Select",s(Rt,Yt,n.a));case 2:var t=n.b;return O("Vector",Lt(X([O("bool",St(n.a)),O("options",Lt(s(Vt,Zb(Yt),t)))])));default:var e=n.b,u=n.c,a=n.d;return O("Matrix",Lt(X([O("bool",St(n.a)),O("cols",s(Rt,Yt,e)),O("ids",s(Rt,Et,u)),O("rows",s(Rt,Yt,a))])))}}()]))},Qb=function(r){return Lt(X([O("cell",Yt(r.b)),O("a",Nt)]))},Jb=function(r){return Lt(X([O("class",Et(function(){switch(r.dW){case 0:return"none";case 1:return"lineplot";case 2:return"scatterplot";case 3:return"barchart";case 4:return"piechart";case 5:return"heatmap";case 6:return"radar";case 7:return"parallel";case 8:return"sankey";case 9:return"boxplot";case 10:return"graph";case 11:return"map";default:return"funnel"}}())),O("head",s(Rt,Qb,r.eE)),O("format",s(Rt,Et,r.ey)),O("body",s(Rt,Rt(Qb),r.dR)),O("id",Gt(r.eM))]))},Wb=function(r){return r.b?mn(O("a",Bt(r))):Tt},Kb=function(r){return Lt(function(){switch(r.$){case 2:return s(Wb,r.a,X([O("Paragraph",Yt(r.b))]));case 0:return s(Wb,r.a,X([O("HLine",Nt)]));case 1:var n=r.b;return s(Wb,r.a,X([O("Quote",rl()(n))]));case 3:var t=r.b;return s(Wb,r.a,X([O("BulletList",s(Rt,rl(),t))]));case 4:return s(Wb,r.a,X([O("OrderedList",s(Rt,Yb,r.b))]));case 15:var e=r.b,u=e.a;return s(Wb,r.a,X([O("Header",Yt(e.b)),O("level",Gt(u))]));case 17:return s(Wb,r.a,X([O("Citation",Yt(r.b))]));case 18:return X([O("Problem",Yt(r.a))]);case 6:var a=r.c;return s(Wb,r.a,X([O("Quiz",Xb(r.b)),O("solution",function(){if(1===a.$)return Nt;var r=a.a,n=r.a;return Lt(X([O("hidden_effects",Gt(r.b)),O("blocks",rl()(n))]))}())]));case 9:return s(Wb,r.a,X([O("Survey",Fb(r.b))]));case 12:return s(Wb,r.a,X([O("Task",(o=r.b,Lt(X([O("id",Gt(o.eM)),O("tasks",s(Rt,Yt,o.f5))]))))]));case 16:var i=r.b.eM;return s(Wb,r.a,X([O("Gallery",Lt(X([O("media",Yt(r.b.e9)),O("id",Gt(i))])))]));case 7:var c=r.b;return s(Wb,r.a,X([O("Effect",Lt(X([O("id",Gt(c.eM)),O("begin",Gt(c.dP)),O("end",s(Zt,Nt,s(Xt,Gt,c.el))),O("content",rl()(c.w)),O("playback",St(c.fy)),O("voice",Et(c.gk))])))]));case 5:return s(Wb,r.a,X([O("Table",Jb(r.b))]));case 10:return s(Wb,r.a,X([O("Chart",Nt)]));case 11:return X([O("Code",Nt)]);case 8:return X([O("Comment",Nt)]);case 13:return s(Wb,r.a,X([O("ASCII",Nt)]));default:return s(Wb,r.a,X([O("HTML",Lt(X([s(zb,Kb,r.b)])))]))}var o}())},Yb=function(r){var n=r.b;return Lt(X([O(r.a,rl()(n))]))};function rl(){return Rt(Kb)}var nl=rl();rl=function(){return nl};var tl,el,ul,al=Hb(function(r){return Lt(X([O("title",Yt(r.gb)),O("code",Et(r.dX)),O("indentation",Gt(r.eO)),O("body",nl(r.dR))]))}),il=function(r){switch(r.$){case 0:return Lt(X([O("Generic",Nt)]));case 1:return jb(r.a);case 2:return _b(r.a);default:return Gb(r.a)}},cl=Sb(function(r){return Lt(X([O("solved",Gt(function(){switch(r.fT){case 0:return 0;case 1:return 1;default:return-1}}())),O("state",il(r.fV)),O("trial",Gt(r.gf)),O("hint",Gt(r.eK)),O("error_msg",Et(r.eo))]))}),ol=e(function(r,n,t){return n.$?t:s(r,n.a,t)}),fl=ol(mn),sl=Xt(s(qt,Et,te("errorMessage"))),bl=function(r){return Lt(s(Vt,function(r){return O(r.a,St(r.b))},kn(r)))},ll=Sb(function(r){return Lt(s(fl,sl(r.en),X([O("submitted",St(r.f_)),O("state",(n=r.fV,Lt(function(){switch(n.$){case 0:return X([O("Text",Et(n.a))]);case 1:return X([O("Select",Gt(n.b))]);case 2:return X([O(n.a?"SingleChoice":"MultipleChoice",bl(n.b))]);default:return X([O(n.a?"SingleChoiceMatrix":"MultipleChoiceMatrix",s(Sb,bl,n.b))])}}())))])));var n}),dl=L,pl=t(function(r,n){var t=n.d,e=function(n){return n.$?et(s(dl,r,n.a)):ft(s(dl,e,n.a))};return l(Qn,n.a,n.b,s(dl,e,n.c),s(dl,r,t))}),vl=u(function(r,n,t,e){return r.a?s(mn,b(is,"load",n,Et(t)),e):e}),gl=e(function(r,n,t){return Dn(H(r,{dR:t,am:n.am,eb:n.ea?Nn(n.b5):Bn,ei:n.ei,em:Bn,cf:n.cf,bm:n.bm,fw:!0,bC:n.bC,bM:n.bM,bN:n.bN,bP:n.bP}))}),hl=t(function(r,n){return{$:13,a:r,b:n}}),ml=t(function(r,n){return{$:3,a:r,b:n}}),$l=t(function(r,n){return{$:10,a:r,b:n}}),wl=function(r){return{$:11,a:r}},yl=t(function(r,n){return{$:7,a:r,b:n}}),ql=t(function(r,n){return{$:16,a:r,b:n}}),kl=t(function(r,n){return{$:14,a:r,b:n}}),xl=t(function(r,n){return{$:15,a:r,b:n}}),Ll=t(function(r,n){return{$:4,a:r,b:n}}),El=e(function(r,n,t){return{$:6,a:r,b:n,c:t}}),Al=t(function(r,n){return{$:1,a:r,b:n}}),Sl=t(function(r,n){return{$:9,a:r,b:n}}),Tl=t(function(r,n){return{$:5,a:r,b:n}}),Rl=t(function(r,n){return{$:12,a:r,b:n}}),Dl=function(r){return na(function(n){return H(n,{eO:s(du,n.eO,X([r])),cq:!0})})},Cl=function(r){return s(ge,eo,s(we,r,s(ye,Dl("[ ]{2,}"),s($e,te,s(Ae,uu(Ce("]:")),Ce("[^"))))))},Vl=t(function(r,n){return{$:17,a:r,b:n}}),Nl=t(function(r,n){if(n.b&&!n.a.$){var t=n.a,e=t.a,u=t.b,a=n.b;return s(De,"--",e)?s(Vl,r,s(mn,s(Xu,s(Re,2,e),u),a)):s(no,r,n)}return s(no,r,n)}),Bl=function(r){return 0>r?-r:r},Ml=e(function(r,n,t){return r(n(t))}),Ol=t(function(r,n){return!s(Rc,s(Ml,$c,r),n)}),Ul=function(r){return Rc(Rc(r))},Il=t(function(r,n){r:for(;;){if(n.b){var t=n.a;if(r>0){r-=1,n=n.b;continue r}return Nn(t)}return Bn}}),Hl=e(function(r,n,t){for(;;){if(0>=n)return r;r=s(mn,t,r),n-=1,t=t}}),Pl=t(function(r,n){return b(Hl,j,r,n)}),zl=function(r){return b(Pn,t(function(r,n){return b(jn,t(function(r,n){return s(du,n,X([r]))}),r,n)}),s(Pl,zn(s(Zt,j,pu(r))),j),r)},jl=function(r){return s(qt,zl,Il(r))},_l=Ot,Gl=t(function(r,n){return b(zt,r,0,n)}),Xl=function(r){return b(Pn,Gl,_l,r)},Zl=s(qt,function(r){return r.bj},La(Bn)),Fl=function(r){return Vt(Vt(r))},Ql=function(r){return r.b?Nn(b(Pn,ot,r.a,r.b)):Bn},Jl=t(function(r,n){return 0>V(r,n)?r:n}),Wl=t(function(r,n){for(;;){if(-2===n.$)return r;var t=n.d;r=s(Wl,r+1,n.e),n=t}}),Kl=t(function(r,n){return s(qt,Fl(n),s(qt,Zi,s(qt,s(Pn,t(function(r,n){var t=n.a,e=n.b;return r?O(t+1,e):O(t,e+1)}),O(0,0)),function(n){var t=n.a;return V(t/(t+n.b),r)>-1})))}),Yl=function(r){return r.b?O(r.a,r.b):O(j,j)},rd=t(function(r,n){if(s(Ul,Zl,s(Vi,gi,n))){var t=s(Vt,s(qt,pu,Ri(function(r){return r.bj})),n);if(s(Ol,La(Bn),t)){if(T(r,Bn)||1!==zn(t)){if(T(zn(t),(a=Xl(s(Vi,Tt,t)),s(Wl,0,a)))){var e=s(Zt,X([Bn]),s(Xt,Vt(function(r){return r.bj}),s(Ri,gi,r)));return zn(e)>1&&s(Ol,La(Bn),e)?5:b(Kl,.3,Zl,Yl(zl(n)).b)?1:0}return b(Kl,.3,Zl,Yl(zl(n)).b)?2:0}return 4}if(T(r,Bn))return 0;if(1===zn(t))return 4;if(T(s(Xt,Vt(function(r){return r.di}),s(Ri,gi,r)),s(Xt,Vt(function(r){return r.di}),s(jl,0,n))))return 10;if(50>zn(n)*s(Zt,1,s(Xt,zn,r))){var u=s(Vi,Tt,s(Vt,s(qt,Vi(Tt),Ql),s(Fl,function(r){return r.bj},Yl(zl(n)).b)));return V(Bl(s(Zt,0,Ql(u))),10*Bl(s(Zt,0,(i=u).b?Nn(b(Pn,Jl,i.a,i.b)):Bn)))>0?6:3}return 7}var a,i;return 0}),nd=s(qt,Ji("data-type"),s(qt,Zt(""),s(qt,vu,s(qt,sa,function(r){switch(r){case"lineplot":case"line":return Nn(1);case"scatterplot":case"scatter":return Nn(2);case"barchart":case"bar":return Nn(3);case"piechart":case"pie":return Nn(4);case"heatmap":return Nn(5);case"map":return Nn(11);case"radar":return Nn(6);case"graph":return Nn(10);case"parallel":return Nn(7);case"sankey":return Nn(8);case"boxplot":return Nn(9);case"funnel":return Nn(12);case"none":return Nn(0);default:return Bn}})))),td=u(function(r,n,t,e){return{aH:r,bj:e,eS:n,di:t}}),ed=function(r){if(0===r.length||/[\sxbo]/.test(r))return Bn;var n=+r;return n==n?Nn(n):Bn},ud=s(qt,Hn(" "),s(qt,pu,Ri(ed))),ad=e(function(r,n,t){var e=t.a,u=t.b,a=sa(b(Ub,r,n,u));return l(td,e,u,a,ud(a))}),id=t(function(r,n){return Fl(s(ad,r,n))}),cd=e(function(r,n,t){return H(n,{dW:function(){var e,u=nd(r);if(u.$){if(T(s(Ji,"data-src",r),Bn)){var a=s(Yi,"data-transpose",r)?H(n,{dR:Yl(zl(s(mn,n.eE,n.dR))).b,eE:(e=pu(n.eE),1===e.$?j:s(mn,e.a,s(Zt,j,s(jl,0,n.dR))))}):n;return s(rd,T(a.eE,j)?Bn:Nn(s(Vt,s(ad,t,Bn),a.eE)),b(id,t,Bn,a.dR))}return 11}return u.a}()})}),od=Pe("\\n*"),fd=function(r){return s(ye,ui,s(ge,ba(!0),s(we,r,s(ye,Xe(s(ye,$a,od)),s(ye,Pe("}}--[\t ]*"),s(we,Xe(s(Ae,Pe("[A-Za-z0-9 ]+"),s(Ae,Ya,ai))),s($e,e(function(r,n,t){return U(r,n,t)}),s(Ae,ga,Pe("[\t ]*--{{")))))))))},sd=t(function(r,n){return{dB:r,dC:n}}),bd={$:3},ld={$:5},dd={$:1},pd=t(function(r,n){return{$:9,a:r,b:n}}),vd=e(function(r,n,t){return{$:10,a:r,b:n,c:t}}),gd=t(function(r,n){return{$:7,a:r,b:n}}),hd={$:5},md=t(function(r,n){return{$:1,a:r,b:n}}),$d={$:5},wd=function(r){return{$:4,a:r}},yd={$:11},qd={$:10},kd={$:3},xd=function(r){return{$:0,a:r}},Ld=function(r){return{$:2,a:r}},Ed={$:2},Ad={$:7},Sd={$:0},Td={$:8},Rd={$:7},Dd=e(function(r,n,t){for(;;){if(!n.b)return Fn(t);var e=n.a,u=e.b,a=n.b;(0,e.a)(r)?(r=r,n=a,t=s(mn,u,t)):(r=r,n=a,t=t)}}),Cd=t(function(r,n){return b(Dd,r,n,j)}),Vd=t(function(r,n){return T(n,j)?xd(r):wd(n)}),Nd=t(function(r,n){return s(Vd,r,s(Cd,n,X([O(function(r){var n=r.e;return T(n,Ed)||T(n,Rd)||T(n,Td)},s(md,Sd,$d)),O(function(r){return T(r.f,Ed)||T(r.f,Rd)||T(r.f,Td)},s(md,Sd,kd)),O(s(qt,function(r){return r.b},at(hd)),s(md,Sd,dd)),O(s(qt,function(r){return r.d},at(hd)),s(md,Sd,Ad)),O(s(qt,function(r){return r.r},at(yd)),s(md,Sd,s(pd,$d,Ad))),O(s(qt,function(r){return r.q},at(qd)),s(md,Sd,s(pd,$d,dd))),O(s(qt,function(r){return r.y},at(qd)),s(md,Sd,s(pd,kd,Ad))),O(s(qt,function(r){return r.x},at(yd)),s(md,Sd,s(pd,kd,dd)))])))}),Bd=e(function(r,n,t){if(T(bd,t.d)||T(bd,t.b))return xd(n);var e,u=s(Nd,n,t);return 4===u.$?wd(s(du,u.a,X([(e=r,{$:6,a:e})]))):xd(n)}),Md=e(function(r,n,t){return{$:3,a:r,b:n,c:t}}),Od=t(function(r,n){return s(Vd,r,s(Cd,n,X([O(function(r){return T(Td,r.r)&&T(Td,r.y)},b(Md,4,kd,s(pd,$d,$d))),O(function(r){return T(yd,r.r)&&T(qd,r.y)},b(Md,4,s(pd,kd,Ad),s(pd,$d,$d)))])))}),Ud={$:1},Id=function(r){return{$:2,a:r}},Hd={$:6},Pd=function(r){return{$:6,a:r}},zd={$:0},jd=function(r){return{$:4,a:r}},_d=function(r){return{$:8,a:r}},Gd=t(function(r,n){return s(Vd,r,s(Cd,n,X([O(function(r){return T(hd,r.d)&&T(hd,r.b)},s(md,Ad,Id(2))),O(function(r){return T(Ed,r.e)&&T(Ed,r.f)},s(md,$d,jd(2))),O(function(r){return T(Td,r.q)&&T(Td,r.y)},s(md,Sd,s(pd,$d,Id(2)))),O(function(r){return T(qd,r.q)&&T(qd,r.y)},s(md,s(pd,$d,dd),b(vd,2,kd,Ad))),O(function(r){return T(yd,r.r)&&T(yd,r.x)},s(md,s(pd,$d,Ad),b(vd,2,kd,dd))),O(function(r){return(T(Ed,r.e)||T(Td,r.e)||T(Rd,r.e))&&T(hd,r.d)},wd(X([b(Md,1,Ad,s(pd,Pd(.5),dd)),s(md,$d,jd(.5))]))),O(function(r){return(T(Ed,r.e)||T(Td,r.e)||T(Rd,r.e))&&T(hd,r.b)},wd(X([b(Md,1,Pd(.5),s(pd,jd(.5),dd)),s(md,$d,jd(.5))]))),O(function(r){return(T(Ed,r.f)||T(Td,r.f)||T(Rd,r.f))&&T(hd,r.d)},wd(X([b(Md,1,jd(.5),s(pd,Pd(.5),Ad)),s(md,kd,Pd(.5))]))),O(function(r){return(T(Ed,r.e)||T(Td,r.e)||T(Rd,r.e))&&T(Hd,r.d)},wd(X([b(Md,1,s(pd,kd,Ad),s(pd,Pd(.5),dd)),s(md,$d,jd(1.5))]))),O(function(r){return(T(Ed,r.f)||T(Td,r.f)||T(Rd,r.f))&&T(Hd,r.d)},b(Md,1,jd(1.5),s(pd,Pd(.5),Ad))),O(function(r){return(T(Ed,r.f)||T(Td,r.f)||T(Rd,r.f))&&T(Hd,r.b)},b(Md,1,s(pd,kd,dd),s(pd,jd(.5),Ad))),O(function(r){return(T(Ed,r.e)||T(Td,r.e)||T(Rd,r.e))&&T(Hd,r.b)},wd(X([b(Md,1,jd(.5),s(pd,jd(.5),dd)),s(md,$d,jd(1.5))]))),O(function(r){return(T(Ed,r.f)||T(Td,r.f)||T(Rd,r.f))&&T(hd,r.b)},wd(X([b(Md,1,dd,s(pd,jd(.5),Ad)),s(md,kd,Pd(.5))]))),O(function(r){return T(yd,r.x)&&T(hd,r.d)},b(Md,3,s(pd,kd,dd),b(vd,2,Pd(.5),Ad))),O(function(r){return T(qd,r.q)&&T(hd,r.d)},b(Md,3,Ad,s(pd,$d,Id(2)))),O(function(r){return T(yd,r.r)&&T(hd,r.b)},b(Md,3,s(pd,$d,Ad),s(pd,kd,Id(2)))),O(function(r){return T(qd,r.r)&&T(hd,r.b)},b(Md,3,s(pd,$d,Ad),s(pd,kd,Id(20)))),O(function(r){return T(qd,r.y)&&T(hd,r.b)},b(Md,3,dd,s(pd,kd,_d(2)))),O(function(r){return T(Ed,r.e)&&T(qd,r.y)},b(Md,8,s(pd,kd,Ad),b(vd,2,$d,Id(.5)))),O(function(r){return T(Ed,r.e)&&T(yd,r.x)},b(Md,8,$d,b(vd,2,kd,Id(.5)))),O(function(r){return T(Ed,r.f)&&T(qd,r.q)},b(Md,8,s(pd,$d,dd),b(vd,2,kd,_d(.5)))),O(function(r){return T(Ed,r.f)&&T(yd,r.r)},b(Md,8,kd,b(vd,2,$d,_d(.5)))),O(function(r){return T(hd,r.b)&&T(qd,r.q)},b(Md,2,s(pd,$d,dd),kd)),O(function(r){return T(hd,r.d)&&T(yd,r.r)},b(Md,2,Ad,$d)),O(function(r){return T(hd,r.d)&&T(qd,r.y)},b(Md,2,s(pd,kd,Ad),$d)),O(function(r){return T(hd,r.b)&&T(yd,r.x)},b(Md,2,dd,kd)),O(function(r){return T(Hd,r.b)&&T(qd,r.q)},b(Md,4,s(pd,$d,dd),jd(2))),O(function(r){return T(Hd,r.d)&&T(yd,r.r)},b(Md,4,s(pd,kd,Ad),Pd(2))),O(function(r){return T(hd,r.d)&&T(Ud,r.x)},b(Md,4,s(pd,kd,Id(2)),s(pd,$d,_d(3)))),O(function(r){return T(zd,r.y)},b(Md,4,dd,s(pd,kd,_d(3)))),O(function(r){return T(Ud,r.x)},b(Md,4,s(pd,kd,Id(2)),s(pd,$d,_d(3)))),O(function(r){return T(zd,r.r)},b(Md,4,s(pd,$d,_d(2)),s(pd,kd,Id(3)))),O(function(r){return T(Ud,r.q)},b(Md,4,Ad,s(pd,$d,Id(3)))),O(function(r){return T(Ed,r.e)&&T(qd,r.q)},wd(X([s(md,Sd,$d),s(md,Sd,s(pd,$d,dd))]))),O(function(r){return T(Ed,r.e)&&T(yd,r.r)},wd(X([s(md,Sd,$d),s(md,Sd,s(pd,$d,Ad))]))),O(function(r){return T(qd,r.q)&&T(yd,r.r)},wd(X([s(md,Sd,s(pd,$d,dd)),s(md,Sd,s(pd,$d,Ad))])))])))}),Xd=function(r){return O(zn(r),s(Zt,0,Ql(s(Vt,ie,r))))},Zd=t(function(r,n){return s(Vd,r,s(Cd,n,X([O(function(r){return!T(bd,r.d)||!T(bd,r.b)},s(md,dd,_d(2)))])))}),Fd=t(function(r,n){return s(Vd,r,s(Cd,n,X([O(s(qt,function(r){return r.d},at(qd)),s(md,s(pd,kd,dd),_d(4))),O(s(qt,function(r){return r.d},at(Ed)),s(md,s(pd,kd,dd),_d(3))),O(s(qt,function(r){return r.b},at(yd)),s(md,s(pd,kd,Ad),Id(4))),O(s(qt,function(r){return r.b},at(yd)),s(md,s(pd,kd,Ad),Id(4))),O(s(qt,function(r){return r.b},at(Ed)),s(md,s(pd,kd,Ad),Id(3))),O(s(qt,function(r){return r.y},at(Ed)),s(md,s(pd,kd,_d(2)),Id(3))),O(s(qt,function(r){return r.x},at(Ed)),s(md,s(pd,kd,Ad),Id(3))),O(function(r){return!T(bd,r.d)&&!T(bd,r.b)},s(md,s(pd,kd,dd),_d(2))),O(function(r){return T(zd,r.y)},b(Md,1,s(pd,kd,Ad),b(vd,.15,kd,_d(4)))),O(function(r){return T(zd,r.d)},b(Md,1,s(pd,jd(.75),_d(1.6)),b(vd,.2,kd,Id(4)))),O(function(r){return T(Ud,r.x)},b(Md,1,s(pd,jd(1.15),Id(1.7)),b(vd,.15,$d,_d(4)))),O(function(r){return T(Ud,r.b)},b(Md,1,s(pd,kd,Id(1)),b(vd,.2,Pd(2),Id(4))))])))}),Qd=t(function(r,n){return s(Vd,r,s(Cd,n,X([O(function(r){return T(Td,r.q)&&T(Td,r.x)},b(Md,4,$d,s(pd,kd,kd))),O(function(r){return T(qd,r.q)&&T(yd,r.x)},b(Md,4,s(pd,$d,dd),s(pd,kd,kd)))])))}),Jd=t(function(r,n){var t=n.a,e=n.b;r:for(;;)switch(e.$){case 2:return T(bd,r.d)&&T(bd,r.b)?xd(t):s(md,kd,s(pd,$d,$d));case 5:return s(Zd,t,r);case 6:return s(Fd,t,r);case 7:return s(Nd,t,r);case 9:switch(e.a.$){case 3:return T(Ed,r.e)?Ld($d):T(qd,r.q)?Ld(s(pd,$d,dd)):T(yd,r.r)?Ld(s(pd,$d,Ad)):xd(t);case 5:return T(Ed,r.f)?Ld(kd):T(qd,r.y)?Ld(s(pd,kd,Ad)):T(yd,r.x)?Ld(s(pd,kd,dd)):xd(t);case 1:return T(hd,r.d)||T(hd,r.b)?Ld(dd):xd(t);case 7:return T(hd,r.d)||T(hd,r.b)?Ld(Ad):xd(t);default:break r}case 8:return s(Gd,t,r);case 10:return s(md,s(pd,$d,dd),b(vd,2,kd,Ad));case 11:return s(md,s(pd,kd,dd),b(vd,2,$d,Ad));case 0:return s(Qd,t,r);case 1:return s(Od,t,r);case 12:var u=s(Nd,t,r);return 4===u.$?wd(s(mn,ld,u.a)):xd(t);case 14:return b(Bd,e.a,t,r);case 4:var a=e.a;return s(gd,a,Xd(Aa(a)));default:break r}return xd(t)}),Wd={$:13},Kd=t(function(r,n){return s(Zt,Wd,s(Xt,xu,s(Wu,r,n)))}),Yd=e(function(r,n,t){return{b:s(Kd,O(r+1,n),t),e:s(Kd,O(r,n-1),t),q:s(Kd,O(r+1,n-1),t),r:s(Kd,O(r-1,n-1),t),f:s(Kd,O(r,n+1),t),x:s(Kd,O(r+1,n+1),t),y:s(Kd,O(r-1,n+1),t),d:s(Kd,O(r-1,n),t)}}),rp=function(r){return{$:4,a:r}},np=t(function(r,n){var t=O(r,n);return 4===t.a.$&&4===t.b.$?rp(t.a.a+"\n"+t.b.a):r}),tp=t(function(r,n){for(;;){var e=O(pu(n),gi(n));if(1===e.a.$)return r;if(1===e.b.$)return r;var u=e.a.a,a=e.b.a,i=b(Pn,t(function(r,n){var t=r.a,e=t.b,u=r.b,a=u.a,i=u.b,c=n.a,o=n.b,f=o.a,b=f.a,l=f.b,d=o.b.b,p=n.c;return T(t.a,b)&&T(c+1,e)?U(c+1,O(O(b,l),O(a,s(np,d,i))),p):U(c,o,s(mn,O(t,u),p))}),U(u.a.b,u,j),a),c=i.c;r=s(mn,i.b,r),n=Fn(c)}}),ep=er,up=function(r){return s(qt,fe,s(qt,ep(r),s(qt,rp,te(" "))))},ap=t(function(r,n){return 1>r?n:b(Te,0,-r,n)}),ip=function(r){return{$:9,a:r}},cp=function(r){return{$:14,a:r}},op={$:12},fp=a(function(r,n,t,e,u){return a=function(){if(T(e,r)){var a=O(u._,u.aW);r:for(;;)switch(a.a){case 0:return H(u,{_:1});case 1:if(a.b.b)return H(u,a.b.a?{_:2}:{_:0});break r;case 2:if(a.b.b&&a.b.a)return H(u,{c1:function(){var r=O(n,u.c1);if(r.a&&r.b.b&&4===r.b.a.b.b.$){var t=r.b,e=t.a,a=t.b;return s(mn,O(e.a,O(" ",rp(s(ap,1,e.b.b.a)+"  "))),a)}return s(Zt,j,gi(r.b))}(),_:0});break r;default:break r}return H(u,{c1:function(){var r=O(n,u.c1);if(r.a){if(r.b.b&&4===r.b.a.b.b.$){var a=r.b,i=a.a,c=a.b;return s(mn,O(i.a,s(up,i.b.b.a,e)),c)}return s(mn,O(O(u.dB,t),s(up,"",e)),u.c1)}return s(mn,O(O(u.dB,t),O(e,bd)),u.c1)}()})}if(u._>0)return H(u,{c1:function(){var r=O(n,u.c1);if(r.a){if(r.b.b&&4===r.b.a.b.b.$){var a=r.b,i=a.a,c=i.a.a,o=i.b.b.a,f=a.b;return T(c+ie(o),u.dB)?s(mn,O(O(c,t),s(up,o,e)),f):s(mn,O(O(u.dB,t),s(up,"",e)),u.c1)}return s(mn,O(O(u.dB+1-u._,t),s(up,"",e)),u.c1)}return s(mn,O(O(u.dB,t),O(e,bd)),u.c1)}()});var i=function(r){switch(r){case" ":return Bn;case"-":return Nn(hd);case"_":return Nn(Hd);case"+":return Nn(Rd);case".":case"'":case",":case"`":case"´":return Nn(Td);case">":return Nn(ip(Ad));case"<":return Nn(ip(dd));case"V":case"v":return Nn(ip(kd));case"^":case"A":return Nn(ip($d));case"/":return Nn(qd);case"\\":return Nn(yd);case"(":return Nn(zd);case")":return Nn(Ud);case"|":return Nn(Ed);case"#":return Nn(op);case"O":case"o":return Nn(cp(!1));case"*":return Nn(cp(!0));default:return Nn(bd)}}(e);if(1===i.$)return u;var c=i.a;return H(u,{c1:s(mn,O(O(u.dB,t),O(e,c)),u.c1)})}(),H(a,{aW:s(mn,T(e,r),a.aW),dB:a.dB+1});var a}),sp=function(r){return r.replace(/\s+$/,"")},bp=e(function(r,n,t){return s(qt,sp,s(qt,mi,s(qt,s(Pn,b(fp,r,n,t),{aW:j,c1:j,_:0,dB:0}),function(r){return r.c1})))}),lp=Q,dp=t(function(r,n){var e=Zi(s(Zn,s(bp,n.dc.gh,r),n.e3));if(n.dc.ff){var u=b(Pn,t(function(r,n){var t=r.a,e=r.b,u=e.a,a=e.b,i=n.a,c=n.b;return 4===a.$?O(s(mn,O(t,O(u,a)),i),c):O(i,s(mn,O(t,O(u,a)),c))}),O(j,j),e),a=u.a;return s(du,u.b,Fn(s(tp,j,s(lp,s(qt,lt,xu),a))))}return e}),pp=t(function(r,n){var t=Aa(n),e=Xd(t);return{b$:e.b,e3:t,c2:e.a,dc:r}}),vp=t(function(r,n){var e=s(pp,r,n),u=s(dp,!0,e),a=jt(u);return b(Pn,t(function(r,n){var t=r.a,e=t.a,u=t.b,i=r.b,c=i.a,o=i.b,f=s(sd,function(r){return 8*r}(e)+4,function(r){return 16*r}(u)+8),l=s(Jd,b(Yd,e,u,a),O(c,o));return H(n,7===l.$?{cg:s(mn,O(l.a,O(f,l.b)),n.cg)}:{dn:s(mn,O(f,l),n.dn)})}),{b$:e.b$,cg:j,c2:e.c2,dc:r,dn:j},u)}),gp=function(r){return{$:0,a:r}},hp=function(){var r=s(ge,Li,ra(s(qt,function(r){return r.b5},s(qt,function(r){return r.dO},Yu))));return s(Ra,j,s(ye,Xe(s(ye,$a,Pe("[\t ]*\\n"))),s(Ae,je(r),s(Ae,Ya,Ei))))}(),mp=s($e,gp,s(ye,Pe("-{3,}"),hp)),$p=$e(wa),wp=na(ma(!0)),yp=function(r){return s(we,Kc,s(ye,ui,s(we,s(Ee,function(r){return s(Ae,s(Se,s(ye,od,r),Pe("[\t ]*\\*{3,}")),s(ye,Pe("[\t ]*\\*{3,}\\n+"),$a))}(r),$p(r)),s(ye,s(Ee,fu(Ce("\n")),wp),s(ye,Pe("}}[\t ]*"),s($e,e(function(r,n,t){return H(r,{w:n,eM:t})}),s(Ae,Wc,Pe("[\t ]*{{"))))))))},qp=s(ye,na(ma(!1)),ra(function(r){if(T(r.eO,j))return Yu(0);if(r.cq)return fu(Yu(0));var n=Qe(r.eO);if(""===sa(n))return fu(Xe(Pe(n)));var t=sp(n);return fu(b(ut,Xe(Ce(s(be,ie(n)-ie(t)," "))),ye,Pe(t)))})),kp=s(ye,wb,qp),xp=(tl=s(ge,function(r){return T(r,Bn)?Yu(0):da("")},Xe(s(Ee,Pe("[ \t]*--{{\\d+}}--"),Pe("[ \t]*{{\\d+}}")))),t(function(r,n){var t=b(ve,tl,r,n);return t.c.$?t:U(t.a,n,Dn(t.c.a))})),Lp=s($e,s(qt,Je(X([s(Xu," ",j)])),s(qt,Zi,Pi)),s(Ae,Ta(s(ye,wb,s(Ae,yf,$a))),s(ye,wp,xp))),Ep=a(function(r,n,t,e,u){return{ed:u,eZ:e,gb:r,go:t,gr:n}}),Ap=t(function(r,n){return{$:1,a:r,b:n}}),Sp=t(function(r,n){return{$:0,a:r,b:n}}),Tp=t(function(r,n){return{dB:r,dC:n}}),Rp=i(function(r,n,u,a,i,c){var o=b(kt,e(function(t,e,a){r:for(;;){var i=a.a,c=a.b;if(i.b){var o=i.a,f=o.a,s=o.b,d=i.b;if(0>V(f,t)){t=t,e=e,a=O(d,b(r,f,s,c));continue r}return V(f,t)>0?O(i,b(u,t,e,c)):O(d,l(n,f,s,e,c))}return O(i,b(u,t,e,c))}}),O(kn(a),c),i),f=o.a,s=o.b;return b(Pn,t(function(n,t){return b(r,n.a,n.b,t)}),s,f)}),Dp=t(function(r,n){return p(Rp,zt,u(function(r,n,t,e){return b(zt,r,z(n,t),e)}),zt,r,n,Ot)}),Cp=t(function(r,n){if(-2===n.$)return Mt;var t=n.b,e=n.d,u=n.e;return d(Ut,n.a,t,s(r,t,n.c),s(Cp,r,e),s(Cp,r,u))}),Vp=s(Ne,"expected a float",s(ge,pa,s($e,ed,Pe("-?(?:0|[1-9]\\d*)\\.\\d+")))),Np=s(Ee,Vp,s($e,Yn,s(ye,s(Ra,".",Ce(".")),va))),Bp=br,Mp=t(function(r,n){return s(Rs,r,n)}),Op=(el=e(function(r,n,t){return O(O(""===(i=sa(r))?" ":i,t),jt(s(Vt,function(r){return O(r,s(Bp,fe(r),n))},(u=s(Mp," ",Xl(mi(n))),a=u,b(qn,e(function(r,n,t){return s(mn,r,t)}),j,a)))));var u,a,i}),s(ye,Pe("[\t ]*\\n"),s(we,Xe(s(ye,Ce(")"),s(we,Pe("[^)]+"),s($e,te,s(Ae,Pe("[A-Za-z\\+\\*#]?"),s(ye,ze,Ce("("))))))),s(we,Pe("[ \\*a-zA-Z\\+#]*"),s($e,el,s(ye,Ce("|"),Pe("[^\n|]*"))))))),Up=e(function(r,n,t){return O(n,(t-n)/r)}),Ip=t(function(r,n){for(;;){var t=O(n,r);if(!t.a.b)return!0;if(1!==t.b.$){var e=t.a;if(i=e.b,T(u=e.a,t.b.a))return!1;r=Nn(u),n=i}else{var u,a=t.a,i=a.b;r=Nn(u=a.a),n=i}}}),Hp=function(r){return b(Ct,t(function(r,n){var t=r.b,e=n.b;return O(s(mn,r.a,n.a),s(mn,t,e))}),O(j,j),r)},Pp=s(we,s(Ra,1,s(ye,Pe("[\t ]*\\n"),s(Ae,Np,Pe("[\t ]*")))),s(we,s(Ra,"",Pe("[a-zA-Z_ .\\\\()\\-]+")),s(we,s(Ra,0,Np),s($e,u(function(r,n,t,e){return O(sa(t),b(Up,ie(r),n,e))}),s(ye,Pe("[\t ]*\\n[\t ]*"),s(Ae,Pe("\\-+"),Pe("[\t ]*\\+"))))))),zp=(ul=a(function(r,n,u,a,i){var c,o=i.a,f=i.b,l=f.a,p=f.b,v=b(Up,zn(u),a,n),g=v.a,h=v.b,m=Hp(u),$=m.b,w=Hp(m.a),y=w.a,q=jt(s(Vi,Tt,w.b));return d(Ep,r,sa(Qe(y)),o,(c=q,b(qn,e(function(r,n,t){return s(mn,n,t)}),j,c)),s(Cp,t(function(r,n){return s(s(Ip,Bn,s(Vt,function(r){return r.dB},n))?Sp:Ap,n,s(Wu,fe(r),q))}),s(Cp,t(function(r,n){return s(lp,function(r){return r.dB},n)}),b(Ct,Dp,Ot,s(Vt,function(r){var n=r.a,e=r.b;return s(Cp,t(function(r,t){return s(Vt,function(r){return s(Tp,r*p+l,n*h+g)},t)}),e)},s(Zn,te,Fn($)))))))}),s(we,Pp,s(we,s(Ra,0,s(Ae,Np,Pe("[\t ]*"))),s(we,Ta(Op),s(we,s(Ra,1,s(Ae,Np,Pe("[\t ]*"))),s($e,s(qt,sa,ul),s(Ra,"",Pe("[\t ]*[^\n\\|`]*\n")))))))),jp=s(Ae,ji,b(zi,!0,!1,"<script>")),_p=u(function(r,n,t,e){return{aH:r,dX:e,eV:n,cJ:t}}),Gp=t(function(r,n){var t=r+"{"+Un(n)+"}";return s($e,s(qt,Qe,ap(1)),s(Se,s(Ae,Pe("(?:.(?!"+t+"))*\\n"),qp),s(Ae,s(ye,wb,s(ye,Ei,Pe(t))),$a)))}),Xp=s($e,vu,s(Ae,Pe("\\w*"),Ei)),Zp=s(ye,wb,s(we,Pe(".*"),s($e,te,s(Ra,!0,s(Ae,Ge(X([s(ou,!0,Ce("+")),s(ou,!1,Ce("-"))])),Ei))))),Fp=function(r){return s(ge,function(n){return s(we,s(Ee,s(Gp,"`",n),s(Gp,"~",n)),s(we,Zp,s($e,e(function(n,t,e){var u=t.a;return O(l(_p,r,n,sa(t.b),e),u)}),Xp)))},ha)},Qp=e(function(r,n,t){return{aQ:t,aw:r,c1:n}}),Jp=function(r){return{$:1,a:r}},Wp=t(function(r,n){return{ap:r,aA:n}}),Kp=u(function(r,n,t,e){var u=ea&n>>>r,a=s(aa,u,e);return b(ia,u,a.$?et(b(ia,ea&n,t,a.a)):ft(l(Kp,r-rt,n,t,a.a)),e)}),Yp=e(function(r,n,t){var e=t.a,u=t.b,a=t.c,i=t.d;return 0>r||V(r,e)>-1?t:V(r,Rb(e))>-1?l(Qn,e,u,a,b(ia,ea&r,n,i)):l(Qn,e,u,l(Kp,u,r,n,a),i)}),rv=t(function(r,n){return b(Yp,Ku(n)-1,r,n)}),nv=A,tv=E,ev=t(function(r,n){var t=ct(r),e=32-ct(n.j)-t,u=b(nv,32,n.j,r);return 0>e?{k:s(mn,et(u),n.k),h:n.h+1,j:b(tv,e,t,r)}:e?{k:n.k,h:n.h,j:u}:{k:s(mn,et(u),n.k),h:n.h+1,j:Jn}}),uv=t(function(r,n){var e=n.a,u=n.c,a=n.d;if(r){if(V(r,Rb(e))>-1)return l(Qn,e-r,rt,Jn,b(tv,r-Rb(e),ct(a),a));var i=r/32|0,c=t(function(r,n){return r.$?s(mn,r.a,n):b($n,c,n,r.a)}),o=b($n,c,X([a]),u),f=s(ei,i,o);if(f.b){var d=f.a,p=f.b,v={k:j,h:0,j:b(tv,r-32*i,ct(d),d)};return s(pt,!0,b(Pn,ev,v,p))}return nt}return n}),av=u(function(r,n,t,e){for(;;){var u=s(aa,ea&t>>>r,e);if(u.$)return b(tv,0,ea&n,u.a);r-=rt,n=n,t=t,e=u.a}}),iv=e(function(r,n,t){for(;;){if(1>V(r,n)||!ct(t))return t;var e=s(aa,0,t);if(e.$)return t;r-=rt,n=n,t=e.a}}),cv=e(function(r,n,t){var e=ea&n>>>r,u=s(aa,e,t);if(u.$)return b(tv,0,e,t);var a=b(cv,r-rt,n,u.a);return ct(a)?b(ia,e,ft(a),b(tv,0,e+1,t)):b(tv,0,e,t)}),ov=t(function(r,n){var t=n.a,e=n.b,u=n.c,a=n.d;if(T(r,t))return n;if(V(r,Rb(t))>-1)return l(Qn,r,e,u,b(tv,0,ea&r,a));var i=Rb(r),c=it(s(Kn,32,s(ot,1,i-1))),o=s(ot,5,c*rt);return l(Qn,r,o,b(iv,e,o,b(cv,e,i,u)),l(av,e,r,i,u))}),fv=t(function(r,n){var t=n.a,e=0>r?t+r:r;return 0>e?0:V(e,t)>0?t:e}),sv=e(function(r,n,t){var e=s(fv,n,t),u=s(fv,r,t);return V(u,e)>0?nt:s(uv,u,s(ov,e,t))}),bv=e(function(r,n,t){return H(t,{L:(e=function(){if(4===r){var e=s(Db,Ku(a=t.L)-1,a);if(e.$)return s(fa,s(Wp,r,n),t.L);var u=e.a;return 4===u.ap?s(rv,s(Wp,r,z(u.aA,n)),t.L):s(fa,s(Wp,r,n),t.L)}return s(fa,s(Wp,r,n),t.L);var a}(),250>Ku(e)?e:b(sv,1,250,e))});var e}),lv=t(function(r,n){return s(bv,r.aw?1:3,r.c1)(H(n,{aQ:r.aQ,aw:r.aw}))}),dv=l(u(function(r,n,t,e){return{aQ:e,ap:n,L:t,aw:r}}),!0,0,nt,j),pv=t(function(r,n){return s(gt,r,function(){return n})}),vv=s(pv,16,0),gv=t(function(r,n){return 4294967295&r+n}),hv=t(function(r,n){return n<<r|n>>>32-r}),mv=o(function(r,n,t,e,u,a,i,c){return s(gv,t,s(hv,i,s(gv,n,s(gv,c,s(gv,b(r,t,e,u),a)))))}),$v=e(function(r,n,t){return t^r&(n^t)}),wv=c(function(r,n,t,e,u,a,i){return g(mv,$v,r,n,t,e,u,a,i)}),yv=e(function(r,n,t){return n^t&(r^n)}),qv=c(function(r,n,t,e,u,a,i){return g(mv,yv,r,n,t,e,u,a,i)}),kv=e(function(r,n,t){return t^r^n}),xv=c(function(r,n,t,e,u,a,i){return g(mv,kv,r,n,t,e,u,a,i)}),Lv=e(function(r,n,t){return n^(r|~t)}),Ev=c(function(r,n,t,e,u,a,i){return g(mv,Lv,r,n,t,e,u,a,i)}),Av=t(function(r,n){if(r.b&&r.b.b&&r.b.b.b&&r.b.b.b.b&&r.b.b.b.b.b&&r.b.b.b.b.b.b&&r.b.b.b.b.b.b.b&&r.b.b.b.b.b.b.b.b&&r.b.b.b.b.b.b.b.b.b&&r.b.b.b.b.b.b.b.b.b.b&&r.b.b.b.b.b.b.b.b.b.b.b&&r.b.b.b.b.b.b.b.b.b.b.b.b&&r.b.b.b.b.b.b.b.b.b.b.b.b.b&&r.b.b.b.b.b.b.b.b.b.b.b.b.b.b&&r.b.b.b.b.b.b.b.b.b.b.b.b.b.b.b&&r.b.b.b.b.b.b.b.b.b.b.b.b.b.b.b.b&&!r.b.b.b.b.b.b.b.b.b.b.b.b.b.b.b.b.b){var t=r.a,e=r.b,u=e.a,a=e.b,i=a.a,c=a.b,o=c.a,f=c.b,b=f.a,l=f.b,d=l.a,p=l.b,g=p.a,h=p.b,m=h.a,$=h.b,w=$.a,y=$.b,q=y.a,k=y.b,x=k.a,L=k.b,E=L.a,A=L.b,S=A.a,T=A.b,R=T.a,D=T.b,C=D.a,V=D.b.a,N=n.aP,B=n.aK,M=n.aI,O=n.aG,U=v(wv,O,M,B,N,t,7,3614090360),I=v(wv,N,U,M,B,u,12,3905402710),H=v(wv,B,I,U,M,i,17,606105819),P=v(wv,M,H,I,U,o,22,3250441966),z=v(wv,U,P,H,I,b,7,4118548399),j=v(wv,I,z,P,H,d,12,1200080426),_=v(wv,H,j,z,P,g,17,2821735955),G=v(wv,P,_,j,z,m,22,4249261313),X=v(wv,z,G,_,j,w,7,1770035416),Z=v(wv,j,X,G,_,q,12,2336552879),F=v(wv,_,Z,X,G,x,17,4294925233),Q=v(wv,G,F,Z,X,E,22,2304563134),J=v(wv,X,Q,F,Z,S,7,1804603682),W=v(wv,Z,J,Q,F,R,12,4254626195),K=v(wv,F,W,J,Q,C,17,2792965006),Y=v(wv,Q,K,W,J,V,22,1236535329),rr=v(qv,J,Y,K,W,u,5,4129170786),nr=v(qv,W,rr,Y,K,g,9,3225465664),tr=v(qv,K,nr,rr,Y,E,14,643717713),er=v(qv,Y,tr,nr,rr,t,20,3921069994),ur=v(qv,rr,er,tr,nr,d,5,3593408605),ar=v(qv,nr,ur,er,tr,x,9,38016083),ir=v(qv,tr,ar,ur,er,V,14,3634488961),cr=v(qv,er,ir,ar,ur,b,20,3889429448),or=v(qv,ur,cr,ir,ar,q,5,568446438),fr=v(qv,ar,or,cr,ir,C,9,3275163606),sr=v(qv,ir,fr,or,cr,o,14,4107603335),br=v(qv,cr,sr,fr,or,w,20,1163531501),lr=v(qv,or,br,sr,fr,R,5,2850285829),dr=v(qv,fr,lr,br,sr,i,9,4243563512),pr=v(qv,sr,dr,lr,br,m,14,1735328473),vr=v(qv,br,pr,dr,lr,S,20,2368359562),gr=v(xv,lr,vr,pr,dr,d,4,4294588738),hr=v(xv,dr,gr,vr,pr,w,11,2272392833),mr=v(xv,pr,hr,gr,vr,E,16,1839030562),$r=v(xv,vr,mr,hr,gr,C,23,4259657740),wr=v(xv,gr,$r,mr,hr,u,4,2763975236),yr=v(xv,hr,wr,$r,mr,b,11,1272893353),qr=v(xv,mr,yr,wr,$r,m,16,4139469664),kr=v(xv,$r,qr,yr,wr,x,23,3200236656),xr=v(xv,wr,kr,qr,yr,R,4,681279174),Lr=v(xv,yr,xr,kr,qr,t,11,3936430074),Er=v(xv,qr,Lr,xr,kr,o,16,3572445317),Ar=v(xv,kr,Er,Lr,xr,g,23,76029189),Sr=v(xv,xr,Ar,Er,Lr,q,4,3654602809),Tr=v(xv,Lr,Sr,Ar,Er,S,11,3873151461),Rr=v(xv,Er,Tr,Sr,Ar,V,16,530742520),Dr=v(xv,Ar,Rr,Tr,Sr,i,23,3299628645),Cr=v(Ev,Sr,Dr,Rr,Tr,t,6,4096336452),Vr=v(Ev,Tr,Cr,Dr,Rr,m,10,1126891415),Nr=v(Ev,Rr,Vr,Cr,Dr,C,15,2878612391),Br=v(Ev,Dr,Nr,Vr,Cr,d,21,4237533241),Mr=v(Ev,Cr,Br,Nr,Vr,S,6,1700485571),Or=v(Ev,Vr,Mr,Br,Nr,o,10,2399980690),Ur=v(Ev,Nr,Or,Mr,Br,x,15,4293915773),Ir=v(Ev,Br,Ur,Or,Mr,u,21,2240044497),Hr=v(Ev,Mr,Ir,Ur,Or,w,6,1873313359),Pr=v(Ev,Or,Hr,Ir,Ur,V,10,4264355552),zr=v(Ev,Ur,Pr,Hr,Ir,g,15,2734768916),jr=v(Ev,Ir,zr,Pr,Hr,R,21,1309151649),_r=v(Ev,Hr,jr,zr,Pr,b,6,4149444226),Gr=v(Ev,Pr,_r,jr,zr,E,10,3174756917),Xr=v(Ev,zr,Gr,_r,jr,i,15,718787259),Zr=s(gv,M,v(Ev,jr,Xr,Gr,_r,q,21,3951481745)),Fr=s(gv,B,Xr),Qr=s(gv,N,Gr);return{aG:s(gv,O,_r),aI:Zr,aK:Fr,aP:Qr}}return n}),Sv=t(function(r,n){return s(Zt,0,s(Db,r,n))}),Tv=t(function(r,n){var t=n.a,e=n.b,u=e.a,a=e.b,i=n.c,c=u/4|0,o=b(Yp,c,s(Sv,c,a)|r<<u%4*8,a);return 63===u?U(s(Av,yn(o),t),O(0,vv),i+1):U(t,O(u+1,o),i+1)}),Rv=ur,Dv=e(function(r,n,t){return 128>n?s(r,n,t):s(r,128|63&n,2048>n?s(r,192|n>>>6,t):s(r,128|63&n>>>6,65536>n?s(r,224|n>>>12,t):s(r,128|63&n>>>12,s(r,240|n>>>18,t))))}),Cv=e(function(r,n,e){return b(Rv,t(function(n,t){return b(Dv,r,55296>(u=(e=n).charCodeAt(0))||u>56319?u:1024*(u-55296)+e.charCodeAt(1)-56320+65536,t);var e,u}),n,e)}),Vv=l(u(function(r,n,t,e){return{aG:r,aI:n,aK:t,aP:e}}),1732584193,4023233417,2562383102,271733878),Nv=function(r){switch(r){case 0:return"0";case 1:return"1";case 2:return"2";case 3:return"3";case 4:return"4";case 5:return"5";case 6:return"6";case 7:return"7";case 8:return"8";case 9:return"9";case 10:return"a";case 11:return"b";case 12:return"c";case 13:return"d";case 14:return"e";case 15:return"f";default:return z(Nv(r/16|0),Nv(r%16))}},Bv=function(r){return b(Pn,t(function(r,n){return z(n,b(le,2,"0",Nv(r)))}),"",X([255&(e=(n=function(r){return n=b(Cv,Tv,U(Vv,O(0,vv),0),r),e=n.a,c=n.c,f=b(Yp,o=(a=(u=n.b).a)/4|0,s(Sv,o,i=u.b)|128<<a%4*8,i),14>o?(t=yn(b(Yp,15,c>>>29,b(Yp,14,c<<3,f))),s(Av,t,e)):function(r){return s(Av,r,s(Av,yn(f),e))}(yn(b(Yp,15,c>>>29,b(Yp,14,c<<3,vv))));var n,t,e,u,a,i,c,o,f}(r)).aG),e>>>8&255,e>>>16&255,e>>>24&255,255&(u=n.aI),u>>>8&255,u>>>16&255,u>>>24&255,255&(a=n.aK),a>>>8&255,a>>>16&255,a>>>24&255,255&(i=n.aP),i>>>8&255,i>>>16&255,i>>>24&255]));var n,e,u,a,i},Mv=function(r){return O(Bv(r.dX),r.dX)},Ov=a(function(r,n,t,e,u){return{dX:t,eA:u,eV:r,cJ:n,dA:e}}),Uv=t(function(r,n){return O(n.a.aH,d(Ov,n.a.eV,n.a.cJ,n.a.dX,n.b,r))}),Iv=u(function(r,n,e,u){var a=b(Ab,t(function(n,t){var e=t.a,u=t.b,a=s(Uv,r,n),i=a.b;return O(s(du,e,X([a.a])),s(fa,i,u))}),O(j,nt),n),i=a.a,c=a.b,o=yn(s(pl,Mv,c));return{aH:i,ep:e,bh:c,cd:-1,bt:u,cA:Bn,fE:jt(o),c5:!1,dp:Bn,gi:Ju(X([O(s(Vt,lt,o),dv)])),a4:0}}),Hv=t(function(r,n){var t=Ju(r),e=function(){var r=s(Db,Ku(t)-1,t);if(r.$)return O(dv,t);var n=r.a,e=n.a,u=n.b;return"@output"===vu(e.cJ)?O(s(lv,b(Qp,u,e.dX,j),dv),b(sv,0,-1,t)):O(dv,t)}(),u=e.a,a=e.b;return s(ye,na(function(r){var t=r.am;return H(r,{am:H(t,{cb:s(fa,l(Iv,!1,a,n,u),t.cb)})})}),ra(s(qt,function(r){return r.am},s(qt,function(r){return r.cb},s(qt,Ku,s(qt,Jp,Yu))))))}),Pv=function(r){return{$:0,a:r}},zv=function(r){var n=r.a,t=r.b;return t.$?function(){var r=Ju(n),t=function(){var n=s(Db,Ku(r)-1,r);if(n.$)return O(dv,r);var t=n.a,e=t.a,u=t.b;return"@output"===vu(e.cJ)?O(s(lv,b(Qp,u,e.dX,j),dv),b(sv,0,-1,r)):O(dv,r)}(),e=t.a,u=t.b;return s(ye,na(function(r){var n=r.am;return H(r,{am:H(n,{bp:s(fa,l(Iv,!0,u,"",e),n.bp)})})}),ra(s(qt,function(r){return r.am},s(qt,function(r){return r.bp},s(qt,Ku,s(qt,Pv,Yu))))))}():s(Hv,n,t.a)},jv=function(r){return s(ge,zv,s(we,Xe(s(Ae,jp,s(Ae,Ya,Xe($a)))),s($e,te,s(Ba,$a,s(ge,Fp,r)))))},_v=t(function(r,n){return{eM:n,e9:r}}),Gv=s(we,s(Ae,Ai,Ya),s($e,Pu,Ge(X([mf,ff,bf,df,$f])))),Xv=function(r){return H(r,{bm:s(fa,-1,r.bm)})},Zv=s(Ne,"expected a newline",nu(at("\n"))),Fv=s(ge,function(r){return zn(r)>1?(n=_v(r),s(ye,na(Xv),s($e,n,ra(s(qt,function(r){return r.bm},s(qt,Ku,Yu)))))):da("not a gallery");var n},s($e,Zi,Ta(s(ye,Zv,Ta(s(Ae,Gv,Pe("[ \t]*"))))))),Qv=function(r){return{$:1,a:r}},Jv={$:0},Wv=function(r){return{$:3,a:r}},Kv=function(r){return{$:2,a:r}},Yv=e(function(r,n,t){return{eL:t,eM:n,fA:r}}),rg=ra(s(qt,function(r){return r.bC},s(qt,Ku,Yu))),ng=e(function(r,n,t){return Ta(s(ye,wb,s(we,yf,s(ye,Ei,s(ye,n,s($e,te,s(Ae,t,s(ye,r,s(ye,Ei,Xe($a))))))))))}),tg=s(qt,s(ng,Pe("(?:- )?\\["),Ce("]")),$e(Hp)),eg=s(Ra,j,s($e,xu,tg(Ce("[?]")))),ug=function(r){return s(we,eg,s($e,Yv(r),rg))},ag=fu(s(ye,wb,s(ye,Pe("(?:- )?\\[\\[!\\]\\]"),s(ye,Ei,Xe($a))))),ig=i(function(r,n,t,e,u,a){return{eo:u,eK:e,fK:a,fT:r,fV:n,gf:t}}),cg={$:0},og=t(function(r,n){return{$:1,a:r,b:n}}),fg=function(r){return{$:0,a:r}},sg=function(r){return{$:1,a:r}},bg=function(r){return{$:0,a:r}},lg=function(r){return r.$?sg(s(Vt,function(){return!1},r.a)):bg(s(Vt,function(){return!1},r.a))},dg=pl(lg),pg=function(r){switch(r.$){case 0:return cg;case 1:return{$:1,a:r.a.df.$?s(og,!1,X([-1])):fg("")};case 2:return{$:2,a:lg(r.a.df)};default:return{$:3,a:dg(r.a.df)}}},vg=s(Ae,Xe(s(ye,wb,s($e,xu,s(Ae,Hc(X([O("input","hidden"),O("block","true"),O("default","undefined")])),Ei)))),s(ye,Xe($a),Ya)),gg=function(r){var n=t(function(n,t){return H(t,{bC:s(fa,p(ig,0,pg(r.fA),0,0,"",n),t.bC)})});return s(Ae,Yu(r),s(ge,na,s($e,n,vg)))},hg=t(function(r,n){return{fu:r,df:n}}),mg=sr,$g=e(function(r,n,t){var e=sa(t),u=Vo(r);return s(De,"(",e)&&s(mg,")",e)?O(n,u(sa(b(Te,1,-1,e)))):O(-1,u(e))}),wg=s(ge,ra,s($e,t(function(r,n){var t=s(Hn,"|",r);if(t.b&&!t.b.b){var e=t.a,u=sa(b(qu,"_"," ",e));return"?"===u||"!"===u||""===u?da(""):Yu(s(hg,j,fg(e)))}var a,i=t;return a=s(Zn,$g(n),i),Yu(s(hg,s(Vt,xu,a),s(og,!1,s(Vt,lt,s(Di,s(qt,lt,_n(0)),a)))))}),s(ye,wb,s(Ae,uu(Ce("]]")),Pe("[\t ]*\\[\\["))))),yg=s(Ae,s(Se,qf,Pe("[ \\t]*\\][ \\t]*")),Pe("[ \\t]*\\[[ \\t]*")),qg=s(Ae,s(Se,qf,Pe("[ \\t]*\\)[ \\t]*")),Pe("[ \\t]*\\([ \\t]*")),kg=s(Ee,qg,yg),xg=s(ye,wb,s(ye,Ce("]"),s(Ae,Ta(kg),s(ye,Pe("(?:- )?\\["),s(ye,Ei,Xe($a)))))),Lg=e(function(r,n,t){return{eF:r,fu:n,df:t}}),Eg=t(function(r,n){return b(Lg,r,n.b,Ju(n.a))}),Ag=t(function(r,n){return s(Ee,s(ou,!1,Ce(n)),s(ou,!0,Pe(r)))}),Sg=s(Ag,"\\[[xX]\\]","[ ]"),Tg=s($e,sg,Ta(s(ye,Ei,s(Ae,Sg,Ei)))),Rg=s(Ag,"\\([xX]\\)","( )"),Dg=s($e,bg,Ta(s(ye,Ei,s(Ae,Rg,Ei)))),Cg=tg(s(Ee,Dg,Tg)),Vg=s(we,Cg,s($e,Eg,xg)),Ng=t(function(r,n){return{fu:r,df:n}}),Bg=t(function(r,n){return s(Ng,n.b,r(n.a))}),Mg=s(Ee,s($e,Bg(bg),tg(Rg)),s($e,Bg(sg),tg(Sg))),Og=s(ge,gg,s(ge,ug,Ge(X([s($e,Wv,Vg),s($e,Kv,Mg),s(ou,Jv,ag),s($e,Qv,wg)])))),Ug=t(function(r,n){return{$:3,a:r,b:n}}),Ig=t(function(r,n){return{$:1,a:r,b:n}}),Hg=t(function(r,n){return{$:2,a:r,b:n}}),Pg=e(function(r,n,t){return H(t,{bM:s(fa,{en:Bn,fK:n,fV:r,f_:!1},t.bM)})}),zg=function(r){var n=function(){var n=t(function(r,n){return jt(s(Vt,r,n))}),e=r.f0;switch(e.$){case 0:return{$:0,a:""};case 1:return s(Ig,!1,-1);case 2:return s(Hg,e.a,s(n,function(r){return O(r.a,!1)},u=e.b));default:var u=e.c;return s(Ug,e.a,s(pv,zn(e.d),s(n,function(r){return O(r,!1)},u)))}}();return s(ye,s(ge,na,s($e,Pg(n),vg)),Yu(r))},jg=t(function(r,n){return{eM:n,f0:r}}),_g=function(r){return{$:0,a:r}},Gg=t(function(r,n){return{$:2,a:r,b:n}}),Xg=s(Va,Ce("["),Ce("]")),Zg=function(r){return s(ye,Pe("\\][\t ]*"),s(Ae,r,s(ye,Pe("\\-?[\t ]*\\["),Xe($a))))},Fg=t(function(r,n){return s(ye,wb,Zg(Ta(s(Ae,s(Se,qf,Ce(n)),Ce(r)))))}),Qg=Ta(s(ye,wb,s(Ae,yf,s(ye,Pe("\\-?[\t ]*\\[[\t ]+\\]"),Xe($a))))),Jg=s(ye,wb,s($e,zn,Zg(s(ye,Ce("]"),s(Ae,Ta(Pe("_{3,}[\t ]*")),s(ye,Ce("["),s(ye,Ei,Xe($a)))))))),Wg=u(function(r,n,t,e){return{$:3,a:r,b:n,c:t,d:e}}),Kg=t(function(r,n){return b(Wg,r,n,s(Vt,Ib,n))}),Yg=function(r){var n=r.df;return 1!==n.$||n.b.b?da(""):Yu({$:1,a:r.fu})},rh=s(ge,function(r){return"X"===r?da(""):Yu(r)},Pe("\\w(\\w+| )*")),nh=function(r){return Ta(function(r){return s(ye,wb,s(we,yf,s($e,te,r)))}(Zg(r(rh))))},th=s(we,ra(s(qt,function(r){return r.bM},s(qt,Ku,Yu))),s($e,jg,Ge(X([s($e,_g,Jg),s(ge,Yg,wg),s($e,Gg(!1),nh(Na)),s($e,Gg(!0),nh(Xg)),s(we,Qg,s($e,Kg(!1),s(Fg,"(",")"))),s(we,Qg,s($e,Kg(!0),s(Fg,"[","]")))])))),eh=s(ge,zg,th),uh=a(function(r,n,t,e,u){return{dR:e,dW:r,ey:t,eE:n,eM:u}}),ah=t(function(r,n){return s(ye,Xe(r),s(Ba,r,n))}),ih=t(function(r,n){return s(Ee,s(ah,r,n),Yu(j))}),ch=s(ye,Pe("[\t ]*\\n"),s(Ae,s(ih,Ce("|"),Ge(X([s(ou,"text-center",Pe("[\t ]*:-+:[\t ]*")),s(ou,"text-left",Pe("[\t ]*:-+[\t ]*")),s(ou,"text-right",Pe("[\t ]*-+:[\t ]*")),s(ou,"text-left",Pe("[\t ]*-+[\t ]*"))]))),s(ye,Ce("|"),$a))),oh=s(Ae,s(Se,s(we,s(Ra,j,yf),s($e,te,s(Ae,Ai,s(ye,Ya,s(ye,Ei,Ce("|")))))),Pe("\\|[\t ]*\\n")),$a),fh=s(we,Sa(oh),s(we,ch,s($e,uh(0),oh))),sh=e(function(r,n,t){return{dZ:r,ec:t,ef:n}}),bh=s(qt,we(ra(s(qt,function(r){return r.bN},s(qt,Ku,Yu)))),ye(na(function(r){return H(r,{bN:s(fa,b(sh,-1,!1,!1),r.bN)})}))),lh=s($e,b(uh,0,j,j),Ta(oh)),dh=bh(s(Ae,s(Ee,fh,lh),wp)),ph=t(function(r,n){return{eM:n,f5:r}}),vh=s(qt,function(r){return r.fV},s(qt,Sb(St),On(0))),gh=s(ge,function(r){var n=r.a,e=r.b;return s(ye,s(ge,na,s($e,t(function(r,t){return H(t,{ei:function(){if(1===r.$)return t.ei;var e,u=r.a,a=t.ei;return H(a,{eU:(e=s(Db,u,a.eU),e.$?a.eU:b(Yp,u,H(e.a,{c1:Nn(Xi(vh({fK:Bn,fV:Ju(n)})))}),a.eU))})}(),bP:s(fa,{fK:r,fV:Ju(n)},t.bP)})}),vg)),s($e,ph(e),ra(s(qt,function(r){return r.bP},s(qt,Ku,Yu)))))},s($e,Hp,b(ng,Ce("- ["),Ce("]"),s(Ag,"[xX]"," ")))),hh=na(function(r){return H(r,{eO:Fn(s(ei,1,Fn(r.eO))),cq:!1})}),mh=function(r){return{$:18,a:r}},$h=s($e,Pi,Ta(s(Ee,qf,s($e,function(r){return s(Xu,r,j)},Pe("."))))),wh=s($e,mh,s(ye,wb,s(Ae,$h,s(ye,$a,wp)))),yh=s(we,yf,s($e,te,qb)),qh=s(Ee,s(Ae,Yu(1),Pe("={3,}[ \t]*")),s(Ae,Yu(2),Pe("-{3,}[ \t]*"))),kh=s(we,qh,s($e,t(function(r,n){return O(n,r)}),s(ye,Pe("[ \t]*\n"),yf))),xh=s(ye,Pe("[ \t]*\n?"),s(Ee,yh,kh)),Lh=function(r){var n="(`){"+Un(r)+(r>8?",}":"}"),t=b(zi,!0,!1,r>8?"([\t ]*(ascii|art))?[\t ]*":"[\t ]*(ascii|art)[\t ]*");return s(we,s($e,s(qt,Qe,ap(1)),s(Se,s(Ae,Pe("(?:.(?!"+n+"))*\\n"),Xe($a)),s(Ae,Pe(n),$a))),s(ye,wb,s($e,te,s(Ae,Xe(yf),t))))},Eh=u(function(r,n,t,e){var u=s(Wu,r,t);if(u.$)return t;var a=u.a,i=s(Db,n,a.w);return i.$?t:b(zt,r,H(a,{w:b(Yp,n,H(i.a,{aH:e}),a.w)}),t)}),Ah=function(r){var n=r.a,t=r.b,e=t.a,u=t.b;return s(ou,{$:8,a:O(e,u)},n.b?na(function(r){var t=r.ei;return H(r,{ei:H(t,{at:l(Eh,e,u,t.at,n)})})}):Yu(0))},Sh=function(r){var n=r.a,e=r.b,u=s(vp,{dJ:4,dN:"white",ex:14,eH:Nn("100%"),e2:1,ff:!0,fY:"black",f6:"black",f7:16,f8:8,gh:'"',gl:Bn},e);return ra(function(r){var e=b(Pn,t(function(r,n){var t=r.a,e=r.b,u=n.a,a=n.b,i=b(_a,Ch(),u,t+"\n");if(i.$)return O(u,a);var c=i.a;return O(c.a,s(mn,O(c.c,e),a))}),O(r,j),u.cg),a=e.a;return s(Ae,Yu(O(n,{b$:u.b$,cg:e.b,c2:u.c2,dc:u.dc,dn:u.dn})),Pa(a))})};function Th(){return Ge(X([s(we,yp(Oh()),s($e,yl,hp)),s(ge,Ah,s(we,fd(Lp),s($e,te,hp))),s(we,zp,s($e,$l,hp)),s(we,ra(s(qt,function(r){return r.ei},s(qt,function(r){return r.eU},Yu))),s(we,dh,s($e,t(function(r,n){return s(qt,s(cd,r,n),Tl(r))}),hp))),Uh(),s($e,wl,jv(hp)),s(we,xh,s($e,xl,hp)),mp,s(we,eh,s($e,Sl,hp)),s(we,Dh(),s(we,Og,s($e,El,hp))),s(we,gh,s($e,Rl,hp)),Vh(),s(we,Nh(),s($e,Ll,hp)),s(we,Rh(),s($e,ml,hp)),s(ye,Pe("[ \t]*\n"),s(we,wo(Oh()),s($e,kl,hp))),s(we,Fv,s($e,ql,hp)),s(we,Lp,s($e,Nl,hp))]))}function Rh(){return s(Ba,s(ye,$a,Sa(kp)),s(ye,hh,s(Ae,s(Ae,s(Ma,Sa(kp),Oh()),Pe("[ \t]*[*+-][ \t]+")),Dl("  "))))}function Dh(){var r=e(function(r,n,t){return O(n,t-r)});return Xe(s(we,ra(function(r){return Yu(r.ei.b9)}),s(we,s(Se,s(ye,od,Oh()),Pe("[\t ]*\\*{3,}[\t ]*")),s($e,r,s(Ae,ra(function(r){return Yu(r.ei.b9)}),Pe("[\t ]*\\*{3,}[\t ]*\\n+"))))))}function Ch(){return s(ye,Bh(),Sa(s(ye,od,s(Ae,s(Ee,Oh(),wh),Bh()))))}function Vh(){return s(ye,hh,s(we,s(Ma,kp,Oh()),s(ye,wp,s(ye,Dl("> ?"),s(ye,Pe("> ?"),s($e,Al,hp))))))}function Nh(){return s(Ba,s(ye,$a,Sa(kp)),s(ye,hh,s(Ae,s(we,s(Ma,Sa(kp),Oh()),s(ye,Pe("\\.[ \t]*"),s($e,te,Pe("[ \t]*-?\\d+")))),Dl("   "))))}function Bh(){return fu(Sa(s(ye,od,Cl(Mh()))))}function Mh(){return s(ye,hh,Ta(s(ye,Pe("\n?"),Oh())))}function Oh(){return fo(function(){return s(ye,Xe(s(Ae,ii,ze)),s(Ae,Th(),s(Ae,Ya,$a)))})}function Uh(){return s(we,s(ge,Sh,s(ge,Lh,ha)),s($e,hl,hp))}var Ih=Th();Th=function(){return Ih};var Hh=Rh();Rh=function(){return Hh};var Ph=Dh();Dh=function(){return Ph};var zh=Ch();Ch=function(){return zh};var jh=Vh();Vh=function(){return jh};var _h=Nh();Nh=function(){return _h};var Gh=Bh();Bh=function(){return Gh};var Xh=Mh();Mh=function(){return Xh};var Zh=Oh();Oh=function(){return Zh};var Fh=Uh();Uh=function(){return Fh};var Qh,Jh=e(function(r,n,t){var e=b(_a,s(Ae,zh,Rf),s(Le,Nn(r),H(n,{db:t.eM})),t.dX);if(e.$){var u=e.a;return An(s(de,u.c,u.b))}var a=e.a;return b(gl,t,a.a,a.c)}),Wh=t(function(r,n){return H(r,{bH:b(Yp,r.fM,n,r.bH)})}),Kh=function(r){var n=function(r){return s(Db,r.fM,r.bH)}(r);if(n.$)return r;var t=n.a,e=function(){if(t.fw)return H(t,{ei:H(t.ei,{dA:0})});var n=b(Jh,r.da,r.eb,t);return n.$?H(t,{dR:j,em:Nn(n.a)}):n.a}(),u=s(cs,r.c0,s(Zt,j,s(Xt,function(r){return r.fF},e.eb)));return s(Wh,H(r,{c0:u.a,dr:l(vl,e.bP,r.fM,"task",l(vl,e.bM,r.fM,"survey",l(vl,e.am.cb,r.fM,"code",l(vl,e.bC,r.fM,"quiz",s(du,u.b,r.dr)))))}),e)},Yh=t(function(r,n){for(;;){if(T(Ku(n.bH),r))return n;var t=r+1,e=Kh(H(n,{fM:r}));r=t,n=e}}),rm=function(r){return O(H(r,{fV:wt}),function(){switch(r.Q){case"json":return rs(s(te,!0,s(On,2,Pb(r.e$))));case"fullJson":return rs(s(te,!0,s(On,2,Lt(X([O("lia",Pb(n=s(Yh,0,r.e$))),O("quiz",s(Sb,cl,s(pl,function(r){return r.bC},n.bH))),O("survey",s(Sb,ll,s(pl,function(r){return r.bM},n.bH)))])))));case"fullJson2":var n;return rs(s(te,!0,s(On,2,Lt(X([O("lia",al(n=s(Yh,0,r.e$))),O("quiz",s(Sb,cl,s(pl,function(r){return r.bC},n.bH))),O("survey",s(Sb,ll,s(pl,function(r){return r.bM},n.bH)))])))));default:return s(ss,"unknown cmd",r.Q)}}())},nm=function(r){r:for(;;){var n=r.fV;n:for(;;){if(2===n.$){if(n.a){var t=r.dX;if(1===t.$){r=H(r,{fV:s(ts,!1,n.b)});continue r}var e=s(Lb,r.e$,t.a),u=e.a,a=H(r,{dX:e.b,e$:u});if(s(pb,4,vb(u))){r=a;continue r}return O(a,sb(ds))}if(n.b)break n;return rm(r)}break n}return O(r,Yf)}};Qh={Worker:{init:Jr({eQ:function(r){return O(l(yt,wt,"",Bn,v(Wf,!1,!0,Nt,"","","",Bn)),""===r.Q?Yf:rs((n=r.Q,s(Of,O(!1,""),s(ne,s(qt,lt,s(qt,re,s(qt,On(2),te(!0)))),s(Mf,"",n))))));var n},f$:function(){return ns(hn)},bQ:t(function(r,n){switch(r.$){case 0:if(r.a.b&&r.a.b.b&&!r.a.b.b.b){if("defines"===r.a.a)return O(n,rm(nm(s(lb,r.a.b.a,H(n,{Q:"json"})).a).a).b);var t=r.a;return s(lb,t.b.a,H(n,{Q:t.a}))}return O(n,s(ss,"Handle",Qe(s(Je,",",r.a))));case 1:return nm(n);case 2:if(r.b.$){var e=r.a;return O(H(n,{fV:s(es,n.fV,db(u=r.b.a))}),s(ss,e+" Load_ReadMe_Result",db(u)))}return s(lb,r.b.a,n);default:var u;return r.a.$?O(H(n,{fV:s(es,n.fV,db(u=r.a.a))}),s(ss,"Load_ReadMe_Result",db(u))):nm(H(n,{e$:s(fs,n.e$,b(qu,"\r","",r.a.a)),fV:(a=n.fV,2===a.$?s(ts,a.a,a.b-1):n.fV)}))}var a})})(s(mt,function(r){return Zf({Q:r})},s($t,"cmd",Ff)))(0)}},r.Elm?function r(n,t){for(var e in t)e in n?"init"==e?S(6):r(n[e],t[e]):n[e]=t[e]}(r.Elm,Qh):r.Elm=Qh}(this);
-},{}],"QCba":[function(require,module,exports) {
-"use strict";var e=this&&this.__awaiter||function(e,t,n,o){return new(n||(n=Promise))(function(i,r){function a(e){try{c(o.next(e))}catch(t){r(t)}}function s(e){try{c(o.throw(e))}catch(t){r(t)}}function c(e){var t;e.done?i(e.value):(t=e.value,t instanceof n?t:new n(function(e){e(t)})).then(a,s)}c((o=o.apply(e,t||[])).next())})},t=this&&this.__generator||function(e,t){var n,o,i,r,a={label:0,sent:function(){if(1&i[0])throw i[1];return i[1]},trys:[],ops:[]};return r={next:s(0),throw:s(1),return:s(2)},"function"==typeof Symbol&&(r[Symbol.iterator]=function(){return this}),r;function s(r){return function(s){return function(r){if(n)throw new TypeError("Generator is already executing.");for(;a;)try{if(n=1,o&&(i=2&r[0]?o.return:r[0]?o.throw||((i=o.return)&&i.call(o),0):o.next)&&!(i=i.call(o,r[1])).done)return i;switch(o=0,i&&(r=[2&r[0],i.value]),r[0]){case 0:case 1:i=r;break;case 4:return a.label++,{value:r[1],done:!1};case 5:a.label++,o=r[1],r=[0];continue;case 7:r=a.ops.pop(),a.trys.pop();continue;default:if(!(i=(i=a.trys).length>0&&i[i.length-1])&&(6===r[0]||2===r[0])){a=0;continue}if(3===r[0]&&(!i||r[1]>i[0]&&r[1]<i[3])){a.label=r[1];break}if(6===r[0]&&a.label<i[1]){a.label=i[1],i=r;break}if(i&&a.label<i[2]){a.label=i[2],a.ops.push(r);break}i[2]&&a.ops.pop(),a.trys.pop();continue}r=t.call(e,a)}catch(s){r=[6,s],o=0}finally{n=i=0}if(5&r[0])throw r[1];return{value:r[0]?r[1]:void 0,done:!0}}([r,s])}}};Object.defineProperty(exports,"__esModule",{value:!0});var n=require("../LiaScript/src/elm/Worker.elm");global.XMLHttpRequest=require("xhr2");var o=require("@liascript/simple-scorm-packager"),i=require("path"),r=require("temp"),a=require("fs-extra"),s=require("minimist")(process.argv.slice(2));function c(){console.log("LiaScript-Exporter"),console.log(""),console.log("-h","--help","           show this help"),console.log("-i","--input","          file to be used as input"),console.log("-p","--path","           path to be packed, if not set, the path of the input file is used"),console.log("-o","--output","         output file name (default is output), the ending is define by the format"),console.log("-f","--format","         scorm1.2, json, fullJson, fullJson2, web (default is json)"),console.log("-v","--version","        output the current version"),console.log("\n-k","--key","            responsive voice key "),console.log("\nSCORM 1.2 settings:"),console.log(""),console.log("--organization","         set the organization title"),console.log("--masteryScore","         set the scorm masteryScore (a value between 0 -- 100), default is 0"),console.log("--typicalDuration","      set the scorm duration, default is PT0H5M0S")}function l(){return new Promise(function(e,t){r.mkdir("lia",function(n,o){console.warn(n,o),n?t(n):e(o)})})}function u(e,t){return new Promise(function(n,o){a.writeFile(e,t,function(e){e?o(e):n("ok")})})}function p(n,r){return e(this,void 0,void 0,function(){var e,s,c,p,f,d,h,m,g;return t(this,function(t){switch(t.label){case 0:return e=n.i||n.input,s=n.o||n.output||"output",(c=n.p||n.path)||(c=i.dirname(e),e=i.basename(e)),[4,l()];case 1:return p=t.sent(),f=i.join(p,"pro"),[4,a.copy(i.join(__dirname,"./assets/scorm1.2"),f)];case 2:return t.sent(),[4,u(i.join(f,"config.js"),"window.config_ = "+JSON.stringify(r)+";")];case 3:t.sent(),d=a.readFileSync(i.join(f,"index.html"),"utf8"),(h=n.k||n.key)&&(d=d.replace("https://code.responsivevoice.org/responsivevoice.js","https://code.responsivevoice.org/responsivevoice.js?key="+h)),d=d.replace("</head>",'<script src="config.js"><\/script></head>'),t.label=4;case 4:return t.trys.push([4,6,,7]),[4,u(i.join(f,"index.html"),d)];case 5:return t.sent(),[3,7];case 6:return m=t.sent(),console.warn(m),[2];case 7:return[4,a.copy(c,f)];case 8:return t.sent(),g={version:"1.2",organization:n.organization||"LiaScript",title:r.lia.str_title,language:r.lia.definition.language,masteryScore:n.masteryScore||0,startingPage:"index.html",startingParameters:"./"+e,source:i.join(p,"pro"),package:{version:r.lia.definition.version,zip:!0,name:i.basename(s),author:r.lia.definition.author,outputFolder:i.dirname(s),description:r.lia.comment,typicalDuration:n.typicalDuration||"PT0H5M0S",vcard:{author:r.lia.definition.author,org:n.organization||"LiaScript",mail:r.lia.definition.email}}},o(g,function(e){console.log(e),process.exit(0)}),[2]}})})}function f(n,o){return e(this,void 0,void 0,function(){var e,r,s,c,p,f,d,h,m,g;return t(this,function(t){switch(t.label){case 0:return e=n.i||n.input,r=n.o||n.output||"output",(s=n.p||n.path)||(s=i.dirname(e),e=i.basename(e)),[4,l()];case 1:return c=t.sent(),p=i.join(c,"pro"),[4,a.copy(i.join(__dirname,"./assets/web"),p)];case 2:t.sent(),f=a.readFileSync(i.join(p,"index.html"),"utf8"),(d=n.k||n.key)&&(f=f.replace("</head>",'<script src="https://code.responsivevoice.org/responsivevoice.js?key='+d+'"><\/script></head>')),f=f.replace("<head>",'<head><script>window.liaDefaultCourse="'+i.basename(e)+'"<\/script>');try{f=f.replace("<title>Lia</title>","<title>"+o.lia.str_title+'</title><meta property="og:title" content="'+o.lia.str_title+'"> <meta name="twitter:title" content="'+o.lia.str_title+'">'),console.log("updating title ...")}catch(v){console.warn("could not add title")}try{h=o.lia.definition.macro.comment,f=f.replace('<meta name="description" content="LiaScript is a service for running free and interactive online courses, build with its own Markup-language. So check out the following course ;-)">','<meta name="description" content="'+h+'"><meta property="og:description" content="'+h+'"><meta name="twitter:description" content="'+h+'">'),console.log("updating description ...")}catch(v){console.warn("could not add description")}try{m=o.lia.definition.logo,f=f.replace("<head>",'<head><meta property="og:image" content="'+m+'"><meta name="twitter:image" content="'+m+'">'),console.log("updating logo ...")}catch(v){console.warn("could not add image")}t.label=3;case 3:return t.trys.push([3,5,,6]),[4,u(i.join(p,"index.html"),f)];case 4:return t.sent(),[3,6];case 5:return g=t.sent(),console.warn(g),[2];case 6:return[4,a.copy(s,p)];case 7:return t.sent(),[4,a.move(p,r)];case 8:return t.sent(),[2]}})})}if(s.v||s.version)console.log("version: 1.0.51--0.9.51");else if(s.h||s.help)c();else if(s.i||s.input){var d=n.Elm.Worker.init({flags:{cmd:""}});d.ports.output.subscribe(function(e){var t=e[0],n=e[1],o=s.o||s.output||"output",i=s.f||s.format||"json";if(i=i.toLowerCase(),t)switch(i){case"json":case"fulljson":case"fulljson2":a.writeFile(o+".json",n,function(e){e&&console.error(e)});break;case"scorm1.2":p(s,JSON.parse(n));break;case"web":f(s,JSON.parse(n));break;default:console.warn("unknown output format",i)}else console.warn(n)});try{var h=a.readFileSync(s.i||s.input,"utf8"),m=s.f||s.format||"json";"scorm1.2"!=m&&"web"!=m||(m="fullJson"),d.ports.input.send([m,h])}catch(g){console.error(g)}}else console.warn("No input defined"),c();
-},{"../LiaScript/src/elm/Worker.elm":"clwS"}]},{},["QCba"], null)
+var $9Afec$xhr2 = require("xhr2");
+var $9Afec$fsextra = require("fs-extra");
+var $9Afec$minimist = require("minimist");
+var $9Afec$path = require("path");
+var $9Afec$temp = require("temp");
+var $9Afec$liascriptsimplescormpackager = require("@liascript/simple-scorm-packager");
+
+var $parcel$global =
+typeof globalThis !== 'undefined'
+  ? globalThis
+  : typeof self !== 'undefined'
+  ? self
+  : typeof window !== 'undefined'
+  ? window
+  : typeof global !== 'undefined'
+  ? global
+  : {};
+var $eb828a374fec450c$exports = {};
+(function(scope) {
+    function F(arity, fun, wrapper) {
+        wrapper.a = arity;
+        wrapper.f = fun;
+        return wrapper;
+    }
+    function F2(fun) {
+        return F(2, fun, function(a) {
+            return function(b) {
+                return fun(a, b);
+            };
+        });
+    }
+    function F3(fun) {
+        return F(3, fun, function(a) {
+            return function(b) {
+                return function(c) {
+                    return fun(a, b, c);
+                };
+            };
+        });
+    }
+    function F4(fun) {
+        return F(4, fun, function(a) {
+            return function(b) {
+                return function(c) {
+                    return function(d) {
+                        return fun(a, b, c, d);
+                    };
+                };
+            };
+        });
+    }
+    function F5(fun) {
+        return F(5, fun, function(a) {
+            return function(b) {
+                return function(c) {
+                    return function(d) {
+                        return function(e) {
+                            return fun(a, b, c, d, e);
+                        };
+                    };
+                };
+            };
+        });
+    }
+    function F6(fun) {
+        return F(6, fun, function(a) {
+            return function(b) {
+                return function(c) {
+                    return function(d) {
+                        return function(e) {
+                            return function(f) {
+                                return fun(a, b, c, d, e, f);
+                            };
+                        };
+                    };
+                };
+            };
+        });
+    }
+    function F7(fun) {
+        return F(7, fun, function(a) {
+            return function(b) {
+                return function(c) {
+                    return function(d) {
+                        return function(e) {
+                            return function(f) {
+                                return function(g) {
+                                    return fun(a, b, c, d, e, f, g);
+                                };
+                            };
+                        };
+                    };
+                };
+            };
+        });
+    }
+    function F8(fun) {
+        return F(8, fun, function(a) {
+            return function(b) {
+                return function(c) {
+                    return function(d) {
+                        return function(e) {
+                            return function(f) {
+                                return function(g) {
+                                    return function(h) {
+                                        return fun(a, b, c, d, e, f, g, h);
+                                    };
+                                };
+                            };
+                        };
+                    };
+                };
+            };
+        });
+    }
+    function F9(fun) {
+        return F(9, fun, function(a) {
+            return function(b) {
+                return function(c) {
+                    return function(d) {
+                        return function(e) {
+                            return function(f) {
+                                return function(g) {
+                                    return function(h) {
+                                        return function(i) {
+                                            return fun(a, b, c, d, e, f, g, h, i);
+                                        };
+                                    };
+                                };
+                            };
+                        };
+                    };
+                };
+            };
+        });
+    }
+    function A2(fun, a, b) {
+        return fun.a === 2 ? fun.f(a, b) : fun(a)(b);
+    }
+    function A3(fun, a, b, c) {
+        return fun.a === 3 ? fun.f(a, b, c) : fun(a)(b)(c);
+    }
+    function A4(fun, a, b, c, d) {
+        return fun.a === 4 ? fun.f(a, b, c, d) : fun(a)(b)(c)(d);
+    }
+    function A5(fun, a, b, c, d, e) {
+        return fun.a === 5 ? fun.f(a, b, c, d, e) : fun(a)(b)(c)(d)(e);
+    }
+    function A6(fun, a, b, c, d, e, f) {
+        return fun.a === 6 ? fun.f(a, b, c, d, e, f) : fun(a)(b)(c)(d)(e)(f);
+    }
+    function A7(fun, a, b, c, d, e, f, g) {
+        return fun.a === 7 ? fun.f(a, b, c, d, e, f, g) : fun(a)(b)(c)(d)(e)(f)(g);
+    }
+    function A8(fun, a, b, c, d, e, f, g, h) {
+        return fun.a === 8 ? fun.f(a, b, c, d, e, f, g, h) : fun(a)(b)(c)(d)(e)(f)(g)(h);
+    }
+    function A9(fun, a, b, c, d, e, f, g, h, i) {
+        return fun.a === 9 ? fun.f(a, b, c, d, e, f, g, h, i) : fun(a)(b)(c)(d)(e)(f)(g)(h)(i);
+    }
+    console.warn('Compiled in DEV mode. Follow the advice at https://elm-lang.org/0.19.1/optimize for better performance and smaller assets.');
+    var _JsArray_empty = [];
+    function _JsArray_singleton(value) {
+        return [
+            value
+        ];
+    }
+    function _JsArray_length(array) {
+        return array.length;
+    }
+    var _JsArray_initialize = F3(function(size, offset, func) {
+        var result = new Array(size);
+        for(var i = 0; i < size; i++)result[i] = func(offset + i);
+        return result;
+    });
+    var _JsArray_initializeFromList = F2(function(max, ls) {
+        var result = new Array(max);
+        for(var i = 0; i < max && ls.b; i++){
+            result[i] = ls.a;
+            ls = ls.b;
+        }
+        result.length = i;
+        return _Utils_Tuple2(result, ls);
+    });
+    var _JsArray_unsafeGet = F2(function(index, array) {
+        return array[index];
+    });
+    var _JsArray_unsafeSet = F3(function(index, value, array) {
+        var length = array.length;
+        var result = new Array(length);
+        for(var i = 0; i < length; i++)result[i] = array[i];
+        result[index] = value;
+        return result;
+    });
+    var _JsArray_push = F2(function(value, array) {
+        var length = array.length;
+        var result = new Array(length + 1);
+        for(var i = 0; i < length; i++)result[i] = array[i];
+        result[length] = value;
+        return result;
+    });
+    var _JsArray_foldl = F3(function(func, acc, array) {
+        var length = array.length;
+        for(var i = 0; i < length; i++)acc = A2(func, array[i], acc);
+        return acc;
+    });
+    var _JsArray_foldr = F3(function(func, acc, array) {
+        for(var i = array.length - 1; i >= 0; i--)acc = A2(func, array[i], acc);
+        return acc;
+    });
+    var _JsArray_map = F2(function(func, array) {
+        var length = array.length;
+        var result = new Array(length);
+        for(var i = 0; i < length; i++)result[i] = func(array[i]);
+        return result;
+    });
+    var _JsArray_indexedMap = F3(function(func, offset, array) {
+        var length = array.length;
+        var result = new Array(length);
+        for(var i = 0; i < length; i++)result[i] = A2(func, offset + i, array[i]);
+        return result;
+    });
+    var _JsArray_slice = F3(function(from, to, array) {
+        return array.slice(from, to);
+    });
+    var _JsArray_appendN = F3(function(n, dest, source) {
+        var destLen = dest.length;
+        var itemsToCopy = n - destLen;
+        if (itemsToCopy > source.length) itemsToCopy = source.length;
+        var size = destLen + itemsToCopy;
+        var result = new Array(size);
+        for(var i = 0; i < destLen; i++)result[i] = dest[i];
+        for(var i = 0; i < itemsToCopy; i++)result[i + destLen] = source[i];
+        return result;
+    });
+    // LOG
+    var _Debug_log_UNUSED = F2(function(tag, value) {
+        return value;
+    });
+    var _Debug_log = F2(function(tag, value) {
+        console.log(tag + ': ' + _Debug_toString(value));
+        return value;
+    });
+    // TODOS
+    function _Debug_todo(moduleName, region) {
+        return function(message) {
+            _Debug_crash(8, moduleName, region, message);
+        };
+    }
+    function _Debug_todoCase(moduleName, region, value) {
+        return function(message) {
+            _Debug_crash(9, moduleName, region, value, message);
+        };
+    }
+    // TO STRING
+    function _Debug_toString_UNUSED(value) {
+        return '<internals>';
+    }
+    function _Debug_toString(value) {
+        return _Debug_toAnsiString(false, value);
+    }
+    function _Debug_toAnsiString(ansi, value) {
+        if (typeof value === 'function') return _Debug_internalColor(ansi, '<function>');
+        if (typeof value === 'boolean') return _Debug_ctorColor(ansi, value ? 'True' : 'False');
+        if (typeof value === 'number') return _Debug_numberColor(ansi, value + '');
+        if (value instanceof String) return _Debug_charColor(ansi, "'" + _Debug_addSlashes(value, true) + "'");
+        if (typeof value === 'string') return _Debug_stringColor(ansi, '"' + _Debug_addSlashes(value, false) + '"');
+        if (typeof value === 'object' && '$' in value) {
+            var tag = value.$;
+            if (typeof tag === 'number') return _Debug_internalColor(ansi, '<internals>');
+            if (tag[0] === '#') {
+                var output = [];
+                for(var k in value){
+                    if (k === '$') continue;
+                    output.push(_Debug_toAnsiString(ansi, value[k]));
+                }
+                return '(' + output.join(',') + ')';
+            }
+            if (tag === 'Set_elm_builtin') return _Debug_ctorColor(ansi, 'Set') + _Debug_fadeColor(ansi, '.fromList') + ' ' + _Debug_toAnsiString(ansi, $elm$core$Set$toList(value));
+            if (tag === 'RBNode_elm_builtin' || tag === 'RBEmpty_elm_builtin') return _Debug_ctorColor(ansi, 'Dict') + _Debug_fadeColor(ansi, '.fromList') + ' ' + _Debug_toAnsiString(ansi, $elm$core$Dict$toList(value));
+            if (tag === 'Array_elm_builtin') return _Debug_ctorColor(ansi, 'Array') + _Debug_fadeColor(ansi, '.fromList') + ' ' + _Debug_toAnsiString(ansi, $elm$core$Array$toList(value));
+            if (tag === '::' || tag === '[]') {
+                var output = '[';
+                value.b && (output += _Debug_toAnsiString(ansi, value.a), value = value.b);
+                for(; value.b; value = value.b)output += ',' + _Debug_toAnsiString(ansi, value.a);
+                return output + ']';
+            }
+            var output = '';
+            for(var i in value){
+                if (i === '$') continue;
+                var str = _Debug_toAnsiString(ansi, value[i]);
+                var c0 = str[0];
+                var parenless = c0 === '{' || c0 === '(' || c0 === '[' || c0 === '<' || c0 === '"' || str.indexOf(' ') < 0;
+                output += ' ' + (parenless ? str : '(' + str + ')');
+            }
+            return _Debug_ctorColor(ansi, tag) + output;
+        }
+        if (typeof DataView === 'function' && value instanceof DataView) return _Debug_stringColor(ansi, '<' + value.byteLength + ' bytes>');
+        if (typeof File !== 'undefined' && value instanceof File) return _Debug_internalColor(ansi, '<' + value.name + '>');
+        if (typeof value === 'object') {
+            var output = [];
+            for(var key in value){
+                var field = key[0] === '_' ? key.slice(1) : key;
+                output.push(_Debug_fadeColor(ansi, field) + ' = ' + _Debug_toAnsiString(ansi, value[key]));
+            }
+            if (output.length === 0) return '{}';
+            return '{ ' + output.join(', ') + ' }';
+        }
+        return _Debug_internalColor(ansi, '<internals>');
+    }
+    function _Debug_addSlashes(str, isChar) {
+        var s = str.replace(/\\/g, '\\\\').replace(/\n/g, '\\n').replace(/\t/g, '\\t').replace(/\r/g, '\\r').replace(/\v/g, '\\v').replace(/\0/g, '\\0');
+        if (isChar) return s.replace(/\'/g, '\\\'');
+        else return s.replace(/\"/g, '\\"');
+    }
+    function _Debug_ctorColor(ansi, string) {
+        return ansi ? '\x1b[96m' + string + '\x1b[0m' : string;
+    }
+    function _Debug_numberColor(ansi, string) {
+        return ansi ? '\x1b[95m' + string + '\x1b[0m' : string;
+    }
+    function _Debug_stringColor(ansi, string) {
+        return ansi ? '\x1b[93m' + string + '\x1b[0m' : string;
+    }
+    function _Debug_charColor(ansi, string) {
+        return ansi ? '\x1b[92m' + string + '\x1b[0m' : string;
+    }
+    function _Debug_fadeColor(ansi, string) {
+        return ansi ? '\x1b[37m' + string + '\x1b[0m' : string;
+    }
+    function _Debug_internalColor(ansi, string) {
+        return ansi ? '\x1b[36m' + string + '\x1b[0m' : string;
+    }
+    function _Debug_toHexDigit(n) {
+        return String.fromCharCode(n < 10 ? 48 + n : 55 + n);
+    }
+    // CRASH
+    function _Debug_crash_UNUSED(identifier) {
+        throw new Error('https://github.com/elm/core/blob/1.0.0/hints/' + identifier + '.md');
+    }
+    function _Debug_crash(identifier, fact1, fact2, fact3, fact4) {
+        switch(identifier){
+            case 0:
+                throw new Error('What node should I take over? In JavaScript I need something like:\n\n    Elm.Main.init({\n        node: document.getElementById("elm-node")\n    })\n\nYou need to do this with any Browser.sandbox or Browser.element program.');
+            case 1:
+                throw new Error('Browser.application programs cannot handle URLs like this:\n\n    ' + document.location.href + '\n\nWhat is the root? The root of your file system? Try looking at this program with `elm reactor` or some other server.');
+            case 2:
+                var jsonErrorString = fact1;
+                throw new Error('Problem with the flags given to your Elm program on initialization.\n\n' + jsonErrorString);
+            case 3:
+                var portName = fact1;
+                throw new Error('There can only be one port named `' + portName + '`, but your program has multiple.');
+            case 4:
+                var portName = fact1;
+                var problem = fact2;
+                throw new Error('Trying to send an unexpected type of value through port `' + portName + '`:\n' + problem);
+            case 5:
+                throw new Error('Trying to use `(==)` on functions.\nThere is no way to know if functions are "the same" in the Elm sense.\nRead more about this at https://package.elm-lang.org/packages/elm/core/latest/Basics#== which describes why it is this way and what the better version will look like.');
+            case 6:
+                var moduleName = fact1;
+                throw new Error('Your page is loading multiple Elm scripts with a module named ' + moduleName + '. Maybe a duplicate script is getting loaded accidentally? If not, rename one of them so I know which is which!');
+            case 8:
+                var moduleName = fact1;
+                var region = fact2;
+                var message = fact3;
+                throw new Error('TODO in module `' + moduleName + '` ' + _Debug_regionToString(region) + '\n\n' + message);
+            case 9:
+                var moduleName = fact1;
+                var region = fact2;
+                var value = fact3;
+                var message = fact4;
+                throw new Error('TODO in module `' + moduleName + '` from the `case` expression ' + _Debug_regionToString(region) + '\n\nIt received the following value:\n\n    ' + _Debug_toString(value).replace('\n', '\n    ') + '\n\nBut the branch that handles it says:\n\n    ' + message.replace('\n', '\n    '));
+            case 10:
+                throw new Error('Bug in https://github.com/elm/virtual-dom/issues');
+            case 11:
+                throw new Error('Cannot perform mod 0. Division by zero error.');
+        }
+    }
+    function _Debug_regionToString(region) {
+        if (region.start.line === region.end.line) return 'on line ' + region.start.line;
+        return 'on lines ' + region.start.line + ' through ' + region.end.line;
+    }
+    // EQUALITY
+    function _Utils_eq(x, y) {
+        for(var pair, stack = [], isEqual = _Utils_eqHelp(x, y, 0, stack); isEqual && (pair = stack.pop()); isEqual = _Utils_eqHelp(pair.a, pair.b, 0, stack));
+        return isEqual;
+    }
+    function _Utils_eqHelp(x, y, depth, stack) {
+        if (x === y) return true;
+        if (typeof x !== 'object' || x === null || y === null) {
+            typeof x === 'function' && _Debug_crash(5);
+            return false;
+        }
+        if (depth > 100) {
+            stack.push(_Utils_Tuple2(x, y));
+            return true;
+        }
+        /**/ if (x.$ === 'Set_elm_builtin') {
+            x = $elm$core$Set$toList(x);
+            y = $elm$core$Set$toList(y);
+        }
+        if (x.$ === 'RBNode_elm_builtin' || x.$ === 'RBEmpty_elm_builtin') {
+            x = $elm$core$Dict$toList(x);
+            y = $elm$core$Dict$toList(y);
+        }
+        //*/
+        /**_UNUSED/
+	if (x.$ < 0)
+	{
+		x = $elm$core$Dict$toList(x);
+		y = $elm$core$Dict$toList(y);
+	}
+	//*/ for(var key in x){
+            if (!_Utils_eqHelp(x[key], y[key], depth + 1, stack)) return false;
+        }
+        return true;
+    }
+    var _Utils_equal = F2(_Utils_eq);
+    var _Utils_notEqual = F2(function(a, b) {
+        return !_Utils_eq(a, b);
+    });
+    // COMPARISONS
+    // Code in Generate/JavaScript.hs, Basics.js, and List.js depends on
+    // the particular integer values assigned to LT, EQ, and GT.
+    function _Utils_cmp(x, y, ord) {
+        if (typeof x !== 'object') return x === y ? /*EQ*/ 0 : x < y ? /*LT*/ -1 : /*GT*/ 1;
+        /**/ if (x instanceof String) {
+            var a = x.valueOf();
+            var b = y.valueOf();
+            return a === b ? 0 : a < b ? -1 : 1;
+        }
+        //*/
+        /**_UNUSED/
+	if (typeof x.$ === 'undefined')
+	//*/ /**/ if (x.$[0] === '#') return (ord = _Utils_cmp(x.a, y.a)) ? ord : (ord = _Utils_cmp(x.b, y.b)) ? ord : _Utils_cmp(x.c, y.c);
+        // traverse conses until end of a list or a mismatch
+        for(; x.b && y.b && !(ord = _Utils_cmp(x.a, y.a)); x = x.b, y = y.b); // WHILE_CONSES
+        return ord || (x.b ? /*GT*/ 1 : y.b ? /*LT*/ -1 : /*EQ*/ 0);
+    }
+    var _Utils_lt = F2(function(a, b) {
+        return _Utils_cmp(a, b) < 0;
+    });
+    var _Utils_le = F2(function(a, b) {
+        return _Utils_cmp(a, b) < 1;
+    });
+    var _Utils_gt = F2(function(a, b) {
+        return _Utils_cmp(a, b) > 0;
+    });
+    var _Utils_ge = F2(function(a, b) {
+        return _Utils_cmp(a, b) >= 0;
+    });
+    var _Utils_compare = F2(function(x, y) {
+        var n = _Utils_cmp(x, y);
+        return n < 0 ? $elm$core$Basics$LT : n ? $elm$core$Basics$GT : $elm$core$Basics$EQ;
+    });
+    // COMMON VALUES
+    var _Utils_Tuple0_UNUSED = 0;
+    var _Utils_Tuple0 = {
+        $: '#0'
+    };
+    function _Utils_Tuple2_UNUSED(a, b) {
+        return {
+            a: a,
+            b: b
+        };
+    }
+    function _Utils_Tuple2(a, b) {
+        return {
+            $: '#2',
+            a: a,
+            b: b
+        };
+    }
+    function _Utils_Tuple3_UNUSED(a, b, c) {
+        return {
+            a: a,
+            b: b,
+            c: c
+        };
+    }
+    function _Utils_Tuple3(a, b, c) {
+        return {
+            $: '#3',
+            a: a,
+            b: b,
+            c: c
+        };
+    }
+    function _Utils_chr_UNUSED(c) {
+        return c;
+    }
+    function _Utils_chr(c) {
+        return new String(c);
+    }
+    // RECORDS
+    function _Utils_update(oldRecord, updatedFields) {
+        var newRecord = {
+        };
+        for(var key in oldRecord)newRecord[key] = oldRecord[key];
+        for(var key in updatedFields)newRecord[key] = updatedFields[key];
+        return newRecord;
+    }
+    // APPEND
+    var _Utils_append = F2(_Utils_ap);
+    function _Utils_ap(xs, ys) {
+        // append Strings
+        if (typeof xs === 'string') return xs + ys;
+        // append Lists
+        if (!xs.b) return ys;
+        var root = _List_Cons(xs.a, ys);
+        xs = xs.b;
+        for(var curr = root; xs.b; xs = xs.b)curr = curr.b = _List_Cons(xs.a, ys);
+        return root;
+    }
+    var _List_Nil_UNUSED = {
+        $: 0
+    };
+    var _List_Nil = {
+        $: '[]'
+    };
+    function _List_Cons_UNUSED(hd, tl) {
+        return {
+            $: 1,
+            a: hd,
+            b: tl
+        };
+    }
+    function _List_Cons(hd, tl) {
+        return {
+            $: '::',
+            a: hd,
+            b: tl
+        };
+    }
+    var _List_cons = F2(_List_Cons);
+    function _List_fromArray(arr) {
+        var out = _List_Nil;
+        for(var i = arr.length; i--;)out = _List_Cons(arr[i], out);
+        return out;
+    }
+    function _List_toArray(xs) {
+        for(var out = []; xs.b; xs = xs.b)out.push(xs.a);
+        return out;
+    }
+    var _List_map2 = F3(function(f, xs, ys) {
+        for(var arr = []; xs.b && ys.b; xs = xs.b, ys = ys.b)arr.push(A2(f, xs.a, ys.a));
+        return _List_fromArray(arr);
+    });
+    var _List_map3 = F4(function(f, xs, ys, zs) {
+        for(var arr = []; xs.b && ys.b && zs.b; xs = xs.b, ys = ys.b, zs = zs.b)arr.push(A3(f, xs.a, ys.a, zs.a));
+        return _List_fromArray(arr);
+    });
+    var _List_map4 = F5(function(f, ws, xs, ys, zs) {
+        for(var arr = []; ws.b && xs.b && ys.b && zs.b; ws = ws.b, xs = xs.b, ys = ys.b, zs = zs.b)arr.push(A4(f, ws.a, xs.a, ys.a, zs.a));
+        return _List_fromArray(arr);
+    });
+    var _List_map5 = F6(function(f, vs, ws, xs, ys, zs) {
+        for(var arr = []; vs.b && ws.b && xs.b && ys.b && zs.b; vs = vs.b, ws = ws.b, xs = xs.b, ys = ys.b, zs = zs.b)arr.push(A5(f, vs.a, ws.a, xs.a, ys.a, zs.a));
+        return _List_fromArray(arr);
+    });
+    var _List_sortBy = F2(function(f, xs) {
+        return _List_fromArray(_List_toArray(xs).sort(function(a, b) {
+            return _Utils_cmp(f(a), f(b));
+        }));
+    });
+    var _List_sortWith = F2(function(f, xs) {
+        return _List_fromArray(_List_toArray(xs).sort(function(a, b) {
+            var ord = A2(f, a, b);
+            return ord === $elm$core$Basics$EQ ? 0 : ord === $elm$core$Basics$LT ? -1 : 1;
+        }));
+    });
+    // MATH
+    var _Basics_add = F2(function(a, b) {
+        return a + b;
+    });
+    var _Basics_sub = F2(function(a, b) {
+        return a - b;
+    });
+    var _Basics_mul = F2(function(a, b) {
+        return a * b;
+    });
+    var _Basics_fdiv = F2(function(a, b) {
+        return a / b;
+    });
+    var _Basics_idiv = F2(function(a, b) {
+        return a / b | 0;
+    });
+    var _Basics_pow = F2(Math.pow);
+    var _Basics_remainderBy = F2(function(b, a) {
+        return a % b;
+    });
+    // https://www.microsoft.com/en-us/research/wp-content/uploads/2016/02/divmodnote-letter.pdf
+    var _Basics_modBy = F2(function(modulus, x) {
+        var answer = x % modulus;
+        return modulus === 0 ? _Debug_crash(11) : answer > 0 && modulus < 0 || answer < 0 && modulus > 0 ? answer + modulus : answer;
+    });
+    // TRIGONOMETRY
+    var _Basics_pi = Math.PI;
+    var _Basics_e = Math.E;
+    var _Basics_cos = Math.cos;
+    var _Basics_sin = Math.sin;
+    var _Basics_tan = Math.tan;
+    var _Basics_acos = Math.acos;
+    var _Basics_asin = Math.asin;
+    var _Basics_atan = Math.atan;
+    var _Basics_atan2 = F2(Math.atan2);
+    // MORE MATH
+    function _Basics_toFloat(x) {
+        return x;
+    }
+    function _Basics_truncate(n) {
+        return n | 0;
+    }
+    function _Basics_isInfinite(n) {
+        return n === Infinity || n === -Infinity;
+    }
+    var _Basics_ceiling = Math.ceil;
+    var _Basics_floor = Math.floor;
+    var _Basics_round = Math.round;
+    var _Basics_sqrt = Math.sqrt;
+    var _Basics_log = Math.log;
+    var _Basics_isNaN = isNaN;
+    // BOOLEANS
+    function _Basics_not(bool) {
+        return !bool;
+    }
+    var _Basics_and = F2(function(a, b) {
+        return a && b;
+    });
+    var _Basics_or = F2(function(a, b) {
+        return a || b;
+    });
+    var _Basics_xor = F2(function(a, b) {
+        return a !== b;
+    });
+    var _String_cons = F2(function(chr, str) {
+        return chr + str;
+    });
+    function _String_uncons(string) {
+        var word = string.charCodeAt(0);
+        return !isNaN(word) ? $elm$core$Maybe$Just(55296 <= word && word <= 56319 ? _Utils_Tuple2(_Utils_chr(string[0] + string[1]), string.slice(2)) : _Utils_Tuple2(_Utils_chr(string[0]), string.slice(1))) : $elm$core$Maybe$Nothing;
+    }
+    var _String_append = F2(function(a, b) {
+        return a + b;
+    });
+    function _String_length(str) {
+        return str.length;
+    }
+    var _String_map = F2(function(func, string) {
+        var len = string.length;
+        var array = new Array(len);
+        var i = 0;
+        while(i < len){
+            var word = string.charCodeAt(i);
+            if (55296 <= word && word <= 56319) {
+                array[i] = func(_Utils_chr(string[i] + string[i + 1]));
+                i += 2;
+                continue;
+            }
+            array[i] = func(_Utils_chr(string[i]));
+            i++;
+        }
+        return array.join('');
+    });
+    var _String_filter = F2(function(isGood, str) {
+        var arr = [];
+        var len = str.length;
+        var i = 0;
+        while(i < len){
+            var char = str[i];
+            var word = str.charCodeAt(i);
+            i++;
+            if (55296 <= word && word <= 56319) {
+                char += str[i];
+                i++;
+            }
+            if (isGood(_Utils_chr(char))) arr.push(char);
+        }
+        return arr.join('');
+    });
+    function _String_reverse(str) {
+        var len = str.length;
+        var arr = new Array(len);
+        var i = 0;
+        while(i < len){
+            var word = str.charCodeAt(i);
+            if (55296 <= word && word <= 56319) {
+                arr[len - i] = str[i + 1];
+                i++;
+                arr[len - i] = str[i - 1];
+                i++;
+            } else {
+                arr[len - i] = str[i];
+                i++;
+            }
+        }
+        return arr.join('');
+    }
+    var _String_foldl = F3(function(func, state, string) {
+        var len = string.length;
+        var i = 0;
+        while(i < len){
+            var char = string[i];
+            var word = string.charCodeAt(i);
+            i++;
+            if (55296 <= word && word <= 56319) {
+                char += string[i];
+                i++;
+            }
+            state = A2(func, _Utils_chr(char), state);
+        }
+        return state;
+    });
+    var _String_foldr = F3(function(func, state, string) {
+        var i = string.length;
+        while(i--){
+            var char = string[i];
+            var word = string.charCodeAt(i);
+            if (56320 <= word && word <= 57343) {
+                i--;
+                char = string[i] + char;
+            }
+            state = A2(func, _Utils_chr(char), state);
+        }
+        return state;
+    });
+    var _String_split = F2(function(sep, str) {
+        return str.split(sep);
+    });
+    var _String_join = F2(function(sep, strs) {
+        return strs.join(sep);
+    });
+    var _String_slice = F3(function(start, end, str) {
+        return str.slice(start, end);
+    });
+    function _String_trim(str) {
+        return str.trim();
+    }
+    function _String_trimLeft(str) {
+        return str.replace(/^\s+/, '');
+    }
+    function _String_trimRight(str) {
+        return str.replace(/\s+$/, '');
+    }
+    function _String_words(str) {
+        return _List_fromArray(str.trim().split(/\s+/g));
+    }
+    function _String_lines(str) {
+        return _List_fromArray(str.split(/\r\n|\r|\n/g));
+    }
+    function _String_toUpper(str) {
+        return str.toUpperCase();
+    }
+    function _String_toLower(str) {
+        return str.toLowerCase();
+    }
+    var _String_any = F2(function(isGood, string) {
+        var i = string.length;
+        while(i--){
+            var char = string[i];
+            var word = string.charCodeAt(i);
+            if (56320 <= word && word <= 57343) {
+                i--;
+                char = string[i] + char;
+            }
+            if (isGood(_Utils_chr(char))) return true;
+        }
+        return false;
+    });
+    var _String_all = F2(function(isGood, string) {
+        var i = string.length;
+        while(i--){
+            var char = string[i];
+            var word = string.charCodeAt(i);
+            if (56320 <= word && word <= 57343) {
+                i--;
+                char = string[i] + char;
+            }
+            if (!isGood(_Utils_chr(char))) return false;
+        }
+        return true;
+    });
+    var _String_contains = F2(function(sub, str) {
+        return str.indexOf(sub) > -1;
+    });
+    var _String_startsWith = F2(function(sub, str) {
+        return str.indexOf(sub) === 0;
+    });
+    var _String_endsWith = F2(function(sub, str) {
+        return str.length >= sub.length && str.lastIndexOf(sub) === str.length - sub.length;
+    });
+    var _String_indexes = F2(function(sub, str) {
+        var subLen = sub.length;
+        if (subLen < 1) return _List_Nil;
+        var i = 0;
+        var is = [];
+        while((i = str.indexOf(sub, i)) > -1){
+            is.push(i);
+            i = i + subLen;
+        }
+        return _List_fromArray(is);
+    });
+    // TO STRING
+    function _String_fromNumber(number) {
+        return number + '';
+    }
+    // INT CONVERSIONS
+    function _String_toInt(str) {
+        var total = 0;
+        var code0 = str.charCodeAt(0);
+        var start = code0 == 43 /* + */  || code0 == 45 /* - */  ? 1 : 0;
+        for(var i = start; i < str.length; ++i){
+            var code = str.charCodeAt(i);
+            if (code < 48 || 57 < code) return $elm$core$Maybe$Nothing;
+            total = 10 * total + code - 48;
+        }
+        return i == start ? $elm$core$Maybe$Nothing : $elm$core$Maybe$Just(code0 == 45 ? -total : total);
+    }
+    // FLOAT CONVERSIONS
+    function _String_toFloat(s) {
+        // check if it is a hex, octal, or binary number
+        if (s.length === 0 || /[\sxbo]/.test(s)) return $elm$core$Maybe$Nothing;
+        var n = +s;
+        // faster isNaN check
+        return n === n ? $elm$core$Maybe$Just(n) : $elm$core$Maybe$Nothing;
+    }
+    function _String_fromList(chars) {
+        return _List_toArray(chars).join('');
+    }
+    function _Char_toCode(char) {
+        var code = char.charCodeAt(0);
+        if (55296 <= code && code <= 56319) return (code - 55296) * 1024 + char.charCodeAt(1) - 56320 + 65536;
+        return code;
+    }
+    function _Char_fromCode(code) {
+        return _Utils_chr(code < 0 || 1114111 < code ? '\uFFFD' : code <= 65535 ? String.fromCharCode(code) : (code -= 65536, String.fromCharCode(Math.floor(code / 1024) + 55296, code % 1024 + 56320)));
+    }
+    function _Char_toUpper(char) {
+        return _Utils_chr(char.toUpperCase());
+    }
+    function _Char_toLower(char) {
+        return _Utils_chr(char.toLowerCase());
+    }
+    function _Char_toLocaleUpper(char) {
+        return _Utils_chr(char.toLocaleUpperCase());
+    }
+    function _Char_toLocaleLower(char) {
+        return _Utils_chr(char.toLocaleLowerCase());
+    }
+    /**/ function _Json_errorToString(error) {
+        return $elm$json$Json$Decode$errorToString(error);
+    }
+    //*/
+    // CORE DECODERS
+    function _Json_succeed(msg) {
+        return {
+            $: 0,
+            a: msg
+        };
+    }
+    function _Json_fail(msg) {
+        return {
+            $: 1,
+            a: msg
+        };
+    }
+    function _Json_decodePrim(decoder) {
+        return {
+            $: 2,
+            b: decoder
+        };
+    }
+    var _Json_decodeInt = _Json_decodePrim(function(value) {
+        return typeof value !== 'number' ? _Json_expecting('an INT', value) : -2147483647 < value && value < 2147483647 && (value | 0) === value ? $elm$core$Result$Ok(value) : isFinite(value) && !(value % 1) ? $elm$core$Result$Ok(value) : _Json_expecting('an INT', value);
+    });
+    var _Json_decodeBool = _Json_decodePrim(function(value) {
+        return typeof value === 'boolean' ? $elm$core$Result$Ok(value) : _Json_expecting('a BOOL', value);
+    });
+    var _Json_decodeFloat = _Json_decodePrim(function(value) {
+        return typeof value === 'number' ? $elm$core$Result$Ok(value) : _Json_expecting('a FLOAT', value);
+    });
+    var _Json_decodeValue = _Json_decodePrim(function(value) {
+        return $elm$core$Result$Ok(_Json_wrap(value));
+    });
+    var _Json_decodeString = _Json_decodePrim(function(value) {
+        return typeof value === 'string' ? $elm$core$Result$Ok(value) : value instanceof String ? $elm$core$Result$Ok(value + '') : _Json_expecting('a STRING', value);
+    });
+    function _Json_decodeList(decoder) {
+        return {
+            $: 3,
+            b: decoder
+        };
+    }
+    function _Json_decodeArray(decoder) {
+        return {
+            $: 4,
+            b: decoder
+        };
+    }
+    function _Json_decodeNull(value) {
+        return {
+            $: 5,
+            c: value
+        };
+    }
+    var _Json_decodeField = F2(function(field, decoder) {
+        return {
+            $: 6,
+            d: field,
+            b: decoder
+        };
+    });
+    var _Json_decodeIndex = F2(function(index, decoder) {
+        return {
+            $: 7,
+            e: index,
+            b: decoder
+        };
+    });
+    function _Json_decodeKeyValuePairs(decoder) {
+        return {
+            $: 8,
+            b: decoder
+        };
+    }
+    function _Json_mapMany(f, decoders) {
+        return {
+            $: 9,
+            f: f,
+            g: decoders
+        };
+    }
+    var _Json_andThen = F2(function(callback, decoder) {
+        return {
+            $: 10,
+            b: decoder,
+            h: callback
+        };
+    });
+    function _Json_oneOf(decoders) {
+        return {
+            $: 11,
+            g: decoders
+        };
+    }
+    // DECODING OBJECTS
+    var _Json_map1 = F2(function(f, d1) {
+        return _Json_mapMany(f, [
+            d1
+        ]);
+    });
+    var _Json_map2 = F3(function(f, d1, d2) {
+        return _Json_mapMany(f, [
+            d1,
+            d2
+        ]);
+    });
+    var _Json_map3 = F4(function(f, d1, d2, d3) {
+        return _Json_mapMany(f, [
+            d1,
+            d2,
+            d3
+        ]);
+    });
+    var _Json_map4 = F5(function(f, d1, d2, d3, d4) {
+        return _Json_mapMany(f, [
+            d1,
+            d2,
+            d3,
+            d4
+        ]);
+    });
+    var _Json_map5 = F6(function(f, d1, d2, d3, d4, d5) {
+        return _Json_mapMany(f, [
+            d1,
+            d2,
+            d3,
+            d4,
+            d5
+        ]);
+    });
+    var _Json_map6 = F7(function(f, d1, d2, d3, d4, d5, d6) {
+        return _Json_mapMany(f, [
+            d1,
+            d2,
+            d3,
+            d4,
+            d5,
+            d6
+        ]);
+    });
+    var _Json_map7 = F8(function(f, d1, d2, d3, d4, d5, d6, d7) {
+        return _Json_mapMany(f, [
+            d1,
+            d2,
+            d3,
+            d4,
+            d5,
+            d6,
+            d7
+        ]);
+    });
+    var _Json_map8 = F9(function(f, d1, d2, d3, d4, d5, d6, d7, d8) {
+        return _Json_mapMany(f, [
+            d1,
+            d2,
+            d3,
+            d4,
+            d5,
+            d6,
+            d7,
+            d8
+        ]);
+    });
+    // DECODE
+    var _Json_runOnString = F2(function(decoder, string) {
+        try {
+            var value = JSON.parse(string);
+            return _Json_runHelp(decoder, value);
+        } catch (e) {
+            return $elm$core$Result$Err(A2($elm$json$Json$Decode$Failure, 'This is not valid JSON! ' + e.message, _Json_wrap(string)));
+        }
+    });
+    var _Json_run = F2(function(decoder, value) {
+        return _Json_runHelp(decoder, _Json_unwrap(value));
+    });
+    function _Json_runHelp(decoder, value) {
+        switch(decoder.$){
+            case 2:
+                return decoder.b(value);
+            case 5:
+                return value === null ? $elm$core$Result$Ok(decoder.c) : _Json_expecting('null', value);
+            case 3:
+                if (!_Json_isArray(value)) return _Json_expecting('a LIST', value);
+                return _Json_runArrayDecoder(decoder.b, value, _List_fromArray);
+            case 4:
+                if (!_Json_isArray(value)) return _Json_expecting('an ARRAY', value);
+                return _Json_runArrayDecoder(decoder.b, value, _Json_toElmArray);
+            case 6:
+                var field = decoder.d;
+                if (typeof value !== 'object' || value === null || !(field in value)) return _Json_expecting('an OBJECT with a field named `' + field + '`', value);
+                var result = _Json_runHelp(decoder.b, value[field]);
+                return $elm$core$Result$isOk(result) ? result : $elm$core$Result$Err(A2($elm$json$Json$Decode$Field, field, result.a));
+            case 7:
+                var index = decoder.e;
+                if (!_Json_isArray(value)) return _Json_expecting('an ARRAY', value);
+                if (index >= value.length) return _Json_expecting('a LONGER array. Need index ' + index + ' but only see ' + value.length + ' entries', value);
+                var result = _Json_runHelp(decoder.b, value[index]);
+                return $elm$core$Result$isOk(result) ? result : $elm$core$Result$Err(A2($elm$json$Json$Decode$Index, index, result.a));
+            case 8:
+                if (typeof value !== 'object' || value === null || _Json_isArray(value)) return _Json_expecting('an OBJECT', value);
+                var keyValuePairs = _List_Nil;
+                // TODO test perf of Object.keys and switch when support is good enough
+                for(var key in value)if (value.hasOwnProperty(key)) {
+                    var result = _Json_runHelp(decoder.b, value[key]);
+                    if (!$elm$core$Result$isOk(result)) return $elm$core$Result$Err(A2($elm$json$Json$Decode$Field, key, result.a));
+                    keyValuePairs = _List_Cons(_Utils_Tuple2(key, result.a), keyValuePairs);
+                }
+                return $elm$core$Result$Ok($elm$core$List$reverse(keyValuePairs));
+            case 9:
+                var answer = decoder.f;
+                var decoders = decoder.g;
+                for(var i = 0; i < decoders.length; i++){
+                    var result = _Json_runHelp(decoders[i], value);
+                    if (!$elm$core$Result$isOk(result)) return result;
+                    answer = answer(result.a);
+                }
+                return $elm$core$Result$Ok(answer);
+            case 10:
+                var result = _Json_runHelp(decoder.b, value);
+                return !$elm$core$Result$isOk(result) ? result : _Json_runHelp(decoder.h(result.a), value);
+            case 11:
+                var errors = _List_Nil;
+                for(var temp = decoder.g; temp.b; temp = temp.b){
+                    var result = _Json_runHelp(temp.a, value);
+                    if ($elm$core$Result$isOk(result)) return result;
+                    errors = _List_Cons(result.a, errors);
+                }
+                return $elm$core$Result$Err($elm$json$Json$Decode$OneOf($elm$core$List$reverse(errors)));
+            case 1:
+                return $elm$core$Result$Err(A2($elm$json$Json$Decode$Failure, decoder.a, _Json_wrap(value)));
+            case 0:
+                return $elm$core$Result$Ok(decoder.a);
+        }
+    }
+    function _Json_runArrayDecoder(decoder, value, toElmValue) {
+        var len = value.length;
+        var array = new Array(len);
+        for(var i = 0; i < len; i++){
+            var result = _Json_runHelp(decoder, value[i]);
+            if (!$elm$core$Result$isOk(result)) return $elm$core$Result$Err(A2($elm$json$Json$Decode$Index, i, result.a));
+            array[i] = result.a;
+        }
+        return $elm$core$Result$Ok(toElmValue(array));
+    }
+    function _Json_isArray(value) {
+        return Array.isArray(value) || typeof FileList !== 'undefined' && value instanceof FileList;
+    }
+    function _Json_toElmArray(array) {
+        return A2($elm$core$Array$initialize, array.length, function(i) {
+            return array[i];
+        });
+    }
+    function _Json_expecting(type, value) {
+        return $elm$core$Result$Err(A2($elm$json$Json$Decode$Failure, 'Expecting ' + type, _Json_wrap(value)));
+    }
+    // EQUALITY
+    function _Json_equality(x, y) {
+        if (x === y) return true;
+        if (x.$ !== y.$) return false;
+        switch(x.$){
+            case 0:
+            case 1:
+                return x.a === y.a;
+            case 2:
+                return x.b === y.b;
+            case 5:
+                return x.c === y.c;
+            case 3:
+            case 4:
+            case 8:
+                return _Json_equality(x.b, y.b);
+            case 6:
+                return x.d === y.d && _Json_equality(x.b, y.b);
+            case 7:
+                return x.e === y.e && _Json_equality(x.b, y.b);
+            case 9:
+                return x.f === y.f && _Json_listEquality(x.g, y.g);
+            case 10:
+                return x.h === y.h && _Json_equality(x.b, y.b);
+            case 11:
+                return _Json_listEquality(x.g, y.g);
+        }
+    }
+    function _Json_listEquality(aDecoders, bDecoders) {
+        var len = aDecoders.length;
+        if (len !== bDecoders.length) return false;
+        for(var i = 0; i < len; i++){
+            if (!_Json_equality(aDecoders[i], bDecoders[i])) return false;
+        }
+        return true;
+    }
+    // ENCODE
+    var _Json_encode = F2(function(indentLevel, value) {
+        return JSON.stringify(_Json_unwrap(value), null, indentLevel) + '';
+    });
+    function _Json_wrap(value) {
+        return {
+            $: 0,
+            a: value
+        };
+    }
+    function _Json_unwrap(value) {
+        return value.a;
+    }
+    function _Json_wrap_UNUSED(value) {
+        return value;
+    }
+    function _Json_unwrap_UNUSED(value) {
+        return value;
+    }
+    function _Json_emptyArray() {
+        return [];
+    }
+    function _Json_emptyObject() {
+        return {
+        };
+    }
+    var _Json_addField = F3(function(key, value, object) {
+        object[key] = _Json_unwrap(value);
+        return object;
+    });
+    function _Json_addEntry(func) {
+        return F2(function(entry, array) {
+            array.push(_Json_unwrap(func(entry)));
+            return array;
+        });
+    }
+    var _Json_encodeNull = _Json_wrap(null);
+    var _Bitwise_and = F2(function(a, b) {
+        return a & b;
+    });
+    var _Bitwise_or = F2(function(a, b) {
+        return a | b;
+    });
+    var _Bitwise_xor = F2(function(a, b) {
+        return a ^ b;
+    });
+    function _Bitwise_complement(a) {
+        return ~a;
+    }
+    var _Bitwise_shiftLeftBy = F2(function(offset, a) {
+        return a << offset;
+    });
+    var _Bitwise_shiftRightBy = F2(function(offset, a) {
+        return a >> offset;
+    });
+    var _Bitwise_shiftRightZfBy = F2(function(offset, a) {
+        return a >>> offset;
+    });
+    // CREATE
+    var _Regex_never = /.^/;
+    var _Regex_fromStringWith = F2(function(options, string) {
+        var flags = 'g';
+        if (options.multiline) flags += 'm';
+        if (options.caseInsensitive) flags += 'i';
+        try {
+            return $elm$core$Maybe$Just(new RegExp(string, flags));
+        } catch (error) {
+            return $elm$core$Maybe$Nothing;
+        }
+    });
+    // USE
+    var _Regex_contains = F2(function(re, string) {
+        return string.match(re) !== null;
+    });
+    var _Regex_findAtMost = F3(function(n, re, str) {
+        var out = [];
+        var number = 0;
+        var string = str;
+        var lastIndex = re.lastIndex;
+        var prevLastIndex = -1;
+        var result;
+        while((number++) < n && (result = re.exec(string))){
+            if (prevLastIndex == re.lastIndex) break;
+            var i = result.length - 1;
+            var subs = new Array(i);
+            while(i > 0){
+                var submatch = result[i];
+                subs[--i] = submatch ? $elm$core$Maybe$Just(submatch) : $elm$core$Maybe$Nothing;
+            }
+            out.push(A4($elm$regex$Regex$Match, result[0], result.index, number, _List_fromArray(subs)));
+            prevLastIndex = re.lastIndex;
+        }
+        re.lastIndex = lastIndex;
+        return _List_fromArray(out);
+    });
+    var _Regex_replaceAtMost = F4(function(n, re, replacer, string) {
+        var count = 0;
+        function jsReplacer(match) {
+            if ((count++) >= n) return match;
+            var i = arguments.length - 3;
+            var submatches = new Array(i);
+            while(i > 0){
+                var submatch = arguments[i];
+                submatches[--i] = submatch ? $elm$core$Maybe$Just(submatch) : $elm$core$Maybe$Nothing;
+            }
+            return replacer(A4($elm$regex$Regex$Match, match, arguments[arguments.length - 2], count, _List_fromArray(submatches)));
+        }
+        return string.replace(re, jsReplacer);
+    });
+    var _Regex_splitAtMost = F3(function(n, re, str) {
+        var string = str;
+        var out = [];
+        var start = re.lastIndex;
+        var restoreLastIndex = re.lastIndex;
+        while(n--){
+            var result = re.exec(string);
+            if (!result) break;
+            out.push(string.slice(start, result.index));
+            start = re.lastIndex;
+        }
+        out.push(string.slice(start));
+        re.lastIndex = restoreLastIndex;
+        return _List_fromArray(out);
+    });
+    var _Regex_infinity = Infinity;
+    // TASKS
+    function _Scheduler_succeed(value) {
+        return {
+            $: 0,
+            a: value
+        };
+    }
+    function _Scheduler_fail(error) {
+        return {
+            $: 1,
+            a: error
+        };
+    }
+    function _Scheduler_binding(callback) {
+        return {
+            $: 2,
+            b: callback,
+            c: null
+        };
+    }
+    var _Scheduler_andThen = F2(function(callback, task) {
+        return {
+            $: 3,
+            b: callback,
+            d: task
+        };
+    });
+    var _Scheduler_onError = F2(function(callback, task) {
+        return {
+            $: 4,
+            b: callback,
+            d: task
+        };
+    });
+    function _Scheduler_receive(callback) {
+        return {
+            $: 5,
+            b: callback
+        };
+    }
+    // PROCESSES
+    var _Scheduler_guid = 0;
+    function _Scheduler_rawSpawn(task) {
+        var proc = {
+            $: 0,
+            e: _Scheduler_guid++,
+            f: task,
+            g: null,
+            h: []
+        };
+        _Scheduler_enqueue(proc);
+        return proc;
+    }
+    function _Scheduler_spawn(task) {
+        return _Scheduler_binding(function(callback) {
+            callback(_Scheduler_succeed(_Scheduler_rawSpawn(task)));
+        });
+    }
+    function _Scheduler_rawSend(proc, msg) {
+        proc.h.push(msg);
+        _Scheduler_enqueue(proc);
+    }
+    var _Scheduler_send = F2(function(proc, msg) {
+        return _Scheduler_binding(function(callback) {
+            _Scheduler_rawSend(proc, msg);
+            callback(_Scheduler_succeed(_Utils_Tuple0));
+        });
+    });
+    function _Scheduler_kill(proc) {
+        return _Scheduler_binding(function(callback) {
+            var task = proc.f;
+            if (task.$ === 2 && task.c) task.c();
+            proc.f = null;
+            callback(_Scheduler_succeed(_Utils_Tuple0));
+        });
+    }
+    /* STEP PROCESSES
+
+type alias Process =
+  { $ : tag
+  , id : unique_id
+  , root : Task
+  , stack : null | { $: SUCCEED | FAIL, a: callback, b: stack }
+  , mailbox : [msg]
+  }
+
+*/ var _Scheduler_working = false;
+    var _Scheduler_queue = [];
+    function _Scheduler_enqueue(proc) {
+        _Scheduler_queue.push(proc);
+        if (_Scheduler_working) return;
+        _Scheduler_working = true;
+        while(proc = _Scheduler_queue.shift())_Scheduler_step(proc);
+        _Scheduler_working = false;
+    }
+    function _Scheduler_step(proc) {
+        while(proc.f){
+            var rootTag = proc.f.$;
+            if (rootTag === 0 || rootTag === 1) {
+                while(proc.g && proc.g.$ !== rootTag)proc.g = proc.g.i;
+                if (!proc.g) return;
+                proc.f = proc.g.b(proc.f.a);
+                proc.g = proc.g.i;
+            } else if (rootTag === 2) {
+                proc.f.c = proc.f.b(function(newRoot) {
+                    proc.f = newRoot;
+                    _Scheduler_enqueue(proc);
+                });
+                return;
+            } else if (rootTag === 5) {
+                if (proc.h.length === 0) return;
+                proc.f = proc.f.b(proc.h.shift());
+            } else {
+                proc.g = {
+                    $: rootTag === 3 ? 0 : 1,
+                    b: proc.f.b,
+                    i: proc.g
+                };
+                proc.f = proc.f.d;
+            }
+        }
+    }
+    function _Process_sleep(time) {
+        return _Scheduler_binding(function(callback) {
+            var id = setTimeout(function() {
+                callback(_Scheduler_succeed(_Utils_Tuple0));
+            }, time);
+            return function() {
+                clearTimeout(id);
+            };
+        });
+    }
+    // PROGRAMS
+    var _Platform_worker = F4(function(impl, flagDecoder, debugMetadata, args) {
+        return _Platform_initialize(flagDecoder, args, impl.init, impl.update, impl.subscriptions, function() {
+            return function() {
+            };
+        });
+    });
+    // INITIALIZE A PROGRAM
+    function _Platform_initialize(flagDecoder, args, init, update, subscriptions, stepperBuilder) {
+        var result = A2(_Json_run, flagDecoder, _Json_wrap(args ? args['flags'] : undefined));
+        $elm$core$Result$isOk(result) || _Debug_crash(2 /**/ , _Json_errorToString(result.a));
+        var managers = {
+        };
+        var initPair = init(result.a);
+        var model = initPair.a;
+        var stepper = stepperBuilder(sendToApp, model);
+        var ports = _Platform_setupEffects(managers, sendToApp);
+        function sendToApp(msg, viewMetadata) {
+            var pair = A2(update, msg, model);
+            stepper(model = pair.a, viewMetadata);
+            _Platform_enqueueEffects(managers, pair.b, subscriptions(model));
+        }
+        _Platform_enqueueEffects(managers, initPair.b, subscriptions(model));
+        return ports ? {
+            ports: ports
+        } : {
+        };
+    }
+    // TRACK PRELOADS
+    //
+    // This is used by code in elm/browser and elm/http
+    // to register any HTTP requests that are triggered by init.
+    //
+    var _Platform_preload;
+    function _Platform_registerPreload(url) {
+        _Platform_preload.add(url);
+    }
+    // EFFECT MANAGERS
+    var _Platform_effectManagers = {
+    };
+    function _Platform_setupEffects(managers, sendToApp) {
+        var ports;
+        // setup all necessary effect managers
+        for(var key in _Platform_effectManagers){
+            var manager = _Platform_effectManagers[key];
+            if (manager.a) {
+                ports = ports || {
+                };
+                ports[key] = manager.a(key, sendToApp);
+            }
+            managers[key] = _Platform_instantiateManager(manager, sendToApp);
+        }
+        return ports;
+    }
+    function _Platform_createManager(init, onEffects, onSelfMsg, cmdMap, subMap) {
+        return {
+            b: init,
+            c: onEffects,
+            d: onSelfMsg,
+            e: cmdMap,
+            f: subMap
+        };
+    }
+    function _Platform_instantiateManager(info, sendToApp) {
+        var router = {
+            g: sendToApp,
+            h: undefined
+        };
+        var onEffects = info.c;
+        var onSelfMsg = info.d;
+        var cmdMap = info.e;
+        var subMap = info.f;
+        function loop(state) {
+            return A2(_Scheduler_andThen, loop, _Scheduler_receive(function(msg) {
+                var value = msg.a;
+                if (msg.$ === 0) return A3(onSelfMsg, router, value, state);
+                return cmdMap && subMap ? A4(onEffects, router, value.i, value.j, state) : A3(onEffects, router, cmdMap ? value.i : value.j, state);
+            }));
+        }
+        return router.h = _Scheduler_rawSpawn(A2(_Scheduler_andThen, loop, info.b));
+    }
+    // ROUTING
+    var _Platform_sendToApp = F2(function(router, msg) {
+        return _Scheduler_binding(function(callback) {
+            router.g(msg);
+            callback(_Scheduler_succeed(_Utils_Tuple0));
+        });
+    });
+    var _Platform_sendToSelf = F2(function(router, msg) {
+        return A2(_Scheduler_send, router.h, {
+            $: 0,
+            a: msg
+        });
+    });
+    // BAGS
+    function _Platform_leaf(home) {
+        return function(value) {
+            return {
+                $: 1,
+                k: home,
+                l: value
+            };
+        };
+    }
+    function _Platform_batch(list) {
+        return {
+            $: 2,
+            m: list
+        };
+    }
+    var _Platform_map = F2(function(tagger, bag) {
+        return {
+            $: 3,
+            n: tagger,
+            o: bag
+        };
+    });
+    // PIPE BAGS INTO EFFECT MANAGERS
+    //
+    // Effects must be queued!
+    //
+    // Say your init contains a synchronous command, like Time.now or Time.here
+    //
+    //   - This will produce a batch of effects (FX_1)
+    //   - The synchronous task triggers the subsequent `update` call
+    //   - This will produce a batch of effects (FX_2)
+    //
+    // If we just start dispatching FX_2, subscriptions from FX_2 can be processed
+    // before subscriptions from FX_1. No good! Earlier versions of this code had
+    // this problem, leading to these reports:
+    //
+    //   https://github.com/elm/core/issues/980
+    //   https://github.com/elm/core/pull/981
+    //   https://github.com/elm/compiler/issues/1776
+    //
+    // The queue is necessary to avoid ordering issues for synchronous commands.
+    // Why use true/false here? Why not just check the length of the queue?
+    // The goal is to detect "are we currently dispatching effects?" If we
+    // are, we need to bail and let the ongoing while loop handle things.
+    //
+    // Now say the queue has 1 element. When we dequeue the final element,
+    // the queue will be empty, but we are still actively dispatching effects.
+    // So you could get queue jumping in a really tricky category of cases.
+    //
+    var _Platform_effectsQueue = [];
+    var _Platform_effectsActive = false;
+    function _Platform_enqueueEffects(managers, cmdBag, subBag) {
+        _Platform_effectsQueue.push({
+            p: managers,
+            q: cmdBag,
+            r: subBag
+        });
+        if (_Platform_effectsActive) return;
+        _Platform_effectsActive = true;
+        for(var fx; fx = _Platform_effectsQueue.shift();)_Platform_dispatchEffects(fx.p, fx.q, fx.r);
+        _Platform_effectsActive = false;
+    }
+    function _Platform_dispatchEffects(managers, cmdBag, subBag) {
+        var effectsDict = {
+        };
+        _Platform_gatherEffects(true, cmdBag, effectsDict, null);
+        _Platform_gatherEffects(false, subBag, effectsDict, null);
+        for(var home in managers)_Scheduler_rawSend(managers[home], {
+            $: 'fx',
+            a: effectsDict[home] || {
+                i: _List_Nil,
+                j: _List_Nil
+            }
+        });
+    }
+    function _Platform_gatherEffects(isCmd, bag, effectsDict, taggers) {
+        switch(bag.$){
+            case 1:
+                var home = bag.k;
+                var effect = _Platform_toEffect(isCmd, home, taggers, bag.l);
+                effectsDict[home] = _Platform_insert(isCmd, effect, effectsDict[home]);
+                return;
+            case 2:
+                for(var list = bag.m; list.b; list = list.b)_Platform_gatherEffects(isCmd, list.a, effectsDict, taggers);
+                return;
+            case 3:
+                _Platform_gatherEffects(isCmd, bag.o, effectsDict, {
+                    s: bag.n,
+                    t: taggers
+                });
+                return;
+        }
+    }
+    function _Platform_toEffect(isCmd, home, taggers, value) {
+        function applyTaggers(x) {
+            for(var temp = taggers; temp; temp = temp.t)x = temp.s(x);
+            return x;
+        }
+        var map = isCmd ? _Platform_effectManagers[home].e : _Platform_effectManagers[home].f;
+        return A2(map, applyTaggers, value);
+    }
+    function _Platform_insert(isCmd, newEffect, effects) {
+        effects = effects || {
+            i: _List_Nil,
+            j: _List_Nil
+        };
+        isCmd ? effects.i = _List_Cons(newEffect, effects.i) : effects.j = _List_Cons(newEffect, effects.j);
+        return effects;
+    }
+    // PORTS
+    function _Platform_checkPortName(name) {
+        if (_Platform_effectManagers[name]) _Debug_crash(3, name);
+    }
+    // OUTGOING PORTS
+    function _Platform_outgoingPort(name, converter) {
+        _Platform_checkPortName(name);
+        _Platform_effectManagers[name] = {
+            e: _Platform_outgoingPortMap,
+            u: converter,
+            a: _Platform_setupOutgoingPort
+        };
+        return _Platform_leaf(name);
+    }
+    var _Platform_outgoingPortMap = F2(function(tagger, value) {
+        return value;
+    });
+    function _Platform_setupOutgoingPort(name) {
+        var subs = [];
+        var converter = _Platform_effectManagers[name].u;
+        // CREATE MANAGER
+        var init = _Process_sleep(0);
+        _Platform_effectManagers[name].b = init;
+        _Platform_effectManagers[name].c = F3(function(router, cmdList, state) {
+            for(; cmdList.b; cmdList = cmdList.b){
+                // grab a separate reference to subs in case unsubscribe is called
+                var currentSubs = subs;
+                var value = _Json_unwrap(converter(cmdList.a));
+                for(var i = 0; i < currentSubs.length; i++)currentSubs[i](value);
+            }
+            return init;
+        });
+        // PUBLIC API
+        function subscribe(callback) {
+            subs.push(callback);
+        }
+        function unsubscribe(callback) {
+            // copy subs into a new array in case unsubscribe is called within a
+            // subscribed callback
+            subs = subs.slice();
+            var index = subs.indexOf(callback);
+            if (index >= 0) subs.splice(index, 1);
+        }
+        return {
+            subscribe: subscribe,
+            unsubscribe: unsubscribe
+        };
+    }
+    // INCOMING PORTS
+    function _Platform_incomingPort(name, converter) {
+        _Platform_checkPortName(name);
+        _Platform_effectManagers[name] = {
+            f: _Platform_incomingPortMap,
+            u: converter,
+            a: _Platform_setupIncomingPort
+        };
+        return _Platform_leaf(name);
+    }
+    var _Platform_incomingPortMap = F2(function(tagger, finalTagger) {
+        return function(value) {
+            return tagger(finalTagger(value));
+        };
+    });
+    function _Platform_setupIncomingPort(name, sendToApp) {
+        var subs = _List_Nil;
+        var converter = _Platform_effectManagers[name].u;
+        // CREATE MANAGER
+        var init = _Scheduler_succeed(null);
+        _Platform_effectManagers[name].b = init;
+        _Platform_effectManagers[name].c = F3(function(router, subList, state) {
+            subs = subList;
+            return init;
+        });
+        // PUBLIC API
+        function send(incomingValue) {
+            var result = A2(_Json_run, converter, _Json_wrap(incomingValue));
+            $elm$core$Result$isOk(result) || _Debug_crash(4, name, result.a);
+            var value = result.a;
+            for(var temp = subs; temp.b; temp = temp.b)sendToApp(temp.a(value));
+        }
+        return {
+            send: send
+        };
+    }
+    // EXPORT ELM MODULES
+    //
+    // Have DEBUG and PROD versions so that we can (1) give nicer errors in
+    // debug mode and (2) not pay for the bits needed for that in prod mode.
+    //
+    function _Platform_export_UNUSED(exports) {
+        scope['Elm'] ? _Platform_mergeExportsProd(scope['Elm'], exports) : scope['Elm'] = exports;
+    }
+    function _Platform_mergeExportsProd(obj, exports) {
+        for(var name in exports)name in obj ? name == 'init' ? _Debug_crash(6) : _Platform_mergeExportsProd(obj[name], exports[name]) : obj[name] = exports[name];
+    }
+    function _Platform_export(exports) {
+        scope['Elm'] ? _Platform_mergeExportsDebug('Elm', scope['Elm'], exports) : scope['Elm'] = exports;
+    }
+    function _Platform_mergeExportsDebug(moduleName, obj, exports) {
+        for(var name in exports)name in obj ? name == 'init' ? _Debug_crash(6, moduleName) : _Platform_mergeExportsDebug(moduleName + '.' + name, obj[name], exports[name]) : obj[name] = exports[name];
+    }
+    // SEND REQUEST
+    var _Http_toTask = F3(function(router, toTask, request) {
+        return _Scheduler_binding(function(callback) {
+            function done(response) {
+                callback(toTask(request.expect.a(response)));
+            }
+            var xhr = new XMLHttpRequest();
+            xhr.addEventListener('error', function() {
+                done($elm$http$Http$NetworkError_);
+            });
+            xhr.addEventListener('timeout', function() {
+                done($elm$http$Http$Timeout_);
+            });
+            xhr.addEventListener('load', function() {
+                done(_Http_toResponse(request.expect.b, xhr));
+            });
+            $elm$core$Maybe$isJust(request.tracker) && _Http_track(router, xhr, request.tracker.a);
+            try {
+                xhr.open(request.method, request.url, true);
+            } catch (e) {
+                return done($elm$http$Http$BadUrl_(request.url));
+            }
+            _Http_configureRequest(xhr, request);
+            request.body.a && xhr.setRequestHeader('Content-Type', request.body.a);
+            xhr.send(request.body.b);
+            return function() {
+                xhr.c = true;
+                xhr.abort();
+            };
+        });
+    });
+    // CONFIGURE
+    function _Http_configureRequest(xhr, request) {
+        for(var headers = request.headers; headers.b; headers = headers.b)xhr.setRequestHeader(headers.a.a, headers.a.b);
+        xhr.timeout = request.timeout.a || 0;
+        xhr.responseType = request.expect.d;
+        xhr.withCredentials = request.allowCookiesFromOtherDomains;
+    }
+    // RESPONSES
+    function _Http_toResponse(toBody, xhr) {
+        return A2(200 <= xhr.status && xhr.status < 300 ? $elm$http$Http$GoodStatus_ : $elm$http$Http$BadStatus_, _Http_toMetadata(xhr), toBody(xhr.response));
+    }
+    // METADATA
+    function _Http_toMetadata(xhr) {
+        return {
+            url: xhr.responseURL,
+            statusCode: xhr.status,
+            statusText: xhr.statusText,
+            headers: _Http_parseHeaders(xhr.getAllResponseHeaders())
+        };
+    }
+    // HEADERS
+    function _Http_parseHeaders(rawHeaders) {
+        if (!rawHeaders) return $elm$core$Dict$empty;
+        var headers = $elm$core$Dict$empty;
+        var headerPairs = rawHeaders.split('\r\n');
+        for(var i = headerPairs.length; i--;){
+            var headerPair = headerPairs[i];
+            var index = headerPair.indexOf(': ');
+            if (index > 0) {
+                var key = headerPair.substring(0, index);
+                var value = headerPair.substring(index + 2);
+                headers = A3($elm$core$Dict$update, key, function(oldValue) {
+                    return $elm$core$Maybe$Just($elm$core$Maybe$isJust(oldValue) ? value + ', ' + oldValue.a : value);
+                }, headers);
+            }
+        }
+        return headers;
+    }
+    // EXPECT
+    var _Http_expect = F3(function(type, toBody, toValue) {
+        return {
+            $: 0,
+            d: type,
+            b: toBody,
+            a: toValue
+        };
+    });
+    var _Http_mapExpect = F2(function(func, expect) {
+        return {
+            $: 0,
+            d: expect.d,
+            b: expect.b,
+            a: function(x) {
+                return func(expect.a(x));
+            }
+        };
+    });
+    function _Http_toDataView(arrayBuffer) {
+        return new DataView(arrayBuffer);
+    }
+    // BODY and PARTS
+    var _Http_emptyBody = {
+        $: 0
+    };
+    var _Http_pair = F2(function(a, b) {
+        return {
+            $: 0,
+            a: a,
+            b: b
+        };
+    });
+    function _Http_toFormData(parts) {
+        for(var formData = new FormData(); parts.b; parts = parts.b){
+            var part = parts.a;
+            formData.append(part.a, part.b);
+        }
+        return formData;
+    }
+    var _Http_bytesToBlob = F2(function(mime, bytes) {
+        return new Blob([
+            bytes
+        ], {
+            type: mime
+        });
+    });
+    // PROGRESS
+    function _Http_track(router, xhr, tracker) {
+        // TODO check out lengthComputable on loadstart event
+        xhr.upload.addEventListener('progress', function(event) {
+            if (xhr.c) return;
+            _Scheduler_rawSpawn(A2($elm$core$Platform$sendToSelf, router, _Utils_Tuple2(tracker, $elm$http$Http$Sending({
+                sent: event.loaded,
+                size: event.total
+            }))));
+        });
+        xhr.addEventListener('progress', function(event) {
+            if (xhr.c) return;
+            _Scheduler_rawSpawn(A2($elm$core$Platform$sendToSelf, router, _Utils_Tuple2(tracker, $elm$http$Http$Receiving({
+                received: event.loaded,
+                size: event.lengthComputable ? $elm$core$Maybe$Just(event.total) : $elm$core$Maybe$Nothing
+            }))));
+        });
+    }
+    var $author$project$Worker$Handle = function(a) {
+        return {
+            $: 'Handle',
+            a: a
+        };
+    };
+    var $elm$core$List$cons = _List_cons;
+    var $elm$core$Elm$JsArray$foldr = _JsArray_foldr;
+    var $elm$core$Array$foldr = F3(function(func, baseCase, _v0) {
+        var tree = _v0.c;
+        var tail = _v0.d;
+        var helper = F2(function(node, acc) {
+            if (node.$ === 'SubTree') {
+                var subTree = node.a;
+                return A3($elm$core$Elm$JsArray$foldr, helper, acc, subTree);
+            } else {
+                var values = node.a;
+                return A3($elm$core$Elm$JsArray$foldr, func, acc, values);
+            }
+        });
+        return A3($elm$core$Elm$JsArray$foldr, helper, A3($elm$core$Elm$JsArray$foldr, func, baseCase, tail), tree);
+    });
+    var $elm$core$Array$toList = function(array) {
+        return A3($elm$core$Array$foldr, $elm$core$List$cons, _List_Nil, array);
+    };
+    var $elm$core$Dict$foldr = F3(function(func, acc, t) {
+        foldr: while(true){
+            if (t.$ === 'RBEmpty_elm_builtin') return acc;
+            else {
+                var key = t.b;
+                var value = t.c;
+                var left = t.d;
+                var right = t.e;
+                var $temp$func = func, $temp$acc = A3(func, key, value, A3($elm$core$Dict$foldr, func, acc, right)), $temp$t = left;
+                func = $temp$func;
+                acc = $temp$acc;
+                t = $temp$t;
+                continue foldr;
+            }
+        }
+    });
+    var $elm$core$Dict$toList = function(dict) {
+        return A3($elm$core$Dict$foldr, F3(function(key, value, list) {
+            return A2($elm$core$List$cons, _Utils_Tuple2(key, value), list);
+        }), _List_Nil, dict);
+    };
+    var $elm$core$Dict$keys = function(dict) {
+        return A3($elm$core$Dict$foldr, F3(function(key, value, keyList) {
+            return A2($elm$core$List$cons, key, keyList);
+        }), _List_Nil, dict);
+    };
+    var $elm$core$Set$toList = function(_v0) {
+        var dict = _v0.a;
+        return $elm$core$Dict$keys(dict);
+    };
+    var $elm$core$Basics$EQ = {
+        $: 'EQ'
+    };
+    var $elm$core$Basics$GT = {
+        $: 'GT'
+    };
+    var $elm$core$Basics$LT = {
+        $: 'LT'
+    };
+    var $elm$core$Result$Err = function(a) {
+        return {
+            $: 'Err',
+            a: a
+        };
+    };
+    var $elm$json$Json$Decode$Failure = F2(function(a, b) {
+        return {
+            $: 'Failure',
+            a: a,
+            b: b
+        };
+    });
+    var $elm$json$Json$Decode$Field = F2(function(a, b) {
+        return {
+            $: 'Field',
+            a: a,
+            b: b
+        };
+    });
+    var $elm$json$Json$Decode$Index = F2(function(a, b) {
+        return {
+            $: 'Index',
+            a: a,
+            b: b
+        };
+    });
+    var $elm$core$Result$Ok = function(a) {
+        return {
+            $: 'Ok',
+            a: a
+        };
+    };
+    var $elm$json$Json$Decode$OneOf = function(a) {
+        return {
+            $: 'OneOf',
+            a: a
+        };
+    };
+    var $elm$core$Basics$False = {
+        $: 'False'
+    };
+    var $elm$core$Basics$add = _Basics_add;
+    var $elm$core$Maybe$Just = function(a) {
+        return {
+            $: 'Just',
+            a: a
+        };
+    };
+    var $elm$core$Maybe$Nothing = {
+        $: 'Nothing'
+    };
+    var $elm$core$String$all = _String_all;
+    var $elm$core$Basics$and = _Basics_and;
+    var $elm$core$Basics$append = _Utils_append;
+    var $elm$json$Json$Encode$encode = _Json_encode;
+    var $elm$core$String$fromInt = _String_fromNumber;
+    var $elm$core$String$join = F2(function(sep, chunks) {
+        return A2(_String_join, sep, _List_toArray(chunks));
+    });
+    var $elm$core$String$split = F2(function(sep, string) {
+        return _List_fromArray(A2(_String_split, sep, string));
+    });
+    var $elm$json$Json$Decode$indent = function(str) {
+        return A2($elm$core$String$join, '\n    ', A2($elm$core$String$split, '\n', str));
+    };
+    var $elm$core$List$foldl = F3(function(func, acc, list) {
+        foldl: while(true){
+            if (!list.b) return acc;
+            else {
+                var x = list.a;
+                var xs = list.b;
+                var $temp$func = func, $temp$acc = A2(func, x, acc), $temp$list = xs;
+                func = $temp$func;
+                acc = $temp$acc;
+                list = $temp$list;
+                continue foldl;
+            }
+        }
+    });
+    var $elm$core$List$length = function(xs) {
+        return A3($elm$core$List$foldl, F2(function(_v0, i) {
+            return i + 1;
+        }), 0, xs);
+    };
+    var $elm$core$List$map2 = _List_map2;
+    var $elm$core$Basics$le = _Utils_le;
+    var $elm$core$Basics$sub = _Basics_sub;
+    var $elm$core$List$rangeHelp = F3(function(lo, hi, list) {
+        rangeHelp: while(true){
+            if (_Utils_cmp(lo, hi) < 1) {
+                var $temp$lo = lo, $temp$hi = hi - 1, $temp$list = A2($elm$core$List$cons, hi, list);
+                lo = $temp$lo;
+                hi = $temp$hi;
+                list = $temp$list;
+                continue rangeHelp;
+            } else return list;
+        }
+    });
+    var $elm$core$List$range = F2(function(lo, hi) {
+        return A3($elm$core$List$rangeHelp, lo, hi, _List_Nil);
+    });
+    var $elm$core$List$indexedMap = F2(function(f, xs) {
+        return A3($elm$core$List$map2, f, A2($elm$core$List$range, 0, $elm$core$List$length(xs) - 1), xs);
+    });
+    var $elm$core$Char$toCode = _Char_toCode;
+    var $elm$core$Char$isLower = function(_char) {
+        var code = $elm$core$Char$toCode(_char);
+        return 97 <= code && code <= 122;
+    };
+    var $elm$core$Char$isUpper = function(_char) {
+        var code = $elm$core$Char$toCode(_char);
+        return code <= 90 && 65 <= code;
+    };
+    var $elm$core$Basics$or = _Basics_or;
+    var $elm$core$Char$isAlpha = function(_char) {
+        return $elm$core$Char$isLower(_char) || $elm$core$Char$isUpper(_char);
+    };
+    var $elm$core$Char$isDigit = function(_char) {
+        var code = $elm$core$Char$toCode(_char);
+        return code <= 57 && 48 <= code;
+    };
+    var $elm$core$Char$isAlphaNum = function(_char) {
+        return $elm$core$Char$isLower(_char) || $elm$core$Char$isUpper(_char) || $elm$core$Char$isDigit(_char);
+    };
+    var $elm$core$List$reverse = function(list) {
+        return A3($elm$core$List$foldl, $elm$core$List$cons, _List_Nil, list);
+    };
+    var $elm$core$String$uncons = _String_uncons;
+    var $elm$json$Json$Decode$errorOneOf = F2(function(i, error) {
+        return '\n\n(' + ($elm$core$String$fromInt(i + 1) + (') ' + $elm$json$Json$Decode$indent($elm$json$Json$Decode$errorToString(error))));
+    });
+    var $elm$json$Json$Decode$errorToString = function(error) {
+        return A2($elm$json$Json$Decode$errorToStringHelp, error, _List_Nil);
+    };
+    var $elm$json$Json$Decode$errorToStringHelp = F2(function(error, context) {
+        errorToStringHelp: while(true)switch(error.$){
+            case 'Field':
+                var f = error.a;
+                var err = error.b;
+                var isSimple = function() {
+                    var _v1 = $elm$core$String$uncons(f);
+                    if (_v1.$ === 'Nothing') return false;
+                    else {
+                        var _v2 = _v1.a;
+                        var _char = _v2.a;
+                        var rest = _v2.b;
+                        return $elm$core$Char$isAlpha(_char) && A2($elm$core$String$all, $elm$core$Char$isAlphaNum, rest);
+                    }
+                }();
+                var fieldName = isSimple ? '.' + f : '[\'' + (f + '\']');
+                var $temp$error = err, $temp$context = A2($elm$core$List$cons, fieldName, context);
+                error = $temp$error;
+                context = $temp$context;
+                continue errorToStringHelp;
+            case 'Index':
+                var i = error.a;
+                var err = error.b;
+                var indexName = '[' + ($elm$core$String$fromInt(i) + ']');
+                var $temp$error = err, $temp$context = A2($elm$core$List$cons, indexName, context);
+                error = $temp$error;
+                context = $temp$context;
+                continue errorToStringHelp;
+            case 'OneOf':
+                var errors = error.a;
+                if (!errors.b) return 'Ran into a Json.Decode.oneOf with no possibilities' + (function() {
+                    if (!context.b) return '!';
+                    else return ' at json' + A2($elm$core$String$join, '', $elm$core$List$reverse(context));
+                })();
+                else if (!errors.b.b) {
+                    var err = errors.a;
+                    var $temp$error = err, $temp$context = context;
+                    error = $temp$error;
+                    context = $temp$context;
+                    continue errorToStringHelp;
+                } else {
+                    var starter = function() {
+                        if (!context.b) return 'Json.Decode.oneOf';
+                        else return 'The Json.Decode.oneOf at json' + A2($elm$core$String$join, '', $elm$core$List$reverse(context));
+                    }();
+                    var introduction = starter + (' failed in the following ' + ($elm$core$String$fromInt($elm$core$List$length(errors)) + ' ways:'));
+                    return A2($elm$core$String$join, '\n\n', A2($elm$core$List$cons, introduction, A2($elm$core$List$indexedMap, $elm$json$Json$Decode$errorOneOf, errors)));
+                }
+            default:
+                var msg = error.a;
+                var json = error.b;
+                var introduction = function() {
+                    if (!context.b) return 'Problem with the given value:\n\n';
+                    else return 'Problem with the value at json' + (A2($elm$core$String$join, '', $elm$core$List$reverse(context)) + ':\n\n    ');
+                }();
+                return introduction + ($elm$json$Json$Decode$indent(A2($elm$json$Json$Encode$encode, 4, json)) + ('\n\n' + msg));
+        }
+    });
+    var $elm$core$Array$branchFactor = 32;
+    var $elm$core$Array$Array_elm_builtin = F4(function(a, b, c, d) {
+        return {
+            $: 'Array_elm_builtin',
+            a: a,
+            b: b,
+            c: c,
+            d: d
+        };
+    });
+    var $elm$core$Elm$JsArray$empty = _JsArray_empty;
+    var $elm$core$Basics$ceiling = _Basics_ceiling;
+    var $elm$core$Basics$fdiv = _Basics_fdiv;
+    var $elm$core$Basics$logBase = F2(function(base, number) {
+        return _Basics_log(number) / _Basics_log(base);
+    });
+    var $elm$core$Basics$toFloat = _Basics_toFloat;
+    var $elm$core$Array$shiftStep = $elm$core$Basics$ceiling(A2($elm$core$Basics$logBase, 2, $elm$core$Array$branchFactor));
+    var $elm$core$Array$empty = A4($elm$core$Array$Array_elm_builtin, 0, $elm$core$Array$shiftStep, $elm$core$Elm$JsArray$empty, $elm$core$Elm$JsArray$empty);
+    var $elm$core$Elm$JsArray$initialize = _JsArray_initialize;
+    var $elm$core$Array$Leaf = function(a) {
+        return {
+            $: 'Leaf',
+            a: a
+        };
+    };
+    var $elm$core$Basics$apL = F2(function(f, x) {
+        return f(x);
+    });
+    var $elm$core$Basics$apR = F2(function(x, f) {
+        return f(x);
+    });
+    var $elm$core$Basics$eq = _Utils_equal;
+    var $elm$core$Basics$floor = _Basics_floor;
+    var $elm$core$Elm$JsArray$length = _JsArray_length;
+    var $elm$core$Basics$gt = _Utils_gt;
+    var $elm$core$Basics$max = F2(function(x, y) {
+        return _Utils_cmp(x, y) > 0 ? x : y;
+    });
+    var $elm$core$Basics$mul = _Basics_mul;
+    var $elm$core$Array$SubTree = function(a) {
+        return {
+            $: 'SubTree',
+            a: a
+        };
+    };
+    var $elm$core$Elm$JsArray$initializeFromList = _JsArray_initializeFromList;
+    var $elm$core$Array$compressNodes = F2(function(nodes, acc) {
+        compressNodes: while(true){
+            var _v0 = A2($elm$core$Elm$JsArray$initializeFromList, $elm$core$Array$branchFactor, nodes);
+            var node = _v0.a;
+            var remainingNodes = _v0.b;
+            var newAcc = A2($elm$core$List$cons, $elm$core$Array$SubTree(node), acc);
+            if (!remainingNodes.b) return $elm$core$List$reverse(newAcc);
+            else {
+                var $temp$nodes = remainingNodes, $temp$acc = newAcc;
+                nodes = $temp$nodes;
+                acc = $temp$acc;
+                continue compressNodes;
+            }
+        }
+    });
+    var $elm$core$Tuple$first = function(_v0) {
+        var x = _v0.a;
+        return x;
+    };
+    var $elm$core$Array$treeFromBuilder = F2(function(nodeList, nodeListSize) {
+        treeFromBuilder: while(true){
+            var newNodeSize = $elm$core$Basics$ceiling(nodeListSize / $elm$core$Array$branchFactor);
+            if (newNodeSize === 1) return A2($elm$core$Elm$JsArray$initializeFromList, $elm$core$Array$branchFactor, nodeList).a;
+            else {
+                var $temp$nodeList = A2($elm$core$Array$compressNodes, nodeList, _List_Nil), $temp$nodeListSize = newNodeSize;
+                nodeList = $temp$nodeList;
+                nodeListSize = $temp$nodeListSize;
+                continue treeFromBuilder;
+            }
+        }
+    });
+    var $elm$core$Array$builderToArray = F2(function(reverseNodeList, builder) {
+        if (!builder.nodeListSize) return A4($elm$core$Array$Array_elm_builtin, $elm$core$Elm$JsArray$length(builder.tail), $elm$core$Array$shiftStep, $elm$core$Elm$JsArray$empty, builder.tail);
+        else {
+            var treeLen = builder.nodeListSize * $elm$core$Array$branchFactor;
+            var depth = $elm$core$Basics$floor(A2($elm$core$Basics$logBase, $elm$core$Array$branchFactor, treeLen - 1));
+            var correctNodeList = reverseNodeList ? $elm$core$List$reverse(builder.nodeList) : builder.nodeList;
+            var tree = A2($elm$core$Array$treeFromBuilder, correctNodeList, builder.nodeListSize);
+            return A4($elm$core$Array$Array_elm_builtin, $elm$core$Elm$JsArray$length(builder.tail) + treeLen, A2($elm$core$Basics$max, 5, depth * $elm$core$Array$shiftStep), tree, builder.tail);
+        }
+    });
+    var $elm$core$Basics$idiv = _Basics_idiv;
+    var $elm$core$Basics$lt = _Utils_lt;
+    var $elm$core$Array$initializeHelp = F5(function(fn, fromIndex, len, nodeList, tail) {
+        initializeHelp: while(true){
+            if (fromIndex < 0) return A2($elm$core$Array$builderToArray, false, {
+                nodeList: nodeList,
+                nodeListSize: len / $elm$core$Array$branchFactor | 0,
+                tail: tail
+            });
+            else {
+                var leaf = $elm$core$Array$Leaf(A3($elm$core$Elm$JsArray$initialize, $elm$core$Array$branchFactor, fromIndex, fn));
+                var $temp$fn = fn, $temp$fromIndex = fromIndex - $elm$core$Array$branchFactor, $temp$len = len, $temp$nodeList = A2($elm$core$List$cons, leaf, nodeList), $temp$tail = tail;
+                fn = $temp$fn;
+                fromIndex = $temp$fromIndex;
+                len = $temp$len;
+                nodeList = $temp$nodeList;
+                tail = $temp$tail;
+                continue initializeHelp;
+            }
+        }
+    });
+    var $elm$core$Basics$remainderBy = _Basics_remainderBy;
+    var $elm$core$Array$initialize = F2(function(len, fn) {
+        if (len <= 0) return $elm$core$Array$empty;
+        else {
+            var tailLen = len % $elm$core$Array$branchFactor;
+            var tail = A3($elm$core$Elm$JsArray$initialize, tailLen, len - tailLen, fn);
+            var initialFromIndex = len - tailLen - $elm$core$Array$branchFactor;
+            return A5($elm$core$Array$initializeHelp, fn, initialFromIndex, len, _List_Nil, tail);
+        }
+    });
+    var $elm$core$Basics$True = {
+        $: 'True'
+    };
+    var $elm$core$Result$isOk = function(result) {
+        if (result.$ === 'Ok') return true;
+        else return false;
+    };
+    var $elm$json$Json$Decode$andThen = _Json_andThen;
+    var $elm$json$Json$Decode$field = _Json_decodeField;
+    var $author$project$Model$Idle = {
+        $: 'Idle'
+    };
+    var $author$project$Worker$Model = F4(function(state, cmd, code, lia) {
+        return {
+            cmd: cmd,
+            code: code,
+            lia: lia,
+            state: state
+        };
+    });
+    var $elm$core$Basics$composeR = F3(function(f, g, x) {
+        return g(f(x));
+    });
+    var $elm$core$Dict$foldl = F3(function(func, acc, dict) {
+        foldl: while(true){
+            if (dict.$ === 'RBEmpty_elm_builtin') return acc;
+            else {
+                var key = dict.b;
+                var value = dict.c;
+                var left = dict.d;
+                var right = dict.e;
+                var $temp$func = func, $temp$acc = A3(func, key, value, A3($elm$core$Dict$foldl, func, acc, left)), $temp$dict = right;
+                func = $temp$func;
+                acc = $temp$acc;
+                dict = $temp$dict;
+                continue foldl;
+            }
+        }
+    });
+    var $elm$json$Json$Encode$dict = F3(function(toKey, toValue, dictionary) {
+        return _Json_wrap(A3($elm$core$Dict$foldl, F3(function(key, value, obj) {
+            return A3(_Json_addField, toKey(key), toValue(value), obj);
+        }), _Json_emptyObject(_Utils_Tuple0), dictionary));
+    });
+    var $elm$json$Json$Encode$object = function(pairs) {
+        return _Json_wrap(A3($elm$core$List$foldl, F2(function(_v0, obj) {
+            var k = _v0.a;
+            var v = _v0.b;
+            return A3(_Json_addField, k, v, obj);
+        }), _Json_emptyObject(_Utils_Tuple0), pairs));
+    };
+    var $elm$json$Json$Encode$string = _Json_wrap;
+    var $author$project$Lia$Definition$Json$Encode$encResource = function(r) {
+        return $elm$json$Json$Encode$object(_List_fromArray([
+            function() {
+                if (r.$ === 'Link') {
+                    var url = r.a;
+                    return _Utils_Tuple2('Link', $elm$json$Json$Encode$string(url));
+                } else {
+                    var url = r.a;
+                    return _Utils_Tuple2('Script', $elm$json$Json$Encode$string(url));
+                }
+            }()
+        ]));
+    };
+    var $elm$json$Json$Encode$bool = _Json_wrap;
+    var $elm$core$Basics$identity = function(x) {
+        return x;
+    };
+    var $elm$json$Json$Encode$list = F2(function(func, entries) {
+        return _Json_wrap(A3($elm$core$List$foldl, _Json_addEntry(func), _Json_emptyArray(_Utils_Tuple0), entries));
+    });
+    var $elm$core$List$foldrHelper = F4(function(fn, acc, ctr, ls) {
+        if (!ls.b) return acc;
+        else {
+            var a = ls.a;
+            var r1 = ls.b;
+            if (!r1.b) return A2(fn, a, acc);
+            else {
+                var b = r1.a;
+                var r2 = r1.b;
+                if (!r2.b) return A2(fn, a, A2(fn, b, acc));
+                else {
+                    var c = r2.a;
+                    var r3 = r2.b;
+                    if (!r3.b) return A2(fn, a, A2(fn, b, A2(fn, c, acc)));
+                    else {
+                        var d = r3.a;
+                        var r4 = r3.b;
+                        var res = ctr > 500 ? A3($elm$core$List$foldl, fn, acc, $elm$core$List$reverse(r4)) : A4($elm$core$List$foldrHelper, fn, acc, ctr + 1, r4);
+                        return A2(fn, a, A2(fn, b, A2(fn, c, A2(fn, d, res))));
+                    }
+                }
+            }
+        }
+    });
+    var $elm$core$List$foldr = F3(function(fn, acc, ls) {
+        return A4($elm$core$List$foldrHelper, fn, acc, 0, ls);
+    });
+    var $elm$core$List$map = F2(function(f, xs) {
+        return A3($elm$core$List$foldr, F2(function(x, acc) {
+            return A2($elm$core$List$cons, f(x), acc);
+        }), _List_Nil, xs);
+    });
+    var $elm$json$Json$Encode$null = _Json_encodeNull;
+    var $author$project$Lia$Markdown$HTML$Json$encParameters = function(annotation) {
+        if (!annotation.b) return $elm$json$Json$Encode$null;
+        else return A2($elm$json$Json$Encode$list, $elm$core$Basics$identity, A2($elm$core$List$map, function(_v1) {
+            var key = _v1.a;
+            var value = _v1.b;
+            return A2($elm$json$Json$Encode$list, $elm$json$Json$Encode$string, _List_fromArray([
+                key,
+                value
+            ]));
+        }, annotation));
+    };
+    var $elm$core$Dict$RBEmpty_elm_builtin = {
+        $: 'RBEmpty_elm_builtin'
+    };
+    var $elm$core$Dict$empty = $elm$core$Dict$RBEmpty_elm_builtin;
+    var $elm$core$Dict$Black = {
+        $: 'Black'
+    };
+    var $elm$core$Dict$RBNode_elm_builtin = F5(function(a, b, c, d, e) {
+        return {
+            $: 'RBNode_elm_builtin',
+            a: a,
+            b: b,
+            c: c,
+            d: d,
+            e: e
+        };
+    });
+    var $elm$core$Dict$Red = {
+        $: 'Red'
+    };
+    var $elm$core$Dict$balance = F5(function(color, key, value, left, right) {
+        if (right.$ === 'RBNode_elm_builtin' && right.a.$ === 'Red') {
+            var _v1 = right.a;
+            var rK = right.b;
+            var rV = right.c;
+            var rLeft = right.d;
+            var rRight = right.e;
+            if (left.$ === 'RBNode_elm_builtin' && left.a.$ === 'Red') {
+                var _v3 = left.a;
+                var lK = left.b;
+                var lV = left.c;
+                var lLeft = left.d;
+                var lRight = left.e;
+                return A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Red, key, value, A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Black, lK, lV, lLeft, lRight), A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Black, rK, rV, rLeft, rRight));
+            } else return A5($elm$core$Dict$RBNode_elm_builtin, color, rK, rV, A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Red, key, value, left, rLeft), rRight);
+        } else {
+            if (left.$ === 'RBNode_elm_builtin' && left.a.$ === 'Red' && left.d.$ === 'RBNode_elm_builtin' && left.d.a.$ === 'Red') {
+                var _v5 = left.a;
+                var lK = left.b;
+                var lV = left.c;
+                var _v6 = left.d;
+                var _v7 = _v6.a;
+                var llK = _v6.b;
+                var llV = _v6.c;
+                var llLeft = _v6.d;
+                var llRight = _v6.e;
+                var lRight = left.e;
+                return A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Red, lK, lV, A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Black, llK, llV, llLeft, llRight), A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Black, key, value, lRight, right));
+            } else return A5($elm$core$Dict$RBNode_elm_builtin, color, key, value, left, right);
+        }
+    });
+    var $elm$core$Basics$compare = _Utils_compare;
+    var $elm$core$Dict$insertHelp = F3(function(key, value, dict) {
+        if (dict.$ === 'RBEmpty_elm_builtin') return A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Red, key, value, $elm$core$Dict$RBEmpty_elm_builtin, $elm$core$Dict$RBEmpty_elm_builtin);
+        else {
+            var nColor = dict.a;
+            var nKey = dict.b;
+            var nValue = dict.c;
+            var nLeft = dict.d;
+            var nRight = dict.e;
+            var _v1 = A2($elm$core$Basics$compare, key, nKey);
+            switch(_v1.$){
+                case 'LT':
+                    return A5($elm$core$Dict$balance, nColor, nKey, nValue, A3($elm$core$Dict$insertHelp, key, value, nLeft), nRight);
+                case 'EQ':
+                    return A5($elm$core$Dict$RBNode_elm_builtin, nColor, nKey, value, nLeft, nRight);
+                default:
+                    return A5($elm$core$Dict$balance, nColor, nKey, nValue, nLeft, A3($elm$core$Dict$insertHelp, key, value, nRight));
+            }
+        }
+    });
+    var $elm$core$Dict$insert = F3(function(key, value, dict) {
+        var _v0 = A3($elm$core$Dict$insertHelp, key, value, dict);
+        if (_v0.$ === 'RBNode_elm_builtin' && _v0.a.$ === 'Red') {
+            var _v1 = _v0.a;
+            var k = _v0.b;
+            var v = _v0.c;
+            var l = _v0.d;
+            var r = _v0.e;
+            return A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Black, k, v, l, r);
+        } else {
+            var x = _v0;
+            return x;
+        }
+    });
+    var $elm$core$Dict$fromList = function(assocs) {
+        return A3($elm$core$List$foldl, F2(function(_v0, dict) {
+            var key = _v0.a;
+            var value = _v0.b;
+            return A3($elm$core$Dict$insert, key, value, dict);
+        }), $elm$core$Dict$empty, assocs);
+    };
+    var $author$project$Lia$Markdown$HTML$Types$encode = F2(function(contentEncoder, obj) {
+        return $elm$json$Json$Encode$object(function() {
+            if (obj.$ === 'Node') {
+                var node = obj.a;
+                var attr = obj.b;
+                var children = obj.c;
+                return _List_fromArray([
+                    _Utils_Tuple2('node', $elm$json$Json$Encode$string(node)),
+                    _Utils_Tuple2('attr', A3($elm$json$Json$Encode$dict, $elm$core$Basics$identity, $elm$json$Json$Encode$string, $elm$core$Dict$fromList(attr))),
+                    _Utils_Tuple2('children', A2($elm$json$Json$Encode$list, contentEncoder, children))
+                ]);
+            } else {
+                var content = obj.a;
+                return _List_fromArray([
+                    _Utils_Tuple2('node_inline', $elm$json$Json$Encode$string(content))
+                ]);
+            }
+        }());
+    });
+    var $elm$json$Json$Encode$int = _Json_wrap;
+    var $elm$core$Maybe$map = F2(function(f, maybe) {
+        if (maybe.$ === 'Just') {
+            var value = maybe.a;
+            return $elm$core$Maybe$Just(f(value));
+        } else return $elm$core$Maybe$Nothing;
+    });
+    var $elm$core$Maybe$withDefault = F2(function(_default, maybe) {
+        if (maybe.$ === 'Just') {
+            var value = maybe.a;
+            return value;
+        } else return _default;
+    });
+    var $author$project$Lia$Markdown$Inline$Json$Encode$encInline = function(element) {
+        return $elm$json$Json$Encode$object(function() {
+            switch(element.$){
+                case 'Chars':
+                    var str = element.a;
+                    var a = element.b;
+                    return _List_fromArray([
+                        _Utils_Tuple2('Chars', $elm$json$Json$Encode$string(str)),
+                        _Utils_Tuple2('a', $author$project$Lia$Markdown$HTML$Json$encParameters(a))
+                    ]);
+                case 'Symbol':
+                    var str = element.a;
+                    var a = element.b;
+                    return _List_fromArray([
+                        _Utils_Tuple2('Symbol', $elm$json$Json$Encode$string(str)),
+                        _Utils_Tuple2('a', $author$project$Lia$Markdown$HTML$Json$encParameters(a))
+                    ]);
+                case 'Bold':
+                    var x = element.a;
+                    var a = element.b;
+                    return _List_fromArray([
+                        _Utils_Tuple2('Bold', $author$project$Lia$Markdown$Inline$Json$Encode$encInline(x)),
+                        _Utils_Tuple2('a', $author$project$Lia$Markdown$HTML$Json$encParameters(a))
+                    ]);
+                case 'Italic':
+                    var x = element.a;
+                    var a = element.b;
+                    return _List_fromArray([
+                        _Utils_Tuple2('Italic', $author$project$Lia$Markdown$Inline$Json$Encode$encInline(x)),
+                        _Utils_Tuple2('a', $author$project$Lia$Markdown$HTML$Json$encParameters(a))
+                    ]);
+                case 'Strike':
+                    var x = element.a;
+                    var a = element.b;
+                    return _List_fromArray([
+                        _Utils_Tuple2('Strike', $author$project$Lia$Markdown$Inline$Json$Encode$encInline(x)),
+                        _Utils_Tuple2('a', $author$project$Lia$Markdown$HTML$Json$encParameters(a))
+                    ]);
+                case 'Underline':
+                    var x = element.a;
+                    var a = element.b;
+                    return _List_fromArray([
+                        _Utils_Tuple2('Underline', $author$project$Lia$Markdown$Inline$Json$Encode$encInline(x)),
+                        _Utils_Tuple2('a', $author$project$Lia$Markdown$HTML$Json$encParameters(a))
+                    ]);
+                case 'Superscript':
+                    var x = element.a;
+                    var a = element.b;
+                    return _List_fromArray([
+                        _Utils_Tuple2('Superscript', $author$project$Lia$Markdown$Inline$Json$Encode$encInline(x)),
+                        _Utils_Tuple2('a', $author$project$Lia$Markdown$HTML$Json$encParameters(a))
+                    ]);
+                case 'Verbatim':
+                    var str = element.a;
+                    var a = element.b;
+                    return _List_fromArray([
+                        _Utils_Tuple2('Verbatim', $elm$json$Json$Encode$string(str)),
+                        _Utils_Tuple2('a', $author$project$Lia$Markdown$HTML$Json$encParameters(a))
+                    ]);
+                case 'Formula':
+                    var head = element.a;
+                    var body = element.b;
+                    var a = element.c;
+                    return _List_fromArray([
+                        _Utils_Tuple2('Formula', $elm$json$Json$Encode$string(head)),
+                        _Utils_Tuple2('body', $elm$json$Json$Encode$string(body)),
+                        _Utils_Tuple2('a', $author$project$Lia$Markdown$HTML$Json$encParameters(a))
+                    ]);
+                case 'Ref':
+                    var ref = element.a;
+                    var a = element.b;
+                    return _List_fromArray([
+                        _Utils_Tuple2('Ref', $author$project$Lia$Markdown$Inline$Json$Encode$encReference(ref)),
+                        _Utils_Tuple2('a', $author$project$Lia$Markdown$HTML$Json$encParameters(a))
+                    ]);
+                case 'FootnoteMark':
+                    var str = element.a;
+                    var a = element.b;
+                    return _List_fromArray([
+                        _Utils_Tuple2('FootnoteMark', $elm$json$Json$Encode$string(str)),
+                        _Utils_Tuple2('a', $author$project$Lia$Markdown$HTML$Json$encParameters(a))
+                    ]);
+                case 'EInline':
+                    var e = element.a;
+                    var a = element.b;
+                    return _List_fromArray([
+                        _Utils_Tuple2('EInline', $author$project$Lia$Markdown$Inline$Json$Encode$encode(e.content)),
+                        _Utils_Tuple2('begin', $elm$json$Json$Encode$int(e.begin)),
+                        _Utils_Tuple2('end', A2($elm$core$Maybe$withDefault, $elm$json$Json$Encode$null, A2($elm$core$Maybe$map, $elm$json$Json$Encode$int, e.end))),
+                        _Utils_Tuple2('playback', $elm$json$Json$Encode$bool(e.playback)),
+                        _Utils_Tuple2('voice', $elm$json$Json$Encode$string(e.voice)),
+                        _Utils_Tuple2('id', $elm$json$Json$Encode$int(e.id)),
+                        _Utils_Tuple2('a', $author$project$Lia$Markdown$HTML$Json$encParameters(a))
+                    ]);
+                case 'Container':
+                    var list = element.a;
+                    var a = element.b;
+                    return _List_fromArray([
+                        _Utils_Tuple2('Container', $author$project$Lia$Markdown$Inline$Json$Encode$encode(list)),
+                        _Utils_Tuple2('a', $author$project$Lia$Markdown$HTML$Json$encParameters(a))
+                    ]);
+                case 'IHTML':
+                    var node = element.a;
+                    var a = element.b;
+                    return _List_fromArray([
+                        _Utils_Tuple2('IHTML', A2($author$project$Lia$Markdown$HTML$Types$encode, $author$project$Lia$Markdown$Inline$Json$Encode$encInline, node)),
+                        _Utils_Tuple2('a', $author$project$Lia$Markdown$HTML$Json$encParameters(a))
+                    ]);
+                default:
+                    var id = element.a;
+                    var a = element.b;
+                    return _List_fromArray([
+                        _Utils_Tuple2('Script', $elm$json$Json$Encode$int(id)),
+                        _Utils_Tuple2('a', $author$project$Lia$Markdown$HTML$Json$encParameters(a))
+                    ]);
+            }
+        }());
+    };
+    var $author$project$Lia$Markdown$Inline$Json$Encode$encMultimedia = F4(function(_class, list, _v1, title) {
+        var stream = _v1.a;
+        var url = _v1.b;
+        return $elm$json$Json$Encode$object(_List_fromArray([
+            _Utils_Tuple2(_class, $author$project$Lia$Markdown$Inline$Json$Encode$encode(list)),
+            _Utils_Tuple2('stream', $elm$json$Json$Encode$bool(stream)),
+            _Utils_Tuple2('url', $elm$json$Json$Encode$string(url)),
+            $author$project$Lia$Markdown$Inline$Json$Encode$encTitle(title)
+        ]));
+    });
+    var $author$project$Lia$Markdown$Inline$Json$Encode$encRef = F4(function(_class, list, url, title) {
+        return $elm$json$Json$Encode$object(_List_fromArray([
+            _Utils_Tuple2(_class, $author$project$Lia$Markdown$Inline$Json$Encode$encode(list)),
+            _Utils_Tuple2('url', $elm$json$Json$Encode$string(url)),
+            $author$project$Lia$Markdown$Inline$Json$Encode$encTitle(title)
+        ]));
+    });
+    var $author$project$Lia$Markdown$Inline$Json$Encode$encReference = function(ref) {
+        switch(ref.$){
+            case 'Link':
+                var list = ref.a;
+                var url = ref.b;
+                var title = ref.c;
+                return A4($author$project$Lia$Markdown$Inline$Json$Encode$encRef, 'Link', list, url, title);
+            case 'Mail':
+                var list = ref.a;
+                var url = ref.b;
+                var title = ref.c;
+                return A4($author$project$Lia$Markdown$Inline$Json$Encode$encRef, 'Mail', list, url, title);
+            case 'Embed':
+                var list = ref.a;
+                var url = ref.b;
+                var title = ref.c;
+                return A4($author$project$Lia$Markdown$Inline$Json$Encode$encRef, 'Embed', list, url, title);
+            case 'Image':
+                var list = ref.a;
+                var url = ref.b;
+                var title = ref.c;
+                return A4($author$project$Lia$Markdown$Inline$Json$Encode$encRef, 'Image', list, url, title);
+            case 'Audio':
+                var list = ref.a;
+                var url = ref.b;
+                var title = ref.c;
+                return A4($author$project$Lia$Markdown$Inline$Json$Encode$encMultimedia, 'Audio', list, url, title);
+            case 'Movie':
+                var list = ref.a;
+                var url = ref.b;
+                var title = ref.c;
+                return A4($author$project$Lia$Markdown$Inline$Json$Encode$encMultimedia, 'Movie', list, url, title);
+            case 'Preview_Lia':
+                var url = ref.a;
+                return A4($author$project$Lia$Markdown$Inline$Json$Encode$encRef, 'Preview_Lia', _List_Nil, url, $elm$core$Maybe$Nothing);
+            case 'Preview_Link':
+                var url = ref.a;
+                return A4($author$project$Lia$Markdown$Inline$Json$Encode$encRef, 'Preview_Link', _List_Nil, url, $elm$core$Maybe$Nothing);
+            default:
+                var url = ref.a;
+                var title = ref.b;
+                return A4($author$project$Lia$Markdown$Inline$Json$Encode$encRef, 'QR_Link', _List_Nil, url, title);
+        }
+    };
+    var $author$project$Lia$Markdown$Inline$Json$Encode$encTitle = function(title) {
+        return _Utils_Tuple2('title', A2($elm$core$Maybe$withDefault, $elm$json$Json$Encode$null, A2($elm$core$Maybe$map, $author$project$Lia$Markdown$Inline$Json$Encode$encode, title)));
+    };
+    var $author$project$Lia$Markdown$Inline$Json$Encode$encode = function(list) {
+        return A2($elm$json$Json$Encode$list, $author$project$Lia$Markdown$Inline$Json$Encode$encInline, list);
+    };
+    var $author$project$Lia$Definition$Json$Encode$encode = function(def) {
+        return $elm$json$Json$Encode$object(_List_fromArray([
+            _Utils_Tuple2('author', $elm$json$Json$Encode$string(def.author)),
+            _Utils_Tuple2('date', $elm$json$Json$Encode$string(def.date)),
+            _Utils_Tuple2('email', $elm$json$Json$Encode$string(def.email)),
+            _Utils_Tuple2('language', $elm$json$Json$Encode$string(def.language)),
+            _Utils_Tuple2('logo', $elm$json$Json$Encode$string(def.logo)),
+            _Utils_Tuple2('version', $elm$json$Json$Encode$string(def.version)),
+            _Utils_Tuple2('base', $elm$json$Json$Encode$string(def.base)),
+            _Utils_Tuple2('narrator', $elm$json$Json$Encode$string(def.narrator)),
+            _Utils_Tuple2('onload', $elm$json$Json$Encode$string(def.onload)),
+            _Utils_Tuple2('comment', $author$project$Lia$Markdown$Inline$Json$Encode$encode(def.comment)),
+            _Utils_Tuple2('attributes', A2($elm$json$Json$Encode$list, $author$project$Lia$Markdown$Inline$Json$Encode$encode, def.attributes)),
+            _Utils_Tuple2('resources', A2($elm$json$Json$Encode$list, $author$project$Lia$Definition$Json$Encode$encResource, def.resources)),
+            _Utils_Tuple2('translation', A3($elm$json$Json$Encode$dict, $elm$core$Basics$identity, $elm$json$Json$Encode$string, def.translation)),
+            _Utils_Tuple2('macro', A3($elm$json$Json$Encode$dict, $elm$core$Basics$identity, $elm$json$Json$Encode$string, def.macro))
+        ]));
+    };
+    var $elm$core$Result$map = F2(function(func, ra) {
+        if (ra.$ === 'Ok') {
+            var a = ra.a;
+            return $elm$core$Result$Ok(func(a));
+        } else {
+            var e = ra.a;
+            return $elm$core$Result$Err(e);
+        }
+    });
+    var $elm$core$Tuple$pair = F2(function(a, b) {
+        return _Utils_Tuple2(a, b);
+    });
+    var $elm$core$Basics$negate = function(n) {
+        return -n;
+    };
+    var $author$project$Lia$Definition$Types$default = function(base) {
+        return {
+            attributes: _List_Nil,
+            author: '',
+            base: base,
+            comment: _List_Nil,
+            date: '',
+            debug: false,
+            email: '',
+            imports: _List_Nil,
+            language: 'en',
+            lightMode: $elm$core$Maybe$Nothing,
+            logo: '',
+            macro: $elm$core$Dict$empty,
+            mode: $elm$core$Maybe$Nothing,
+            narrator: 'US English Male',
+            onload: '',
+            resources: _List_Nil,
+            section: -1,
+            translation: $elm$core$Dict$empty,
+            uid: -1,
+            version: '0.0.1'
+        };
+    };
+    var $author$project$Const$urlLiascript = 'https://LiaScript.github.io';
+    var $author$project$Const$urlLiascriptCourse = $author$project$Const$urlLiascript + '/nightly/?';
+    var $author$project$Error$Message$emptyFile = '> The file you want me to load does not contain any content. Everything I see is only an empty string...\n    \nIf you see this in message in an editor, try to copy and paste the following code:\n\n```` md\n<!--\nauthor:   Your Name\n\nemail:    your@mail.org\n\nversion:  0.0.1\n\nlanguage: en\n\nnarrator: US English Female\n\ncomment:  Try to write a short comment about\n          your course, multiline is also okay.\n-->\n\n# Course Main Title\n\nThis is your **course** initialization stub.\n\nPlease see the [Docs](' + ($author$project$Const$urlLiascriptCourse + ('https://raw.githubusercontent.com/liaScript/docs/master/README.md)\nto find out what is possible in [LiaScript](' + ($author$project$Const$urlLiascript + (').\n\nIf you want to use instant help in your Atom IDE, please type **lia** to see all available shortcuts.\n\n## Markdown\n\nYou can use common [Markdown](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet) syntax to create your course, such as:\n\n1. Lists\n2. ordered or\n\n   * unordered\n   * ones ...\n\n\n| Header 1   | Header 2   |\n| :--------- | :--------- |\n| Item 1     | Item 2     |\n\n\nImages:\n\n![images](https://farm2.static.flickr.com/1618/26701766821_7bea494826.jpg)\n\n\n### Extensions\n\n     --{{0}}--\nBut you can also include other features such as spoken text.\n\n      --{{1}}--\nInsert any kind of audio file:\n\n       {{1}}\n?[audio](https://bigsoundbank.com/UPLOAD/mp3/1068.mp3)\n\n\n     --{{2}}--\nEven videos or change the language completely.\n\n       {{2-3}}\n!?[video](https://www.youtube.com/watch?v=bICfKRyKTwE)\n\n\n      --{{3 Russian Female}}--\nПервоначально создан в 2004 году Джоном Грубером (англ. John Gruber) и Аароном\nШварцем. Многие идеи языка были позаимствованы из существующих соглашений по\nразметке текста в электронных письмах...\n\n\n    {{3}}\nType "voice" to see a list of all available languages.\n\n\n### Styling\n\n<!-- class = "animated rollIn" style = "animation-delay: 2s; color: purple" -->\nThe whole text-block should appear in purple color and with a wobbling effect.\nWhich is a **bad** example, please use it with caution ...\n~~ only this is red ;-) ~~ <!-- class = "animated infinite bounce" style = "color: red;" -->\n\n## Charts\n\nUse ASCII-Art to draw diagrams:\n\n                                    Multiline\n    1.9 |    DOTS\n        |                 ***\n      y |               *     *\n      - | r r r r r r r*r r r r*r r r r r r r\n      a |             *         *\n      x |            *           *\n      i | B B B B B * B B B B B B * B B B B B\n      s |         *                 *\n        | *  * *                       * *  *\n     -1 +------------------------------------\n        0              x-axis               1\n\n## Quizzes\n\n### A Textquiz\n\nWhat did the **fish** say when he hit a **concrete wall**?\n\n    [[dam]]\n\n### Multiple Choice\n\nJust add as many points as you wish:\n\n    [[X]] Only the **X** marks the correct point.\n    [[ ]] Empty ones are wrong.\n    [[X]] ...\n\n### Single Choice\n\nJust add as many points as you wish:\n\n    [( )] ...\n    [(X)] <-- Only the **X** is allowed.\n    [( )] ...\n\n\n## Executable Code\n\nYou can make your code executable and define projects:\n\n``` js     -EvalScript.js\nlet who = data.first_name + " " + data.last_name;\n\nif(data.online) {\n  who + " is online"; }\nelse {\n  who + " is NOT online"; }\n```\n``` json    +Data.json\n{\n  "first_name" :  "Sammy",\n  "last_name"  :  "Shark",\n  "online"     :  true\n}\n```\n<script>\n  // insert the JSON dataset into the local variable data\n  let data = @input(1);\n\n  // eval the script that uses this dataset\n  eval(`@input(0)`);\n</script>\n\n\n## More\n\nFind out what you also can do ...\n\n' + ($author$project$Const$urlLiascriptCourse + 'https://raw.githubusercontent.com/liaScript/docs/master/README.md\n````\n')))));
+    var $andre_dietrich$parser_combinators$Combine$ParseLocation = F3(function(source, line, column) {
+        return {
+            column: column,
+            line: line,
+            source: source
+        };
+    });
+    var $elm$core$String$length = _String_length;
+    var $andre_dietrich$parser_combinators$Combine$currentLocation = function(stream) {
+        var find = F3(function(position, currentLine_, lines) {
+            find: while(true){
+                if (!lines.b) return A3($andre_dietrich$parser_combinators$Combine$ParseLocation, '', currentLine_, position);
+                else {
+                    var line = lines.a;
+                    var rest = lines.b;
+                    var length = $elm$core$String$length(line);
+                    var lengthPlusNL = length + 1;
+                    if (_Utils_eq(position, length)) return A3($andre_dietrich$parser_combinators$Combine$ParseLocation, line, currentLine_, position);
+                    else {
+                        if (_Utils_cmp(position, length) > 0) {
+                            var $temp$position = position - lengthPlusNL, $temp$currentLine_ = currentLine_ + 1, $temp$lines = rest;
+                            position = $temp$position;
+                            currentLine_ = $temp$currentLine_;
+                            lines = $temp$lines;
+                            continue find;
+                        } else return A3($andre_dietrich$parser_combinators$Combine$ParseLocation, line, currentLine_, position);
+                    }
+                }
+            }
+        });
+        return A3(find, stream.position, 0, A2($elm$core$String$split, '\n', stream.data));
+    };
+    var $elm$core$String$cons = _String_cons;
+    var $elm$core$String$fromChar = function(_char) {
+        return A2($elm$core$String$cons, _char, '');
+    };
+    var $elm$core$Bitwise$and = _Bitwise_and;
+    var $elm$core$Bitwise$shiftRightBy = _Bitwise_shiftRightBy;
+    var $elm$core$String$repeatHelp = F3(function(n, chunk, result) {
+        return n <= 0 ? result : A3($elm$core$String$repeatHelp, n >> 1, _Utils_ap(chunk, chunk), !(n & 1) ? result : _Utils_ap(result, chunk));
+    });
+    var $elm$core$String$repeat = F2(function(n, chunk) {
+        return A3($elm$core$String$repeatHelp, n, chunk, '');
+    });
+    var $elm$core$String$padLeft = F3(function(n, _char, string) {
+        return _Utils_ap(A2($elm$core$String$repeat, n - $elm$core$String$length(string), $elm$core$String$fromChar(_char)), string);
+    });
+    var $author$project$Lia$Parser$Parser$formatError = F2(function(ms, stream) {
+        var separator = '\n ';
+        var separatorOffset = $elm$core$String$length(separator);
+        var location = $andre_dietrich$parser_combinators$Combine$currentLocation(stream);
+        var padding = location.column + separatorOffset + 2;
+        var expectationSeparator = '\n  * ';
+        return 'Parse error around line: ' + ($elm$core$String$fromInt(location.line) + (separator + (location.source + ('\n' + (A3($elm$core$String$padLeft, padding, _Utils_chr(' '), '^') + ('\nI expected one of the following:\n' + (expectationSeparator + A2($elm$core$String$join, expectationSeparator, ms))))))));
+    });
+    var $elm$core$Basics$always = F2(function(a, _v0) {
+        return a;
+    });
+    var $andre_dietrich$parser_combinators$Combine$Parser = function(a) {
+        return {
+            $: 'Parser',
+            a: a
+        };
+    };
+    var $andre_dietrich$parser_combinators$Combine$app = function(_v0) {
+        var inner = _v0.a;
+        return inner;
+    };
+    var $andre_dietrich$parser_combinators$Combine$andThen = F2(function(f, p) {
+        return $andre_dietrich$parser_combinators$Combine$Parser(F2(function(state, stream) {
+            var _v0 = A3($andre_dietrich$parser_combinators$Combine$app, p, state, stream);
+            if (_v0.c.$ === 'Ok') {
+                var rstate = _v0.a;
+                var rstream = _v0.b;
+                var res = _v0.c.a;
+                return A3($andre_dietrich$parser_combinators$Combine$app, f(res), rstate, rstream);
+            } else {
+                var estate = _v0.a;
+                var estream = _v0.b;
+                var ms = _v0.c.a;
+                return _Utils_Tuple3(estate, estream, $elm$core$Result$Err(ms));
+            }
+        }));
+    });
+    var $pilatch$flip$Flip$flip = F3(function(_function, argB, argA) {
+        return A2(_function, argA, argB);
+    });
+    var $andre_dietrich$parser_combinators$Combine$bimap = F3(function(fok, ferr, p) {
+        return $andre_dietrich$parser_combinators$Combine$Parser(F2(function(state, stream) {
+            var _v0 = A3($andre_dietrich$parser_combinators$Combine$app, p, state, stream);
+            if (_v0.c.$ === 'Ok') {
+                var rstate = _v0.a;
+                var rstream = _v0.b;
+                var res = _v0.c.a;
+                return _Utils_Tuple3(rstate, rstream, $elm$core$Result$Ok(fok(res)));
+            } else {
+                var estate = _v0.a;
+                var estream = _v0.b;
+                var ms = _v0.c.a;
+                return _Utils_Tuple3(estate, estream, $elm$core$Result$Err(ferr(ms)));
+            }
+        }));
+    });
+    var $andre_dietrich$parser_combinators$Combine$map = F2(function(f, p) {
+        return A3($andre_dietrich$parser_combinators$Combine$bimap, f, $elm$core$Basics$identity, p);
+    });
+    var $andre_dietrich$parser_combinators$Combine$andMap = F2(function(rp, lp) {
+        return A2($andre_dietrich$parser_combinators$Combine$andThen, A2($pilatch$flip$Flip$flip, $andre_dietrich$parser_combinators$Combine$map, rp), lp);
+    });
+    var $andre_dietrich$parser_combinators$Combine$ignore = F2(function(p1, p2) {
+        return A2($andre_dietrich$parser_combinators$Combine$andMap, p1, A2($andre_dietrich$parser_combinators$Combine$map, $elm$core$Basics$always, p2));
+    });
+    var $author$project$Lia$Markdown$Code$Types$Model = F2(function(evaluate, highlight) {
+        return {
+            evaluate: evaluate,
+            highlight: highlight
+        };
+    });
+    var $author$project$Lia$Markdown$Code$Types$init = A2($author$project$Lia$Markdown$Code$Types$Model, $elm$core$Array$empty, $elm$core$Array$empty);
+    var $author$project$Lia$Markdown$Effect$Model$Model = F5(function(visible, effects, comments, javascript, speaking) {
+        return {
+            comments: comments,
+            effects: effects,
+            javascript: javascript,
+            speaking: speaking,
+            visible: visible
+        };
+    });
+    var $author$project$Lia$Markdown$Effect$Model$init = A5($author$project$Lia$Markdown$Effect$Model$Model, 0, 0, $elm$core$Dict$empty, $elm$core$Array$empty, $elm$core$Maybe$Nothing);
+    var $author$project$Lia$Markdown$Footnote$Model$init = $elm$core$Dict$empty;
+    var $author$project$Lia$Parser$Context$init = F2(function(search_index, global) {
+        return {
+            code_model: $author$project$Lia$Markdown$Code$Types$init,
+            defines: global,
+            defines_updated: false,
+            effect_id: 0,
+            effect_model: $author$project$Lia$Markdown$Effect$Model$init,
+            effect_number: _List_fromArray([
+                0
+            ]),
+            footnotes: $author$project$Lia$Markdown$Footnote$Model$init,
+            gallery_vector: $elm$core$Array$empty,
+            indentation: _List_Nil,
+            indentation_skip: false,
+            quiz_vector: $elm$core$Array$empty,
+            search_index: A2($elm$core$Maybe$withDefault, $elm$core$Basics$identity, search_index),
+            survey_vector: $elm$core$Array$empty,
+            table_vector: $elm$core$Array$empty,
+            task_vector: $elm$core$Array$empty
+        };
+    });
+    var $andre_dietrich$parser_combinators$Combine$or = F2(function(lp, rp) {
+        return $andre_dietrich$parser_combinators$Combine$Parser(F2(function(state, stream) {
+            var _v0 = A3($andre_dietrich$parser_combinators$Combine$app, lp, state, stream);
+            if (_v0.c.$ === 'Ok') {
+                var res = _v0;
+                return res;
+            } else {
+                var lms = _v0.c.a;
+                var _v1 = A3($andre_dietrich$parser_combinators$Combine$app, rp, state, stream);
+                if (_v1.c.$ === 'Ok') {
+                    var res = _v1;
+                    return res;
+                } else {
+                    var rms = _v1.c.a;
+                    return _Utils_Tuple3(state, stream, $elm$core$Result$Err(_Utils_ap(lms, rms)));
+                }
+            }
+        }));
+    });
+    var $andre_dietrich$parser_combinators$Combine$keep = F2(function(p1, p2) {
+        return A2($andre_dietrich$parser_combinators$Combine$andMap, p1, A2($andre_dietrich$parser_combinators$Combine$map, $pilatch$flip$Flip$flip($elm$core$Basics$always), p2));
+    });
+    var $andre_dietrich$parser_combinators$Combine$manyTill = F2(function(p, end_) {
+        var accumulate = F3(function(acc, state, stream) {
+            accumulate: while(true){
+                var _v0 = A3($andre_dietrich$parser_combinators$Combine$app, end_, state, stream);
+                if (_v0.c.$ === 'Ok') {
+                    var rstate = _v0.a;
+                    var rstream = _v0.b;
+                    return _Utils_Tuple3(rstate, rstream, $elm$core$Result$Ok($elm$core$List$reverse(acc)));
+                } else {
+                    var estate = _v0.a;
+                    var estream = _v0.b;
+                    var ms = _v0.c.a;
+                    var _v1 = A3($andre_dietrich$parser_combinators$Combine$app, p, state, stream);
+                    if (_v1.c.$ === 'Ok') {
+                        var rstate = _v1.a;
+                        var rstream = _v1.b;
+                        var res = _v1.c.a;
+                        var $temp$acc = A2($elm$core$List$cons, res, acc), $temp$state = rstate, $temp$stream = rstream;
+                        acc = $temp$acc;
+                        state = $temp$state;
+                        stream = $temp$stream;
+                        continue accumulate;
+                    } else return _Utils_Tuple3(estate, estream, $elm$core$Result$Err(ms));
+                }
+            }
+        });
+        return $andre_dietrich$parser_combinators$Combine$Parser(accumulate(_List_Nil));
+    });
+    var $elm$core$String$slice = _String_slice;
+    var $elm$core$String$dropLeft = F2(function(n, string) {
+        return n < 1 ? string : A3($elm$core$String$slice, n, $elm$core$String$length(string), string);
+    });
+    var $elm$core$String$startsWith = _String_startsWith;
+    var $andre_dietrich$parser_combinators$Combine$string = function(s) {
+        return $andre_dietrich$parser_combinators$Combine$Parser(F2(function(state, stream) {
+            if (A2($elm$core$String$startsWith, s, stream.input)) {
+                var len = $elm$core$String$length(s);
+                var pos = stream.position + len;
+                var rem = A2($elm$core$String$dropLeft, len, stream.input);
+                return _Utils_Tuple3(state, _Utils_update(stream, {
+                    input: rem,
+                    position: pos
+                }), $elm$core$Result$Ok(s));
+            } else return _Utils_Tuple3(state, stream, $elm$core$Result$Err(_List_fromArray([
+                'expected \"' + (s + '\"')
+            ])));
+        }));
+    };
+    var $andre_dietrich$parser_combinators$Combine$mapError = $andre_dietrich$parser_combinators$Combine$bimap($elm$core$Basics$identity);
+    var $andre_dietrich$parser_combinators$Combine$onerror = F2(function(m, p) {
+        return A2($andre_dietrich$parser_combinators$Combine$mapError, $elm$core$Basics$always(_List_fromArray([
+            m
+        ])), p);
+    });
+    var $elm$regex$Regex$Match = F4(function(match, index, number, submatches) {
+        return {
+            index: index,
+            match: match,
+            number: number,
+            submatches: submatches
+        };
+    });
+    var $elm$regex$Regex$fromStringWith = _Regex_fromStringWith;
+    var $elm$regex$Regex$fromString = function(string) {
+        return A2($elm$regex$Regex$fromStringWith, {
+            caseInsensitive: false,
+            multiline: false
+        }, string);
+    };
+    var $elm$regex$Regex$findAtMost = _Regex_findAtMost;
+    var $elm$regex$Regex$never = _Regex_never;
+    var $andre_dietrich$parser_combinators$Combine$regexer = F5(function(input, output, pat, state, stream) {
+        var pattern = A2($elm$core$String$startsWith, '^', pat) ? pat : '^' + pat;
+        var _v0 = A3($elm$regex$Regex$findAtMost, 1, A2($elm$core$Maybe$withDefault, $elm$regex$Regex$never, input(pattern)), stream.input);
+        if (_v0.b && !_v0.b.b) {
+            var match = _v0.a;
+            var len = $elm$core$String$length(match.match);
+            var pos = stream.position + len;
+            var rem = A2($elm$core$String$dropLeft, len, stream.input);
+            return _Utils_Tuple3(state, _Utils_update(stream, {
+                input: rem,
+                position: pos
+            }), $elm$core$Result$Ok(output(match)));
+        } else return _Utils_Tuple3(state, stream, $elm$core$Result$Err(_List_fromArray([
+            'expected input matching Regexp /' + (pattern + '/')
+        ])));
+    });
+    var $andre_dietrich$parser_combinators$Combine$regex = A2($elm$core$Basics$composeR, A2($andre_dietrich$parser_combinators$Combine$regexer, $elm$regex$Regex$fromString, function($) {
+        return $.match;
+    }), $andre_dietrich$parser_combinators$Combine$Parser);
+    var $andre_dietrich$parser_combinators$Combine$whitespace = A2($andre_dietrich$parser_combinators$Combine$onerror, 'optional whitespace', $andre_dietrich$parser_combinators$Combine$regex('\\s*'));
+    var $author$project$Lia$Markdown$Inline$Parser$comment = function(p) {
+        return A2($andre_dietrich$parser_combinators$Combine$keep, A2($andre_dietrich$parser_combinators$Combine$manyTill, p, $andre_dietrich$parser_combinators$Combine$string('-->')), A2($andre_dietrich$parser_combinators$Combine$ignore, $andre_dietrich$parser_combinators$Combine$whitespace, $andre_dietrich$parser_combinators$Combine$string('<!--')));
+    };
+    var $andre_dietrich$parser_combinators$Combine$emptyErr = $andre_dietrich$parser_combinators$Combine$Parser(F2(function(state, stream) {
+        return _Utils_Tuple3(state, stream, $elm$core$Result$Err(_List_Nil));
+    }));
+    var $andre_dietrich$parser_combinators$Combine$choice = function(xs) {
+        return A3($elm$core$List$foldr, $andre_dietrich$parser_combinators$Combine$or, $andre_dietrich$parser_combinators$Combine$emptyErr, xs);
+    };
+    var $andre_dietrich$parser_combinators$Combine$maybe = function(p) {
+        return $andre_dietrich$parser_combinators$Combine$Parser(F2(function(state, stream) {
+            var _v0 = A3($andre_dietrich$parser_combinators$Combine$app, p, state, stream);
+            if (_v0.c.$ === 'Ok') {
+                var rstate = _v0.a;
+                var rstream = _v0.b;
+                var res = _v0.c.a;
+                return _Utils_Tuple3(rstate, rstream, $elm$core$Result$Ok($elm$core$Maybe$Just(res)));
+            } else return _Utils_Tuple3(state, stream, $elm$core$Result$Ok($elm$core$Maybe$Nothing));
+        }));
+    };
+    var $author$project$Lia$Definition$Parser$start = $andre_dietrich$parser_combinators$Combine$maybe($andre_dietrich$parser_combinators$Combine$string('@'));
+    var $author$project$Lia$Definition$Parser$key = A2($andre_dietrich$parser_combinators$Combine$keep, $andre_dietrich$parser_combinators$Combine$regex('\\w+[\\w\\-.\\d]*'), $author$project$Lia$Definition$Parser$start);
+    var $elm$core$String$concat = function(strings) {
+        return A2($elm$core$String$join, '', strings);
+    };
+    var $elm$core$List$intersperse = F2(function(sep, xs) {
+        if (!xs.b) return _List_Nil;
+        else {
+            var hd = xs.a;
+            var tl = xs.b;
+            var step = F2(function(x, rest) {
+                return A2($elm$core$List$cons, sep, A2($elm$core$List$cons, x, rest));
+            });
+            var spersed = A3($elm$core$List$foldr, step, _List_Nil, tl);
+            return A2($elm$core$List$cons, hd, spersed);
+        }
+    });
+    var $elm$core$String$words = _String_words;
+    var $author$project$Lia$Definition$Parser$reduce = A2($elm$core$Basics$composeR, $elm$core$String$words, A2($elm$core$Basics$composeR, $elm$core$List$intersperse(' '), $elm$core$String$concat));
+    var $author$project$Lia$Definition$Parser$lines = A2($andre_dietrich$parser_combinators$Combine$map, $author$project$Lia$Definition$Parser$reduce, $andre_dietrich$parser_combinators$Combine$regex('([ \\t].*|[ \\t]*\\n)+'));
+    var $andre_dietrich$parser_combinators$Combine$primitive = $andre_dietrich$parser_combinators$Combine$Parser;
+    var $andre_dietrich$parser_combinators$Combine$Char$satisfy = function(pred) {
+        return $andre_dietrich$parser_combinators$Combine$primitive(F2(function(state, stream) {
+            var message = 'could not satisfy predicate';
+            var _v0 = $elm$core$String$uncons(stream.input);
+            if (_v0.$ === 'Just') {
+                var _v1 = _v0.a;
+                var h = _v1.a;
+                var rest = _v1.b;
+                return pred(h) ? _Utils_Tuple3(state, _Utils_update(stream, {
+                    input: rest,
+                    position: stream.position + 1
+                }), $elm$core$Result$Ok(h)) : _Utils_Tuple3(state, stream, $elm$core$Result$Err(_List_fromArray([
+                    message
+                ])));
+            } else return _Utils_Tuple3(state, stream, $elm$core$Result$Err(_List_fromArray([
+                message
+            ])));
+        }));
+    };
+    var $andre_dietrich$parser_combinators$Combine$Char$anyChar = A2($andre_dietrich$parser_combinators$Combine$onerror, 'expected any character', $andre_dietrich$parser_combinators$Combine$Char$satisfy($elm$core$Basics$always(true)));
+    var $elm$core$String$fromList = _String_fromList;
+    var $author$project$Lia$Parser$Helper$stringTill = function(p) {
+        return A2($andre_dietrich$parser_combinators$Combine$map, $elm$core$String$fromList, A2($andre_dietrich$parser_combinators$Combine$manyTill, $andre_dietrich$parser_combinators$Combine$Char$anyChar, p));
+    };
+    var $author$project$Lia$Definition$Parser$multiline = A2($andre_dietrich$parser_combinators$Combine$map, function(x) {
+        return A2($elm$core$String$startsWith, '\n', x) ? ' ' + x : x;
+    }, $author$project$Lia$Parser$Helper$stringTill($andre_dietrich$parser_combinators$Combine$string('\n@end')));
+    var $author$project$Lia$Definition$Parser$value = A2($andre_dietrich$parser_combinators$Combine$or, A2($andre_dietrich$parser_combinators$Combine$keep, $author$project$Lia$Definition$Parser$lines, $andre_dietrich$parser_combinators$Combine$regex('[\\t ]*:')), A2($andre_dietrich$parser_combinators$Combine$keep, $author$project$Lia$Definition$Parser$multiline, $andre_dietrich$parser_combinators$Combine$regex('[\t ]*\\n')));
+    var $author$project$Lia$Definition$Parser$key_value = A2($andre_dietrich$parser_combinators$Combine$andMap, $author$project$Lia$Definition$Parser$value, A2($andre_dietrich$parser_combinators$Combine$map, $elm$core$Tuple$pair, $author$project$Lia$Definition$Parser$key));
+    var $andre_dietrich$parser_combinators$Combine$onsuccess = function(res) {
+        return $andre_dietrich$parser_combinators$Combine$map($elm$core$Basics$always(res));
+    };
+    var $andre_dietrich$parser_combinators$Combine$skip = function(p) {
+        return A2($andre_dietrich$parser_combinators$Combine$onsuccess, _Utils_Tuple0, p);
+    };
+    var $author$project$Lia$Definition$Types$Link = function(a) {
+        return {
+            $: 'Link',
+            a: a
+        };
+    };
+    var $author$project$Lia$Settings$Types$Presentation = {
+        $: 'Presentation'
+    };
+    var $author$project$Lia$Definition$Types$Script = function(a) {
+        return {
+            $: 'Script',
+            a: a
+        };
+    };
+    var $author$project$Lia$Settings$Types$Slides = {
+        $: 'Slides'
+    };
+    var $author$project$Lia$Settings$Types$Textbook = {
+        $: 'Textbook'
+    };
+    var $author$project$Lia$Markdown$Macro$Parser$add = F2(function(_v0, def) {
+        var name = _v0.a;
+        var code = _v0.b;
+        return _Utils_update(def, {
+            macro: A3($elm$core$Dict$insert, name, code, def.macro)
+        });
+    });
+    var $elm$core$List$append = F2(function(xs, ys) {
+        if (!ys.b) return xs;
+        else return A3($elm$core$List$foldr, $elm$core$List$cons, ys, xs);
+    });
+    var $elm$core$List$head = function(list) {
+        if (list.b) {
+            var x = list.a;
+            var xs = list.b;
+            return $elm$core$Maybe$Just(x);
+        } else return $elm$core$Maybe$Nothing;
+    };
+    var $elm$core$String$toLower = _String_toLower;
+    var $author$project$Lia$Markdown$HTML$Attributes$allowedProtocol = function(url) {
+        var _v0 = $elm$core$String$toLower(A2($elm$core$Maybe$withDefault, '', $elm$core$List$head(A2($elm$core$String$split, '://', url))));
+        switch(_v0){
+            case 'https':
+                return true;
+            case 'http':
+                return true;
+            case 'file':
+                return true;
+            case 'hyper':
+                return true;
+            case 'dat':
+                return true;
+            case 'ipfs':
+                return true;
+            case 'ipns':
+                return true;
+            default:
+                return false;
+        }
+    };
+    var $author$project$Lia$Markdown$HTML$Attributes$toURL = F2(function(basis, url) {
+        return $author$project$Lia$Markdown$HTML$Attributes$allowedProtocol(url) || A2($elm$core$String$startsWith, '#', url) ? url : _Utils_ap(basis, url);
+    });
+    var $author$project$Lia$Definition$Types$append = F4(function(to, base, urls, list) {
+        return A2($elm$core$List$append, list, A2($elm$core$List$map, A2($elm$core$Basics$composeR, $author$project$Lia$Markdown$HTML$Attributes$toURL(base), to), $elm$core$String$words(urls)));
+    });
+    var $author$project$Lia$Definition$Types$addToResources = F3(function(to, urls, def) {
+        return _Utils_update(def, {
+            resources: A4($author$project$Lia$Definition$Types$append, to, def.base, urls, def.resources)
+        });
+    });
+    var $author$project$Lia$Parser$PatReplace$regex = A2($elm$core$Basics$composeR, $elm$regex$Regex$fromString, $elm$core$Maybe$withDefault($elm$regex$Regex$never));
+    var $author$project$Lia$Parser$PatReplace$check = F2(function(pattern, url) {
+        var _v0 = $elm$core$List$head(A3($elm$regex$Regex$findAtMost, 1, $author$project$Lia$Parser$PatReplace$regex(pattern), url));
+        if (_v0.$ === 'Just') {
+            var match = _v0.a;
+            return A2($elm$core$Maybe$withDefault, $elm$core$Maybe$Nothing, $elm$core$List$head(match.submatches));
+        } else return $elm$core$Maybe$Nothing;
+    });
+    var $author$project$Lia$Parser$PatReplace$replace = F2(function(patterns, url) {
+        replace: while(true){
+            if (!patterns.b) return _Utils_Tuple2(false, url);
+            else {
+                var t = patterns.a;
+                var ts = patterns.b;
+                var _v1 = A2($author$project$Lia$Parser$PatReplace$check, t.pattern, url);
+                if (_v1.$ === 'Just') {
+                    var str = _v1.a;
+                    return _Utils_Tuple2(true, A2(t.by, url, str));
+                } else {
+                    var $temp$patterns = ts, $temp$url = url;
+                    patterns = $temp$patterns;
+                    url = $temp$url;
+                    continue replace;
+                }
+            }
+        }
+    });
+    var $elm$core$String$replace = F3(function(before, after, string) {
+        return A2($elm$core$String$join, after, A2($elm$core$String$split, before, string));
+    });
+    var $author$project$Lia$Parser$PatReplace$root = $elm$core$Basics$append('(?:http(?:s)?://)?(?:www\\.)?');
+    var $elm$core$Tuple$second = function(_v0) {
+        var y = _v0.b;
+        return y;
+    };
+    var $author$project$Lia$Parser$PatReplace$link = A2($elm$core$Basics$composeR, $author$project$Lia$Parser$PatReplace$replace(_List_fromArray([
+        {
+            by: F2(function(_v0, w) {
+                return 'https://raw.githubusercontent.com/' + (function() {
+                    var _v1 = A2($elm$core$String$split, '/', w);
+                    _v1$2: while(true){
+                        if (_v1.b && _v1.b.b) {
+                            if (!_v1.b.b.b) {
+                                var _v2 = _v1.b;
+                                return w + '/master/README.md';
+                            } else {
+                                if (_v1.b.b.a === 'tree') {
+                                    var _v3 = _v1.b;
+                                    var _v4 = _v3.b;
+                                    return A3($elm$core$String$replace, '/tree/', '/', w) + '/README.md';
+                                } else break _v1$2;
+                            }
+                        } else break _v1$2;
+                    }
+                    return A3($elm$core$String$replace, '/blob/', '/', w);
+                })();
+            }),
+            pattern: $author$project$Lia$Parser$PatReplace$root('github\\.com/(.*)')
+        },
+        {
+            by: F2(function(_v5, w) {
+                return 'https://dl.dropbox.com/s/' + w;
+            }),
+            pattern: $author$project$Lia$Parser$PatReplace$root('dropbox\\.com/s/(.*)')
+        }
+    ])), $elm$core$Tuple$second);
+    var $author$project$Lia$Definition$Types$add_imports = F2(function(url, def) {
+        return _Utils_update(def, {
+            imports: A4($author$project$Lia$Definition$Types$append, $author$project$Lia$Parser$PatReplace$link, def.base, url, def.imports)
+        });
+    });
+    var $author$project$Lia$Definition$Types$add_translation = F2(function(str, def) {
+        var _v0 = $elm$core$String$words(str);
+        if (_v0.b && _v0.b.b && !_v0.b.b.b) {
+            var lang = _v0.a;
+            var _v1 = _v0.b;
+            var url = _v1.a;
+            return _Utils_update(def, {
+                translation: A3($elm$core$Dict$insert, lang, A2($author$project$Lia$Markdown$HTML$Attributes$toURL, def.base, url), def.translation)
+            });
+        } else return def;
+    });
+    var $author$project$Lia$Markdown$Inline$Types$Audio = F3(function(a, b, c) {
+        return {
+            $: 'Audio',
+            a: a,
+            b: b,
+            c: c
+        };
+    });
+    var $author$project$Lia$Markdown$Inline$Types$Bold = F2(function(a, b) {
+        return {
+            $: 'Bold',
+            a: a,
+            b: b
+        };
+    });
+    var $author$project$Lia$Markdown$Inline$Types$EInline = F2(function(a, b) {
+        return {
+            $: 'EInline',
+            a: a,
+            b: b
+        };
+    });
+    var $author$project$Lia$Markdown$Inline$Types$Embed = F3(function(a, b, c) {
+        return {
+            $: 'Embed',
+            a: a,
+            b: b,
+            c: c
+        };
+    });
+    var $author$project$Lia$Markdown$Inline$Types$IHTML = F2(function(a, b) {
+        return {
+            $: 'IHTML',
+            a: a,
+            b: b
+        };
+    });
+    var $author$project$Lia$Markdown$Inline$Types$Image = F3(function(a, b, c) {
+        return {
+            $: 'Image',
+            a: a,
+            b: b,
+            c: c
+        };
+    });
+    var $author$project$Lia$Markdown$Inline$Types$Italic = F2(function(a, b) {
+        return {
+            $: 'Italic',
+            a: a,
+            b: b
+        };
+    });
+    var $author$project$Lia$Markdown$Inline$Types$Link = F3(function(a, b, c) {
+        return {
+            $: 'Link',
+            a: a,
+            b: b,
+            c: c
+        };
+    });
+    var $author$project$Lia$Markdown$Inline$Types$Mail = F3(function(a, b, c) {
+        return {
+            $: 'Mail',
+            a: a,
+            b: b,
+            c: c
+        };
+    });
+    var $author$project$Lia$Markdown$Inline$Types$Movie = F3(function(a, b, c) {
+        return {
+            $: 'Movie',
+            a: a,
+            b: b,
+            c: c
+        };
+    });
+    var $author$project$Lia$Markdown$Inline$Types$Preview_Lia = function(a) {
+        return {
+            $: 'Preview_Lia',
+            a: a
+        };
+    };
+    var $author$project$Lia$Markdown$Inline$Types$Preview_Link = function(a) {
+        return {
+            $: 'Preview_Link',
+            a: a
+        };
+    };
+    var $author$project$Lia$Markdown$Inline$Types$QR_Link = F2(function(a, b) {
+        return {
+            $: 'QR_Link',
+            a: a,
+            b: b
+        };
+    });
+    var $author$project$Lia$Markdown$Inline$Types$Ref = F2(function(a, b) {
+        return {
+            $: 'Ref',
+            a: a,
+            b: b
+        };
+    });
+    var $author$project$Lia$Markdown$Inline$Types$Script = F2(function(a, b) {
+        return {
+            $: 'Script',
+            a: a,
+            b: b
+        };
+    });
+    var $author$project$Lia$Markdown$Inline$Types$Strike = F2(function(a, b) {
+        return {
+            $: 'Strike',
+            a: a,
+            b: b
+        };
+    });
+    var $author$project$Lia$Markdown$Inline$Types$Superscript = F2(function(a, b) {
+        return {
+            $: 'Superscript',
+            a: a,
+            b: b
+        };
+    });
+    var $author$project$Lia$Markdown$Inline$Types$Underline = F2(function(a, b) {
+        return {
+            $: 'Underline',
+            a: a,
+            b: b
+        };
+    });
+    var $author$project$Lia$Markdown$Inline$Types$Chars = F2(function(a, b) {
+        return {
+            $: 'Chars',
+            a: a,
+            b: b
+        };
+    });
+    var $author$project$Lia$Markdown$Effect$Model$Content = F3(function(visible, attr, content) {
+        return {
+            attr: attr,
+            content: content,
+            visible: visible
+        };
+    });
+    var $author$project$Lia$Markdown$Effect$Model$Element = F2(function(narrator, content) {
+        return {
+            content: content,
+            narrator: narrator
+        };
+    });
+    var $elm$core$Array$fromListHelp = F3(function(list, nodeList, nodeListSize) {
+        fromListHelp: while(true){
+            var _v0 = A2($elm$core$Elm$JsArray$initializeFromList, $elm$core$Array$branchFactor, list);
+            var jsArray = _v0.a;
+            var remainingItems = _v0.b;
+            if (_Utils_cmp($elm$core$Elm$JsArray$length(jsArray), $elm$core$Array$branchFactor) < 0) return A2($elm$core$Array$builderToArray, true, {
+                nodeList: nodeList,
+                nodeListSize: nodeListSize,
+                tail: jsArray
+            });
+            else {
+                var $temp$list = remainingItems, $temp$nodeList = A2($elm$core$List$cons, $elm$core$Array$Leaf(jsArray), nodeList), $temp$nodeListSize = nodeListSize + 1;
+                list = $temp$list;
+                nodeList = $temp$nodeList;
+                nodeListSize = $temp$nodeListSize;
+                continue fromListHelp;
+            }
+        }
+    });
+    var $elm$core$Array$fromList = function(list) {
+        if (!list.b) return $elm$core$Array$empty;
+        else return A3($elm$core$Array$fromListHelp, list, _List_Nil, 0);
+    };
+    var $elm$core$Dict$get = F2(function(targetKey, dict) {
+        get: while(true){
+            if (dict.$ === 'RBEmpty_elm_builtin') return $elm$core$Maybe$Nothing;
+            else {
+                var key = dict.b;
+                var value = dict.c;
+                var left = dict.d;
+                var right = dict.e;
+                var _v1 = A2($elm$core$Basics$compare, targetKey, key);
+                switch(_v1.$){
+                    case 'LT':
+                        var $temp$targetKey = targetKey, $temp$dict = left;
+                        targetKey = $temp$targetKey;
+                        dict = $temp$dict;
+                        continue get;
+                    case 'EQ':
+                        return $elm$core$Maybe$Just(value);
+                    default:
+                        var $temp$targetKey = targetKey, $temp$dict = right;
+                        targetKey = $temp$targetKey;
+                        dict = $temp$dict;
+                        continue get;
+                }
+            }
+        }
+    });
+    var $elm$core$Array$length = function(_v0) {
+        var len = _v0.a;
+        return len;
+    };
+    var $andre_dietrich$parser_combinators$Combine$succeed = function(res) {
+        return $andre_dietrich$parser_combinators$Combine$Parser(F2(function(state, stream) {
+            return _Utils_Tuple3(state, stream, $elm$core$Result$Ok(res));
+        }));
+    };
+    var $andre_dietrich$parser_combinators$Combine$withState = function(f) {
+        return $andre_dietrich$parser_combinators$Combine$Parser(F2(function(state, stream) {
+            return A3($andre_dietrich$parser_combinators$Combine$app, f(state), state, stream);
+        }));
+    };
+    var $author$project$Lia$Markdown$Effect$Parser$get_counter = function(idx) {
+        return $andre_dietrich$parser_combinators$Combine$withState(function(s) {
+            return $andre_dietrich$parser_combinators$Combine$succeed(function() {
+                var _v0 = A2($elm$core$Dict$get, idx, s.effect_model.comments);
+                if (_v0.$ === 'Just') {
+                    var e = _v0.a;
+                    return $elm$core$Array$length(e.content) - 1;
+                } else return 0;
+            }());
+        });
+    };
+    var $andre_dietrich$parser_combinators$Combine$modifyState = function(f) {
+        return $andre_dietrich$parser_combinators$Combine$Parser(F2(function(state, stream) {
+            return A3($andre_dietrich$parser_combinators$Combine$app, $andre_dietrich$parser_combinators$Combine$succeed(_Utils_Tuple0), f(state), stream);
+        }));
+    };
+    var $elm$core$Elm$JsArray$push = _JsArray_push;
+    var $elm$core$Bitwise$shiftRightZfBy = _Bitwise_shiftRightZfBy;
+    var $elm$core$Array$bitMask = 4294967295 >>> 32 - $elm$core$Array$shiftStep;
+    var $elm$core$Basics$ge = _Utils_ge;
+    var $elm$core$Elm$JsArray$singleton = _JsArray_singleton;
+    var $elm$core$Elm$JsArray$unsafeGet = _JsArray_unsafeGet;
+    var $elm$core$Elm$JsArray$unsafeSet = _JsArray_unsafeSet;
+    var $elm$core$Array$insertTailInTree = F4(function(shift, index, tail, tree) {
+        var pos = $elm$core$Array$bitMask & index >>> shift;
+        if (_Utils_cmp(pos, $elm$core$Elm$JsArray$length(tree)) > -1) {
+            if (shift === 5) return A2($elm$core$Elm$JsArray$push, $elm$core$Array$Leaf(tail), tree);
+            else {
+                var newSub = $elm$core$Array$SubTree(A4($elm$core$Array$insertTailInTree, shift - $elm$core$Array$shiftStep, index, tail, $elm$core$Elm$JsArray$empty));
+                return A2($elm$core$Elm$JsArray$push, newSub, tree);
+            }
+        } else {
+            var value = A2($elm$core$Elm$JsArray$unsafeGet, pos, tree);
+            if (value.$ === 'SubTree') {
+                var subTree = value.a;
+                var newSub = $elm$core$Array$SubTree(A4($elm$core$Array$insertTailInTree, shift - $elm$core$Array$shiftStep, index, tail, subTree));
+                return A3($elm$core$Elm$JsArray$unsafeSet, pos, newSub, tree);
+            } else {
+                var newSub = $elm$core$Array$SubTree(A4($elm$core$Array$insertTailInTree, shift - $elm$core$Array$shiftStep, index, tail, $elm$core$Elm$JsArray$singleton(value)));
+                return A3($elm$core$Elm$JsArray$unsafeSet, pos, newSub, tree);
+            }
+        }
+    });
+    var $elm$core$Bitwise$shiftLeftBy = _Bitwise_shiftLeftBy;
+    var $elm$core$Array$unsafeReplaceTail = F2(function(newTail, _v0) {
+        var len = _v0.a;
+        var startShift = _v0.b;
+        var tree = _v0.c;
+        var tail = _v0.d;
+        var originalTailLen = $elm$core$Elm$JsArray$length(tail);
+        var newTailLen = $elm$core$Elm$JsArray$length(newTail);
+        var newArrayLen = len + (newTailLen - originalTailLen);
+        if (_Utils_eq(newTailLen, $elm$core$Array$branchFactor)) {
+            var overflow = _Utils_cmp(newArrayLen >>> $elm$core$Array$shiftStep, 1 << startShift) > 0;
+            if (overflow) {
+                var newShift = startShift + $elm$core$Array$shiftStep;
+                var newTree = A4($elm$core$Array$insertTailInTree, newShift, len, newTail, $elm$core$Elm$JsArray$singleton($elm$core$Array$SubTree(tree)));
+                return A4($elm$core$Array$Array_elm_builtin, newArrayLen, newShift, newTree, $elm$core$Elm$JsArray$empty);
+            } else return A4($elm$core$Array$Array_elm_builtin, newArrayLen, startShift, A4($elm$core$Array$insertTailInTree, startShift, len, newTail, tree), $elm$core$Elm$JsArray$empty);
+        } else return A4($elm$core$Array$Array_elm_builtin, newArrayLen, startShift, tree, newTail);
+    });
+    var $elm$core$Array$push = F2(function(a, array) {
+        var tail = array.d;
+        return A2($elm$core$Array$unsafeReplaceTail, A2($elm$core$Elm$JsArray$push, a, tail), array);
+    });
+    var $elm$core$String$trim = _String_trim;
+    var $author$project$Lia$Markdown$Effect$Parser$add_comment = F2(function(visible, _v0) {
+        var idx = _v0.a;
+        var temp_narrator = _v0.b;
+        var par = _v0.c;
+        var rslt = function(id2) {
+            return $andre_dietrich$parser_combinators$Combine$succeed(_Utils_Tuple2(idx, id2));
+        };
+        var mod = function(s) {
+            var narrator = A2($elm$core$Maybe$withDefault, s.defines.narrator, A2($elm$core$Maybe$map, $elm$core$String$trim, temp_narrator));
+            return _Utils_update(s, {
+                effect_model: function() {
+                    var e = s.effect_model;
+                    return _Utils_update(e, {
+                        comments: function() {
+                            var _v1 = A2($elm$core$Dict$get, idx, e.comments);
+                            if (_v1.$ === 'Just') {
+                                var cmt = _v1.a;
+                                return A3($elm$core$Dict$insert, idx, _Utils_update(cmt, {
+                                    content: A2($elm$core$Array$push, A3($author$project$Lia$Markdown$Effect$Model$Content, visible, _List_Nil, par), cmt.content)
+                                }), e.comments);
+                            } else return A3($elm$core$Dict$insert, idx, A2($author$project$Lia$Markdown$Effect$Model$Element, narrator, $elm$core$Array$fromList(_List_fromArray([
+                                A3($author$project$Lia$Markdown$Effect$Model$Content, visible, _List_Nil, par)
+                            ]))), e.comments);
+                        }()
+                    });
+                }()
+            });
+        };
+        return A2($andre_dietrich$parser_combinators$Combine$andThen, rslt, A2($andre_dietrich$parser_combinators$Combine$keep, $author$project$Lia$Markdown$Effect$Parser$get_counter(idx), $andre_dietrich$parser_combinators$Combine$modifyState(mod)));
+    });
+    var $elm$core$String$toInt = _String_toInt;
+    var $andre_dietrich$parser_combinators$Combine$fail = function(m) {
+        return $andre_dietrich$parser_combinators$Combine$Parser(F2(function(state, stream) {
+            return _Utils_Tuple3(state, stream, $elm$core$Result$Err(_List_fromArray([
+                m
+            ])));
+        }));
+    };
+    var $andre_dietrich$parser_combinators$Combine$Num$unwrap = function(value) {
+        if (value.$ === 'Just') {
+            var v = value.a;
+            return $andre_dietrich$parser_combinators$Combine$succeed(v);
+        } else return $andre_dietrich$parser_combinators$Combine$fail('impossible state in Combine.Num.unwrap');
+    };
+    var $andre_dietrich$parser_combinators$Combine$Num$int = A2($andre_dietrich$parser_combinators$Combine$onerror, 'expected an int', A2($andre_dietrich$parser_combinators$Combine$andThen, $andre_dietrich$parser_combinators$Combine$Num$unwrap, A2($andre_dietrich$parser_combinators$Combine$map, $elm$core$String$toInt, $andre_dietrich$parser_combinators$Combine$regex('-?(?:0|[1-9]\\d*)'))));
+    var $author$project$Lia$Markdown$Effect$Parser$effect_number = function() {
+        var state = function(n) {
+            return A2($andre_dietrich$parser_combinators$Combine$keep, $andre_dietrich$parser_combinators$Combine$succeed(n), $andre_dietrich$parser_combinators$Combine$modifyState(function(s) {
+                return _Utils_update(s, {
+                    effect_model: function() {
+                        if (_Utils_cmp(n, s.effect_model.effects) > 0) {
+                            var e = s.effect_model;
+                            return _Utils_update(e, {
+                                effects: n
+                            });
+                        } else return s.effect_model;
+                    }(),
+                    effect_number: A2($elm$core$List$cons, n, s.effect_number)
+                });
+            }));
+        };
+        return A2($andre_dietrich$parser_combinators$Combine$andThen, state, $andre_dietrich$parser_combinators$Combine$Num$int);
+    }();
+    var $author$project$Lia$Parser$Helper$c_frame = A2($andre_dietrich$parser_combinators$Combine$map, $elm$core$String$length, $andre_dietrich$parser_combinators$Combine$regex('(`){3,}'));
+    var $author$project$Lia$Parser$Indentation$par_ = function(s) {
+        return _Utils_eq(s.indentation, _List_Nil) ? $andre_dietrich$parser_combinators$Combine$succeed(_Utils_Tuple0) : s.indentation_skip ? $andre_dietrich$parser_combinators$Combine$skip($andre_dietrich$parser_combinators$Combine$succeed(_Utils_Tuple0)) : $andre_dietrich$parser_combinators$Combine$skip($andre_dietrich$parser_combinators$Combine$regex($elm$core$String$concat(s.indentation)));
+    };
+    var $author$project$Lia$Parser$Indentation$skip_ = F2(function(bool, state) {
+        return _Utils_update(state, {
+            indentation_skip: bool
+        });
+    });
+    var $author$project$Lia$Parser$Indentation$check = A2($andre_dietrich$parser_combinators$Combine$ignore, $andre_dietrich$parser_combinators$Combine$modifyState($author$project$Lia$Parser$Indentation$skip_(false)), $andre_dietrich$parser_combinators$Combine$withState($author$project$Lia$Parser$Indentation$par_));
+    var $elm$core$List$singleton = function(value) {
+        return _List_fromArray([
+            value
+        ]);
+    };
+    var $author$project$Lia$Markdown$Macro$Parser$code_block = A2($andre_dietrich$parser_combinators$Combine$map, A2($elm$core$Basics$composeR, $elm$core$String$concat, $elm$core$List$singleton), A2($andre_dietrich$parser_combinators$Combine$manyTill, A2($andre_dietrich$parser_combinators$Combine$keep, $andre_dietrich$parser_combinators$Combine$regex('(.(?!```))*\\n?'), $andre_dietrich$parser_combinators$Combine$maybe($author$project$Lia$Parser$Indentation$check)), A2($andre_dietrich$parser_combinators$Combine$keep, $author$project$Lia$Parser$Helper$c_frame, $andre_dietrich$parser_combinators$Combine$maybe($author$project$Lia$Parser$Indentation$check))));
+    var $author$project$Lia$Markdown$Macro$Parser$debugEnvironment = F2(function(env, code) {
+        return env ? '<lia-keep><pre id=\'ls\'><code style=\'background: #CCCCCC; white-space: pre;\'>' + (code + '</code></pre></lia-keep>') : code;
+    });
+    var $elm$regex$Regex$replace = _Regex_replaceAtMost(_Regex_infinity);
+    var $author$project$Lia$Markdown$Macro$Parser$debugReplace = F3(function(pat, fn, string) {
+        var _v0 = $elm$regex$Regex$fromString(pat);
+        if (_v0.$ === 'Just') {
+            var regex = _v0.a;
+            return A3($elm$regex$Regex$replace, regex, fn, string);
+        } else return string;
+    });
+    var $elm$core$Basics$neq = _Utils_notEqual;
+    var $author$project$Lia$Markdown$Macro$Parser$debug = function(env) {
+        return A2($elm$core$Basics$composeR, A2($author$project$Lia$Markdown$Macro$Parser$debugReplace, '[*+`{}#^|$\\[\\]]', A2($elm$core$Basics$composeR, function($) {
+            return $.match;
+        }, $elm$core$Basics$append('\\'))), A2($elm$core$Basics$composeR, A2($elm$core$String$replace, '<', '\\<'), A2($elm$core$Basics$composeR, A2($elm$core$String$replace, '>', '\\>'), A2($elm$core$Basics$composeR, A2($elm$core$String$replace, '\\\\`', '`'), A2($elm$core$Basics$composeR, A2($elm$core$String$replace, '\n', '<br id=\'ls\'>'), A2($elm$core$Basics$composeR, A2($author$project$Lia$Markdown$Macro$Parser$debugReplace, '@[a-zA-Z]+[\\w\\d._\\-]*', function(x) {
+            return x.match !== '@input' ? '@-' + x.match : x.match;
+        }), A2($elm$core$Basics$composeR, A2($elm$core$String$replace, '\\<br id=\'ls\'\\>', '<br id=\'ls\'>'), $author$project$Lia$Markdown$Macro$Parser$debugEnvironment(env))))))));
+    };
+    var $author$project$Lia$Markdown$Macro$Parser$get = F2(function(name, def) {
+        var _v0 = A2($elm$core$String$startsWith, '@@', name) ? _Utils_Tuple3(true, true, A2($elm$core$String$dropLeft, 2, name)) : A2($elm$core$String$startsWith, '@-@', name) ? _Utils_Tuple3(true, false, A2($elm$core$String$dropLeft, 3, name)) : _Utils_Tuple3(false, false, A2($elm$core$String$dropLeft, 1, name));
+        var isDebug = _v0.a;
+        var deepDebug = _v0.b;
+        var id = _v0.c;
+        return A2($elm$core$Maybe$map, function(x) {
+            return _Utils_Tuple3(isDebug, deepDebug, x);
+        }, function() {
+            switch(id){
+                case 'author':
+                    return $elm$core$Maybe$Just(def.author);
+                case 'date':
+                    return $elm$core$Maybe$Just(def.date);
+                case 'email':
+                    return $elm$core$Maybe$Just(def.email);
+                case 'version':
+                    return $elm$core$Maybe$Just(def.version);
+                case 'section':
+                    return $elm$core$Maybe$Just($elm$core$String$fromInt(def.section));
+                case 'uid':
+                    return $elm$core$Maybe$Just($elm$core$String$fromInt(def.section) + ('_' + $elm$core$String$fromInt(def.uid)));
+                default:
+                    return A2($elm$core$Dict$get, id, def.macro);
+            }
+        }());
+    });
+    var $elm$core$String$lines = _String_lines;
+    var $andre_dietrich$parser_combinators$Combine$many = function(p) {
+        var accumulate = F3(function(acc, state, stream) {
+            accumulate: while(true){
+                var _v0 = A3($andre_dietrich$parser_combinators$Combine$app, p, state, stream);
+                if (_v0.c.$ === 'Ok') {
+                    var rstate = _v0.a;
+                    var rstream = _v0.b;
+                    var res = _v0.c.a;
+                    if (_Utils_eq(stream, rstream)) return _Utils_Tuple3(rstate, rstream, $elm$core$List$reverse(acc));
+                    else {
+                        var $temp$acc = A2($elm$core$List$cons, res, acc), $temp$state = rstate, $temp$stream = rstream;
+                        acc = $temp$acc;
+                        state = $temp$state;
+                        stream = $temp$stream;
+                        continue accumulate;
+                    }
+                } else return _Utils_Tuple3(state, stream, $elm$core$List$reverse(acc));
+            }
+        });
+        return $andre_dietrich$parser_combinators$Combine$Parser(F2(function(state, stream) {
+            var _v1 = A3(accumulate, _List_Nil, state, stream);
+            var rstate = _v1.a;
+            var rstream = _v1.b;
+            var res = _v1.c;
+            return _Utils_Tuple3(rstate, rstream, $elm$core$Result$Ok(res));
+        }));
+    };
+    var $andre_dietrich$parser_combinators$Combine$many1 = function(p) {
+        return A2($andre_dietrich$parser_combinators$Combine$andMap, $andre_dietrich$parser_combinators$Combine$many(p), A2($andre_dietrich$parser_combinators$Combine$map, $elm$core$List$cons, p));
+    };
+    var $andre_dietrich$parser_combinators$Combine$modifyInput = function(f) {
+        return $andre_dietrich$parser_combinators$Combine$Parser(F2(function(state, stream) {
+            return A3($andre_dietrich$parser_combinators$Combine$app, $andre_dietrich$parser_combinators$Combine$succeed(_Utils_Tuple0), state, _Utils_update(stream, {
+                input: f(stream.input)
+            }));
+        }));
+    };
+    var $andre_dietrich$parser_combinators$Combine$optional = F2(function(res, p) {
+        return A2($andre_dietrich$parser_combinators$Combine$or, p, $andre_dietrich$parser_combinators$Combine$succeed(res));
+    });
+    var $author$project$Lia$Utils$toJSstring = A2($elm$core$Basics$composeR, $elm$core$String$split('\\'), $elm$core$String$join('\\\\'));
+    var $author$project$Lia$Markdown$Macro$Parser$parameter = A2($andre_dietrich$parser_combinators$Combine$map, $author$project$Lia$Utils$toJSstring, $andre_dietrich$parser_combinators$Combine$choice(_List_fromArray([
+        A2($andre_dietrich$parser_combinators$Combine$ignore, $author$project$Lia$Parser$Helper$c_frame, A2($andre_dietrich$parser_combinators$Combine$keep, $andre_dietrich$parser_combinators$Combine$regex('(([^`]+|(`[^`]+)|(``[^`]+))|\\n)+'), $author$project$Lia$Parser$Helper$c_frame)),
+        A2($andre_dietrich$parser_combinators$Combine$ignore, $andre_dietrich$parser_combinators$Combine$string('`'), A2($andre_dietrich$parser_combinators$Combine$keep, $andre_dietrich$parser_combinators$Combine$regex('[^`\n]+'), $andre_dietrich$parser_combinators$Combine$string('`'))),
+        $andre_dietrich$parser_combinators$Combine$regex('[^),]+')
+    ])));
+    var $andre_dietrich$parser_combinators$Combine$between = F3(function(lp, rp, p) {
+        return A2($andre_dietrich$parser_combinators$Combine$ignore, rp, A2($andre_dietrich$parser_combinators$Combine$keep, p, lp));
+    });
+    var $andre_dietrich$parser_combinators$Combine$parens = A2($andre_dietrich$parser_combinators$Combine$between, $andre_dietrich$parser_combinators$Combine$string('('), $andre_dietrich$parser_combinators$Combine$string(')'));
+    var $andre_dietrich$parser_combinators$Combine$sepBy1 = F2(function(sep, p) {
+        return A2($andre_dietrich$parser_combinators$Combine$andMap, $andre_dietrich$parser_combinators$Combine$many(A2($andre_dietrich$parser_combinators$Combine$keep, p, sep)), A2($andre_dietrich$parser_combinators$Combine$map, $elm$core$List$cons, p));
+    });
+    var $andre_dietrich$parser_combinators$Combine$sepBy = F2(function(sep, p) {
+        return A2($andre_dietrich$parser_combinators$Combine$or, A2($andre_dietrich$parser_combinators$Combine$sepBy1, sep, p), $andre_dietrich$parser_combinators$Combine$succeed(_List_Nil));
+    });
+    var $author$project$Lia$Markdown$Macro$Parser$parameter_list = A2($andre_dietrich$parser_combinators$Combine$optional, _List_Nil, $andre_dietrich$parser_combinators$Combine$parens(A2($andre_dietrich$parser_combinators$Combine$sepBy, $andre_dietrich$parser_combinators$Combine$string(','), $author$project$Lia$Markdown$Macro$Parser$parameter)));
+    var $author$project$Lia$Markdown$Macro$Parser$identifier = $andre_dietrich$parser_combinators$Combine$regex('\\w[\\w\\d._]+');
+    var $author$project$Lia$Markdown$Macro$Parser$start = A2($andre_dietrich$parser_combinators$Combine$andMap, A2($andre_dietrich$parser_combinators$Combine$optional, false, A2($andre_dietrich$parser_combinators$Combine$onsuccess, true, $andre_dietrich$parser_combinators$Combine$string('\''))), A2($andre_dietrich$parser_combinators$Combine$map, F3(function(ad, escape, name_) {
+        return _Utils_Tuple2(_Utils_ap(ad, name_), escape);
+    }), $andre_dietrich$parser_combinators$Combine$regex('@-?@?')));
+    var $author$project$Lia$Markdown$Macro$Parser$pattern = A2($andre_dietrich$parser_combinators$Combine$andMap, $author$project$Lia$Markdown$Macro$Parser$identifier, $author$project$Lia$Markdown$Macro$Parser$start);
+    var $andre_dietrich$parser_combinators$Combine$putState = function(state) {
+        return $andre_dietrich$parser_combinators$Combine$Parser(F2(function(_v0, stream) {
+            return A3($andre_dietrich$parser_combinators$Combine$app, $andre_dietrich$parser_combinators$Combine$succeed(_Utils_Tuple0), state, stream);
+        }));
+    };
+    var $author$project$Lia$Markdown$Macro$Parser$reference_macro = A2($andre_dietrich$parser_combinators$Combine$andMap, A2($andre_dietrich$parser_combinators$Combine$andMap, $andre_dietrich$parser_combinators$Combine$withState(A2($elm$core$Basics$composeR, function($) {
+        return $.defines;
+    }, A2($elm$core$Basics$composeR, function($) {
+        return $.base;
+    }, $andre_dietrich$parser_combinators$Combine$succeed))), A2($andre_dietrich$parser_combinators$Combine$ignore, $andre_dietrich$parser_combinators$Combine$regex('(\\)|[^)]*\\))'), A2($andre_dietrich$parser_combinators$Combine$andMap, $andre_dietrich$parser_combinators$Combine$regex('[^) ]*'), A2($andre_dietrich$parser_combinators$Combine$map, F3(function(list, url, baseURL) {
+        return A2($elm$core$List$append, list, _List_fromArray([
+            A2($author$project$Lia$Markdown$HTML$Attributes$toURL, baseURL, url)
+        ]));
+    }), A2($andre_dietrich$parser_combinators$Combine$ignore, $andre_dietrich$parser_combinators$Combine$string(']('), $author$project$Lia$Markdown$Macro$Parser$parameter_list))))), A2($andre_dietrich$parser_combinators$Combine$map, $elm$core$Tuple$pair, A2($andre_dietrich$parser_combinators$Combine$andMap, $author$project$Lia$Markdown$Macro$Parser$identifier, A2($andre_dietrich$parser_combinators$Combine$ignore, $andre_dietrich$parser_combinators$Combine$string('['), $author$project$Lia$Markdown$Macro$Parser$start))));
+    var $andre_dietrich$parser_combinators$Combine$InputStream = F3(function(data, input, position) {
+        return {
+            data: data,
+            input: input,
+            position: position
+        };
+    });
+    var $andre_dietrich$parser_combinators$Combine$initStream = function(s) {
+        return A3($andre_dietrich$parser_combinators$Combine$InputStream, s, s, 0);
+    };
+    var $andre_dietrich$parser_combinators$Combine$runParser = F3(function(p, st, s) {
+        var _v0 = A3($andre_dietrich$parser_combinators$Combine$app, p, st, $andre_dietrich$parser_combinators$Combine$initStream(s));
+        if (_v0.c.$ === 'Ok') {
+            var state = _v0.a;
+            var stream = _v0.b;
+            var res = _v0.c.a;
+            return $elm$core$Result$Ok(_Utils_Tuple3(state, stream, res));
+        } else {
+            var state = _v0.a;
+            var stream = _v0.b;
+            var ms = _v0.c.a;
+            return $elm$core$Result$Err(_Utils_Tuple3(state, stream, ms));
+        }
+    });
+    var $author$project$Lia$Markdown$Macro$Parser$simple_macro = A2($andre_dietrich$parser_combinators$Combine$andMap, $author$project$Lia$Markdown$Macro$Parser$parameter_list, A2($andre_dietrich$parser_combinators$Combine$map, $elm$core$Tuple$pair, $author$project$Lia$Markdown$Macro$Parser$pattern));
+    var $author$project$Lia$Utils$toEscapeString = function(str) {
+        return A3($elm$core$String$replace, '\n', '\\n', A3($elm$core$String$replace, '`', '\\`', A3($elm$core$String$replace, '\'', '\\\'', A3($elm$core$String$replace, '\"', '\\\"', str))));
+    };
+    var $author$project$Lia$Markdown$Macro$Parser$uid_update = function(state) {
+        var def = state.defines;
+        return _Utils_update(state, {
+            defines: _Utils_update(def, {
+                uid: def.uid + 1
+            })
+        });
+    };
+    var $author$project$Lia$Markdown$Macro$Parser$uid_macro = A2($andre_dietrich$parser_combinators$Combine$onsuccess, _Utils_Tuple2(_Utils_Tuple2('@uid', false), _List_Nil), A2($andre_dietrich$parser_combinators$Combine$keep, $andre_dietrich$parser_combinators$Combine$modifyState($author$project$Lia$Markdown$Macro$Parser$uid_update), $andre_dietrich$parser_combinators$Combine$string('@uid')));
+    var $author$project$Lia$Markdown$Macro$Parser$eval_parameter = F2(function(param, _v7) {
+        var state = _v7.a;
+        var i = _v7.b;
+        var code = _v7.c;
+        var _v8 = A2($author$project$Lia$Markdown$Macro$Parser$macro_parse, state, param);
+        var new_state = _v8.a;
+        var new_param = _v8.b;
+        return _Utils_Tuple3(new_state, i + 1, A3($elm$core$String$replace, '@' + $elm$core$String$fromInt(i), new_param, A3($elm$core$String$replace, '@\'' + $elm$core$String$fromInt(i), $author$project$Lia$Utils$toEscapeString(new_param), code)));
+    });
+    var $author$project$Lia$Markdown$Macro$Parser$inject_macro = function(_v2) {
+        var _v3 = _v2.a;
+        var name = _v3.a;
+        var escape = _v3.b;
+        var params = _v2.b;
+        var inject = function(state) {
+            var _v4 = A2($author$project$Lia$Markdown$Macro$Parser$get, name, state.defines);
+            if (_v4.$ === 'Just') {
+                var _v5 = _v4.a;
+                var isDebug = _v5.a;
+                var deepDebug = _v5.b;
+                var code = _v5.c;
+                var code_ = _Utils_eq(state.indentation, _List_Nil) ? code : A2($elm$core$String$join, '\n' + A3($elm$core$String$replace, '*', '', A3($elm$core$String$replace, '?', '', $elm$core$String$concat(state.indentation))), $elm$core$String$lines(code));
+                var _v6 = A3($elm$core$List$foldl, $author$project$Lia$Markdown$Macro$Parser$eval_parameter, _Utils_Tuple3(state, 0, code_), params);
+                var new_state = _v6.a;
+                var new_code = _v6.c;
+                return A2($andre_dietrich$parser_combinators$Combine$keep, $andre_dietrich$parser_combinators$Combine$succeed(_Utils_Tuple0), A2($andre_dietrich$parser_combinators$Combine$keep, $andre_dietrich$parser_combinators$Combine$putState(new_state), $andre_dietrich$parser_combinators$Combine$modifyInput($elm$core$Basics$append((isDebug ? $author$project$Lia$Markdown$Macro$Parser$debug(deepDebug) : $elm$core$Basics$identity)(escape ? $author$project$Lia$Utils$toEscapeString(new_code) : new_code)))));
+            } else return $andre_dietrich$parser_combinators$Combine$fail('macro definition not found');
+        };
+        return $andre_dietrich$parser_combinators$Combine$withState(inject);
+    };
+    var $author$project$Lia$Markdown$Macro$Parser$macro_parse = F2(function(defines, str) {
+        var _v0 = A3($andre_dietrich$parser_combinators$Combine$runParser, A2($andre_dietrich$parser_combinators$Combine$map, $elm$core$String$concat, $andre_dietrich$parser_combinators$Combine$many1(A2($andre_dietrich$parser_combinators$Combine$or, $andre_dietrich$parser_combinators$Combine$regex('@input[^@]+'), A2($andre_dietrich$parser_combinators$Combine$keep, $andre_dietrich$parser_combinators$Combine$regex('[^@]+'), $author$project$Lia$Markdown$Macro$Parser$cyclic$macro())))), defines, str);
+        if (_v0.$ === 'Ok') {
+            var _v1 = _v0.a;
+            var state = _v1.a;
+            var s = _v1.c;
+            return _Utils_Tuple2(state, s);
+        } else return _Utils_Tuple2(defines, str);
+    });
+    function $author$project$Lia$Markdown$Macro$Parser$cyclic$macro() {
+        return $andre_dietrich$parser_combinators$Combine$skip($andre_dietrich$parser_combinators$Combine$maybe($andre_dietrich$parser_combinators$Combine$many1($andre_dietrich$parser_combinators$Combine$choice(_List_fromArray([
+            A2($andre_dietrich$parser_combinators$Combine$andThen, $author$project$Lia$Markdown$Macro$Parser$inject_macro, $author$project$Lia$Markdown$Macro$Parser$uid_macro),
+            A2($andre_dietrich$parser_combinators$Combine$andThen, $author$project$Lia$Markdown$Macro$Parser$inject_macro, $author$project$Lia$Markdown$Macro$Parser$simple_macro),
+            A2($andre_dietrich$parser_combinators$Combine$andThen, $author$project$Lia$Markdown$Macro$Parser$inject_macro, $author$project$Lia$Markdown$Macro$Parser$reference_macro),
+            $author$project$Lia$Markdown$Macro$Parser$cyclic$macro_listing()
+        ])))));
+    }
+    function $author$project$Lia$Markdown$Macro$Parser$cyclic$macro_listing() {
+        return A2($andre_dietrich$parser_combinators$Combine$andThen, function(name) {
+            return A2($andre_dietrich$parser_combinators$Combine$andThen, function(params) {
+                return A2($andre_dietrich$parser_combinators$Combine$andThen, function(p) {
+                    return $author$project$Lia$Markdown$Macro$Parser$inject_macro(_Utils_Tuple2(name, p));
+                }, A2($andre_dietrich$parser_combinators$Combine$map, $elm$core$List$append(params), $author$project$Lia$Markdown$Macro$Parser$code_block));
+            }, A2($andre_dietrich$parser_combinators$Combine$ignore, $andre_dietrich$parser_combinators$Combine$regex('[\t ]*\\n'), $author$project$Lia$Markdown$Macro$Parser$parameter_list));
+        }, A2($andre_dietrich$parser_combinators$Combine$keep, $author$project$Lia$Markdown$Macro$Parser$pattern, A2($andre_dietrich$parser_combinators$Combine$keep, $andre_dietrich$parser_combinators$Combine$regex('[\t ]*[a-zA-Z0-9_]*[\t ]*'), $author$project$Lia$Parser$Helper$c_frame)));
+    }
+    try {
+        var $author$project$Lia$Markdown$Macro$Parser$macro = $author$project$Lia$Markdown$Macro$Parser$cyclic$macro();
+        $author$project$Lia$Markdown$Macro$Parser$cyclic$macro = function() {
+            return $author$project$Lia$Markdown$Macro$Parser$macro;
+        };
+        var $author$project$Lia$Markdown$Macro$Parser$macro_listing = $author$project$Lia$Markdown$Macro$Parser$cyclic$macro_listing();
+        $author$project$Lia$Markdown$Macro$Parser$cyclic$macro_listing = function() {
+            return $author$project$Lia$Markdown$Macro$Parser$macro_listing;
+        };
+    } catch ($1) {
+        throw 'Some top-level definitions from `Lia.Markdown.Macro.Parser` are causing infinite recursion:\n\n  ┌─────┐\n  │    eval_parameter\n  │     ↓\n  │    macro\n  │     ↓\n  │    inject_macro\n  │     ↓\n  │    macro_listing\n  │     ↓\n  │    macro_parse\n  └─────┘\n\nThese errors are very tricky, so read https://elm-lang.org/0.19.1/bad-recursion to learn how to fix it!';
+    }
+    var $elm$core$List$drop = F2(function(n, list) {
+        drop: while(true){
+            if (n <= 0) return list;
+            else {
+                if (!list.b) return list;
+                else {
+                    var x = list.a;
+                    var xs = list.b;
+                    var $temp$n = n - 1, $temp$list = xs;
+                    n = $temp$n;
+                    list = $temp$list;
+                    continue drop;
+                }
+            }
+        }
+    });
+    var $author$project$Lia$Markdown$Effect$Parser$reset_effect_number = $andre_dietrich$parser_combinators$Combine$modifyState(function(s) {
+        return _Utils_update(s, {
+            effect_number: A2($elm$core$List$drop, 1, s.effect_number)
+        });
+    });
+    var $author$project$Lia$Parser$Helper$spaces1 = $andre_dietrich$parser_combinators$Combine$regex('[\t ]+');
+    var $author$project$Lia$Markdown$Effect$Parser$hidden_comment = $andre_dietrich$parser_combinators$Combine$skip(A2($andre_dietrich$parser_combinators$Combine$andThen, $author$project$Lia$Markdown$Effect$Parser$add_comment(false), A2($andre_dietrich$parser_combinators$Combine$ignore, $author$project$Lia$Markdown$Effect$Parser$reset_effect_number, A2($andre_dietrich$parser_combinators$Combine$andMap, A2($andre_dietrich$parser_combinators$Combine$manyTill, $andre_dietrich$parser_combinators$Combine$Char$anyChar, $andre_dietrich$parser_combinators$Combine$string('-->')), A2($andre_dietrich$parser_combinators$Combine$ignore, $andre_dietrich$parser_combinators$Combine$regex('}}--[\t ]*'), A2($andre_dietrich$parser_combinators$Combine$andMap, $andre_dietrich$parser_combinators$Combine$maybe(A2($andre_dietrich$parser_combinators$Combine$keep, $andre_dietrich$parser_combinators$Combine$regex('[A-Za-z0-9 ]+'), A2($andre_dietrich$parser_combinators$Combine$keep, $author$project$Lia$Markdown$Macro$Parser$macro, $author$project$Lia$Parser$Helper$spaces1))), A2($andre_dietrich$parser_combinators$Combine$map, F3(function(i, voice, text) {
+        return _Utils_Tuple3(i, voice, _List_fromArray([
+            A2($author$project$Lia$Markdown$Inline$Types$Chars, $elm$core$String$trim($elm$core$String$fromList(text)), _List_Nil)
+        ]));
+    }), A2($andre_dietrich$parser_combinators$Combine$keep, $author$project$Lia$Markdown$Effect$Parser$effect_number, $andre_dietrich$parser_combinators$Combine$regex('<!--[\t ]*--{{')))))))));
+    var $author$project$Lia$Markdown$Inline$Parser$comments = $andre_dietrich$parser_combinators$Combine$skip($andre_dietrich$parser_combinators$Combine$many(A2($andre_dietrich$parser_combinators$Combine$or, $andre_dietrich$parser_combinators$Combine$skip($author$project$Lia$Markdown$Inline$Parser$comment($andre_dietrich$parser_combinators$Combine$Char$anyChar)), $author$project$Lia$Markdown$Effect$Parser$hidden_comment)));
+    var $author$project$Lia$Markdown$HTML$Attributes$base = F2(function(url, _v0) {
+        var key = _v0.a;
+        var value = _v0.b;
+        return _Utils_Tuple2(key, key === 'src' || key === 'href' || key === 'data' || key === 'data-src' || key === 'formaction' || key === 'poster' ? A2($author$project$Lia$Markdown$HTML$Attributes$toURL, url, value) : value);
+    });
+    var $author$project$Lia$Markdown$HTML$NamedCharacterReferences$dict = $elm$core$Dict$fromList(_List_fromArray([
+        _Utils_Tuple2('Aacute', 'Á'),
+        _Utils_Tuple2('aacute', 'á'),
+        _Utils_Tuple2('Abreve', 'Ă'),
+        _Utils_Tuple2('abreve', 'ă'),
+        _Utils_Tuple2('ac', '∾'),
+        _Utils_Tuple2('acd', '∿'),
+        _Utils_Tuple2('acE', '∾̳'),
+        _Utils_Tuple2('Acirc', 'Â'),
+        _Utils_Tuple2('acirc', 'â'),
+        _Utils_Tuple2('acute', '´'),
+        _Utils_Tuple2('Acy', 'А'),
+        _Utils_Tuple2('acy', 'а'),
+        _Utils_Tuple2('AElig', 'Æ'),
+        _Utils_Tuple2('aelig', 'æ'),
+        _Utils_Tuple2('af', '\u2061'),
+        _Utils_Tuple2('Afr', '\uD835\uDD04'),
+        _Utils_Tuple2('afr', '\uD835\uDD1E'),
+        _Utils_Tuple2('Agrave', 'À'),
+        _Utils_Tuple2('agrave', 'à'),
+        _Utils_Tuple2('alefsym', 'ℵ'),
+        _Utils_Tuple2('aleph', 'ℵ'),
+        _Utils_Tuple2('Alpha', 'Α'),
+        _Utils_Tuple2('alpha', 'α'),
+        _Utils_Tuple2('Amacr', 'Ā'),
+        _Utils_Tuple2('amacr', 'ā'),
+        _Utils_Tuple2('amalg', '⨿'),
+        _Utils_Tuple2('amp', '&'),
+        _Utils_Tuple2('AMP', '&'),
+        _Utils_Tuple2('andand', '⩕'),
+        _Utils_Tuple2('And', '⩓'),
+        _Utils_Tuple2('and', '∧'),
+        _Utils_Tuple2('andd', '⩜'),
+        _Utils_Tuple2('andslope', '⩘'),
+        _Utils_Tuple2('andv', '⩚'),
+        _Utils_Tuple2('ang', '∠'),
+        _Utils_Tuple2('ange', '⦤'),
+        _Utils_Tuple2('angle', '∠'),
+        _Utils_Tuple2('angmsdaa', '⦨'),
+        _Utils_Tuple2('angmsdab', '⦩'),
+        _Utils_Tuple2('angmsdac', '⦪'),
+        _Utils_Tuple2('angmsdad', '⦫'),
+        _Utils_Tuple2('angmsdae', '⦬'),
+        _Utils_Tuple2('angmsdaf', '⦭'),
+        _Utils_Tuple2('angmsdag', '⦮'),
+        _Utils_Tuple2('angmsdah', '⦯'),
+        _Utils_Tuple2('angmsd', '∡'),
+        _Utils_Tuple2('angrt', '∟'),
+        _Utils_Tuple2('angrtvb', '⊾'),
+        _Utils_Tuple2('angrtvbd', '⦝'),
+        _Utils_Tuple2('angsph', '∢'),
+        _Utils_Tuple2('angst', 'Å'),
+        _Utils_Tuple2('angzarr', '⍼'),
+        _Utils_Tuple2('Aogon', 'Ą'),
+        _Utils_Tuple2('aogon', 'ą'),
+        _Utils_Tuple2('Aopf', '\uD835\uDD38'),
+        _Utils_Tuple2('aopf', '\uD835\uDD52'),
+        _Utils_Tuple2('apacir', '⩯'),
+        _Utils_Tuple2('ap', '≈'),
+        _Utils_Tuple2('apE', '⩰'),
+        _Utils_Tuple2('ape', '≊'),
+        _Utils_Tuple2('apid', '≋'),
+        _Utils_Tuple2('apos', '\''),
+        _Utils_Tuple2('ApplyFunction', '\u2061'),
+        _Utils_Tuple2('approx', '≈'),
+        _Utils_Tuple2('approxeq', '≊'),
+        _Utils_Tuple2('Aring', 'Å'),
+        _Utils_Tuple2('aring', 'å'),
+        _Utils_Tuple2('Ascr', '\uD835\uDC9C'),
+        _Utils_Tuple2('ascr', '\uD835\uDCB6'),
+        _Utils_Tuple2('Assign', '≔'),
+        _Utils_Tuple2('ast', '*'),
+        _Utils_Tuple2('asymp', '≈'),
+        _Utils_Tuple2('asympeq', '≍'),
+        _Utils_Tuple2('Atilde', 'Ã'),
+        _Utils_Tuple2('atilde', 'ã'),
+        _Utils_Tuple2('Auml', 'Ä'),
+        _Utils_Tuple2('auml', 'ä'),
+        _Utils_Tuple2('awconint', '∳'),
+        _Utils_Tuple2('awint', '⨑'),
+        _Utils_Tuple2('backcong', '≌'),
+        _Utils_Tuple2('backepsilon', '϶'),
+        _Utils_Tuple2('backprime', '‵'),
+        _Utils_Tuple2('backsim', '∽'),
+        _Utils_Tuple2('backsimeq', '⋍'),
+        _Utils_Tuple2('Backslash', '∖'),
+        _Utils_Tuple2('Barv', '⫧'),
+        _Utils_Tuple2('barvee', '⊽'),
+        _Utils_Tuple2('barwed', '⌅'),
+        _Utils_Tuple2('Barwed', '⌆'),
+        _Utils_Tuple2('barwedge', '⌅'),
+        _Utils_Tuple2('bbrk', '⎵'),
+        _Utils_Tuple2('bbrktbrk', '⎶'),
+        _Utils_Tuple2('bcong', '≌'),
+        _Utils_Tuple2('Bcy', 'Б'),
+        _Utils_Tuple2('bcy', 'б'),
+        _Utils_Tuple2('bdquo', '„'),
+        _Utils_Tuple2('becaus', '∵'),
+        _Utils_Tuple2('because', '∵'),
+        _Utils_Tuple2('Because', '∵'),
+        _Utils_Tuple2('bemptyv', '⦰'),
+        _Utils_Tuple2('bepsi', '϶'),
+        _Utils_Tuple2('bernou', 'ℬ'),
+        _Utils_Tuple2('Bernoullis', 'ℬ'),
+        _Utils_Tuple2('Beta', 'Β'),
+        _Utils_Tuple2('beta', 'β'),
+        _Utils_Tuple2('beth', 'ℶ'),
+        _Utils_Tuple2('between', '≬'),
+        _Utils_Tuple2('Bfr', '\uD835\uDD05'),
+        _Utils_Tuple2('bfr', '\uD835\uDD1F'),
+        _Utils_Tuple2('bigcap', '⋂'),
+        _Utils_Tuple2('bigcirc', '◯'),
+        _Utils_Tuple2('bigcup', '⋃'),
+        _Utils_Tuple2('bigodot', '⨀'),
+        _Utils_Tuple2('bigoplus', '⨁'),
+        _Utils_Tuple2('bigotimes', '⨂'),
+        _Utils_Tuple2('bigsqcup', '⨆'),
+        _Utils_Tuple2('bigstar', '★'),
+        _Utils_Tuple2('bigtriangledown', '▽'),
+        _Utils_Tuple2('bigtriangleup', '△'),
+        _Utils_Tuple2('biguplus', '⨄'),
+        _Utils_Tuple2('bigvee', '⋁'),
+        _Utils_Tuple2('bigwedge', '⋀'),
+        _Utils_Tuple2('bkarow', '⤍'),
+        _Utils_Tuple2('blacklozenge', '⧫'),
+        _Utils_Tuple2('blacksquare', '▪'),
+        _Utils_Tuple2('blacktriangle', '▴'),
+        _Utils_Tuple2('blacktriangledown', '▾'),
+        _Utils_Tuple2('blacktriangleleft', '◂'),
+        _Utils_Tuple2('blacktriangleright', '▸'),
+        _Utils_Tuple2('blank', '␣'),
+        _Utils_Tuple2('blk12', '▒'),
+        _Utils_Tuple2('blk14', '░'),
+        _Utils_Tuple2('blk34', '▓'),
+        _Utils_Tuple2('block', '█'),
+        _Utils_Tuple2('bne', '=⃥'),
+        _Utils_Tuple2('bnequiv', '≡⃥'),
+        _Utils_Tuple2('bNot', '⫭'),
+        _Utils_Tuple2('bnot', '⌐'),
+        _Utils_Tuple2('Bopf', '\uD835\uDD39'),
+        _Utils_Tuple2('bopf', '\uD835\uDD53'),
+        _Utils_Tuple2('bot', '⊥'),
+        _Utils_Tuple2('bottom', '⊥'),
+        _Utils_Tuple2('bowtie', '⋈'),
+        _Utils_Tuple2('boxbox', '⧉'),
+        _Utils_Tuple2('boxdl', '┐'),
+        _Utils_Tuple2('boxdL', '╕'),
+        _Utils_Tuple2('boxDl', '╖'),
+        _Utils_Tuple2('boxDL', '╗'),
+        _Utils_Tuple2('boxdr', '┌'),
+        _Utils_Tuple2('boxdR', '╒'),
+        _Utils_Tuple2('boxDr', '╓'),
+        _Utils_Tuple2('boxDR', '╔'),
+        _Utils_Tuple2('boxh', '─'),
+        _Utils_Tuple2('boxH', '═'),
+        _Utils_Tuple2('boxhd', '┬'),
+        _Utils_Tuple2('boxHd', '╤'),
+        _Utils_Tuple2('boxhD', '╥'),
+        _Utils_Tuple2('boxHD', '╦'),
+        _Utils_Tuple2('boxhu', '┴'),
+        _Utils_Tuple2('boxHu', '╧'),
+        _Utils_Tuple2('boxhU', '╨'),
+        _Utils_Tuple2('boxHU', '╩'),
+        _Utils_Tuple2('boxminus', '⊟'),
+        _Utils_Tuple2('boxplus', '⊞'),
+        _Utils_Tuple2('boxtimes', '⊠'),
+        _Utils_Tuple2('boxul', '┘'),
+        _Utils_Tuple2('boxuL', '╛'),
+        _Utils_Tuple2('boxUl', '╜'),
+        _Utils_Tuple2('boxUL', '╝'),
+        _Utils_Tuple2('boxur', '└'),
+        _Utils_Tuple2('boxuR', '╘'),
+        _Utils_Tuple2('boxUr', '╙'),
+        _Utils_Tuple2('boxUR', '╚'),
+        _Utils_Tuple2('boxv', '│'),
+        _Utils_Tuple2('boxV', '║'),
+        _Utils_Tuple2('boxvh', '┼'),
+        _Utils_Tuple2('boxvH', '╪'),
+        _Utils_Tuple2('boxVh', '╫'),
+        _Utils_Tuple2('boxVH', '╬'),
+        _Utils_Tuple2('boxvl', '┤'),
+        _Utils_Tuple2('boxvL', '╡'),
+        _Utils_Tuple2('boxVl', '╢'),
+        _Utils_Tuple2('boxVL', '╣'),
+        _Utils_Tuple2('boxvr', '├'),
+        _Utils_Tuple2('boxvR', '╞'),
+        _Utils_Tuple2('boxVr', '╟'),
+        _Utils_Tuple2('boxVR', '╠'),
+        _Utils_Tuple2('bprime', '‵'),
+        _Utils_Tuple2('breve', '˘'),
+        _Utils_Tuple2('Breve', '˘'),
+        _Utils_Tuple2('brvbar', '¦'),
+        _Utils_Tuple2('bscr', '\uD835\uDCB7'),
+        _Utils_Tuple2('Bscr', 'ℬ'),
+        _Utils_Tuple2('bsemi', '⁏'),
+        _Utils_Tuple2('bsim', '∽'),
+        _Utils_Tuple2('bsime', '⋍'),
+        _Utils_Tuple2('bsolb', '⧅'),
+        _Utils_Tuple2('bsol', '\\'),
+        _Utils_Tuple2('bsolhsub', '⟈'),
+        _Utils_Tuple2('bull', '•'),
+        _Utils_Tuple2('bullet', '•'),
+        _Utils_Tuple2('bump', '≎'),
+        _Utils_Tuple2('bumpE', '⪮'),
+        _Utils_Tuple2('bumpe', '≏'),
+        _Utils_Tuple2('Bumpeq', '≎'),
+        _Utils_Tuple2('bumpeq', '≏'),
+        _Utils_Tuple2('Cacute', 'Ć'),
+        _Utils_Tuple2('cacute', 'ć'),
+        _Utils_Tuple2('capand', '⩄'),
+        _Utils_Tuple2('capbrcup', '⩉'),
+        _Utils_Tuple2('capcap', '⩋'),
+        _Utils_Tuple2('cap', '∩'),
+        _Utils_Tuple2('Cap', '⋒'),
+        _Utils_Tuple2('capcup', '⩇'),
+        _Utils_Tuple2('capdot', '⩀'),
+        _Utils_Tuple2('CapitalDifferentialD', 'ⅅ'),
+        _Utils_Tuple2('caps', '∩︀'),
+        _Utils_Tuple2('caret', '⁁'),
+        _Utils_Tuple2('caron', 'ˇ'),
+        _Utils_Tuple2('Cayleys', 'ℭ'),
+        _Utils_Tuple2('ccaps', '⩍'),
+        _Utils_Tuple2('Ccaron', 'Č'),
+        _Utils_Tuple2('ccaron', 'č'),
+        _Utils_Tuple2('Ccedil', 'Ç'),
+        _Utils_Tuple2('ccedil', 'ç'),
+        _Utils_Tuple2('Ccirc', 'Ĉ'),
+        _Utils_Tuple2('ccirc', 'ĉ'),
+        _Utils_Tuple2('Cconint', '∰'),
+        _Utils_Tuple2('ccups', '⩌'),
+        _Utils_Tuple2('ccupssm', '⩐'),
+        _Utils_Tuple2('Cdot', 'Ċ'),
+        _Utils_Tuple2('cdot', 'ċ'),
+        _Utils_Tuple2('cedil', '¸'),
+        _Utils_Tuple2('Cedilla', '¸'),
+        _Utils_Tuple2('cemptyv', '⦲'),
+        _Utils_Tuple2('cent', '¢'),
+        _Utils_Tuple2('centerdot', '·'),
+        _Utils_Tuple2('CenterDot', '·'),
+        _Utils_Tuple2('cfr', '\uD835\uDD20'),
+        _Utils_Tuple2('Cfr', 'ℭ'),
+        _Utils_Tuple2('CHcy', 'Ч'),
+        _Utils_Tuple2('chcy', 'ч'),
+        _Utils_Tuple2('check', '✓'),
+        _Utils_Tuple2('checkmark', '✓'),
+        _Utils_Tuple2('Chi', 'Χ'),
+        _Utils_Tuple2('chi', 'χ'),
+        _Utils_Tuple2('circ', 'ˆ'),
+        _Utils_Tuple2('circeq', '≗'),
+        _Utils_Tuple2('circlearrowleft', '↺'),
+        _Utils_Tuple2('circlearrowright', '↻'),
+        _Utils_Tuple2('circledast', '⊛'),
+        _Utils_Tuple2('circledcirc', '⊚'),
+        _Utils_Tuple2('circleddash', '⊝'),
+        _Utils_Tuple2('CircleDot', '⊙'),
+        _Utils_Tuple2('circledR', '®'),
+        _Utils_Tuple2('circledS', 'Ⓢ'),
+        _Utils_Tuple2('CircleMinus', '⊖'),
+        _Utils_Tuple2('CirclePlus', '⊕'),
+        _Utils_Tuple2('CircleTimes', '⊗'),
+        _Utils_Tuple2('cir', '○'),
+        _Utils_Tuple2('cirE', '⧃'),
+        _Utils_Tuple2('cire', '≗'),
+        _Utils_Tuple2('cirfnint', '⨐'),
+        _Utils_Tuple2('cirmid', '⫯'),
+        _Utils_Tuple2('cirscir', '⧂'),
+        _Utils_Tuple2('ClockwiseContourIntegral', '∲'),
+        _Utils_Tuple2('CloseCurlyDoubleQuote', '”'),
+        _Utils_Tuple2('CloseCurlyQuote', '’'),
+        _Utils_Tuple2('clubs', '♣'),
+        _Utils_Tuple2('clubsuit', '♣'),
+        _Utils_Tuple2('colon', ':'),
+        _Utils_Tuple2('Colon', '∷'),
+        _Utils_Tuple2('Colone', '⩴'),
+        _Utils_Tuple2('colone', '≔'),
+        _Utils_Tuple2('coloneq', '≔'),
+        _Utils_Tuple2('comma', ','),
+        _Utils_Tuple2('commat', '@'),
+        _Utils_Tuple2('comp', '∁'),
+        _Utils_Tuple2('compfn', '∘'),
+        _Utils_Tuple2('complement', '∁'),
+        _Utils_Tuple2('complexes', 'ℂ'),
+        _Utils_Tuple2('cong', '≅'),
+        _Utils_Tuple2('congdot', '⩭'),
+        _Utils_Tuple2('Congruent', '≡'),
+        _Utils_Tuple2('conint', '∮'),
+        _Utils_Tuple2('Conint', '∯'),
+        _Utils_Tuple2('ContourIntegral', '∮'),
+        _Utils_Tuple2('copf', '\uD835\uDD54'),
+        _Utils_Tuple2('Copf', 'ℂ'),
+        _Utils_Tuple2('coprod', '∐'),
+        _Utils_Tuple2('Coproduct', '∐'),
+        _Utils_Tuple2('copy', '©'),
+        _Utils_Tuple2('COPY', '©'),
+        _Utils_Tuple2('copysr', '℗'),
+        _Utils_Tuple2('CounterClockwiseContourIntegral', '∳'),
+        _Utils_Tuple2('crarr', '↵'),
+        _Utils_Tuple2('cross', '✗'),
+        _Utils_Tuple2('Cross', '⨯'),
+        _Utils_Tuple2('Cscr', '\uD835\uDC9E'),
+        _Utils_Tuple2('cscr', '\uD835\uDCB8'),
+        _Utils_Tuple2('csub', '⫏'),
+        _Utils_Tuple2('csube', '⫑'),
+        _Utils_Tuple2('csup', '⫐'),
+        _Utils_Tuple2('csupe', '⫒'),
+        _Utils_Tuple2('ctdot', '⋯'),
+        _Utils_Tuple2('cudarrl', '⤸'),
+        _Utils_Tuple2('cudarrr', '⤵'),
+        _Utils_Tuple2('cuepr', '⋞'),
+        _Utils_Tuple2('cuesc', '⋟'),
+        _Utils_Tuple2('cularr', '↶'),
+        _Utils_Tuple2('cularrp', '⤽'),
+        _Utils_Tuple2('cupbrcap', '⩈'),
+        _Utils_Tuple2('cupcap', '⩆'),
+        _Utils_Tuple2('CupCap', '≍'),
+        _Utils_Tuple2('cup', '∪'),
+        _Utils_Tuple2('Cup', '⋓'),
+        _Utils_Tuple2('cupcup', '⩊'),
+        _Utils_Tuple2('cupdot', '⊍'),
+        _Utils_Tuple2('cupor', '⩅'),
+        _Utils_Tuple2('cups', '∪︀'),
+        _Utils_Tuple2('curarr', '↷'),
+        _Utils_Tuple2('curarrm', '⤼'),
+        _Utils_Tuple2('curlyeqprec', '⋞'),
+        _Utils_Tuple2('curlyeqsucc', '⋟'),
+        _Utils_Tuple2('curlyvee', '⋎'),
+        _Utils_Tuple2('curlywedge', '⋏'),
+        _Utils_Tuple2('curren', '¤'),
+        _Utils_Tuple2('curvearrowleft', '↶'),
+        _Utils_Tuple2('curvearrowright', '↷'),
+        _Utils_Tuple2('cuvee', '⋎'),
+        _Utils_Tuple2('cuwed', '⋏'),
+        _Utils_Tuple2('cwconint', '∲'),
+        _Utils_Tuple2('cwint', '∱'),
+        _Utils_Tuple2('cylcty', '⌭'),
+        _Utils_Tuple2('dagger', '†'),
+        _Utils_Tuple2('Dagger', '‡'),
+        _Utils_Tuple2('daleth', 'ℸ'),
+        _Utils_Tuple2('darr', '↓'),
+        _Utils_Tuple2('Darr', '↡'),
+        _Utils_Tuple2('dArr', '⇓'),
+        _Utils_Tuple2('dash', '‐'),
+        _Utils_Tuple2('Dashv', '⫤'),
+        _Utils_Tuple2('dashv', '⊣'),
+        _Utils_Tuple2('dbkarow', '⤏'),
+        _Utils_Tuple2('dblac', '˝'),
+        _Utils_Tuple2('Dcaron', 'Ď'),
+        _Utils_Tuple2('dcaron', 'ď'),
+        _Utils_Tuple2('Dcy', 'Д'),
+        _Utils_Tuple2('dcy', 'д'),
+        _Utils_Tuple2('ddagger', '‡'),
+        _Utils_Tuple2('ddarr', '⇊'),
+        _Utils_Tuple2('DD', 'ⅅ'),
+        _Utils_Tuple2('dd', 'ⅆ'),
+        _Utils_Tuple2('DDotrahd', '⤑'),
+        _Utils_Tuple2('ddotseq', '⩷'),
+        _Utils_Tuple2('deg', '°'),
+        _Utils_Tuple2('Del', '∇'),
+        _Utils_Tuple2('Delta', 'Δ'),
+        _Utils_Tuple2('delta', 'δ'),
+        _Utils_Tuple2('demptyv', '⦱'),
+        _Utils_Tuple2('dfisht', '⥿'),
+        _Utils_Tuple2('Dfr', '\uD835\uDD07'),
+        _Utils_Tuple2('dfr', '\uD835\uDD21'),
+        _Utils_Tuple2('dHar', '⥥'),
+        _Utils_Tuple2('dharl', '⇃'),
+        _Utils_Tuple2('dharr', '⇂'),
+        _Utils_Tuple2('DiacriticalAcute', '´'),
+        _Utils_Tuple2('DiacriticalDot', '˙'),
+        _Utils_Tuple2('DiacriticalDoubleAcute', '˝'),
+        _Utils_Tuple2('DiacriticalGrave', '`'),
+        _Utils_Tuple2('DiacriticalTilde', '˜'),
+        _Utils_Tuple2('diam', '⋄'),
+        _Utils_Tuple2('diamond', '⋄'),
+        _Utils_Tuple2('Diamond', '⋄'),
+        _Utils_Tuple2('diamondsuit', '♦'),
+        _Utils_Tuple2('diams', '♦'),
+        _Utils_Tuple2('die', '¨'),
+        _Utils_Tuple2('DifferentialD', 'ⅆ'),
+        _Utils_Tuple2('digamma', 'ϝ'),
+        _Utils_Tuple2('disin', '⋲'),
+        _Utils_Tuple2('div', '÷'),
+        _Utils_Tuple2('divide', '÷'),
+        _Utils_Tuple2('divideontimes', '⋇'),
+        _Utils_Tuple2('divonx', '⋇'),
+        _Utils_Tuple2('DJcy', 'Ђ'),
+        _Utils_Tuple2('djcy', 'ђ'),
+        _Utils_Tuple2('dlcorn', '⌞'),
+        _Utils_Tuple2('dlcrop', '⌍'),
+        _Utils_Tuple2('dollar', '$'),
+        _Utils_Tuple2('Dopf', '\uD835\uDD3B'),
+        _Utils_Tuple2('dopf', '\uD835\uDD55'),
+        _Utils_Tuple2('Dot', '¨'),
+        _Utils_Tuple2('dot', '˙'),
+        _Utils_Tuple2('DotDot', '⃜'),
+        _Utils_Tuple2('doteq', '≐'),
+        _Utils_Tuple2('doteqdot', '≑'),
+        _Utils_Tuple2('DotEqual', '≐'),
+        _Utils_Tuple2('dotminus', '∸'),
+        _Utils_Tuple2('dotplus', '∔'),
+        _Utils_Tuple2('dotsquare', '⊡'),
+        _Utils_Tuple2('doublebarwedge', '⌆'),
+        _Utils_Tuple2('DoubleContourIntegral', '∯'),
+        _Utils_Tuple2('DoubleDot', '¨'),
+        _Utils_Tuple2('DoubleDownArrow', '⇓'),
+        _Utils_Tuple2('DoubleLeftArrow', '⇐'),
+        _Utils_Tuple2('DoubleLeftRightArrow', '⇔'),
+        _Utils_Tuple2('DoubleLeftTee', '⫤'),
+        _Utils_Tuple2('DoubleLongLeftArrow', '⟸'),
+        _Utils_Tuple2('DoubleLongLeftRightArrow', '⟺'),
+        _Utils_Tuple2('DoubleLongRightArrow', '⟹'),
+        _Utils_Tuple2('DoubleRightArrow', '⇒'),
+        _Utils_Tuple2('DoubleRightTee', '⊨'),
+        _Utils_Tuple2('DoubleUpArrow', '⇑'),
+        _Utils_Tuple2('DoubleUpDownArrow', '⇕'),
+        _Utils_Tuple2('DoubleVerticalBar', '∥'),
+        _Utils_Tuple2('DownArrowBar', '⤓'),
+        _Utils_Tuple2('downarrow', '↓'),
+        _Utils_Tuple2('DownArrow', '↓'),
+        _Utils_Tuple2('Downarrow', '⇓'),
+        _Utils_Tuple2('DownArrowUpArrow', '⇵'),
+        _Utils_Tuple2('DownBreve', '̑'),
+        _Utils_Tuple2('downdownarrows', '⇊'),
+        _Utils_Tuple2('downharpoonleft', '⇃'),
+        _Utils_Tuple2('downharpoonright', '⇂'),
+        _Utils_Tuple2('DownLeftRightVector', '⥐'),
+        _Utils_Tuple2('DownLeftTeeVector', '⥞'),
+        _Utils_Tuple2('DownLeftVectorBar', '⥖'),
+        _Utils_Tuple2('DownLeftVector', '↽'),
+        _Utils_Tuple2('DownRightTeeVector', '⥟'),
+        _Utils_Tuple2('DownRightVectorBar', '⥗'),
+        _Utils_Tuple2('DownRightVector', '⇁'),
+        _Utils_Tuple2('DownTeeArrow', '↧'),
+        _Utils_Tuple2('DownTee', '⊤'),
+        _Utils_Tuple2('drbkarow', '⤐'),
+        _Utils_Tuple2('drcorn', '⌟'),
+        _Utils_Tuple2('drcrop', '⌌'),
+        _Utils_Tuple2('Dscr', '\uD835\uDC9F'),
+        _Utils_Tuple2('dscr', '\uD835\uDCB9'),
+        _Utils_Tuple2('DScy', 'Ѕ'),
+        _Utils_Tuple2('dscy', 'ѕ'),
+        _Utils_Tuple2('dsol', '⧶'),
+        _Utils_Tuple2('Dstrok', 'Đ'),
+        _Utils_Tuple2('dstrok', 'đ'),
+        _Utils_Tuple2('dtdot', '⋱'),
+        _Utils_Tuple2('dtri', '▿'),
+        _Utils_Tuple2('dtrif', '▾'),
+        _Utils_Tuple2('duarr', '⇵'),
+        _Utils_Tuple2('duhar', '⥯'),
+        _Utils_Tuple2('dwangle', '⦦'),
+        _Utils_Tuple2('DZcy', 'Џ'),
+        _Utils_Tuple2('dzcy', 'џ'),
+        _Utils_Tuple2('dzigrarr', '⟿'),
+        _Utils_Tuple2('Eacute', 'É'),
+        _Utils_Tuple2('eacute', 'é'),
+        _Utils_Tuple2('easter', '⩮'),
+        _Utils_Tuple2('Ecaron', 'Ě'),
+        _Utils_Tuple2('ecaron', 'ě'),
+        _Utils_Tuple2('Ecirc', 'Ê'),
+        _Utils_Tuple2('ecirc', 'ê'),
+        _Utils_Tuple2('ecir', '≖'),
+        _Utils_Tuple2('ecolon', '≕'),
+        _Utils_Tuple2('Ecy', 'Э'),
+        _Utils_Tuple2('ecy', 'э'),
+        _Utils_Tuple2('eDDot', '⩷'),
+        _Utils_Tuple2('Edot', 'Ė'),
+        _Utils_Tuple2('edot', 'ė'),
+        _Utils_Tuple2('eDot', '≑'),
+        _Utils_Tuple2('ee', 'ⅇ'),
+        _Utils_Tuple2('efDot', '≒'),
+        _Utils_Tuple2('Efr', '\uD835\uDD08'),
+        _Utils_Tuple2('efr', '\uD835\uDD22'),
+        _Utils_Tuple2('eg', '⪚'),
+        _Utils_Tuple2('Egrave', 'È'),
+        _Utils_Tuple2('egrave', 'è'),
+        _Utils_Tuple2('egs', '⪖'),
+        _Utils_Tuple2('egsdot', '⪘'),
+        _Utils_Tuple2('el', '⪙'),
+        _Utils_Tuple2('Element', '∈'),
+        _Utils_Tuple2('elinters', '⏧'),
+        _Utils_Tuple2('ell', 'ℓ'),
+        _Utils_Tuple2('els', '⪕'),
+        _Utils_Tuple2('elsdot', '⪗'),
+        _Utils_Tuple2('Emacr', 'Ē'),
+        _Utils_Tuple2('emacr', 'ē'),
+        _Utils_Tuple2('empty', '∅'),
+        _Utils_Tuple2('emptyset', '∅'),
+        _Utils_Tuple2('EmptySmallSquare', '◻'),
+        _Utils_Tuple2('emptyv', '∅'),
+        _Utils_Tuple2('EmptyVerySmallSquare', '▫'),
+        _Utils_Tuple2('emsp13', '\u2004'),
+        _Utils_Tuple2('emsp14', '\u2005'),
+        _Utils_Tuple2('emsp', '\u2003'),
+        _Utils_Tuple2('ENG', 'Ŋ'),
+        _Utils_Tuple2('eng', 'ŋ'),
+        _Utils_Tuple2('ensp', '\u2002'),
+        _Utils_Tuple2('Eogon', 'Ę'),
+        _Utils_Tuple2('eogon', 'ę'),
+        _Utils_Tuple2('Eopf', '\uD835\uDD3C'),
+        _Utils_Tuple2('eopf', '\uD835\uDD56'),
+        _Utils_Tuple2('epar', '⋕'),
+        _Utils_Tuple2('eparsl', '⧣'),
+        _Utils_Tuple2('eplus', '⩱'),
+        _Utils_Tuple2('epsi', 'ε'),
+        _Utils_Tuple2('Epsilon', 'Ε'),
+        _Utils_Tuple2('epsilon', 'ε'),
+        _Utils_Tuple2('epsiv', 'ϵ'),
+        _Utils_Tuple2('eqcirc', '≖'),
+        _Utils_Tuple2('eqcolon', '≕'),
+        _Utils_Tuple2('eqsim', '≂'),
+        _Utils_Tuple2('eqslantgtr', '⪖'),
+        _Utils_Tuple2('eqslantless', '⪕'),
+        _Utils_Tuple2('Equal', '⩵'),
+        _Utils_Tuple2('equals', '='),
+        _Utils_Tuple2('EqualTilde', '≂'),
+        _Utils_Tuple2('equest', '≟'),
+        _Utils_Tuple2('Equilibrium', '⇌'),
+        _Utils_Tuple2('equiv', '≡'),
+        _Utils_Tuple2('equivDD', '⩸'),
+        _Utils_Tuple2('eqvparsl', '⧥'),
+        _Utils_Tuple2('erarr', '⥱'),
+        _Utils_Tuple2('erDot', '≓'),
+        _Utils_Tuple2('escr', 'ℯ'),
+        _Utils_Tuple2('Escr', 'ℰ'),
+        _Utils_Tuple2('esdot', '≐'),
+        _Utils_Tuple2('Esim', '⩳'),
+        _Utils_Tuple2('esim', '≂'),
+        _Utils_Tuple2('Eta', 'Η'),
+        _Utils_Tuple2('eta', 'η'),
+        _Utils_Tuple2('ETH', 'Ð'),
+        _Utils_Tuple2('eth', 'ð'),
+        _Utils_Tuple2('Euml', 'Ë'),
+        _Utils_Tuple2('euml', 'ë'),
+        _Utils_Tuple2('euro', '€'),
+        _Utils_Tuple2('excl', '!'),
+        _Utils_Tuple2('exist', '∃'),
+        _Utils_Tuple2('Exists', '∃'),
+        _Utils_Tuple2('expectation', 'ℰ'),
+        _Utils_Tuple2('exponentiale', 'ⅇ'),
+        _Utils_Tuple2('ExponentialE', 'ⅇ'),
+        _Utils_Tuple2('fallingdotseq', '≒'),
+        _Utils_Tuple2('Fcy', 'Ф'),
+        _Utils_Tuple2('fcy', 'ф'),
+        _Utils_Tuple2('female', '♀'),
+        _Utils_Tuple2('ffilig', 'ﬃ'),
+        _Utils_Tuple2('fflig', 'ﬀ'),
+        _Utils_Tuple2('ffllig', 'ﬄ'),
+        _Utils_Tuple2('Ffr', '\uD835\uDD09'),
+        _Utils_Tuple2('ffr', '\uD835\uDD23'),
+        _Utils_Tuple2('filig', 'ﬁ'),
+        _Utils_Tuple2('FilledSmallSquare', '◼'),
+        _Utils_Tuple2('FilledVerySmallSquare', '▪'),
+        _Utils_Tuple2('fjlig', 'fj'),
+        _Utils_Tuple2('flat', '♭'),
+        _Utils_Tuple2('fllig', 'ﬂ'),
+        _Utils_Tuple2('fltns', '▱'),
+        _Utils_Tuple2('fnof', 'ƒ'),
+        _Utils_Tuple2('Fopf', '\uD835\uDD3D'),
+        _Utils_Tuple2('fopf', '\uD835\uDD57'),
+        _Utils_Tuple2('forall', '∀'),
+        _Utils_Tuple2('ForAll', '∀'),
+        _Utils_Tuple2('fork', '⋔'),
+        _Utils_Tuple2('forkv', '⫙'),
+        _Utils_Tuple2('Fouriertrf', 'ℱ'),
+        _Utils_Tuple2('fpartint', '⨍'),
+        _Utils_Tuple2('frac12', '½'),
+        _Utils_Tuple2('frac13', '⅓'),
+        _Utils_Tuple2('frac14', '¼'),
+        _Utils_Tuple2('frac15', '⅕'),
+        _Utils_Tuple2('frac16', '⅙'),
+        _Utils_Tuple2('frac18', '⅛'),
+        _Utils_Tuple2('frac23', '⅔'),
+        _Utils_Tuple2('frac25', '⅖'),
+        _Utils_Tuple2('frac34', '¾'),
+        _Utils_Tuple2('frac35', '⅗'),
+        _Utils_Tuple2('frac38', '⅜'),
+        _Utils_Tuple2('frac45', '⅘'),
+        _Utils_Tuple2('frac56', '⅚'),
+        _Utils_Tuple2('frac58', '⅝'),
+        _Utils_Tuple2('frac78', '⅞'),
+        _Utils_Tuple2('frasl', '⁄'),
+        _Utils_Tuple2('frown', '⌢'),
+        _Utils_Tuple2('fscr', '\uD835\uDCBB'),
+        _Utils_Tuple2('Fscr', 'ℱ'),
+        _Utils_Tuple2('gacute', 'ǵ'),
+        _Utils_Tuple2('Gamma', 'Γ'),
+        _Utils_Tuple2('gamma', 'γ'),
+        _Utils_Tuple2('Gammad', 'Ϝ'),
+        _Utils_Tuple2('gammad', 'ϝ'),
+        _Utils_Tuple2('gap', '⪆'),
+        _Utils_Tuple2('Gbreve', 'Ğ'),
+        _Utils_Tuple2('gbreve', 'ğ'),
+        _Utils_Tuple2('Gcedil', 'Ģ'),
+        _Utils_Tuple2('Gcirc', 'Ĝ'),
+        _Utils_Tuple2('gcirc', 'ĝ'),
+        _Utils_Tuple2('Gcy', 'Г'),
+        _Utils_Tuple2('gcy', 'г'),
+        _Utils_Tuple2('Gdot', 'Ġ'),
+        _Utils_Tuple2('gdot', 'ġ'),
+        _Utils_Tuple2('ge', '≥'),
+        _Utils_Tuple2('gE', '≧'),
+        _Utils_Tuple2('gEl', '⪌'),
+        _Utils_Tuple2('gel', '⋛'),
+        _Utils_Tuple2('geq', '≥'),
+        _Utils_Tuple2('geqq', '≧'),
+        _Utils_Tuple2('geqslant', '⩾'),
+        _Utils_Tuple2('gescc', '⪩'),
+        _Utils_Tuple2('ges', '⩾'),
+        _Utils_Tuple2('gesdot', '⪀'),
+        _Utils_Tuple2('gesdoto', '⪂'),
+        _Utils_Tuple2('gesdotol', '⪄'),
+        _Utils_Tuple2('gesl', '⋛︀'),
+        _Utils_Tuple2('gesles', '⪔'),
+        _Utils_Tuple2('Gfr', '\uD835\uDD0A'),
+        _Utils_Tuple2('gfr', '\uD835\uDD24'),
+        _Utils_Tuple2('gg', '≫'),
+        _Utils_Tuple2('Gg', '⋙'),
+        _Utils_Tuple2('ggg', '⋙'),
+        _Utils_Tuple2('gimel', 'ℷ'),
+        _Utils_Tuple2('GJcy', 'Ѓ'),
+        _Utils_Tuple2('gjcy', 'ѓ'),
+        _Utils_Tuple2('gla', '⪥'),
+        _Utils_Tuple2('gl', '≷'),
+        _Utils_Tuple2('glE', '⪒'),
+        _Utils_Tuple2('glj', '⪤'),
+        _Utils_Tuple2('gnap', '⪊'),
+        _Utils_Tuple2('gnapprox', '⪊'),
+        _Utils_Tuple2('gne', '⪈'),
+        _Utils_Tuple2('gnE', '≩'),
+        _Utils_Tuple2('gneq', '⪈'),
+        _Utils_Tuple2('gneqq', '≩'),
+        _Utils_Tuple2('gnsim', '⋧'),
+        _Utils_Tuple2('Gopf', '\uD835\uDD3E'),
+        _Utils_Tuple2('gopf', '\uD835\uDD58'),
+        _Utils_Tuple2('grave', '`'),
+        _Utils_Tuple2('GreaterEqual', '≥'),
+        _Utils_Tuple2('GreaterEqualLess', '⋛'),
+        _Utils_Tuple2('GreaterFullEqual', '≧'),
+        _Utils_Tuple2('GreaterGreater', '⪢'),
+        _Utils_Tuple2('GreaterLess', '≷'),
+        _Utils_Tuple2('GreaterSlantEqual', '⩾'),
+        _Utils_Tuple2('GreaterTilde', '≳'),
+        _Utils_Tuple2('Gscr', '\uD835\uDCA2'),
+        _Utils_Tuple2('gscr', 'ℊ'),
+        _Utils_Tuple2('gsim', '≳'),
+        _Utils_Tuple2('gsime', '⪎'),
+        _Utils_Tuple2('gsiml', '⪐'),
+        _Utils_Tuple2('gtcc', '⪧'),
+        _Utils_Tuple2('gtcir', '⩺'),
+        _Utils_Tuple2('gt', '>'),
+        _Utils_Tuple2('GT', '>'),
+        _Utils_Tuple2('Gt', '≫'),
+        _Utils_Tuple2('gtdot', '⋗'),
+        _Utils_Tuple2('gtlPar', '⦕'),
+        _Utils_Tuple2('gtquest', '⩼'),
+        _Utils_Tuple2('gtrapprox', '⪆'),
+        _Utils_Tuple2('gtrarr', '⥸'),
+        _Utils_Tuple2('gtrdot', '⋗'),
+        _Utils_Tuple2('gtreqless', '⋛'),
+        _Utils_Tuple2('gtreqqless', '⪌'),
+        _Utils_Tuple2('gtrless', '≷'),
+        _Utils_Tuple2('gtrsim', '≳'),
+        _Utils_Tuple2('gvertneqq', '≩︀'),
+        _Utils_Tuple2('gvnE', '≩︀'),
+        _Utils_Tuple2('Hacek', 'ˇ'),
+        _Utils_Tuple2('hairsp', '\u200A'),
+        _Utils_Tuple2('half', '½'),
+        _Utils_Tuple2('hamilt', 'ℋ'),
+        _Utils_Tuple2('HARDcy', 'Ъ'),
+        _Utils_Tuple2('hardcy', 'ъ'),
+        _Utils_Tuple2('harrcir', '⥈'),
+        _Utils_Tuple2('harr', '↔'),
+        _Utils_Tuple2('hArr', '⇔'),
+        _Utils_Tuple2('harrw', '↭'),
+        _Utils_Tuple2('Hat', '^'),
+        _Utils_Tuple2('hbar', 'ℏ'),
+        _Utils_Tuple2('Hcirc', 'Ĥ'),
+        _Utils_Tuple2('hcirc', 'ĥ'),
+        _Utils_Tuple2('hearts', '♥'),
+        _Utils_Tuple2('heartsuit', '♥'),
+        _Utils_Tuple2('hellip', '…'),
+        _Utils_Tuple2('hercon', '⊹'),
+        _Utils_Tuple2('hfr', '\uD835\uDD25'),
+        _Utils_Tuple2('Hfr', 'ℌ'),
+        _Utils_Tuple2('HilbertSpace', 'ℋ'),
+        _Utils_Tuple2('hksearow', '⤥'),
+        _Utils_Tuple2('hkswarow', '⤦'),
+        _Utils_Tuple2('hoarr', '⇿'),
+        _Utils_Tuple2('homtht', '∻'),
+        _Utils_Tuple2('hookleftarrow', '↩'),
+        _Utils_Tuple2('hookrightarrow', '↪'),
+        _Utils_Tuple2('hopf', '\uD835\uDD59'),
+        _Utils_Tuple2('Hopf', 'ℍ'),
+        _Utils_Tuple2('horbar', '―'),
+        _Utils_Tuple2('HorizontalLine', '─'),
+        _Utils_Tuple2('hscr', '\uD835\uDCBD'),
+        _Utils_Tuple2('Hscr', 'ℋ'),
+        _Utils_Tuple2('hslash', 'ℏ'),
+        _Utils_Tuple2('Hstrok', 'Ħ'),
+        _Utils_Tuple2('hstrok', 'ħ'),
+        _Utils_Tuple2('HumpDownHump', '≎'),
+        _Utils_Tuple2('HumpEqual', '≏'),
+        _Utils_Tuple2('hybull', '⁃'),
+        _Utils_Tuple2('hyphen', '‐'),
+        _Utils_Tuple2('Iacute', 'Í'),
+        _Utils_Tuple2('iacute', 'í'),
+        _Utils_Tuple2('ic', '\u2063'),
+        _Utils_Tuple2('Icirc', 'Î'),
+        _Utils_Tuple2('icirc', 'î'),
+        _Utils_Tuple2('Icy', 'И'),
+        _Utils_Tuple2('icy', 'и'),
+        _Utils_Tuple2('Idot', 'İ'),
+        _Utils_Tuple2('IEcy', 'Е'),
+        _Utils_Tuple2('iecy', 'е'),
+        _Utils_Tuple2('iexcl', '¡'),
+        _Utils_Tuple2('iff', '⇔'),
+        _Utils_Tuple2('ifr', '\uD835\uDD26'),
+        _Utils_Tuple2('Ifr', 'ℑ'),
+        _Utils_Tuple2('Igrave', 'Ì'),
+        _Utils_Tuple2('igrave', 'ì'),
+        _Utils_Tuple2('ii', 'ⅈ'),
+        _Utils_Tuple2('iiiint', '⨌'),
+        _Utils_Tuple2('iiint', '∭'),
+        _Utils_Tuple2('iinfin', '⧜'),
+        _Utils_Tuple2('iiota', '℩'),
+        _Utils_Tuple2('IJlig', 'Ĳ'),
+        _Utils_Tuple2('ijlig', 'ĳ'),
+        _Utils_Tuple2('Imacr', 'Ī'),
+        _Utils_Tuple2('imacr', 'ī'),
+        _Utils_Tuple2('image', 'ℑ'),
+        _Utils_Tuple2('ImaginaryI', 'ⅈ'),
+        _Utils_Tuple2('imagline', 'ℐ'),
+        _Utils_Tuple2('imagpart', 'ℑ'),
+        _Utils_Tuple2('imath', 'ı'),
+        _Utils_Tuple2('Im', 'ℑ'),
+        _Utils_Tuple2('imof', '⊷'),
+        _Utils_Tuple2('imped', 'Ƶ'),
+        _Utils_Tuple2('Implies', '⇒'),
+        _Utils_Tuple2('incare', '℅'),
+        _Utils_Tuple2('in', '∈'),
+        _Utils_Tuple2('infin', '∞'),
+        _Utils_Tuple2('infintie', '⧝'),
+        _Utils_Tuple2('inodot', 'ı'),
+        _Utils_Tuple2('intcal', '⊺'),
+        _Utils_Tuple2('int', '∫'),
+        _Utils_Tuple2('Int', '∬'),
+        _Utils_Tuple2('integers', 'ℤ'),
+        _Utils_Tuple2('Integral', '∫'),
+        _Utils_Tuple2('intercal', '⊺'),
+        _Utils_Tuple2('Intersection', '⋂'),
+        _Utils_Tuple2('intlarhk', '⨗'),
+        _Utils_Tuple2('intprod', '⨼'),
+        _Utils_Tuple2('InvisibleComma', '\u2063'),
+        _Utils_Tuple2('InvisibleTimes', '\u2062'),
+        _Utils_Tuple2('IOcy', 'Ё'),
+        _Utils_Tuple2('iocy', 'ё'),
+        _Utils_Tuple2('Iogon', 'Į'),
+        _Utils_Tuple2('iogon', 'į'),
+        _Utils_Tuple2('Iopf', '\uD835\uDD40'),
+        _Utils_Tuple2('iopf', '\uD835\uDD5A'),
+        _Utils_Tuple2('Iota', 'Ι'),
+        _Utils_Tuple2('iota', 'ι'),
+        _Utils_Tuple2('iprod', '⨼'),
+        _Utils_Tuple2('iquest', '¿'),
+        _Utils_Tuple2('iscr', '\uD835\uDCBE'),
+        _Utils_Tuple2('Iscr', 'ℐ'),
+        _Utils_Tuple2('isin', '∈'),
+        _Utils_Tuple2('isindot', '⋵'),
+        _Utils_Tuple2('isinE', '⋹'),
+        _Utils_Tuple2('isins', '⋴'),
+        _Utils_Tuple2('isinsv', '⋳'),
+        _Utils_Tuple2('isinv', '∈'),
+        _Utils_Tuple2('it', '\u2062'),
+        _Utils_Tuple2('Itilde', 'Ĩ'),
+        _Utils_Tuple2('itilde', 'ĩ'),
+        _Utils_Tuple2('Iukcy', 'І'),
+        _Utils_Tuple2('iukcy', 'і'),
+        _Utils_Tuple2('Iuml', 'Ï'),
+        _Utils_Tuple2('iuml', 'ï'),
+        _Utils_Tuple2('Jcirc', 'Ĵ'),
+        _Utils_Tuple2('jcirc', 'ĵ'),
+        _Utils_Tuple2('Jcy', 'Й'),
+        _Utils_Tuple2('jcy', 'й'),
+        _Utils_Tuple2('Jfr', '\uD835\uDD0D'),
+        _Utils_Tuple2('jfr', '\uD835\uDD27'),
+        _Utils_Tuple2('jmath', 'ȷ'),
+        _Utils_Tuple2('Jopf', '\uD835\uDD41'),
+        _Utils_Tuple2('jopf', '\uD835\uDD5B'),
+        _Utils_Tuple2('Jscr', '\uD835\uDCA5'),
+        _Utils_Tuple2('jscr', '\uD835\uDCBF'),
+        _Utils_Tuple2('Jsercy', 'Ј'),
+        _Utils_Tuple2('jsercy', 'ј'),
+        _Utils_Tuple2('Jukcy', 'Є'),
+        _Utils_Tuple2('jukcy', 'є'),
+        _Utils_Tuple2('Kappa', 'Κ'),
+        _Utils_Tuple2('kappa', 'κ'),
+        _Utils_Tuple2('kappav', 'ϰ'),
+        _Utils_Tuple2('Kcedil', 'Ķ'),
+        _Utils_Tuple2('kcedil', 'ķ'),
+        _Utils_Tuple2('Kcy', 'К'),
+        _Utils_Tuple2('kcy', 'к'),
+        _Utils_Tuple2('Kfr', '\uD835\uDD0E'),
+        _Utils_Tuple2('kfr', '\uD835\uDD28'),
+        _Utils_Tuple2('kgreen', 'ĸ'),
+        _Utils_Tuple2('KHcy', 'Х'),
+        _Utils_Tuple2('khcy', 'х'),
+        _Utils_Tuple2('KJcy', 'Ќ'),
+        _Utils_Tuple2('kjcy', 'ќ'),
+        _Utils_Tuple2('Kopf', '\uD835\uDD42'),
+        _Utils_Tuple2('kopf', '\uD835\uDD5C'),
+        _Utils_Tuple2('Kscr', '\uD835\uDCA6'),
+        _Utils_Tuple2('kscr', '\uD835\uDCC0'),
+        _Utils_Tuple2('lAarr', '⇚'),
+        _Utils_Tuple2('Lacute', 'Ĺ'),
+        _Utils_Tuple2('lacute', 'ĺ'),
+        _Utils_Tuple2('laemptyv', '⦴'),
+        _Utils_Tuple2('lagran', 'ℒ'),
+        _Utils_Tuple2('Lambda', 'Λ'),
+        _Utils_Tuple2('lambda', 'λ'),
+        _Utils_Tuple2('lang', '⟨'),
+        _Utils_Tuple2('Lang', '⟪'),
+        _Utils_Tuple2('langd', '⦑'),
+        _Utils_Tuple2('langle', '⟨'),
+        _Utils_Tuple2('lap', '⪅'),
+        _Utils_Tuple2('Laplacetrf', 'ℒ'),
+        _Utils_Tuple2('laquo', '«'),
+        _Utils_Tuple2('larrb', '⇤'),
+        _Utils_Tuple2('larrbfs', '⤟'),
+        _Utils_Tuple2('larr', '←'),
+        _Utils_Tuple2('Larr', '↞'),
+        _Utils_Tuple2('lArr', '⇐'),
+        _Utils_Tuple2('larrfs', '⤝'),
+        _Utils_Tuple2('larrhk', '↩'),
+        _Utils_Tuple2('larrlp', '↫'),
+        _Utils_Tuple2('larrpl', '⤹'),
+        _Utils_Tuple2('larrsim', '⥳'),
+        _Utils_Tuple2('larrtl', '↢'),
+        _Utils_Tuple2('latail', '⤙'),
+        _Utils_Tuple2('lAtail', '⤛'),
+        _Utils_Tuple2('lat', '⪫'),
+        _Utils_Tuple2('late', '⪭'),
+        _Utils_Tuple2('lates', '⪭︀'),
+        _Utils_Tuple2('lbarr', '⤌'),
+        _Utils_Tuple2('lBarr', '⤎'),
+        _Utils_Tuple2('lbbrk', '❲'),
+        _Utils_Tuple2('lbrace', '{'),
+        _Utils_Tuple2('lbrack', '['),
+        _Utils_Tuple2('lbrke', '⦋'),
+        _Utils_Tuple2('lbrksld', '⦏'),
+        _Utils_Tuple2('lbrkslu', '⦍'),
+        _Utils_Tuple2('Lcaron', 'Ľ'),
+        _Utils_Tuple2('lcaron', 'ľ'),
+        _Utils_Tuple2('Lcedil', 'Ļ'),
+        _Utils_Tuple2('lcedil', 'ļ'),
+        _Utils_Tuple2('lceil', '⌈'),
+        _Utils_Tuple2('lcub', '{'),
+        _Utils_Tuple2('Lcy', 'Л'),
+        _Utils_Tuple2('lcy', 'л'),
+        _Utils_Tuple2('ldca', '⤶'),
+        _Utils_Tuple2('ldquo', '“'),
+        _Utils_Tuple2('ldquor', '„'),
+        _Utils_Tuple2('ldrdhar', '⥧'),
+        _Utils_Tuple2('ldrushar', '⥋'),
+        _Utils_Tuple2('ldsh', '↲'),
+        _Utils_Tuple2('le', '≤'),
+        _Utils_Tuple2('lE', '≦'),
+        _Utils_Tuple2('LeftAngleBracket', '⟨'),
+        _Utils_Tuple2('LeftArrowBar', '⇤'),
+        _Utils_Tuple2('leftarrow', '←'),
+        _Utils_Tuple2('LeftArrow', '←'),
+        _Utils_Tuple2('Leftarrow', '⇐'),
+        _Utils_Tuple2('LeftArrowRightArrow', '⇆'),
+        _Utils_Tuple2('leftarrowtail', '↢'),
+        _Utils_Tuple2('LeftCeiling', '⌈'),
+        _Utils_Tuple2('LeftDoubleBracket', '⟦'),
+        _Utils_Tuple2('LeftDownTeeVector', '⥡'),
+        _Utils_Tuple2('LeftDownVectorBar', '⥙'),
+        _Utils_Tuple2('LeftDownVector', '⇃'),
+        _Utils_Tuple2('LeftFloor', '⌊'),
+        _Utils_Tuple2('leftharpoondown', '↽'),
+        _Utils_Tuple2('leftharpoonup', '↼'),
+        _Utils_Tuple2('leftleftarrows', '⇇'),
+        _Utils_Tuple2('leftrightarrow', '↔'),
+        _Utils_Tuple2('LeftRightArrow', '↔'),
+        _Utils_Tuple2('Leftrightarrow', '⇔'),
+        _Utils_Tuple2('leftrightarrows', '⇆'),
+        _Utils_Tuple2('leftrightharpoons', '⇋'),
+        _Utils_Tuple2('leftrightsquigarrow', '↭'),
+        _Utils_Tuple2('LeftRightVector', '⥎'),
+        _Utils_Tuple2('LeftTeeArrow', '↤'),
+        _Utils_Tuple2('LeftTee', '⊣'),
+        _Utils_Tuple2('LeftTeeVector', '⥚'),
+        _Utils_Tuple2('leftthreetimes', '⋋'),
+        _Utils_Tuple2('LeftTriangleBar', '⧏'),
+        _Utils_Tuple2('LeftTriangle', '⊲'),
+        _Utils_Tuple2('LeftTriangleEqual', '⊴'),
+        _Utils_Tuple2('LeftUpDownVector', '⥑'),
+        _Utils_Tuple2('LeftUpTeeVector', '⥠'),
+        _Utils_Tuple2('LeftUpVectorBar', '⥘'),
+        _Utils_Tuple2('LeftUpVector', '↿'),
+        _Utils_Tuple2('LeftVectorBar', '⥒'),
+        _Utils_Tuple2('LeftVector', '↼'),
+        _Utils_Tuple2('lEg', '⪋'),
+        _Utils_Tuple2('leg', '⋚'),
+        _Utils_Tuple2('leq', '≤'),
+        _Utils_Tuple2('leqq', '≦'),
+        _Utils_Tuple2('leqslant', '⩽'),
+        _Utils_Tuple2('lescc', '⪨'),
+        _Utils_Tuple2('les', '⩽'),
+        _Utils_Tuple2('lesdot', '⩿'),
+        _Utils_Tuple2('lesdoto', '⪁'),
+        _Utils_Tuple2('lesdotor', '⪃'),
+        _Utils_Tuple2('lesg', '⋚︀'),
+        _Utils_Tuple2('lesges', '⪓'),
+        _Utils_Tuple2('lessapprox', '⪅'),
+        _Utils_Tuple2('lessdot', '⋖'),
+        _Utils_Tuple2('lesseqgtr', '⋚'),
+        _Utils_Tuple2('lesseqqgtr', '⪋'),
+        _Utils_Tuple2('LessEqualGreater', '⋚'),
+        _Utils_Tuple2('LessFullEqual', '≦'),
+        _Utils_Tuple2('LessGreater', '≶'),
+        _Utils_Tuple2('lessgtr', '≶'),
+        _Utils_Tuple2('LessLess', '⪡'),
+        _Utils_Tuple2('lesssim', '≲'),
+        _Utils_Tuple2('LessSlantEqual', '⩽'),
+        _Utils_Tuple2('LessTilde', '≲'),
+        _Utils_Tuple2('lfisht', '⥼'),
+        _Utils_Tuple2('lfloor', '⌊'),
+        _Utils_Tuple2('Lfr', '\uD835\uDD0F'),
+        _Utils_Tuple2('lfr', '\uD835\uDD29'),
+        _Utils_Tuple2('lg', '≶'),
+        _Utils_Tuple2('lgE', '⪑'),
+        _Utils_Tuple2('lHar', '⥢'),
+        _Utils_Tuple2('lhard', '↽'),
+        _Utils_Tuple2('lharu', '↼'),
+        _Utils_Tuple2('lharul', '⥪'),
+        _Utils_Tuple2('lhblk', '▄'),
+        _Utils_Tuple2('LJcy', 'Љ'),
+        _Utils_Tuple2('ljcy', 'љ'),
+        _Utils_Tuple2('llarr', '⇇'),
+        _Utils_Tuple2('ll', '≪'),
+        _Utils_Tuple2('Ll', '⋘'),
+        _Utils_Tuple2('llcorner', '⌞'),
+        _Utils_Tuple2('Lleftarrow', '⇚'),
+        _Utils_Tuple2('llhard', '⥫'),
+        _Utils_Tuple2('lltri', '◺'),
+        _Utils_Tuple2('Lmidot', 'Ŀ'),
+        _Utils_Tuple2('lmidot', 'ŀ'),
+        _Utils_Tuple2('lmoustache', '⎰'),
+        _Utils_Tuple2('lmoust', '⎰'),
+        _Utils_Tuple2('lnap', '⪉'),
+        _Utils_Tuple2('lnapprox', '⪉'),
+        _Utils_Tuple2('lne', '⪇'),
+        _Utils_Tuple2('lnE', '≨'),
+        _Utils_Tuple2('lneq', '⪇'),
+        _Utils_Tuple2('lneqq', '≨'),
+        _Utils_Tuple2('lnsim', '⋦'),
+        _Utils_Tuple2('loang', '⟬'),
+        _Utils_Tuple2('loarr', '⇽'),
+        _Utils_Tuple2('lobrk', '⟦'),
+        _Utils_Tuple2('longleftarrow', '⟵'),
+        _Utils_Tuple2('LongLeftArrow', '⟵'),
+        _Utils_Tuple2('Longleftarrow', '⟸'),
+        _Utils_Tuple2('longleftrightarrow', '⟷'),
+        _Utils_Tuple2('LongLeftRightArrow', '⟷'),
+        _Utils_Tuple2('Longleftrightarrow', '⟺'),
+        _Utils_Tuple2('longmapsto', '⟼'),
+        _Utils_Tuple2('longrightarrow', '⟶'),
+        _Utils_Tuple2('LongRightArrow', '⟶'),
+        _Utils_Tuple2('Longrightarrow', '⟹'),
+        _Utils_Tuple2('looparrowleft', '↫'),
+        _Utils_Tuple2('looparrowright', '↬'),
+        _Utils_Tuple2('lopar', '⦅'),
+        _Utils_Tuple2('Lopf', '\uD835\uDD43'),
+        _Utils_Tuple2('lopf', '\uD835\uDD5D'),
+        _Utils_Tuple2('loplus', '⨭'),
+        _Utils_Tuple2('lotimes', '⨴'),
+        _Utils_Tuple2('lowast', '∗'),
+        _Utils_Tuple2('lowbar', '_'),
+        _Utils_Tuple2('LowerLeftArrow', '↙'),
+        _Utils_Tuple2('LowerRightArrow', '↘'),
+        _Utils_Tuple2('loz', '◊'),
+        _Utils_Tuple2('lozenge', '◊'),
+        _Utils_Tuple2('lozf', '⧫'),
+        _Utils_Tuple2('lpar', '('),
+        _Utils_Tuple2('lparlt', '⦓'),
+        _Utils_Tuple2('lrarr', '⇆'),
+        _Utils_Tuple2('lrcorner', '⌟'),
+        _Utils_Tuple2('lrhar', '⇋'),
+        _Utils_Tuple2('lrhard', '⥭'),
+        _Utils_Tuple2('lrm', '\u200E'),
+        _Utils_Tuple2('lrtri', '⊿'),
+        _Utils_Tuple2('lsaquo', '‹'),
+        _Utils_Tuple2('lscr', '\uD835\uDCC1'),
+        _Utils_Tuple2('Lscr', 'ℒ'),
+        _Utils_Tuple2('lsh', '↰'),
+        _Utils_Tuple2('Lsh', '↰'),
+        _Utils_Tuple2('lsim', '≲'),
+        _Utils_Tuple2('lsime', '⪍'),
+        _Utils_Tuple2('lsimg', '⪏'),
+        _Utils_Tuple2('lsqb', '['),
+        _Utils_Tuple2('lsquo', '‘'),
+        _Utils_Tuple2('lsquor', '‚'),
+        _Utils_Tuple2('Lstrok', 'Ł'),
+        _Utils_Tuple2('lstrok', 'ł'),
+        _Utils_Tuple2('ltcc', '⪦'),
+        _Utils_Tuple2('ltcir', '⩹'),
+        _Utils_Tuple2('lt', '<'),
+        _Utils_Tuple2('LT', '<'),
+        _Utils_Tuple2('Lt', '≪'),
+        _Utils_Tuple2('ltdot', '⋖'),
+        _Utils_Tuple2('lthree', '⋋'),
+        _Utils_Tuple2('ltimes', '⋉'),
+        _Utils_Tuple2('ltlarr', '⥶'),
+        _Utils_Tuple2('ltquest', '⩻'),
+        _Utils_Tuple2('ltri', '◃'),
+        _Utils_Tuple2('ltrie', '⊴'),
+        _Utils_Tuple2('ltrif', '◂'),
+        _Utils_Tuple2('ltrPar', '⦖'),
+        _Utils_Tuple2('lurdshar', '⥊'),
+        _Utils_Tuple2('luruhar', '⥦'),
+        _Utils_Tuple2('lvertneqq', '≨︀'),
+        _Utils_Tuple2('lvnE', '≨︀'),
+        _Utils_Tuple2('macr', '¯'),
+        _Utils_Tuple2('male', '♂'),
+        _Utils_Tuple2('malt', '✠'),
+        _Utils_Tuple2('maltese', '✠'),
+        _Utils_Tuple2('Map', '⤅'),
+        _Utils_Tuple2('map', '↦'),
+        _Utils_Tuple2('mapsto', '↦'),
+        _Utils_Tuple2('mapstodown', '↧'),
+        _Utils_Tuple2('mapstoleft', '↤'),
+        _Utils_Tuple2('mapstoup', '↥'),
+        _Utils_Tuple2('marker', '▮'),
+        _Utils_Tuple2('mcomma', '⨩'),
+        _Utils_Tuple2('Mcy', 'М'),
+        _Utils_Tuple2('mcy', 'м'),
+        _Utils_Tuple2('mdash', '—'),
+        _Utils_Tuple2('mDDot', '∺'),
+        _Utils_Tuple2('measuredangle', '∡'),
+        _Utils_Tuple2('MediumSpace', '\u205F'),
+        _Utils_Tuple2('Mellintrf', 'ℳ'),
+        _Utils_Tuple2('Mfr', '\uD835\uDD10'),
+        _Utils_Tuple2('mfr', '\uD835\uDD2A'),
+        _Utils_Tuple2('mho', '℧'),
+        _Utils_Tuple2('micro', 'µ'),
+        _Utils_Tuple2('midast', '*'),
+        _Utils_Tuple2('midcir', '⫰'),
+        _Utils_Tuple2('mid', '∣'),
+        _Utils_Tuple2('middot', '·'),
+        _Utils_Tuple2('minusb', '⊟'),
+        _Utils_Tuple2('minus', '−'),
+        _Utils_Tuple2('minusd', '∸'),
+        _Utils_Tuple2('minusdu', '⨪'),
+        _Utils_Tuple2('MinusPlus', '∓'),
+        _Utils_Tuple2('mlcp', '⫛'),
+        _Utils_Tuple2('mldr', '…'),
+        _Utils_Tuple2('mnplus', '∓'),
+        _Utils_Tuple2('models', '⊧'),
+        _Utils_Tuple2('Mopf', '\uD835\uDD44'),
+        _Utils_Tuple2('mopf', '\uD835\uDD5E'),
+        _Utils_Tuple2('mp', '∓'),
+        _Utils_Tuple2('mscr', '\uD835\uDCC2'),
+        _Utils_Tuple2('Mscr', 'ℳ'),
+        _Utils_Tuple2('mstpos', '∾'),
+        _Utils_Tuple2('Mu', 'Μ'),
+        _Utils_Tuple2('mu', 'μ'),
+        _Utils_Tuple2('multimap', '⊸'),
+        _Utils_Tuple2('mumap', '⊸'),
+        _Utils_Tuple2('nabla', '∇'),
+        _Utils_Tuple2('Nacute', 'Ń'),
+        _Utils_Tuple2('nacute', 'ń'),
+        _Utils_Tuple2('nang', '∠⃒'),
+        _Utils_Tuple2('nap', '≉'),
+        _Utils_Tuple2('napE', '⩰̸'),
+        _Utils_Tuple2('napid', '≋̸'),
+        _Utils_Tuple2('napos', 'ŉ'),
+        _Utils_Tuple2('napprox', '≉'),
+        _Utils_Tuple2('natural', '♮'),
+        _Utils_Tuple2('naturals', 'ℕ'),
+        _Utils_Tuple2('natur', '♮'),
+        _Utils_Tuple2('nbsp', '\u00A0'),
+        _Utils_Tuple2('nbump', '≎̸'),
+        _Utils_Tuple2('nbumpe', '≏̸'),
+        _Utils_Tuple2('ncap', '⩃'),
+        _Utils_Tuple2('Ncaron', 'Ň'),
+        _Utils_Tuple2('ncaron', 'ň'),
+        _Utils_Tuple2('Ncedil', 'Ņ'),
+        _Utils_Tuple2('ncedil', 'ņ'),
+        _Utils_Tuple2('ncong', '≇'),
+        _Utils_Tuple2('ncongdot', '⩭̸'),
+        _Utils_Tuple2('ncup', '⩂'),
+        _Utils_Tuple2('Ncy', 'Н'),
+        _Utils_Tuple2('ncy', 'н'),
+        _Utils_Tuple2('ndash', '–'),
+        _Utils_Tuple2('nearhk', '⤤'),
+        _Utils_Tuple2('nearr', '↗'),
+        _Utils_Tuple2('neArr', '⇗'),
+        _Utils_Tuple2('nearrow', '↗'),
+        _Utils_Tuple2('ne', '≠'),
+        _Utils_Tuple2('nedot', '≐̸'),
+        _Utils_Tuple2('NegativeMediumSpace', '\u200B'),
+        _Utils_Tuple2('NegativeThickSpace', '\u200B'),
+        _Utils_Tuple2('NegativeThinSpace', '\u200B'),
+        _Utils_Tuple2('NegativeVeryThinSpace', '\u200B'),
+        _Utils_Tuple2('nequiv', '≢'),
+        _Utils_Tuple2('nesear', '⤨'),
+        _Utils_Tuple2('nesim', '≂̸'),
+        _Utils_Tuple2('NestedGreaterGreater', '≫'),
+        _Utils_Tuple2('NestedLessLess', '≪'),
+        _Utils_Tuple2('NewLine', '\n'),
+        _Utils_Tuple2('nexist', '∄'),
+        _Utils_Tuple2('nexists', '∄'),
+        _Utils_Tuple2('Nfr', '\uD835\uDD11'),
+        _Utils_Tuple2('nfr', '\uD835\uDD2B'),
+        _Utils_Tuple2('ngE', '≧̸'),
+        _Utils_Tuple2('nge', '≱'),
+        _Utils_Tuple2('ngeq', '≱'),
+        _Utils_Tuple2('ngeqq', '≧̸'),
+        _Utils_Tuple2('ngeqslant', '⩾̸'),
+        _Utils_Tuple2('nges', '⩾̸'),
+        _Utils_Tuple2('nGg', '⋙̸'),
+        _Utils_Tuple2('ngsim', '≵'),
+        _Utils_Tuple2('nGt', '≫⃒'),
+        _Utils_Tuple2('ngt', '≯'),
+        _Utils_Tuple2('ngtr', '≯'),
+        _Utils_Tuple2('nGtv', '≫̸'),
+        _Utils_Tuple2('nharr', '↮'),
+        _Utils_Tuple2('nhArr', '⇎'),
+        _Utils_Tuple2('nhpar', '⫲'),
+        _Utils_Tuple2('ni', '∋'),
+        _Utils_Tuple2('nis', '⋼'),
+        _Utils_Tuple2('nisd', '⋺'),
+        _Utils_Tuple2('niv', '∋'),
+        _Utils_Tuple2('NJcy', 'Њ'),
+        _Utils_Tuple2('njcy', 'њ'),
+        _Utils_Tuple2('nlarr', '↚'),
+        _Utils_Tuple2('nlArr', '⇍'),
+        _Utils_Tuple2('nldr', '‥'),
+        _Utils_Tuple2('nlE', '≦̸'),
+        _Utils_Tuple2('nle', '≰'),
+        _Utils_Tuple2('nleftarrow', '↚'),
+        _Utils_Tuple2('nLeftarrow', '⇍'),
+        _Utils_Tuple2('nleftrightarrow', '↮'),
+        _Utils_Tuple2('nLeftrightarrow', '⇎'),
+        _Utils_Tuple2('nleq', '≰'),
+        _Utils_Tuple2('nleqq', '≦̸'),
+        _Utils_Tuple2('nleqslant', '⩽̸'),
+        _Utils_Tuple2('nles', '⩽̸'),
+        _Utils_Tuple2('nless', '≮'),
+        _Utils_Tuple2('nLl', '⋘̸'),
+        _Utils_Tuple2('nlsim', '≴'),
+        _Utils_Tuple2('nLt', '≪⃒'),
+        _Utils_Tuple2('nlt', '≮'),
+        _Utils_Tuple2('nltri', '⋪'),
+        _Utils_Tuple2('nltrie', '⋬'),
+        _Utils_Tuple2('nLtv', '≪̸'),
+        _Utils_Tuple2('nmid', '∤'),
+        _Utils_Tuple2('NoBreak', '\u2060'),
+        _Utils_Tuple2('NonBreakingSpace', '\u00A0'),
+        _Utils_Tuple2('nopf', '\uD835\uDD5F'),
+        _Utils_Tuple2('Nopf', 'ℕ'),
+        _Utils_Tuple2('Not', '⫬'),
+        _Utils_Tuple2('not', '¬'),
+        _Utils_Tuple2('NotCongruent', '≢'),
+        _Utils_Tuple2('NotCupCap', '≭'),
+        _Utils_Tuple2('NotDoubleVerticalBar', '∦'),
+        _Utils_Tuple2('NotElement', '∉'),
+        _Utils_Tuple2('NotEqual', '≠'),
+        _Utils_Tuple2('NotEqualTilde', '≂̸'),
+        _Utils_Tuple2('NotExists', '∄'),
+        _Utils_Tuple2('NotGreater', '≯'),
+        _Utils_Tuple2('NotGreaterEqual', '≱'),
+        _Utils_Tuple2('NotGreaterFullEqual', '≧̸'),
+        _Utils_Tuple2('NotGreaterGreater', '≫̸'),
+        _Utils_Tuple2('NotGreaterLess', '≹'),
+        _Utils_Tuple2('NotGreaterSlantEqual', '⩾̸'),
+        _Utils_Tuple2('NotGreaterTilde', '≵'),
+        _Utils_Tuple2('NotHumpDownHump', '≎̸'),
+        _Utils_Tuple2('NotHumpEqual', '≏̸'),
+        _Utils_Tuple2('notin', '∉'),
+        _Utils_Tuple2('notindot', '⋵̸'),
+        _Utils_Tuple2('notinE', '⋹̸'),
+        _Utils_Tuple2('notinva', '∉'),
+        _Utils_Tuple2('notinvb', '⋷'),
+        _Utils_Tuple2('notinvc', '⋶'),
+        _Utils_Tuple2('NotLeftTriangleBar', '⧏̸'),
+        _Utils_Tuple2('NotLeftTriangle', '⋪'),
+        _Utils_Tuple2('NotLeftTriangleEqual', '⋬'),
+        _Utils_Tuple2('NotLess', '≮'),
+        _Utils_Tuple2('NotLessEqual', '≰'),
+        _Utils_Tuple2('NotLessGreater', '≸'),
+        _Utils_Tuple2('NotLessLess', '≪̸'),
+        _Utils_Tuple2('NotLessSlantEqual', '⩽̸'),
+        _Utils_Tuple2('NotLessTilde', '≴'),
+        _Utils_Tuple2('NotNestedGreaterGreater', '⪢̸'),
+        _Utils_Tuple2('NotNestedLessLess', '⪡̸'),
+        _Utils_Tuple2('notni', '∌'),
+        _Utils_Tuple2('notniva', '∌'),
+        _Utils_Tuple2('notnivb', '⋾'),
+        _Utils_Tuple2('notnivc', '⋽'),
+        _Utils_Tuple2('NotPrecedes', '⊀'),
+        _Utils_Tuple2('NotPrecedesEqual', '⪯̸'),
+        _Utils_Tuple2('NotPrecedesSlantEqual', '⋠'),
+        _Utils_Tuple2('NotReverseElement', '∌'),
+        _Utils_Tuple2('NotRightTriangleBar', '⧐̸'),
+        _Utils_Tuple2('NotRightTriangle', '⋫'),
+        _Utils_Tuple2('NotRightTriangleEqual', '⋭'),
+        _Utils_Tuple2('NotSquareSubset', '⊏̸'),
+        _Utils_Tuple2('NotSquareSubsetEqual', '⋢'),
+        _Utils_Tuple2('NotSquareSuperset', '⊐̸'),
+        _Utils_Tuple2('NotSquareSupersetEqual', '⋣'),
+        _Utils_Tuple2('NotSubset', '⊂⃒'),
+        _Utils_Tuple2('NotSubsetEqual', '⊈'),
+        _Utils_Tuple2('NotSucceeds', '⊁'),
+        _Utils_Tuple2('NotSucceedsEqual', '⪰̸'),
+        _Utils_Tuple2('NotSucceedsSlantEqual', '⋡'),
+        _Utils_Tuple2('NotSucceedsTilde', '≿̸'),
+        _Utils_Tuple2('NotSuperset', '⊃⃒'),
+        _Utils_Tuple2('NotSupersetEqual', '⊉'),
+        _Utils_Tuple2('NotTilde', '≁'),
+        _Utils_Tuple2('NotTildeEqual', '≄'),
+        _Utils_Tuple2('NotTildeFullEqual', '≇'),
+        _Utils_Tuple2('NotTildeTilde', '≉'),
+        _Utils_Tuple2('NotVerticalBar', '∤'),
+        _Utils_Tuple2('nparallel', '∦'),
+        _Utils_Tuple2('npar', '∦'),
+        _Utils_Tuple2('nparsl', '⫽⃥'),
+        _Utils_Tuple2('npart', '∂̸'),
+        _Utils_Tuple2('npolint', '⨔'),
+        _Utils_Tuple2('npr', '⊀'),
+        _Utils_Tuple2('nprcue', '⋠'),
+        _Utils_Tuple2('nprec', '⊀'),
+        _Utils_Tuple2('npreceq', '⪯̸'),
+        _Utils_Tuple2('npre', '⪯̸'),
+        _Utils_Tuple2('nrarrc', '⤳̸'),
+        _Utils_Tuple2('nrarr', '↛'),
+        _Utils_Tuple2('nrArr', '⇏'),
+        _Utils_Tuple2('nrarrw', '↝̸'),
+        _Utils_Tuple2('nrightarrow', '↛'),
+        _Utils_Tuple2('nRightarrow', '⇏'),
+        _Utils_Tuple2('nrtri', '⋫'),
+        _Utils_Tuple2('nrtrie', '⋭'),
+        _Utils_Tuple2('nsc', '⊁'),
+        _Utils_Tuple2('nsccue', '⋡'),
+        _Utils_Tuple2('nsce', '⪰̸'),
+        _Utils_Tuple2('Nscr', '\uD835\uDCA9'),
+        _Utils_Tuple2('nscr', '\uD835\uDCC3'),
+        _Utils_Tuple2('nshortmid', '∤'),
+        _Utils_Tuple2('nshortparallel', '∦'),
+        _Utils_Tuple2('nsim', '≁'),
+        _Utils_Tuple2('nsime', '≄'),
+        _Utils_Tuple2('nsimeq', '≄'),
+        _Utils_Tuple2('nsmid', '∤'),
+        _Utils_Tuple2('nspar', '∦'),
+        _Utils_Tuple2('nsqsube', '⋢'),
+        _Utils_Tuple2('nsqsupe', '⋣'),
+        _Utils_Tuple2('nsub', '⊄'),
+        _Utils_Tuple2('nsubE', '⫅̸'),
+        _Utils_Tuple2('nsube', '⊈'),
+        _Utils_Tuple2('nsubset', '⊂⃒'),
+        _Utils_Tuple2('nsubseteq', '⊈'),
+        _Utils_Tuple2('nsubseteqq', '⫅̸'),
+        _Utils_Tuple2('nsucc', '⊁'),
+        _Utils_Tuple2('nsucceq', '⪰̸'),
+        _Utils_Tuple2('nsup', '⊅'),
+        _Utils_Tuple2('nsupE', '⫆̸'),
+        _Utils_Tuple2('nsupe', '⊉'),
+        _Utils_Tuple2('nsupset', '⊃⃒'),
+        _Utils_Tuple2('nsupseteq', '⊉'),
+        _Utils_Tuple2('nsupseteqq', '⫆̸'),
+        _Utils_Tuple2('ntgl', '≹'),
+        _Utils_Tuple2('Ntilde', 'Ñ'),
+        _Utils_Tuple2('ntilde', 'ñ'),
+        _Utils_Tuple2('ntlg', '≸'),
+        _Utils_Tuple2('ntriangleleft', '⋪'),
+        _Utils_Tuple2('ntrianglelefteq', '⋬'),
+        _Utils_Tuple2('ntriangleright', '⋫'),
+        _Utils_Tuple2('ntrianglerighteq', '⋭'),
+        _Utils_Tuple2('Nu', 'Ν'),
+        _Utils_Tuple2('nu', 'ν'),
+        _Utils_Tuple2('num', '#'),
+        _Utils_Tuple2('numero', '№'),
+        _Utils_Tuple2('numsp', '\u2007'),
+        _Utils_Tuple2('nvap', '≍⃒'),
+        _Utils_Tuple2('nvdash', '⊬'),
+        _Utils_Tuple2('nvDash', '⊭'),
+        _Utils_Tuple2('nVdash', '⊮'),
+        _Utils_Tuple2('nVDash', '⊯'),
+        _Utils_Tuple2('nvge', '≥⃒'),
+        _Utils_Tuple2('nvgt', '>⃒'),
+        _Utils_Tuple2('nvHarr', '⤄'),
+        _Utils_Tuple2('nvinfin', '⧞'),
+        _Utils_Tuple2('nvlArr', '⤂'),
+        _Utils_Tuple2('nvle', '≤⃒'),
+        _Utils_Tuple2('nvlt', '<⃒'),
+        _Utils_Tuple2('nvltrie', '⊴⃒'),
+        _Utils_Tuple2('nvrArr', '⤃'),
+        _Utils_Tuple2('nvrtrie', '⊵⃒'),
+        _Utils_Tuple2('nvsim', '∼⃒'),
+        _Utils_Tuple2('nwarhk', '⤣'),
+        _Utils_Tuple2('nwarr', '↖'),
+        _Utils_Tuple2('nwArr', '⇖'),
+        _Utils_Tuple2('nwarrow', '↖'),
+        _Utils_Tuple2('nwnear', '⤧'),
+        _Utils_Tuple2('Oacute', 'Ó'),
+        _Utils_Tuple2('oacute', 'ó'),
+        _Utils_Tuple2('oast', '⊛'),
+        _Utils_Tuple2('Ocirc', 'Ô'),
+        _Utils_Tuple2('ocirc', 'ô'),
+        _Utils_Tuple2('ocir', '⊚'),
+        _Utils_Tuple2('Ocy', 'О'),
+        _Utils_Tuple2('ocy', 'о'),
+        _Utils_Tuple2('odash', '⊝'),
+        _Utils_Tuple2('Odblac', 'Ő'),
+        _Utils_Tuple2('odblac', 'ő'),
+        _Utils_Tuple2('odiv', '⨸'),
+        _Utils_Tuple2('odot', '⊙'),
+        _Utils_Tuple2('odsold', '⦼'),
+        _Utils_Tuple2('OElig', 'Œ'),
+        _Utils_Tuple2('oelig', 'œ'),
+        _Utils_Tuple2('ofcir', '⦿'),
+        _Utils_Tuple2('Ofr', '\uD835\uDD12'),
+        _Utils_Tuple2('ofr', '\uD835\uDD2C'),
+        _Utils_Tuple2('ogon', '˛'),
+        _Utils_Tuple2('Ograve', 'Ò'),
+        _Utils_Tuple2('ograve', 'ò'),
+        _Utils_Tuple2('ogt', '⧁'),
+        _Utils_Tuple2('ohbar', '⦵'),
+        _Utils_Tuple2('ohm', 'Ω'),
+        _Utils_Tuple2('oint', '∮'),
+        _Utils_Tuple2('olarr', '↺'),
+        _Utils_Tuple2('olcir', '⦾'),
+        _Utils_Tuple2('olcross', '⦻'),
+        _Utils_Tuple2('oline', '‾'),
+        _Utils_Tuple2('olt', '⧀'),
+        _Utils_Tuple2('Omacr', 'Ō'),
+        _Utils_Tuple2('omacr', 'ō'),
+        _Utils_Tuple2('Omega', 'Ω'),
+        _Utils_Tuple2('omega', 'ω'),
+        _Utils_Tuple2('Omicron', 'Ο'),
+        _Utils_Tuple2('omicron', 'ο'),
+        _Utils_Tuple2('omid', '⦶'),
+        _Utils_Tuple2('ominus', '⊖'),
+        _Utils_Tuple2('Oopf', '\uD835\uDD46'),
+        _Utils_Tuple2('oopf', '\uD835\uDD60'),
+        _Utils_Tuple2('opar', '⦷'),
+        _Utils_Tuple2('OpenCurlyDoubleQuote', '“'),
+        _Utils_Tuple2('OpenCurlyQuote', '‘'),
+        _Utils_Tuple2('operp', '⦹'),
+        _Utils_Tuple2('oplus', '⊕'),
+        _Utils_Tuple2('orarr', '↻'),
+        _Utils_Tuple2('Or', '⩔'),
+        _Utils_Tuple2('or', '∨'),
+        _Utils_Tuple2('ord', '⩝'),
+        _Utils_Tuple2('order', 'ℴ'),
+        _Utils_Tuple2('orderof', 'ℴ'),
+        _Utils_Tuple2('ordf', 'ª'),
+        _Utils_Tuple2('ordm', 'º'),
+        _Utils_Tuple2('origof', '⊶'),
+        _Utils_Tuple2('oror', '⩖'),
+        _Utils_Tuple2('orslope', '⩗'),
+        _Utils_Tuple2('orv', '⩛'),
+        _Utils_Tuple2('oS', 'Ⓢ'),
+        _Utils_Tuple2('Oscr', '\uD835\uDCAA'),
+        _Utils_Tuple2('oscr', 'ℴ'),
+        _Utils_Tuple2('Oslash', 'Ø'),
+        _Utils_Tuple2('oslash', 'ø'),
+        _Utils_Tuple2('osol', '⊘'),
+        _Utils_Tuple2('Otilde', 'Õ'),
+        _Utils_Tuple2('otilde', 'õ'),
+        _Utils_Tuple2('otimesas', '⨶'),
+        _Utils_Tuple2('Otimes', '⨷'),
+        _Utils_Tuple2('otimes', '⊗'),
+        _Utils_Tuple2('Ouml', 'Ö'),
+        _Utils_Tuple2('ouml', 'ö'),
+        _Utils_Tuple2('ovbar', '⌽'),
+        _Utils_Tuple2('OverBar', '‾'),
+        _Utils_Tuple2('OverBrace', '⏞'),
+        _Utils_Tuple2('OverBracket', '⎴'),
+        _Utils_Tuple2('OverParenthesis', '⏜'),
+        _Utils_Tuple2('para', '¶'),
+        _Utils_Tuple2('parallel', '∥'),
+        _Utils_Tuple2('par', '∥'),
+        _Utils_Tuple2('parsim', '⫳'),
+        _Utils_Tuple2('parsl', '⫽'),
+        _Utils_Tuple2('part', '∂'),
+        _Utils_Tuple2('PartialD', '∂'),
+        _Utils_Tuple2('Pcy', 'П'),
+        _Utils_Tuple2('pcy', 'п'),
+        _Utils_Tuple2('percnt', '%'),
+        _Utils_Tuple2('period', '.'),
+        _Utils_Tuple2('permil', '‰'),
+        _Utils_Tuple2('perp', '⊥'),
+        _Utils_Tuple2('pertenk', '‱'),
+        _Utils_Tuple2('Pfr', '\uD835\uDD13'),
+        _Utils_Tuple2('pfr', '\uD835\uDD2D'),
+        _Utils_Tuple2('Phi', 'Φ'),
+        _Utils_Tuple2('phi', 'φ'),
+        _Utils_Tuple2('phiv', 'ϕ'),
+        _Utils_Tuple2('phmmat', 'ℳ'),
+        _Utils_Tuple2('phone', '☎'),
+        _Utils_Tuple2('Pi', 'Π'),
+        _Utils_Tuple2('pi', 'π'),
+        _Utils_Tuple2('pitchfork', '⋔'),
+        _Utils_Tuple2('piv', 'ϖ'),
+        _Utils_Tuple2('planck', 'ℏ'),
+        _Utils_Tuple2('planckh', 'ℎ'),
+        _Utils_Tuple2('plankv', 'ℏ'),
+        _Utils_Tuple2('plusacir', '⨣'),
+        _Utils_Tuple2('plusb', '⊞'),
+        _Utils_Tuple2('pluscir', '⨢'),
+        _Utils_Tuple2('plus', '+'),
+        _Utils_Tuple2('plusdo', '∔'),
+        _Utils_Tuple2('plusdu', '⨥'),
+        _Utils_Tuple2('pluse', '⩲'),
+        _Utils_Tuple2('PlusMinus', '±'),
+        _Utils_Tuple2('plusmn', '±'),
+        _Utils_Tuple2('plussim', '⨦'),
+        _Utils_Tuple2('plustwo', '⨧'),
+        _Utils_Tuple2('pm', '±'),
+        _Utils_Tuple2('Poincareplane', 'ℌ'),
+        _Utils_Tuple2('pointint', '⨕'),
+        _Utils_Tuple2('popf', '\uD835\uDD61'),
+        _Utils_Tuple2('Popf', 'ℙ'),
+        _Utils_Tuple2('pound', '£'),
+        _Utils_Tuple2('prap', '⪷'),
+        _Utils_Tuple2('Pr', '⪻'),
+        _Utils_Tuple2('pr', '≺'),
+        _Utils_Tuple2('prcue', '≼'),
+        _Utils_Tuple2('precapprox', '⪷'),
+        _Utils_Tuple2('prec', '≺'),
+        _Utils_Tuple2('preccurlyeq', '≼'),
+        _Utils_Tuple2('Precedes', '≺'),
+        _Utils_Tuple2('PrecedesEqual', '⪯'),
+        _Utils_Tuple2('PrecedesSlantEqual', '≼'),
+        _Utils_Tuple2('PrecedesTilde', '≾'),
+        _Utils_Tuple2('preceq', '⪯'),
+        _Utils_Tuple2('precnapprox', '⪹'),
+        _Utils_Tuple2('precneqq', '⪵'),
+        _Utils_Tuple2('precnsim', '⋨'),
+        _Utils_Tuple2('pre', '⪯'),
+        _Utils_Tuple2('prE', '⪳'),
+        _Utils_Tuple2('precsim', '≾'),
+        _Utils_Tuple2('prime', '′'),
+        _Utils_Tuple2('Prime', '″'),
+        _Utils_Tuple2('primes', 'ℙ'),
+        _Utils_Tuple2('prnap', '⪹'),
+        _Utils_Tuple2('prnE', '⪵'),
+        _Utils_Tuple2('prnsim', '⋨'),
+        _Utils_Tuple2('prod', '∏'),
+        _Utils_Tuple2('Product', '∏'),
+        _Utils_Tuple2('profalar', '⌮'),
+        _Utils_Tuple2('profline', '⌒'),
+        _Utils_Tuple2('profsurf', '⌓'),
+        _Utils_Tuple2('prop', '∝'),
+        _Utils_Tuple2('Proportional', '∝'),
+        _Utils_Tuple2('Proportion', '∷'),
+        _Utils_Tuple2('propto', '∝'),
+        _Utils_Tuple2('prsim', '≾'),
+        _Utils_Tuple2('prurel', '⊰'),
+        _Utils_Tuple2('Pscr', '\uD835\uDCAB'),
+        _Utils_Tuple2('pscr', '\uD835\uDCC5'),
+        _Utils_Tuple2('Psi', 'Ψ'),
+        _Utils_Tuple2('psi', 'ψ'),
+        _Utils_Tuple2('puncsp', '\u2008'),
+        _Utils_Tuple2('Qfr', '\uD835\uDD14'),
+        _Utils_Tuple2('qfr', '\uD835\uDD2E'),
+        _Utils_Tuple2('qint', '⨌'),
+        _Utils_Tuple2('qopf', '\uD835\uDD62'),
+        _Utils_Tuple2('Qopf', 'ℚ'),
+        _Utils_Tuple2('qprime', '⁗'),
+        _Utils_Tuple2('Qscr', '\uD835\uDCAC'),
+        _Utils_Tuple2('qscr', '\uD835\uDCC6'),
+        _Utils_Tuple2('quaternions', 'ℍ'),
+        _Utils_Tuple2('quatint', '⨖'),
+        _Utils_Tuple2('quest', '?'),
+        _Utils_Tuple2('questeq', '≟'),
+        _Utils_Tuple2('quot', '\"'),
+        _Utils_Tuple2('QUOT', '\"'),
+        _Utils_Tuple2('rAarr', '⇛'),
+        _Utils_Tuple2('race', '∽̱'),
+        _Utils_Tuple2('Racute', 'Ŕ'),
+        _Utils_Tuple2('racute', 'ŕ'),
+        _Utils_Tuple2('radic', '√'),
+        _Utils_Tuple2('raemptyv', '⦳'),
+        _Utils_Tuple2('rang', '⟩'),
+        _Utils_Tuple2('Rang', '⟫'),
+        _Utils_Tuple2('rangd', '⦒'),
+        _Utils_Tuple2('range', '⦥'),
+        _Utils_Tuple2('rangle', '⟩'),
+        _Utils_Tuple2('raquo', '»'),
+        _Utils_Tuple2('rarrap', '⥵'),
+        _Utils_Tuple2('rarrb', '⇥'),
+        _Utils_Tuple2('rarrbfs', '⤠'),
+        _Utils_Tuple2('rarrc', '⤳'),
+        _Utils_Tuple2('rarr', '→'),
+        _Utils_Tuple2('Rarr', '↠'),
+        _Utils_Tuple2('rArr', '⇒'),
+        _Utils_Tuple2('rarrfs', '⤞'),
+        _Utils_Tuple2('rarrhk', '↪'),
+        _Utils_Tuple2('rarrlp', '↬'),
+        _Utils_Tuple2('rarrpl', '⥅'),
+        _Utils_Tuple2('rarrsim', '⥴'),
+        _Utils_Tuple2('Rarrtl', '⤖'),
+        _Utils_Tuple2('rarrtl', '↣'),
+        _Utils_Tuple2('rarrw', '↝'),
+        _Utils_Tuple2('ratail', '⤚'),
+        _Utils_Tuple2('rAtail', '⤜'),
+        _Utils_Tuple2('ratio', '∶'),
+        _Utils_Tuple2('rationals', 'ℚ'),
+        _Utils_Tuple2('rbarr', '⤍'),
+        _Utils_Tuple2('rBarr', '⤏'),
+        _Utils_Tuple2('RBarr', '⤐'),
+        _Utils_Tuple2('rbbrk', '❳'),
+        _Utils_Tuple2('rbrace', '}'),
+        _Utils_Tuple2('rbrack', ']'),
+        _Utils_Tuple2('rbrke', '⦌'),
+        _Utils_Tuple2('rbrksld', '⦎'),
+        _Utils_Tuple2('rbrkslu', '⦐'),
+        _Utils_Tuple2('Rcaron', 'Ř'),
+        _Utils_Tuple2('rcaron', 'ř'),
+        _Utils_Tuple2('Rcedil', 'Ŗ'),
+        _Utils_Tuple2('rcedil', 'ŗ'),
+        _Utils_Tuple2('rceil', '⌉'),
+        _Utils_Tuple2('rcub', '}'),
+        _Utils_Tuple2('Rcy', 'Р'),
+        _Utils_Tuple2('rcy', 'р'),
+        _Utils_Tuple2('rdca', '⤷'),
+        _Utils_Tuple2('rdldhar', '⥩'),
+        _Utils_Tuple2('rdquo', '”'),
+        _Utils_Tuple2('rdquor', '”'),
+        _Utils_Tuple2('rdsh', '↳'),
+        _Utils_Tuple2('real', 'ℜ'),
+        _Utils_Tuple2('realine', 'ℛ'),
+        _Utils_Tuple2('realpart', 'ℜ'),
+        _Utils_Tuple2('reals', 'ℝ'),
+        _Utils_Tuple2('Re', 'ℜ'),
+        _Utils_Tuple2('rect', '▭'),
+        _Utils_Tuple2('reg', '®'),
+        _Utils_Tuple2('REG', '®'),
+        _Utils_Tuple2('ReverseElement', '∋'),
+        _Utils_Tuple2('ReverseEquilibrium', '⇋'),
+        _Utils_Tuple2('ReverseUpEquilibrium', '⥯'),
+        _Utils_Tuple2('rfisht', '⥽'),
+        _Utils_Tuple2('rfloor', '⌋'),
+        _Utils_Tuple2('rfr', '\uD835\uDD2F'),
+        _Utils_Tuple2('Rfr', 'ℜ'),
+        _Utils_Tuple2('rHar', '⥤'),
+        _Utils_Tuple2('rhard', '⇁'),
+        _Utils_Tuple2('rharu', '⇀'),
+        _Utils_Tuple2('rharul', '⥬'),
+        _Utils_Tuple2('Rho', 'Ρ'),
+        _Utils_Tuple2('rho', 'ρ'),
+        _Utils_Tuple2('rhov', 'ϱ'),
+        _Utils_Tuple2('RightAngleBracket', '⟩'),
+        _Utils_Tuple2('RightArrowBar', '⇥'),
+        _Utils_Tuple2('rightarrow', '→'),
+        _Utils_Tuple2('RightArrow', '→'),
+        _Utils_Tuple2('Rightarrow', '⇒'),
+        _Utils_Tuple2('RightArrowLeftArrow', '⇄'),
+        _Utils_Tuple2('rightarrowtail', '↣'),
+        _Utils_Tuple2('RightCeiling', '⌉'),
+        _Utils_Tuple2('RightDoubleBracket', '⟧'),
+        _Utils_Tuple2('RightDownTeeVector', '⥝'),
+        _Utils_Tuple2('RightDownVectorBar', '⥕'),
+        _Utils_Tuple2('RightDownVector', '⇂'),
+        _Utils_Tuple2('RightFloor', '⌋'),
+        _Utils_Tuple2('rightharpoondown', '⇁'),
+        _Utils_Tuple2('rightharpoonup', '⇀'),
+        _Utils_Tuple2('rightleftarrows', '⇄'),
+        _Utils_Tuple2('rightleftharpoons', '⇌'),
+        _Utils_Tuple2('rightrightarrows', '⇉'),
+        _Utils_Tuple2('rightsquigarrow', '↝'),
+        _Utils_Tuple2('RightTeeArrow', '↦'),
+        _Utils_Tuple2('RightTee', '⊢'),
+        _Utils_Tuple2('RightTeeVector', '⥛'),
+        _Utils_Tuple2('rightthreetimes', '⋌'),
+        _Utils_Tuple2('RightTriangleBar', '⧐'),
+        _Utils_Tuple2('RightTriangle', '⊳'),
+        _Utils_Tuple2('RightTriangleEqual', '⊵'),
+        _Utils_Tuple2('RightUpDownVector', '⥏'),
+        _Utils_Tuple2('RightUpTeeVector', '⥜'),
+        _Utils_Tuple2('RightUpVectorBar', '⥔'),
+        _Utils_Tuple2('RightUpVector', '↾'),
+        _Utils_Tuple2('RightVectorBar', '⥓'),
+        _Utils_Tuple2('RightVector', '⇀'),
+        _Utils_Tuple2('ring', '˚'),
+        _Utils_Tuple2('risingdotseq', '≓'),
+        _Utils_Tuple2('rlarr', '⇄'),
+        _Utils_Tuple2('rlhar', '⇌'),
+        _Utils_Tuple2('rlm', '\u200F'),
+        _Utils_Tuple2('rmoustache', '⎱'),
+        _Utils_Tuple2('rmoust', '⎱'),
+        _Utils_Tuple2('rnmid', '⫮'),
+        _Utils_Tuple2('roang', '⟭'),
+        _Utils_Tuple2('roarr', '⇾'),
+        _Utils_Tuple2('robrk', '⟧'),
+        _Utils_Tuple2('ropar', '⦆'),
+        _Utils_Tuple2('ropf', '\uD835\uDD63'),
+        _Utils_Tuple2('Ropf', 'ℝ'),
+        _Utils_Tuple2('roplus', '⨮'),
+        _Utils_Tuple2('rotimes', '⨵'),
+        _Utils_Tuple2('RoundImplies', '⥰'),
+        _Utils_Tuple2('rpar', ')'),
+        _Utils_Tuple2('rpargt', '⦔'),
+        _Utils_Tuple2('rppolint', '⨒'),
+        _Utils_Tuple2('rrarr', '⇉'),
+        _Utils_Tuple2('Rrightarrow', '⇛'),
+        _Utils_Tuple2('rsaquo', '›'),
+        _Utils_Tuple2('rscr', '\uD835\uDCC7'),
+        _Utils_Tuple2('Rscr', 'ℛ'),
+        _Utils_Tuple2('rsh', '↱'),
+        _Utils_Tuple2('Rsh', '↱'),
+        _Utils_Tuple2('rsqb', ']'),
+        _Utils_Tuple2('rsquo', '’'),
+        _Utils_Tuple2('rsquor', '’'),
+        _Utils_Tuple2('rthree', '⋌'),
+        _Utils_Tuple2('rtimes', '⋊'),
+        _Utils_Tuple2('rtri', '▹'),
+        _Utils_Tuple2('rtrie', '⊵'),
+        _Utils_Tuple2('rtrif', '▸'),
+        _Utils_Tuple2('rtriltri', '⧎'),
+        _Utils_Tuple2('RuleDelayed', '⧴'),
+        _Utils_Tuple2('ruluhar', '⥨'),
+        _Utils_Tuple2('rx', '℞'),
+        _Utils_Tuple2('Sacute', 'Ś'),
+        _Utils_Tuple2('sacute', 'ś'),
+        _Utils_Tuple2('sbquo', '‚'),
+        _Utils_Tuple2('scap', '⪸'),
+        _Utils_Tuple2('Scaron', 'Š'),
+        _Utils_Tuple2('scaron', 'š'),
+        _Utils_Tuple2('Sc', '⪼'),
+        _Utils_Tuple2('sc', '≻'),
+        _Utils_Tuple2('sccue', '≽'),
+        _Utils_Tuple2('sce', '⪰'),
+        _Utils_Tuple2('scE', '⪴'),
+        _Utils_Tuple2('Scedil', 'Ş'),
+        _Utils_Tuple2('scedil', 'ş'),
+        _Utils_Tuple2('Scirc', 'Ŝ'),
+        _Utils_Tuple2('scirc', 'ŝ'),
+        _Utils_Tuple2('scnap', '⪺'),
+        _Utils_Tuple2('scnE', '⪶'),
+        _Utils_Tuple2('scnsim', '⋩'),
+        _Utils_Tuple2('scpolint', '⨓'),
+        _Utils_Tuple2('scsim', '≿'),
+        _Utils_Tuple2('Scy', 'С'),
+        _Utils_Tuple2('scy', 'с'),
+        _Utils_Tuple2('sdotb', '⊡'),
+        _Utils_Tuple2('sdot', '⋅'),
+        _Utils_Tuple2('sdote', '⩦'),
+        _Utils_Tuple2('searhk', '⤥'),
+        _Utils_Tuple2('searr', '↘'),
+        _Utils_Tuple2('seArr', '⇘'),
+        _Utils_Tuple2('searrow', '↘'),
+        _Utils_Tuple2('sect', '§'),
+        _Utils_Tuple2('semi', ';'),
+        _Utils_Tuple2('seswar', '⤩'),
+        _Utils_Tuple2('setminus', '∖'),
+        _Utils_Tuple2('setmn', '∖'),
+        _Utils_Tuple2('sext', '✶'),
+        _Utils_Tuple2('Sfr', '\uD835\uDD16'),
+        _Utils_Tuple2('sfr', '\uD835\uDD30'),
+        _Utils_Tuple2('sfrown', '⌢'),
+        _Utils_Tuple2('sharp', '♯'),
+        _Utils_Tuple2('SHCHcy', 'Щ'),
+        _Utils_Tuple2('shchcy', 'щ'),
+        _Utils_Tuple2('SHcy', 'Ш'),
+        _Utils_Tuple2('shcy', 'ш'),
+        _Utils_Tuple2('ShortDownArrow', '↓'),
+        _Utils_Tuple2('ShortLeftArrow', '←'),
+        _Utils_Tuple2('shortmid', '∣'),
+        _Utils_Tuple2('shortparallel', '∥'),
+        _Utils_Tuple2('ShortRightArrow', '→'),
+        _Utils_Tuple2('ShortUpArrow', '↑'),
+        _Utils_Tuple2('shy', '\u00AD'),
+        _Utils_Tuple2('Sigma', 'Σ'),
+        _Utils_Tuple2('sigma', 'σ'),
+        _Utils_Tuple2('sigmaf', 'ς'),
+        _Utils_Tuple2('sigmav', 'ς'),
+        _Utils_Tuple2('sim', '∼'),
+        _Utils_Tuple2('simdot', '⩪'),
+        _Utils_Tuple2('sime', '≃'),
+        _Utils_Tuple2('simeq', '≃'),
+        _Utils_Tuple2('simg', '⪞'),
+        _Utils_Tuple2('simgE', '⪠'),
+        _Utils_Tuple2('siml', '⪝'),
+        _Utils_Tuple2('simlE', '⪟'),
+        _Utils_Tuple2('simne', '≆'),
+        _Utils_Tuple2('simplus', '⨤'),
+        _Utils_Tuple2('simrarr', '⥲'),
+        _Utils_Tuple2('slarr', '←'),
+        _Utils_Tuple2('SmallCircle', '∘'),
+        _Utils_Tuple2('smallsetminus', '∖'),
+        _Utils_Tuple2('smashp', '⨳'),
+        _Utils_Tuple2('smeparsl', '⧤'),
+        _Utils_Tuple2('smid', '∣'),
+        _Utils_Tuple2('smile', '⌣'),
+        _Utils_Tuple2('smt', '⪪'),
+        _Utils_Tuple2('smte', '⪬'),
+        _Utils_Tuple2('smtes', '⪬︀'),
+        _Utils_Tuple2('SOFTcy', 'Ь'),
+        _Utils_Tuple2('softcy', 'ь'),
+        _Utils_Tuple2('solbar', '⌿'),
+        _Utils_Tuple2('solb', '⧄'),
+        _Utils_Tuple2('sol', '/'),
+        _Utils_Tuple2('Sopf', '\uD835\uDD4A'),
+        _Utils_Tuple2('sopf', '\uD835\uDD64'),
+        _Utils_Tuple2('spades', '♠'),
+        _Utils_Tuple2('spadesuit', '♠'),
+        _Utils_Tuple2('spar', '∥'),
+        _Utils_Tuple2('sqcap', '⊓'),
+        _Utils_Tuple2('sqcaps', '⊓︀'),
+        _Utils_Tuple2('sqcup', '⊔'),
+        _Utils_Tuple2('sqcups', '⊔︀'),
+        _Utils_Tuple2('Sqrt', '√'),
+        _Utils_Tuple2('sqsub', '⊏'),
+        _Utils_Tuple2('sqsube', '⊑'),
+        _Utils_Tuple2('sqsubset', '⊏'),
+        _Utils_Tuple2('sqsubseteq', '⊑'),
+        _Utils_Tuple2('sqsup', '⊐'),
+        _Utils_Tuple2('sqsupe', '⊒'),
+        _Utils_Tuple2('sqsupset', '⊐'),
+        _Utils_Tuple2('sqsupseteq', '⊒'),
+        _Utils_Tuple2('square', '□'),
+        _Utils_Tuple2('Square', '□'),
+        _Utils_Tuple2('SquareIntersection', '⊓'),
+        _Utils_Tuple2('SquareSubset', '⊏'),
+        _Utils_Tuple2('SquareSubsetEqual', '⊑'),
+        _Utils_Tuple2('SquareSuperset', '⊐'),
+        _Utils_Tuple2('SquareSupersetEqual', '⊒'),
+        _Utils_Tuple2('SquareUnion', '⊔'),
+        _Utils_Tuple2('squarf', '▪'),
+        _Utils_Tuple2('squ', '□'),
+        _Utils_Tuple2('squf', '▪'),
+        _Utils_Tuple2('srarr', '→'),
+        _Utils_Tuple2('Sscr', '\uD835\uDCAE'),
+        _Utils_Tuple2('sscr', '\uD835\uDCC8'),
+        _Utils_Tuple2('ssetmn', '∖'),
+        _Utils_Tuple2('ssmile', '⌣'),
+        _Utils_Tuple2('sstarf', '⋆'),
+        _Utils_Tuple2('Star', '⋆'),
+        _Utils_Tuple2('star', '☆'),
+        _Utils_Tuple2('starf', '★'),
+        _Utils_Tuple2('straightepsilon', 'ϵ'),
+        _Utils_Tuple2('straightphi', 'ϕ'),
+        _Utils_Tuple2('strns', '¯'),
+        _Utils_Tuple2('sub', '⊂'),
+        _Utils_Tuple2('Sub', '⋐'),
+        _Utils_Tuple2('subdot', '⪽'),
+        _Utils_Tuple2('subE', '⫅'),
+        _Utils_Tuple2('sube', '⊆'),
+        _Utils_Tuple2('subedot', '⫃'),
+        _Utils_Tuple2('submult', '⫁'),
+        _Utils_Tuple2('subnE', '⫋'),
+        _Utils_Tuple2('subne', '⊊'),
+        _Utils_Tuple2('subplus', '⪿'),
+        _Utils_Tuple2('subrarr', '⥹'),
+        _Utils_Tuple2('subset', '⊂'),
+        _Utils_Tuple2('Subset', '⋐'),
+        _Utils_Tuple2('subseteq', '⊆'),
+        _Utils_Tuple2('subseteqq', '⫅'),
+        _Utils_Tuple2('SubsetEqual', '⊆'),
+        _Utils_Tuple2('subsetneq', '⊊'),
+        _Utils_Tuple2('subsetneqq', '⫋'),
+        _Utils_Tuple2('subsim', '⫇'),
+        _Utils_Tuple2('subsub', '⫕'),
+        _Utils_Tuple2('subsup', '⫓'),
+        _Utils_Tuple2('succapprox', '⪸'),
+        _Utils_Tuple2('succ', '≻'),
+        _Utils_Tuple2('succcurlyeq', '≽'),
+        _Utils_Tuple2('Succeeds', '≻'),
+        _Utils_Tuple2('SucceedsEqual', '⪰'),
+        _Utils_Tuple2('SucceedsSlantEqual', '≽'),
+        _Utils_Tuple2('SucceedsTilde', '≿'),
+        _Utils_Tuple2('succeq', '⪰'),
+        _Utils_Tuple2('succnapprox', '⪺'),
+        _Utils_Tuple2('succneqq', '⪶'),
+        _Utils_Tuple2('succnsim', '⋩'),
+        _Utils_Tuple2('succsim', '≿'),
+        _Utils_Tuple2('SuchThat', '∋'),
+        _Utils_Tuple2('sum', '∑'),
+        _Utils_Tuple2('Sum', '∑'),
+        _Utils_Tuple2('sung', '♪'),
+        _Utils_Tuple2('sup1', '¹'),
+        _Utils_Tuple2('sup2', '²'),
+        _Utils_Tuple2('sup3', '³'),
+        _Utils_Tuple2('sup', '⊃'),
+        _Utils_Tuple2('Sup', '⋑'),
+        _Utils_Tuple2('supdot', '⪾'),
+        _Utils_Tuple2('supdsub', '⫘'),
+        _Utils_Tuple2('supE', '⫆'),
+        _Utils_Tuple2('supe', '⊇'),
+        _Utils_Tuple2('supedot', '⫄'),
+        _Utils_Tuple2('Superset', '⊃'),
+        _Utils_Tuple2('SupersetEqual', '⊇'),
+        _Utils_Tuple2('suphsol', '⟉'),
+        _Utils_Tuple2('suphsub', '⫗'),
+        _Utils_Tuple2('suplarr', '⥻'),
+        _Utils_Tuple2('supmult', '⫂'),
+        _Utils_Tuple2('supnE', '⫌'),
+        _Utils_Tuple2('supne', '⊋'),
+        _Utils_Tuple2('supplus', '⫀'),
+        _Utils_Tuple2('supset', '⊃'),
+        _Utils_Tuple2('Supset', '⋑'),
+        _Utils_Tuple2('supseteq', '⊇'),
+        _Utils_Tuple2('supseteqq', '⫆'),
+        _Utils_Tuple2('supsetneq', '⊋'),
+        _Utils_Tuple2('supsetneqq', '⫌'),
+        _Utils_Tuple2('supsim', '⫈'),
+        _Utils_Tuple2('supsub', '⫔'),
+        _Utils_Tuple2('supsup', '⫖'),
+        _Utils_Tuple2('swarhk', '⤦'),
+        _Utils_Tuple2('swarr', '↙'),
+        _Utils_Tuple2('swArr', '⇙'),
+        _Utils_Tuple2('swarrow', '↙'),
+        _Utils_Tuple2('swnwar', '⤪'),
+        _Utils_Tuple2('szlig', 'ß'),
+        _Utils_Tuple2('Tab', '\t'),
+        _Utils_Tuple2('target', '⌖'),
+        _Utils_Tuple2('Tau', 'Τ'),
+        _Utils_Tuple2('tau', 'τ'),
+        _Utils_Tuple2('tbrk', '⎴'),
+        _Utils_Tuple2('Tcaron', 'Ť'),
+        _Utils_Tuple2('tcaron', 'ť'),
+        _Utils_Tuple2('Tcedil', 'Ţ'),
+        _Utils_Tuple2('tcedil', 'ţ'),
+        _Utils_Tuple2('Tcy', 'Т'),
+        _Utils_Tuple2('tcy', 'т'),
+        _Utils_Tuple2('tdot', '⃛'),
+        _Utils_Tuple2('telrec', '⌕'),
+        _Utils_Tuple2('Tfr', '\uD835\uDD17'),
+        _Utils_Tuple2('tfr', '\uD835\uDD31'),
+        _Utils_Tuple2('there4', '∴'),
+        _Utils_Tuple2('therefore', '∴'),
+        _Utils_Tuple2('Therefore', '∴'),
+        _Utils_Tuple2('Theta', 'Θ'),
+        _Utils_Tuple2('theta', 'θ'),
+        _Utils_Tuple2('thetasym', 'ϑ'),
+        _Utils_Tuple2('thetav', 'ϑ'),
+        _Utils_Tuple2('thickapprox', '≈'),
+        _Utils_Tuple2('thicksim', '∼'),
+        _Utils_Tuple2('ThickSpace', '\u205F\u200A'),
+        _Utils_Tuple2('ThinSpace', '\u2009'),
+        _Utils_Tuple2('thinsp', '\u2009'),
+        _Utils_Tuple2('thkap', '≈'),
+        _Utils_Tuple2('thksim', '∼'),
+        _Utils_Tuple2('THORN', 'Þ'),
+        _Utils_Tuple2('thorn', 'þ'),
+        _Utils_Tuple2('tilde', '˜'),
+        _Utils_Tuple2('Tilde', '∼'),
+        _Utils_Tuple2('TildeEqual', '≃'),
+        _Utils_Tuple2('TildeFullEqual', '≅'),
+        _Utils_Tuple2('TildeTilde', '≈'),
+        _Utils_Tuple2('timesbar', '⨱'),
+        _Utils_Tuple2('timesb', '⊠'),
+        _Utils_Tuple2('times', '×'),
+        _Utils_Tuple2('timesd', '⨰'),
+        _Utils_Tuple2('tint', '∭'),
+        _Utils_Tuple2('toea', '⤨'),
+        _Utils_Tuple2('topbot', '⌶'),
+        _Utils_Tuple2('topcir', '⫱'),
+        _Utils_Tuple2('top', '⊤'),
+        _Utils_Tuple2('Topf', '\uD835\uDD4B'),
+        _Utils_Tuple2('topf', '\uD835\uDD65'),
+        _Utils_Tuple2('topfork', '⫚'),
+        _Utils_Tuple2('tosa', '⤩'),
+        _Utils_Tuple2('tprime', '‴'),
+        _Utils_Tuple2('trade', '™'),
+        _Utils_Tuple2('TRADE', '™'),
+        _Utils_Tuple2('triangle', '▵'),
+        _Utils_Tuple2('triangledown', '▿'),
+        _Utils_Tuple2('triangleleft', '◃'),
+        _Utils_Tuple2('trianglelefteq', '⊴'),
+        _Utils_Tuple2('triangleq', '≜'),
+        _Utils_Tuple2('triangleright', '▹'),
+        _Utils_Tuple2('trianglerighteq', '⊵'),
+        _Utils_Tuple2('tridot', '◬'),
+        _Utils_Tuple2('trie', '≜'),
+        _Utils_Tuple2('triminus', '⨺'),
+        _Utils_Tuple2('TripleDot', '⃛'),
+        _Utils_Tuple2('triplus', '⨹'),
+        _Utils_Tuple2('trisb', '⧍'),
+        _Utils_Tuple2('tritime', '⨻'),
+        _Utils_Tuple2('trpezium', '⏢'),
+        _Utils_Tuple2('Tscr', '\uD835\uDCAF'),
+        _Utils_Tuple2('tscr', '\uD835\uDCC9'),
+        _Utils_Tuple2('TScy', 'Ц'),
+        _Utils_Tuple2('tscy', 'ц'),
+        _Utils_Tuple2('TSHcy', 'Ћ'),
+        _Utils_Tuple2('tshcy', 'ћ'),
+        _Utils_Tuple2('Tstrok', 'Ŧ'),
+        _Utils_Tuple2('tstrok', 'ŧ'),
+        _Utils_Tuple2('twixt', '≬'),
+        _Utils_Tuple2('twoheadleftarrow', '↞'),
+        _Utils_Tuple2('twoheadrightarrow', '↠'),
+        _Utils_Tuple2('Uacute', 'Ú'),
+        _Utils_Tuple2('uacute', 'ú'),
+        _Utils_Tuple2('uarr', '↑'),
+        _Utils_Tuple2('Uarr', '↟'),
+        _Utils_Tuple2('uArr', '⇑'),
+        _Utils_Tuple2('Uarrocir', '⥉'),
+        _Utils_Tuple2('Ubrcy', 'Ў'),
+        _Utils_Tuple2('ubrcy', 'ў'),
+        _Utils_Tuple2('Ubreve', 'Ŭ'),
+        _Utils_Tuple2('ubreve', 'ŭ'),
+        _Utils_Tuple2('Ucirc', 'Û'),
+        _Utils_Tuple2('ucirc', 'û'),
+        _Utils_Tuple2('Ucy', 'У'),
+        _Utils_Tuple2('ucy', 'у'),
+        _Utils_Tuple2('udarr', '⇅'),
+        _Utils_Tuple2('Udblac', 'Ű'),
+        _Utils_Tuple2('udblac', 'ű'),
+        _Utils_Tuple2('udhar', '⥮'),
+        _Utils_Tuple2('ufisht', '⥾'),
+        _Utils_Tuple2('Ufr', '\uD835\uDD18'),
+        _Utils_Tuple2('ufr', '\uD835\uDD32'),
+        _Utils_Tuple2('Ugrave', 'Ù'),
+        _Utils_Tuple2('ugrave', 'ù'),
+        _Utils_Tuple2('uHar', '⥣'),
+        _Utils_Tuple2('uharl', '↿'),
+        _Utils_Tuple2('uharr', '↾'),
+        _Utils_Tuple2('uhblk', '▀'),
+        _Utils_Tuple2('ulcorn', '⌜'),
+        _Utils_Tuple2('ulcorner', '⌜'),
+        _Utils_Tuple2('ulcrop', '⌏'),
+        _Utils_Tuple2('ultri', '◸'),
+        _Utils_Tuple2('Umacr', 'Ū'),
+        _Utils_Tuple2('umacr', 'ū'),
+        _Utils_Tuple2('uml', '¨'),
+        _Utils_Tuple2('UnderBar', '_'),
+        _Utils_Tuple2('UnderBrace', '⏟'),
+        _Utils_Tuple2('UnderBracket', '⎵'),
+        _Utils_Tuple2('UnderParenthesis', '⏝'),
+        _Utils_Tuple2('Union', '⋃'),
+        _Utils_Tuple2('UnionPlus', '⊎'),
+        _Utils_Tuple2('Uogon', 'Ų'),
+        _Utils_Tuple2('uogon', 'ų'),
+        _Utils_Tuple2('Uopf', '\uD835\uDD4C'),
+        _Utils_Tuple2('uopf', '\uD835\uDD66'),
+        _Utils_Tuple2('UpArrowBar', '⤒'),
+        _Utils_Tuple2('uparrow', '↑'),
+        _Utils_Tuple2('UpArrow', '↑'),
+        _Utils_Tuple2('Uparrow', '⇑'),
+        _Utils_Tuple2('UpArrowDownArrow', '⇅'),
+        _Utils_Tuple2('updownarrow', '↕'),
+        _Utils_Tuple2('UpDownArrow', '↕'),
+        _Utils_Tuple2('Updownarrow', '⇕'),
+        _Utils_Tuple2('UpEquilibrium', '⥮'),
+        _Utils_Tuple2('upharpoonleft', '↿'),
+        _Utils_Tuple2('upharpoonright', '↾'),
+        _Utils_Tuple2('uplus', '⊎'),
+        _Utils_Tuple2('UpperLeftArrow', '↖'),
+        _Utils_Tuple2('UpperRightArrow', '↗'),
+        _Utils_Tuple2('upsi', 'υ'),
+        _Utils_Tuple2('Upsi', 'ϒ'),
+        _Utils_Tuple2('upsih', 'ϒ'),
+        _Utils_Tuple2('Upsilon', 'Υ'),
+        _Utils_Tuple2('upsilon', 'υ'),
+        _Utils_Tuple2('UpTeeArrow', '↥'),
+        _Utils_Tuple2('UpTee', '⊥'),
+        _Utils_Tuple2('upuparrows', '⇈'),
+        _Utils_Tuple2('urcorn', '⌝'),
+        _Utils_Tuple2('urcorner', '⌝'),
+        _Utils_Tuple2('urcrop', '⌎'),
+        _Utils_Tuple2('Uring', 'Ů'),
+        _Utils_Tuple2('uring', 'ů'),
+        _Utils_Tuple2('urtri', '◹'),
+        _Utils_Tuple2('Uscr', '\uD835\uDCB0'),
+        _Utils_Tuple2('uscr', '\uD835\uDCCA'),
+        _Utils_Tuple2('utdot', '⋰'),
+        _Utils_Tuple2('Utilde', 'Ũ'),
+        _Utils_Tuple2('utilde', 'ũ'),
+        _Utils_Tuple2('utri', '▵'),
+        _Utils_Tuple2('utrif', '▴'),
+        _Utils_Tuple2('uuarr', '⇈'),
+        _Utils_Tuple2('Uuml', 'Ü'),
+        _Utils_Tuple2('uuml', 'ü'),
+        _Utils_Tuple2('uwangle', '⦧'),
+        _Utils_Tuple2('vangrt', '⦜'),
+        _Utils_Tuple2('varepsilon', 'ϵ'),
+        _Utils_Tuple2('varkappa', 'ϰ'),
+        _Utils_Tuple2('varnothing', '∅'),
+        _Utils_Tuple2('varphi', 'ϕ'),
+        _Utils_Tuple2('varpi', 'ϖ'),
+        _Utils_Tuple2('varpropto', '∝'),
+        _Utils_Tuple2('varr', '↕'),
+        _Utils_Tuple2('vArr', '⇕'),
+        _Utils_Tuple2('varrho', 'ϱ'),
+        _Utils_Tuple2('varsigma', 'ς'),
+        _Utils_Tuple2('varsubsetneq', '⊊︀'),
+        _Utils_Tuple2('varsubsetneqq', '⫋︀'),
+        _Utils_Tuple2('varsupsetneq', '⊋︀'),
+        _Utils_Tuple2('varsupsetneqq', '⫌︀'),
+        _Utils_Tuple2('vartheta', 'ϑ'),
+        _Utils_Tuple2('vartriangleleft', '⊲'),
+        _Utils_Tuple2('vartriangleright', '⊳'),
+        _Utils_Tuple2('vBar', '⫨'),
+        _Utils_Tuple2('Vbar', '⫫'),
+        _Utils_Tuple2('vBarv', '⫩'),
+        _Utils_Tuple2('Vcy', 'В'),
+        _Utils_Tuple2('vcy', 'в'),
+        _Utils_Tuple2('vdash', '⊢'),
+        _Utils_Tuple2('vDash', '⊨'),
+        _Utils_Tuple2('Vdash', '⊩'),
+        _Utils_Tuple2('VDash', '⊫'),
+        _Utils_Tuple2('Vdashl', '⫦'),
+        _Utils_Tuple2('veebar', '⊻'),
+        _Utils_Tuple2('vee', '∨'),
+        _Utils_Tuple2('Vee', '⋁'),
+        _Utils_Tuple2('veeeq', '≚'),
+        _Utils_Tuple2('vellip', '⋮'),
+        _Utils_Tuple2('verbar', '|'),
+        _Utils_Tuple2('Verbar', '‖'),
+        _Utils_Tuple2('vert', '|'),
+        _Utils_Tuple2('Vert', '‖'),
+        _Utils_Tuple2('VerticalBar', '∣'),
+        _Utils_Tuple2('VerticalLine', '|'),
+        _Utils_Tuple2('VerticalSeparator', '❘'),
+        _Utils_Tuple2('VerticalTilde', '≀'),
+        _Utils_Tuple2('VeryThinSpace', '\u200A'),
+        _Utils_Tuple2('Vfr', '\uD835\uDD19'),
+        _Utils_Tuple2('vfr', '\uD835\uDD33'),
+        _Utils_Tuple2('vltri', '⊲'),
+        _Utils_Tuple2('vnsub', '⊂⃒'),
+        _Utils_Tuple2('vnsup', '⊃⃒'),
+        _Utils_Tuple2('Vopf', '\uD835\uDD4D'),
+        _Utils_Tuple2('vopf', '\uD835\uDD67'),
+        _Utils_Tuple2('vprop', '∝'),
+        _Utils_Tuple2('vrtri', '⊳'),
+        _Utils_Tuple2('Vscr', '\uD835\uDCB1'),
+        _Utils_Tuple2('vscr', '\uD835\uDCCB'),
+        _Utils_Tuple2('vsubnE', '⫋︀'),
+        _Utils_Tuple2('vsubne', '⊊︀'),
+        _Utils_Tuple2('vsupnE', '⫌︀'),
+        _Utils_Tuple2('vsupne', '⊋︀'),
+        _Utils_Tuple2('Vvdash', '⊪'),
+        _Utils_Tuple2('vzigzag', '⦚'),
+        _Utils_Tuple2('Wcirc', 'Ŵ'),
+        _Utils_Tuple2('wcirc', 'ŵ'),
+        _Utils_Tuple2('wedbar', '⩟'),
+        _Utils_Tuple2('wedge', '∧'),
+        _Utils_Tuple2('Wedge', '⋀'),
+        _Utils_Tuple2('wedgeq', '≙'),
+        _Utils_Tuple2('weierp', '℘'),
+        _Utils_Tuple2('Wfr', '\uD835\uDD1A'),
+        _Utils_Tuple2('wfr', '\uD835\uDD34'),
+        _Utils_Tuple2('Wopf', '\uD835\uDD4E'),
+        _Utils_Tuple2('wopf', '\uD835\uDD68'),
+        _Utils_Tuple2('wp', '℘'),
+        _Utils_Tuple2('wr', '≀'),
+        _Utils_Tuple2('wreath', '≀'),
+        _Utils_Tuple2('Wscr', '\uD835\uDCB2'),
+        _Utils_Tuple2('wscr', '\uD835\uDCCC'),
+        _Utils_Tuple2('xcap', '⋂'),
+        _Utils_Tuple2('xcirc', '◯'),
+        _Utils_Tuple2('xcup', '⋃'),
+        _Utils_Tuple2('xdtri', '▽'),
+        _Utils_Tuple2('Xfr', '\uD835\uDD1B'),
+        _Utils_Tuple2('xfr', '\uD835\uDD35'),
+        _Utils_Tuple2('xharr', '⟷'),
+        _Utils_Tuple2('xhArr', '⟺'),
+        _Utils_Tuple2('Xi', 'Ξ'),
+        _Utils_Tuple2('xi', 'ξ'),
+        _Utils_Tuple2('xlarr', '⟵'),
+        _Utils_Tuple2('xlArr', '⟸'),
+        _Utils_Tuple2('xmap', '⟼'),
+        _Utils_Tuple2('xnis', '⋻'),
+        _Utils_Tuple2('xodot', '⨀'),
+        _Utils_Tuple2('Xopf', '\uD835\uDD4F'),
+        _Utils_Tuple2('xopf', '\uD835\uDD69'),
+        _Utils_Tuple2('xoplus', '⨁'),
+        _Utils_Tuple2('xotime', '⨂'),
+        _Utils_Tuple2('xrarr', '⟶'),
+        _Utils_Tuple2('xrArr', '⟹'),
+        _Utils_Tuple2('Xscr', '\uD835\uDCB3'),
+        _Utils_Tuple2('xscr', '\uD835\uDCCD'),
+        _Utils_Tuple2('xsqcup', '⨆'),
+        _Utils_Tuple2('xuplus', '⨄'),
+        _Utils_Tuple2('xutri', '△'),
+        _Utils_Tuple2('xvee', '⋁'),
+        _Utils_Tuple2('xwedge', '⋀'),
+        _Utils_Tuple2('Yacute', 'Ý'),
+        _Utils_Tuple2('yacute', 'ý'),
+        _Utils_Tuple2('YAcy', 'Я'),
+        _Utils_Tuple2('yacy', 'я'),
+        _Utils_Tuple2('Ycirc', 'Ŷ'),
+        _Utils_Tuple2('ycirc', 'ŷ'),
+        _Utils_Tuple2('Ycy', 'Ы'),
+        _Utils_Tuple2('ycy', 'ы'),
+        _Utils_Tuple2('yen', '¥'),
+        _Utils_Tuple2('Yfr', '\uD835\uDD1C'),
+        _Utils_Tuple2('yfr', '\uD835\uDD36'),
+        _Utils_Tuple2('YIcy', 'Ї'),
+        _Utils_Tuple2('yicy', 'ї'),
+        _Utils_Tuple2('Yopf', '\uD835\uDD50'),
+        _Utils_Tuple2('yopf', '\uD835\uDD6A'),
+        _Utils_Tuple2('Yscr', '\uD835\uDCB4'),
+        _Utils_Tuple2('yscr', '\uD835\uDCCE'),
+        _Utils_Tuple2('YUcy', 'Ю'),
+        _Utils_Tuple2('yucy', 'ю'),
+        _Utils_Tuple2('yuml', 'ÿ'),
+        _Utils_Tuple2('Yuml', 'Ÿ'),
+        _Utils_Tuple2('Zacute', 'Ź'),
+        _Utils_Tuple2('zacute', 'ź'),
+        _Utils_Tuple2('Zcaron', 'Ž'),
+        _Utils_Tuple2('zcaron', 'ž'),
+        _Utils_Tuple2('Zcy', 'З'),
+        _Utils_Tuple2('zcy', 'з'),
+        _Utils_Tuple2('Zdot', 'Ż'),
+        _Utils_Tuple2('zdot', 'ż'),
+        _Utils_Tuple2('zeetrf', 'ℨ'),
+        _Utils_Tuple2('ZeroWidthSpace', '\u200B'),
+        _Utils_Tuple2('Zeta', 'Ζ'),
+        _Utils_Tuple2('zeta', 'ζ'),
+        _Utils_Tuple2('zfr', '\uD835\uDD37'),
+        _Utils_Tuple2('Zfr', 'ℨ'),
+        _Utils_Tuple2('ZHcy', 'Ж'),
+        _Utils_Tuple2('zhcy', 'ж'),
+        _Utils_Tuple2('zigrarr', '⇝'),
+        _Utils_Tuple2('zopf', '\uD835\uDD6B'),
+        _Utils_Tuple2('Zopf', 'ℤ'),
+        _Utils_Tuple2('Zscr', '\uD835\uDCB5'),
+        _Utils_Tuple2('zscr', '\uD835\uDCCF'),
+        _Utils_Tuple2('zwj', '\u200D'),
+        _Utils_Tuple2('zwnj', '\u200C')
+    ]));
+    var $author$project$Lia$Markdown$HTML$Attributes$namedCharacterReference = A2($andre_dietrich$parser_combinators$Combine$map, function(reference) {
+        return A2($elm$core$Maybe$withDefault, '&' + (reference + ';'), A2($elm$core$Dict$get, reference, $author$project$Lia$Markdown$HTML$NamedCharacterReferences$dict));
+    }, $andre_dietrich$parser_combinators$Combine$regex('[a-zA-Z]+'));
+    var $elm$core$Char$fromCode = _Char_fromCode;
+    var $elm$core$Basics$pow = _Basics_pow;
+    var $rtfeldman$elm_hex$Hex$fromStringHelp = F3(function(position, chars, accumulated) {
+        fromStringHelp: while(true){
+            if (!chars.b) return $elm$core$Result$Ok(accumulated);
+            else {
+                var _char = chars.a;
+                var rest = chars.b;
+                switch(_char.valueOf()){
+                    case '0':
+                        var $temp$position = position - 1, $temp$chars = rest, $temp$accumulated = accumulated;
+                        position = $temp$position;
+                        chars = $temp$chars;
+                        accumulated = $temp$accumulated;
+                        continue fromStringHelp;
+                    case '1':
+                        var $temp$position = position - 1, $temp$chars = rest, $temp$accumulated = accumulated + A2($elm$core$Basics$pow, 16, position);
+                        position = $temp$position;
+                        chars = $temp$chars;
+                        accumulated = $temp$accumulated;
+                        continue fromStringHelp;
+                    case '2':
+                        var $temp$position = position - 1, $temp$chars = rest, $temp$accumulated = accumulated + 2 * A2($elm$core$Basics$pow, 16, position);
+                        position = $temp$position;
+                        chars = $temp$chars;
+                        accumulated = $temp$accumulated;
+                        continue fromStringHelp;
+                    case '3':
+                        var $temp$position = position - 1, $temp$chars = rest, $temp$accumulated = accumulated + 3 * A2($elm$core$Basics$pow, 16, position);
+                        position = $temp$position;
+                        chars = $temp$chars;
+                        accumulated = $temp$accumulated;
+                        continue fromStringHelp;
+                    case '4':
+                        var $temp$position = position - 1, $temp$chars = rest, $temp$accumulated = accumulated + 4 * A2($elm$core$Basics$pow, 16, position);
+                        position = $temp$position;
+                        chars = $temp$chars;
+                        accumulated = $temp$accumulated;
+                        continue fromStringHelp;
+                    case '5':
+                        var $temp$position = position - 1, $temp$chars = rest, $temp$accumulated = accumulated + 5 * A2($elm$core$Basics$pow, 16, position);
+                        position = $temp$position;
+                        chars = $temp$chars;
+                        accumulated = $temp$accumulated;
+                        continue fromStringHelp;
+                    case '6':
+                        var $temp$position = position - 1, $temp$chars = rest, $temp$accumulated = accumulated + 6 * A2($elm$core$Basics$pow, 16, position);
+                        position = $temp$position;
+                        chars = $temp$chars;
+                        accumulated = $temp$accumulated;
+                        continue fromStringHelp;
+                    case '7':
+                        var $temp$position = position - 1, $temp$chars = rest, $temp$accumulated = accumulated + 7 * A2($elm$core$Basics$pow, 16, position);
+                        position = $temp$position;
+                        chars = $temp$chars;
+                        accumulated = $temp$accumulated;
+                        continue fromStringHelp;
+                    case '8':
+                        var $temp$position = position - 1, $temp$chars = rest, $temp$accumulated = accumulated + 8 * A2($elm$core$Basics$pow, 16, position);
+                        position = $temp$position;
+                        chars = $temp$chars;
+                        accumulated = $temp$accumulated;
+                        continue fromStringHelp;
+                    case '9':
+                        var $temp$position = position - 1, $temp$chars = rest, $temp$accumulated = accumulated + 9 * A2($elm$core$Basics$pow, 16, position);
+                        position = $temp$position;
+                        chars = $temp$chars;
+                        accumulated = $temp$accumulated;
+                        continue fromStringHelp;
+                    case 'a':
+                        var $temp$position = position - 1, $temp$chars = rest, $temp$accumulated = accumulated + 10 * A2($elm$core$Basics$pow, 16, position);
+                        position = $temp$position;
+                        chars = $temp$chars;
+                        accumulated = $temp$accumulated;
+                        continue fromStringHelp;
+                    case 'b':
+                        var $temp$position = position - 1, $temp$chars = rest, $temp$accumulated = accumulated + 11 * A2($elm$core$Basics$pow, 16, position);
+                        position = $temp$position;
+                        chars = $temp$chars;
+                        accumulated = $temp$accumulated;
+                        continue fromStringHelp;
+                    case 'c':
+                        var $temp$position = position - 1, $temp$chars = rest, $temp$accumulated = accumulated + 12 * A2($elm$core$Basics$pow, 16, position);
+                        position = $temp$position;
+                        chars = $temp$chars;
+                        accumulated = $temp$accumulated;
+                        continue fromStringHelp;
+                    case 'd':
+                        var $temp$position = position - 1, $temp$chars = rest, $temp$accumulated = accumulated + 13 * A2($elm$core$Basics$pow, 16, position);
+                        position = $temp$position;
+                        chars = $temp$chars;
+                        accumulated = $temp$accumulated;
+                        continue fromStringHelp;
+                    case 'e':
+                        var $temp$position = position - 1, $temp$chars = rest, $temp$accumulated = accumulated + 14 * A2($elm$core$Basics$pow, 16, position);
+                        position = $temp$position;
+                        chars = $temp$chars;
+                        accumulated = $temp$accumulated;
+                        continue fromStringHelp;
+                    case 'f':
+                        var $temp$position = position - 1, $temp$chars = rest, $temp$accumulated = accumulated + 15 * A2($elm$core$Basics$pow, 16, position);
+                        position = $temp$position;
+                        chars = $temp$chars;
+                        accumulated = $temp$accumulated;
+                        continue fromStringHelp;
+                    default:
+                        var nonHex = _char;
+                        return $elm$core$Result$Err($elm$core$String$fromChar(nonHex) + ' is not a valid hexadecimal character.');
+                }
+            }
+        }
+    });
+    var $elm$core$String$isEmpty = function(string) {
+        return string === '';
+    };
+    var $elm$core$Result$mapError = F2(function(f, result) {
+        if (result.$ === 'Ok') {
+            var v = result.a;
+            return $elm$core$Result$Ok(v);
+        } else {
+            var e = result.a;
+            return $elm$core$Result$Err(f(e));
+        }
+    });
+    var $elm$core$List$tail = function(list) {
+        if (list.b) {
+            var x = list.a;
+            var xs = list.b;
+            return $elm$core$Maybe$Just(xs);
+        } else return $elm$core$Maybe$Nothing;
+    };
+    var $elm$core$String$foldr = _String_foldr;
+    var $elm$core$String$toList = function(string) {
+        return A3($elm$core$String$foldr, $elm$core$List$cons, _List_Nil, string);
+    };
+    var $rtfeldman$elm_hex$Hex$fromString = function(str) {
+        if ($elm$core$String$isEmpty(str)) return $elm$core$Result$Err('Empty strings are not valid hexadecimal strings.');
+        else {
+            var result = function() {
+                if (A2($elm$core$String$startsWith, '-', str)) {
+                    var list = A2($elm$core$Maybe$withDefault, _List_Nil, $elm$core$List$tail($elm$core$String$toList(str)));
+                    return A2($elm$core$Result$map, $elm$core$Basics$negate, A3($rtfeldman$elm_hex$Hex$fromStringHelp, $elm$core$List$length(list) - 1, list, 0));
+                } else return A3($rtfeldman$elm_hex$Hex$fromStringHelp, $elm$core$String$length(str) - 1, $elm$core$String$toList(str), 0);
+            }();
+            var formatError = function(err) {
+                return A2($elm$core$String$join, ' ', _List_fromArray([
+                    '\"' + (str + '\"'),
+                    'is not a valid hexadecimal string because',
+                    err
+                ]));
+            };
+            return A2($elm$core$Result$mapError, formatError, result);
+        }
+    };
+    var $author$project$Lia$Markdown$HTML$Attributes$hexadecimal = A2($andre_dietrich$parser_combinators$Combine$andThen, function(hex) {
+        var _v0 = $rtfeldman$elm_hex$Hex$fromString($elm$core$String$toLower(hex));
+        if (_v0.$ === 'Ok') {
+            var value = _v0.a;
+            return $andre_dietrich$parser_combinators$Combine$succeed(value);
+        } else {
+            var err = _v0.a;
+            return $andre_dietrich$parser_combinators$Combine$fail(err);
+        }
+    }, $andre_dietrich$parser_combinators$Combine$regex('[0-9a-fA-F]+'));
+    var $author$project$Lia$Markdown$HTML$Attributes$numericCharacterReference = function() {
+        var codePoint = $andre_dietrich$parser_combinators$Combine$choice(_List_fromArray([
+            A2($andre_dietrich$parser_combinators$Combine$keep, $author$project$Lia$Markdown$HTML$Attributes$hexadecimal, $andre_dietrich$parser_combinators$Combine$regex('(x|X)')),
+            A2($andre_dietrich$parser_combinators$Combine$keep, $andre_dietrich$parser_combinators$Combine$Num$int, $andre_dietrich$parser_combinators$Combine$regex('0*'))
+        ]));
+        return A2($andre_dietrich$parser_combinators$Combine$keep, A2($andre_dietrich$parser_combinators$Combine$map, A2($elm$core$Basics$composeR, $elm$core$Char$fromCode, $elm$core$String$fromChar), codePoint), $andre_dietrich$parser_combinators$Combine$string('#'));
+    }();
+    var $author$project$Lia$Markdown$HTML$Attributes$characterReference = A2($andre_dietrich$parser_combinators$Combine$keep, $andre_dietrich$parser_combinators$Combine$choice(_List_fromArray([
+        A2($andre_dietrich$parser_combinators$Combine$ignore, $andre_dietrich$parser_combinators$Combine$string(';'), $author$project$Lia$Markdown$HTML$Attributes$namedCharacterReference),
+        A2($andre_dietrich$parser_combinators$Combine$ignore, $andre_dietrich$parser_combinators$Combine$string(';'), $author$project$Lia$Markdown$HTML$Attributes$numericCharacterReference),
+        $andre_dietrich$parser_combinators$Combine$succeed('&')
+    ])), $andre_dietrich$parser_combinators$Combine$string('&'));
+    var $author$project$Lia$Markdown$HTML$Attributes$tagAttributeQuotedValue = function(quote) {
+        return A2($andre_dietrich$parser_combinators$Combine$ignore, $andre_dietrich$parser_combinators$Combine$string(quote), A2($andre_dietrich$parser_combinators$Combine$keep, A2($andre_dietrich$parser_combinators$Combine$map, $elm$core$String$concat, $andre_dietrich$parser_combinators$Combine$many($andre_dietrich$parser_combinators$Combine$choice(_List_fromArray([
+            A2($andre_dietrich$parser_combinators$Combine$map, A2($elm$core$String$replace, '\\' + quote, quote), $andre_dietrich$parser_combinators$Combine$regex('([^' + (quote + (']*|\\\\' + (quote + '|\\\\)*'))))),
+            $author$project$Lia$Markdown$HTML$Attributes$characterReference
+        ])))), $andre_dietrich$parser_combinators$Combine$string(quote)));
+    };
+    var $author$project$Lia$Markdown$HTML$Attributes$tagAttributeUnquotedValue = A2($andre_dietrich$parser_combinators$Combine$map, $elm$core$String$concat, $andre_dietrich$parser_combinators$Combine$many1($andre_dietrich$parser_combinators$Combine$choice(_List_fromArray([
+        $andre_dietrich$parser_combinators$Combine$regex('[^\\s\"\'=<>`&]+'),
+        $author$project$Lia$Markdown$HTML$Attributes$characterReference
+    ]))));
+    var $author$project$Lia$Markdown$HTML$Attributes$tagAttributeValue = A2($andre_dietrich$parser_combinators$Combine$or, A2($andre_dietrich$parser_combinators$Combine$keep, $andre_dietrich$parser_combinators$Combine$choice(_List_fromArray([
+        $author$project$Lia$Markdown$HTML$Attributes$tagAttributeUnquotedValue,
+        $author$project$Lia$Markdown$HTML$Attributes$tagAttributeQuotedValue('\"'),
+        $author$project$Lia$Markdown$HTML$Attributes$tagAttributeQuotedValue('\'')
+    ])), A2($andre_dietrich$parser_combinators$Combine$ignore, $andre_dietrich$parser_combinators$Combine$whitespace, $andre_dietrich$parser_combinators$Combine$string('='))), $andre_dietrich$parser_combinators$Combine$succeed(''));
+    var $author$project$Lia$Markdown$HTML$Attributes$parse = function(url) {
+        return A2($andre_dietrich$parser_combinators$Combine$map, $author$project$Lia$Markdown$HTML$Attributes$base(url), A2($andre_dietrich$parser_combinators$Combine$ignore, $andre_dietrich$parser_combinators$Combine$whitespace, A2($andre_dietrich$parser_combinators$Combine$andMap, $author$project$Lia$Markdown$HTML$Attributes$tagAttributeValue, A2($andre_dietrich$parser_combinators$Combine$ignore, $andre_dietrich$parser_combinators$Combine$whitespace, A2($andre_dietrich$parser_combinators$Combine$map, A2($elm$core$Basics$composeR, $elm$core$String$toLower, $elm$core$Tuple$pair), $andre_dietrich$parser_combinators$Combine$regex('[A-Za-z0-9_\\-]+'))))));
+    };
+    var $author$project$Lia$Parser$Helper$spaces = $andre_dietrich$parser_combinators$Combine$regex('[\t ]*');
+    var $author$project$Lia$Markdown$Inline$Parser$annotations = function() {
+        var attr = A2($andre_dietrich$parser_combinators$Combine$andThen, $author$project$Lia$Markdown$HTML$Attributes$parse, $andre_dietrich$parser_combinators$Combine$withState(A2($elm$core$Basics$composeR, function($) {
+            return $.defines;
+        }, A2($elm$core$Basics$composeR, function($) {
+            return $.base;
+        }, $andre_dietrich$parser_combinators$Combine$succeed))));
+        return A2($andre_dietrich$parser_combinators$Combine$ignore, $author$project$Lia$Markdown$Inline$Parser$comments, A2($andre_dietrich$parser_combinators$Combine$map, $elm$core$Maybe$withDefault(_List_Nil), $andre_dietrich$parser_combinators$Combine$maybe(A2($andre_dietrich$parser_combinators$Combine$keep, $author$project$Lia$Markdown$Inline$Parser$comment(attr), $author$project$Lia$Parser$Helper$spaces))));
+    }();
+    var $author$project$Lia$Markdown$Inline$Types$Symbol = F2(function(a, b) {
+        return {
+            $: 'Symbol',
+            a: a,
+            b: b
+        };
+    });
+    var $author$project$Lia$Markdown$Inline$Parser$Symbol$arrows = A2($andre_dietrich$parser_combinators$Combine$map, $author$project$Lia$Markdown$Inline$Types$Symbol, $andre_dietrich$parser_combinators$Combine$choice(_List_fromArray([
+        A2($andre_dietrich$parser_combinators$Combine$onsuccess, '⟷', $andre_dietrich$parser_combinators$Combine$string('<-->')),
+        A2($andre_dietrich$parser_combinators$Combine$onsuccess, '⟵', $andre_dietrich$parser_combinators$Combine$string('<--')),
+        A2($andre_dietrich$parser_combinators$Combine$onsuccess, '⟶', $andre_dietrich$parser_combinators$Combine$string('-->')),
+        A2($andre_dietrich$parser_combinators$Combine$onsuccess, '↞', $andre_dietrich$parser_combinators$Combine$string('<<-')),
+        A2($andre_dietrich$parser_combinators$Combine$onsuccess, '↠', $andre_dietrich$parser_combinators$Combine$string('->>')),
+        A2($andre_dietrich$parser_combinators$Combine$onsuccess, '↔', $andre_dietrich$parser_combinators$Combine$string('<->')),
+        A2($andre_dietrich$parser_combinators$Combine$onsuccess, '↣', $andre_dietrich$parser_combinators$Combine$string('>->')),
+        A2($andre_dietrich$parser_combinators$Combine$onsuccess, '↢', $andre_dietrich$parser_combinators$Combine$string('<-<')),
+        A2($andre_dietrich$parser_combinators$Combine$onsuccess, '→', $andre_dietrich$parser_combinators$Combine$string('->')),
+        A2($andre_dietrich$parser_combinators$Combine$onsuccess, '←', $andre_dietrich$parser_combinators$Combine$string('<-')),
+        A2($andre_dietrich$parser_combinators$Combine$onsuccess, '↜', $andre_dietrich$parser_combinators$Combine$string('<~')),
+        A2($andre_dietrich$parser_combinators$Combine$onsuccess, '↝', $andre_dietrich$parser_combinators$Combine$string('~>')),
+        A2($andre_dietrich$parser_combinators$Combine$onsuccess, '⟺', $andre_dietrich$parser_combinators$Combine$string('<==>')),
+        A2($andre_dietrich$parser_combinators$Combine$onsuccess, '⟹', $andre_dietrich$parser_combinators$Combine$string('==>')),
+        A2($andre_dietrich$parser_combinators$Combine$onsuccess, '⟸', $andre_dietrich$parser_combinators$Combine$string('<==')),
+        A2($andre_dietrich$parser_combinators$Combine$onsuccess, '⇔', $andre_dietrich$parser_combinators$Combine$string('<=>')),
+        A2($andre_dietrich$parser_combinators$Combine$onsuccess, '⇒', $andre_dietrich$parser_combinators$Combine$string('=>')),
+        A2($andre_dietrich$parser_combinators$Combine$onsuccess, '⇐', $andre_dietrich$parser_combinators$Combine$string('<='))
+    ])));
+    var $elm$core$Maybe$andThen = F2(function(callback, maybeValue) {
+        if (maybeValue.$ === 'Just') {
+            var value = maybeValue.a;
+            return callback(value);
+        } else return $elm$core$Maybe$Nothing;
+    });
+    var $elm$core$List$filter = F2(function(isGood, list) {
+        return A3($elm$core$List$foldr, F2(function(x, xs) {
+            return isGood(x) ? A2($elm$core$List$cons, x, xs) : xs;
+        }), _List_Nil, list);
+    });
+    var $elm$core$List$maybeCons = F3(function(f, mx, xs) {
+        var _v0 = f(mx);
+        if (_v0.$ === 'Just') {
+            var x = _v0.a;
+            return A2($elm$core$List$cons, x, xs);
+        } else return xs;
+    });
+    var $elm$core$List$filterMap = F2(function(f, xs) {
+        return A3($elm$core$List$foldr, $elm$core$List$maybeCons(f), _List_Nil, xs);
+    });
+    var $author$project$Lia$Markdown$Inline$Multimedia$fragment = F2(function(url, params) {
+        return _Utils_ap(params, A2($elm$core$Maybe$withDefault, '', A2($elm$core$Maybe$map, $elm$core$Basics$append('#'), A2($elm$core$Maybe$andThen, $elm$core$List$head, $elm$core$List$tail(A2($elm$core$String$split, '#', url))))));
+    });
+    var $author$project$Lia$Markdown$Inline$Multimedia$preserve = function(url) {
+        var params = A2($elm$core$Maybe$withDefault, _List_Nil, A2($elm$core$Maybe$map, $elm$core$String$split('&'), A2($elm$core$Maybe$andThen, $elm$core$List$head, A2($elm$core$Maybe$map, $elm$core$String$split('#'), A2($elm$core$Maybe$andThen, $elm$core$List$head, $elm$core$List$tail(A2($elm$core$String$split, '?', url)))))));
+        return A2($elm$core$Basics$composeR, $elm$core$List$filterMap(function(w) {
+            var _v0 = A2($elm$core$List$filter, $elm$core$String$startsWith(w), params);
+            if (!_v0.b) return $elm$core$Maybe$Nothing;
+            else {
+                var p = _v0.a;
+                return $elm$core$Maybe$Just(p);
+            }
+        }), A2($elm$core$Basics$composeR, $elm$core$List$intersperse('&'), A2($elm$core$Basics$composeR, $elm$core$String$concat, A2($elm$core$Basics$composeR, $elm$core$Basics$append('?'), A2($elm$core$Basics$composeR, $author$project$Lia$Markdown$Inline$Multimedia$fragment(url), function(parameters) {
+            if (parameters === '?') return '';
+            else return parameters;
+        })))));
+    };
+    var $author$project$Lia$Markdown$Inline$Multimedia$youTubeRules = _List_fromArray([
+        'autoplay',
+        'cc_lang_pref',
+        'color',
+        'disablekb',
+        'enablejsapi',
+        'end',
+        'fs',
+        'hl',
+        'iv_load_policy',
+        'list',
+        'listType',
+        'loop',
+        'modestbranding',
+        'mute',
+        'origin',
+        'playlist',
+        'playsinline',
+        'rel',
+        'start',
+        'widget_referrer'
+    ]);
+    var $author$project$Lia$Markdown$Inline$Multimedia$audio = $author$project$Lia$Parser$PatReplace$replace(_List_fromArray([
+        {
+            by: F2(function(_v0, w) {
+                return 'https://w.soundcloud.com/player/?url=https://soundcloud.com/' + w;
+            }),
+            pattern: 'https?:\\/\\/(?:w\\.|www\\.|)(?:soundcloud\\.com\\/)(?:(?:player\\/\\?url=https\\%3A\\/\\/api.soundcloud.com\\/tracks\\/)|)(((\\w|-)[^A-z]{7})|([A-Za-z0-9]+(?:[-_][A-Za-z0-9]+)*(?!\\/sets(?:\\/|$))(?:\\/[A-Za-z0-9]+(?:[-_][A-Za-z0-9]+)*){1,2}))'
+        },
+        {
+            by: F2(function(url, w) {
+                return 'https://www.youtube.com/embed/' + (w + A2($author$project$Lia$Markdown$Inline$Multimedia$preserve, url, $author$project$Lia$Markdown$Inline$Multimedia$youTubeRules));
+            }),
+            pattern: $author$project$Lia$Parser$PatReplace$root('music\\.(?:youtu\\.be/|youtube\\.com/(?:(?:watch)?\\?(?:.*&)?v(?:i)?=|(?:v|vi|user)/))([^\\?&\"\'<> #]+)')
+        }
+    ]));
+    var $author$project$Lia$Markdown$Inline$Types$Verbatim = F2(function(a, b) {
+        return {
+            $: 'Verbatim',
+            a: a,
+            b: b
+        };
+    });
+    var $author$project$Lia$Markdown$Inline$Parser$code = A2($andre_dietrich$parser_combinators$Combine$map, A2($elm$core$Basics$composeR, A2($elm$core$String$replace, '\\`', '`'), $author$project$Lia$Markdown$Inline$Types$Verbatim), A2($andre_dietrich$parser_combinators$Combine$ignore, $andre_dietrich$parser_combinators$Combine$string('`'), A2($andre_dietrich$parser_combinators$Combine$keep, $andre_dietrich$parser_combinators$Combine$regex('([^`\n\\\\]*|\\\\`|\\\\)+'), $andre_dietrich$parser_combinators$Combine$string('`'))));
+    var $author$project$Lia$Markdown$Inline$Types$combineHelper = F2(function(input, output) {
+        combineHelper: while(true){
+            var _v0 = _Utils_Tuple2(input, output);
+            if (!_v0.a.b) return $elm$core$List$reverse(output);
+            else if (_v0.a.a.$ === 'Chars' && !_v0.a.a.b.b && _v0.b.b && _v0.b.a.$ === 'Chars' && !_v0.b.a.b.b) {
+                var _v1 = _v0.a;
+                var _v2 = _v1.a;
+                var str1 = _v2.a;
+                var is = _v1.b;
+                var _v3 = _v0.b;
+                var _v4 = _v3.a;
+                var str2 = _v4.a;
+                var os = _v3.b;
+                var $temp$input = is, $temp$output = A2($elm$core$List$cons, A2($author$project$Lia$Markdown$Inline$Types$Chars, _Utils_ap(str2, str1), _List_Nil), os);
+                input = $temp$input;
+                output = $temp$output;
+                continue combineHelper;
+            } else {
+                var _v5 = _v0.a;
+                var i = _v5.a;
+                var is = _v5.b;
+                var $temp$input = is, $temp$output = A2($elm$core$List$cons, i, output);
+                input = $temp$input;
+                output = $temp$output;
+                continue combineHelper;
+            }
+        }
+    });
+    var $author$project$Lia$Markdown$Inline$Types$combine = function(list) {
+        return A2($author$project$Lia$Markdown$Inline$Types$combineHelper, list, _List_Nil);
+    };
+    var $andre_dietrich$parser_combinators$Combine$regexWith = F2(function(caseInsensitive, multiline) {
+        return A2($elm$core$Basics$composeR, A2($andre_dietrich$parser_combinators$Combine$regexer, $elm$regex$Regex$fromStringWith({
+            caseInsensitive: caseInsensitive,
+            multiline: multiline
+        }), function($) {
+            return $.match;
+        }), $andre_dietrich$parser_combinators$Combine$Parser);
+    });
+    var $author$project$Lia$Markdown$Inline$Parser$scriptBody = A2($andre_dietrich$parser_combinators$Combine$map, $elm$core$String$concat, A2($andre_dietrich$parser_combinators$Combine$manyTill, $andre_dietrich$parser_combinators$Combine$choice(_List_fromArray([
+        $andre_dietrich$parser_combinators$Combine$regex('[^@\"\'`</]+'),
+        $andre_dietrich$parser_combinators$Combine$regex('[ \t\n]+'),
+        $andre_dietrich$parser_combinators$Combine$string('@\''),
+        $andre_dietrich$parser_combinators$Combine$string('@'),
+        $andre_dietrich$parser_combinators$Combine$regex('\"([^\"]*|\\\\\"|\\\\)*\"'),
+        $andre_dietrich$parser_combinators$Combine$regex('\'([^\']*|\\\\\'|\\\\)*\''),
+        $andre_dietrich$parser_combinators$Combine$regex('`([^`]*|\n|\\\\`|\\\\)*`'),
+        $andre_dietrich$parser_combinators$Combine$regex('<(?!/)'),
+        $andre_dietrich$parser_combinators$Combine$regex('//[^\n]*'),
+        $andre_dietrich$parser_combinators$Combine$string('/')
+    ])), A3($andre_dietrich$parser_combinators$Combine$regexWith, true, false, '</script>')));
+    var $author$project$Lia$Markdown$Inline$Parser$javascriptWithAttributes = function() {
+        var attr = A2($andre_dietrich$parser_combinators$Combine$andThen, $author$project$Lia$Markdown$HTML$Attributes$parse, $andre_dietrich$parser_combinators$Combine$withState(A2($elm$core$Basics$composeR, function($) {
+            return $.defines;
+        }, A2($elm$core$Basics$composeR, function($) {
+            return $.base;
+        }, $andre_dietrich$parser_combinators$Combine$succeed))));
+        return A2($andre_dietrich$parser_combinators$Combine$andMap, $author$project$Lia$Markdown$Inline$Parser$scriptBody, A2($andre_dietrich$parser_combinators$Combine$map, $elm$core$Tuple$pair, A2($andre_dietrich$parser_combinators$Combine$ignore, $andre_dietrich$parser_combinators$Combine$string('>'), A2($andre_dietrich$parser_combinators$Combine$keep, $andre_dietrich$parser_combinators$Combine$many(A2($andre_dietrich$parser_combinators$Combine$keep, attr, $andre_dietrich$parser_combinators$Combine$whitespace)), A3($andre_dietrich$parser_combinators$Combine$regexWith, true, false, '<script')))));
+    }();
+    var $elm$core$Tuple$mapFirst = F2(function(func, _v0) {
+        var x = _v0.a;
+        var y = _v0.b;
+        return _Utils_Tuple2(func(x), y);
+    });
+    var $author$project$Lia$Markdown$Effect$Script$Types$Text = function(a) {
+        return {
+            $: 'Text',
+            a: a
+        };
+    };
+    var $elm$core$List$concat = function(lists) {
+        return A3($elm$core$List$foldr, $elm$core$List$append, _List_Nil, lists);
+    };
+    var $elm$core$List$concatMap = F2(function(f, list) {
+        return $elm$core$List$concat(A2($elm$core$List$map, f, list));
+    });
+    var $elm$regex$Regex$find = _Regex_findAtMost(_Regex_infinity);
+    var $author$project$Lia$Markdown$HTML$Attributes$get = F2(function(name, attr) {
+        get: while(true){
+            if (!attr.b) return $elm$core$Maybe$Nothing;
+            else {
+                var _v1 = attr.a;
+                var key = _v1.a;
+                var value = _v1.b;
+                var xs = attr.b;
+                if (_Utils_eq(key, name)) return $elm$core$Maybe$Just(value);
+                else {
+                    var $temp$name = name, $temp$attr = xs;
+                    name = $temp$name;
+                    attr = $temp$attr;
+                    continue get;
+                }
+            }
+        }
+    });
+    var $author$project$Lia$Markdown$HTML$Attributes$isTrue = function(val) {
+        return val === '' || val === '1' || val === 'true';
+    };
+    var $author$project$Lia$Markdown$HTML$Attributes$isSetMaybe = function(name) {
+        return A2($elm$core$Basics$composeR, $author$project$Lia$Markdown$HTML$Attributes$get(name), $elm$core$Maybe$map(A2($elm$core$Basics$composeR, $elm$core$String$trim, A2($elm$core$Basics$composeR, $elm$core$String$toLower, $author$project$Lia$Markdown$HTML$Attributes$isTrue))));
+    };
+    var $author$project$Lia$Markdown$HTML$Attributes$isSet = function(name) {
+        return A2($elm$core$Basics$composeR, $author$project$Lia$Markdown$HTML$Attributes$isSetMaybe(name), $elm$core$Maybe$withDefault(false));
+    };
+    var $author$project$Lia$Markdown$Effect$Script$Input$Button_ = {
+        $: 'Button_'
+    };
+    var $author$project$Lia$Markdown$Effect$Script$Input$Checkbox_ = function(a) {
+        return {
+            $: 'Checkbox_',
+            a: a
+        };
+    };
+    var $author$project$Lia$Markdown$Effect$Script$Input$Color_ = {
+        $: 'Color_'
+    };
+    var $author$project$Lia$Markdown$Effect$Script$Input$Date_ = {
+        $: 'Date_'
+    };
+    var $author$project$Lia$Markdown$Effect$Script$Input$DatetimeLocal_ = {
+        $: 'DatetimeLocal_'
+    };
+    var $author$project$Lia$Markdown$Effect$Script$Input$Email_ = {
+        $: 'Email_'
+    };
+    var $author$project$Lia$Markdown$Effect$Script$Input$File_ = {
+        $: 'File_'
+    };
+    var $author$project$Lia$Markdown$Effect$Script$Input$Hidden_ = {
+        $: 'Hidden_'
+    };
+    var $author$project$Lia$Markdown$Effect$Script$Input$Image_ = {
+        $: 'Image_'
+    };
+    var $author$project$Lia$Markdown$Effect$Script$Input$Month_ = {
+        $: 'Month_'
+    };
+    var $author$project$Lia$Markdown$Effect$Script$Input$Number_ = {
+        $: 'Number_'
+    };
+    var $author$project$Lia$Markdown$Effect$Script$Input$Password_ = {
+        $: 'Password_'
+    };
+    var $author$project$Lia$Markdown$Effect$Script$Input$Radio_ = function(a) {
+        return {
+            $: 'Radio_',
+            a: a
+        };
+    };
+    var $author$project$Lia$Markdown$Effect$Script$Input$Range_ = {
+        $: 'Range_'
+    };
+    var $author$project$Lia$Markdown$Effect$Script$Input$Search_ = {
+        $: 'Search_'
+    };
+    var $author$project$Lia$Markdown$Effect$Script$Input$Select_ = function(a) {
+        return {
+            $: 'Select_',
+            a: a
+        };
+    };
+    var $author$project$Lia$Markdown$Effect$Script$Input$Tel_ = {
+        $: 'Tel_'
+    };
+    var $author$project$Lia$Markdown$Effect$Script$Input$Text_ = {
+        $: 'Text_'
+    };
+    var $author$project$Lia$Markdown$Effect$Script$Input$Textarea_ = {
+        $: 'Textarea_'
+    };
+    var $author$project$Lia$Markdown$Effect$Script$Input$Time_ = {
+        $: 'Time_'
+    };
+    var $author$project$Lia$Markdown$Effect$Script$Input$Url_ = {
+        $: 'Url_'
+    };
+    var $author$project$Lia$Markdown$Effect$Script$Input$Week_ = {
+        $: 'Week_'
+    };
+    var $elm$core$Basics$not = _Basics_not;
+    var $author$project$Lia$Markdown$Effect$Script$Input$options = A2($elm$core$Basics$composeR, $author$project$Lia$Markdown$HTML$Attributes$get('options'), A2($elm$core$Basics$composeR, $elm$core$Maybe$map($elm$core$String$split('|')), A2($elm$core$Basics$composeR, $elm$core$Maybe$withDefault(_List_Nil), A2($elm$core$Basics$composeR, $elm$core$List$map($elm$core$String$trim), $elm$core$List$filter(A2($elm$core$Basics$composeR, $elm$core$String$isEmpty, $elm$core$Basics$not))))));
+    var $author$project$Lia$Markdown$Effect$Script$Input$parseType_ = F2(function(params, input_) {
+        switch(input_){
+            case 'button':
+                return $author$project$Lia$Markdown$Effect$Script$Input$Button_;
+            case 'checkbox':
+                return $author$project$Lia$Markdown$Effect$Script$Input$Checkbox_($author$project$Lia$Markdown$Effect$Script$Input$options(params));
+            case 'color':
+                return $author$project$Lia$Markdown$Effect$Script$Input$Color_;
+            case 'date':
+                return $author$project$Lia$Markdown$Effect$Script$Input$Date_;
+            case 'datetime-local':
+                return $author$project$Lia$Markdown$Effect$Script$Input$DatetimeLocal_;
+            case 'email':
+                return $author$project$Lia$Markdown$Effect$Script$Input$Email_;
+            case 'file':
+                return $author$project$Lia$Markdown$Effect$Script$Input$File_;
+            case 'hidden':
+                return $author$project$Lia$Markdown$Effect$Script$Input$Hidden_;
+            case 'image':
+                return $author$project$Lia$Markdown$Effect$Script$Input$Image_;
+            case 'month':
+                return $author$project$Lia$Markdown$Effect$Script$Input$Month_;
+            case 'number':
+                return $author$project$Lia$Markdown$Effect$Script$Input$Number_;
+            case 'password':
+                return $author$project$Lia$Markdown$Effect$Script$Input$Password_;
+            case 'radio':
+                return $author$project$Lia$Markdown$Effect$Script$Input$Radio_($author$project$Lia$Markdown$Effect$Script$Input$options(params));
+            case 'range':
+                return $author$project$Lia$Markdown$Effect$Script$Input$Range_;
+            case 'search':
+                return $author$project$Lia$Markdown$Effect$Script$Input$Search_;
+            case 'select':
+                return $author$project$Lia$Markdown$Effect$Script$Input$Select_($author$project$Lia$Markdown$Effect$Script$Input$options(params));
+            case 'submit':
+                return $author$project$Lia$Markdown$Effect$Script$Input$Button_;
+            case 'tel':
+                return $author$project$Lia$Markdown$Effect$Script$Input$Tel_;
+            case 'textarea':
+                return $author$project$Lia$Markdown$Effect$Script$Input$Textarea_;
+            case 'time':
+                return $author$project$Lia$Markdown$Effect$Script$Input$Time_;
+            case 'url':
+                return $author$project$Lia$Markdown$Effect$Script$Input$Url_;
+            case 'week':
+                return $author$project$Lia$Markdown$Effect$Script$Input$Week_;
+            default:
+                return $author$project$Lia$Markdown$Effect$Script$Input$Text_;
+        }
+    });
+    var $author$project$Lia$Markdown$Effect$Script$Input$runnable = F2(function(t_, updateOnChange) {
+        var _v0 = _Utils_Tuple2(updateOnChange, t_);
+        if (_v0.a.$ === 'Just') {
+            var b = _v0.a.a;
+            return b;
+        } else if (_v0.b.$ === 'Nothing') {
+            var _v1 = _v0.a;
+            var _v2 = _v0.b;
+            return false;
+        } else {
+            var _v3 = _v0.a;
+            var t = _v0.b.a;
+            switch(t.$){
+                case 'Email_':
+                    return false;
+                case 'Password_':
+                    return false;
+                case 'Search_':
+                    return false;
+                case 'Tel_':
+                    return false;
+                case 'Textarea_':
+                    return false;
+                case 'Url_':
+                    return false;
+                default:
+                    return true;
+            }
+        }
+    });
+    var $author$project$Lia$Markdown$Effect$Script$Input$from = function(params) {
+        var val = A2($elm$core$Maybe$withDefault, '', A2($author$project$Lia$Markdown$HTML$Attributes$get, 'value', params));
+        var t_ = A2($elm$core$Maybe$map, $author$project$Lia$Markdown$Effect$Script$Input$parseType_(params), A2($author$project$Lia$Markdown$HTML$Attributes$get, 'input', params));
+        var alwaysActive = A2($author$project$Lia$Markdown$HTML$Attributes$isSet, 'input-always-active', params);
+        return {
+            active: alwaysActive ? true : A2($author$project$Lia$Markdown$HTML$Attributes$isSet, 'input-active', params),
+            alwaysActive: alwaysActive,
+            _default: val,
+            type_: t_,
+            updateOnChange: A2($author$project$Lia$Markdown$Effect$Script$Input$runnable, t_, A2($author$project$Lia$Markdown$HTML$Attributes$isSetMaybe, 'update-on-change', params)),
+            value: val
+        };
+    };
+    var $author$project$Lia$Markdown$Effect$Script$Intl$datetime = _List_fromArray([
+        'calendar',
+        'datestyle',
+        'day',
+        'dayperiod',
+        'era',
+        'formatmatcher',
+        'fractionalseconddigits',
+        'hour',
+        'hour12',
+        'hourcycle',
+        'localematcher',
+        'minute',
+        'month',
+        'numberingsystem',
+        'second',
+        'timestyle',
+        'timezone',
+        'timezonename',
+        'weekday',
+        'year'
+    ]);
+    var $author$project$Lia$Markdown$Effect$Script$Intl$list = _List_fromArray([
+        'localematcher',
+        'type',
+        'localestyle'
+    ]);
+    var $author$project$Lia$Markdown$Effect$Script$Intl$locale = function(lang) {
+        return A2($elm$core$Basics$composeR, $author$project$Lia$Markdown$HTML$Attributes$get('locale'), A2($elm$core$Basics$composeR, $elm$core$Maybe$withDefault(lang), $elm$core$Tuple$pair('locale')));
+    };
+    var $author$project$Lia$Markdown$Effect$Script$Intl$number = _List_fromArray([
+        'compactdisplay',
+        'currency',
+        'currencydisplay',
+        'currencysign',
+        'localematcher',
+        'maximumfractiondigits',
+        'maximumsignificantdigits',
+        'minimumfractiondigits',
+        'minimumintegerdigits',
+        'minimumsignificantdigits',
+        'notation',
+        'numberingsystem',
+        'signdisplay',
+        'localestyle',
+        'unit',
+        'unitdisplay',
+        'usegrouping'
+    ]);
+    var $author$project$Lia$Markdown$Effect$Script$Intl$pluralrules = _List_fromArray([
+        'localematcher',
+        'type',
+        'minimumintegerdigits',
+        'minimumfractiondigits',
+        'maximumfractiondigits',
+        'minimumsignificantdigits',
+        'maximumsignificantdigits'
+    ]);
+    var $author$project$Lia$Markdown$Effect$Script$Intl$relativetime = _List_fromArray([
+        'unit',
+        'localematcher',
+        'numeric',
+        'localestyle'
+    ]);
+    var $elm$core$List$any = F2(function(isOkay, list) {
+        any: while(true){
+            if (!list.b) return false;
+            else {
+                var x = list.a;
+                var xs = list.b;
+                if (isOkay(x)) return true;
+                else {
+                    var $temp$isOkay = isOkay, $temp$list = xs;
+                    isOkay = $temp$isOkay;
+                    list = $temp$list;
+                    continue any;
+                }
+            }
+        }
+    });
+    var $elm$core$List$member = F2(function(x, xs) {
+        return A2($elm$core$List$any, function(a) {
+            return _Utils_eq(a, x);
+        }, xs);
+    });
+    var $author$project$Lia$Markdown$HTML$Attributes$isMemberOf = F2(function(names, _v0) {
+        var name = _v0.a;
+        return A2($elm$core$List$member, name, names);
+    });
+    var $author$project$Lia$Markdown$HTML$Attributes$filterNames = function(names) {
+        return $elm$core$List$filter($author$project$Lia$Markdown$HTML$Attributes$isMemberOf(names));
+    };
+    var $author$project$Lia$Markdown$Effect$Script$Intl$to = F2(function(format, names) {
+        return A2($elm$core$Basics$composeR, $author$project$Lia$Markdown$HTML$Attributes$filterNames(names), A2($elm$core$Basics$composeR, $elm$core$List$cons(_Utils_Tuple2('format', format)), $elm$core$Maybe$Just));
+    });
+    var $author$project$Lia$Markdown$Effect$Script$Intl$from = F2(function(lang, params) {
+        return A2($elm$core$Maybe$map, $elm$core$List$cons(A2($author$project$Lia$Markdown$Effect$Script$Intl$locale, lang, params)), function() {
+            var _v0 = A2($elm$core$Maybe$map, $elm$core$String$toLower, A2($author$project$Lia$Markdown$HTML$Attributes$get, 'format', params));
+            _v0$5: while(true){
+                if (_v0.$ === 'Just') switch(_v0.a){
+                    case 'number':
+                        return A3($author$project$Lia$Markdown$Effect$Script$Intl$to, 'number', $author$project$Lia$Markdown$Effect$Script$Intl$number, params);
+                    case 'datetime':
+                        return A3($author$project$Lia$Markdown$Effect$Script$Intl$to, 'datetime', $author$project$Lia$Markdown$Effect$Script$Intl$datetime, params);
+                    case 'relativetime':
+                        return A3($author$project$Lia$Markdown$Effect$Script$Intl$to, 'relativetime', $author$project$Lia$Markdown$Effect$Script$Intl$relativetime, params);
+                    case 'list':
+                        return A3($author$project$Lia$Markdown$Effect$Script$Intl$to, 'list', $author$project$Lia$Markdown$Effect$Script$Intl$list, params);
+                    case 'pluralrules':
+                        return A3($author$project$Lia$Markdown$Effect$Script$Intl$to, 'pluralrules', $author$project$Lia$Markdown$Effect$Script$Intl$pluralrules, params);
+                    default:
+                        break _v0$5;
+                }
+                else break _v0$5;
+            }
+            return $elm$core$Maybe$Nothing;
+        }());
+    });
+    var $author$project$Lia$Markdown$Effect$Script$Types$input = A2($elm$core$Maybe$withDefault, $elm$regex$Regex$never, $elm$regex$Regex$fromString('@input\\(`([^`]+)`\\)'));
+    var $author$project$Lia$Markdown$HTML$Attributes$isNotSet = function(name) {
+        return A2($elm$core$Basics$composeR, $author$project$Lia$Markdown$HTML$Attributes$isSetMaybe(name), $elm$core$Maybe$withDefault(true));
+    };
+    var $author$project$Lia$Markdown$Effect$Script$Types$push = F5(function(lang, id, params, script, javascript) {
+        return A2($elm$core$Array$push, {
+            block: A2($author$project$Lia$Markdown$HTML$Attributes$isSet, 'block', params),
+            counter: 0,
+            edit: false,
+            effect_id: id,
+            input: $author$project$Lia$Markdown$Effect$Script$Input$from(params),
+            inputs: A2($elm$core$List$filterMap, $elm$core$Basics$identity, A2($elm$core$List$concatMap, function($) {
+                return $.submatches;
+            }, A2($elm$regex$Regex$find, $author$project$Lia$Markdown$Effect$Script$Types$input, script))),
+            intl: A2($author$project$Lia$Markdown$Effect$Script$Intl$from, lang, params),
+            modify: A2($author$project$Lia$Markdown$HTML$Attributes$isNotSet, 'modify', params),
+            output: A2($author$project$Lia$Markdown$HTML$Attributes$get, 'output', params),
+            result: A2($elm$core$Maybe$map, $author$project$Lia$Markdown$Effect$Script$Types$Text, A2($author$project$Lia$Markdown$HTML$Attributes$get, 'default', params)),
+            runOnce: A2($author$project$Lia$Markdown$HTML$Attributes$isSet, 'run-once', params),
+            running: false,
+            script: script,
+            update: false,
+            updated: false
+        }, javascript);
+    });
+    var $author$project$Lia$Markdown$Effect$Script$Types$count = A2($elm$core$Basics$composeR, $elm$core$Array$length, $elm$core$Basics$add(-1));
+    var $author$project$Lia$Markdown$Inline$Parser$scriptID = $andre_dietrich$parser_combinators$Combine$withState(A2($elm$core$Basics$composeR, function($) {
+        return $.effect_model;
+    }, A2($elm$core$Basics$composeR, function($) {
+        return $.javascript;
+    }, A2($elm$core$Basics$composeR, $author$project$Lia$Markdown$Effect$Script$Types$count, $andre_dietrich$parser_combinators$Combine$succeed))));
+    var $author$project$Lia$Markdown$Inline$Parser$eScript = function(_default) {
+        var state = function(_v0) {
+            var attr = _v0.a;
+            var script = _v0.b;
+            return A2($andre_dietrich$parser_combinators$Combine$keep, $andre_dietrich$parser_combinators$Combine$succeed(attr), $andre_dietrich$parser_combinators$Combine$modifyState(function(s) {
+                var effect_model = s.effect_model;
+                return _Utils_update(s, {
+                    effect_model: _Utils_update(effect_model, {
+                        javascript: A5($author$project$Lia$Markdown$Effect$Script$Types$push, s.defines.language, A2($elm$core$Maybe$withDefault, 0, $elm$core$List$head(s.effect_number)), attr, $elm$core$String$trim(script), effect_model.javascript)
+                    })
+                });
+            }));
+        };
+        return A2($andre_dietrich$parser_combinators$Combine$andMap, $author$project$Lia$Markdown$Inline$Parser$scriptID, A2($andre_dietrich$parser_combinators$Combine$map, $elm$core$Tuple$pair, A2($andre_dietrich$parser_combinators$Combine$andThen, state, A2($andre_dietrich$parser_combinators$Combine$map, $elm$core$Tuple$mapFirst(function(attr) {
+            return A2($elm$core$List$append, attr, _default);
+        }), $author$project$Lia$Markdown$Inline$Parser$javascriptWithAttributes))));
+    };
+    var $author$project$Lia$Markdown$Inline$Parser$email = A2($andre_dietrich$parser_combinators$Combine$map, $elm$core$Basics$append('mailto:'), A2($andre_dietrich$parser_combinators$Combine$keep, $andre_dietrich$parser_combinators$Combine$regex('[a-zA-Z0-9_.\\-]+@[a-zA-Z0-9_.\\-]+'), $andre_dietrich$parser_combinators$Combine$maybe($andre_dietrich$parser_combinators$Combine$string('mailto:'))));
+    var $author$project$Lia$Markdown$Inline$Types$Formula = F3(function(a, b, c) {
+        return {
+            $: 'Formula',
+            a: a,
+            b: b,
+            c: c
+        };
+    });
+    var $author$project$Lia$Markdown$Inline$Parser$Formula$formula_block = A2($andre_dietrich$parser_combinators$Combine$map, $author$project$Lia$Markdown$Inline$Types$Formula('true'), A2($andre_dietrich$parser_combinators$Combine$keep, $author$project$Lia$Parser$Helper$stringTill($andre_dietrich$parser_combinators$Combine$string('$$')), $andre_dietrich$parser_combinators$Combine$string('$$')));
+    var $author$project$Lia$Markdown$Inline$Parser$Formula$formula_inline = A2($andre_dietrich$parser_combinators$Combine$map, $author$project$Lia$Markdown$Inline$Types$Formula('false'), A2($andre_dietrich$parser_combinators$Combine$ignore, $andre_dietrich$parser_combinators$Combine$string('$'), A2($andre_dietrich$parser_combinators$Combine$keep, $andre_dietrich$parser_combinators$Combine$regex('[^\\n$]+'), $andre_dietrich$parser_combinators$Combine$string('$'))));
+    var $author$project$Lia$Markdown$Inline$Parser$Formula$formula = A2($andre_dietrich$parser_combinators$Combine$or, $author$project$Lia$Markdown$Inline$Parser$Formula$formula_block, $author$project$Lia$Markdown$Inline$Parser$Formula$formula_inline);
+    var $author$project$Lia$Markdown$Effect$Parser$begin_ = function(e) {
+        return A2($andre_dietrich$parser_combinators$Combine$map, function(i) {
+            return _Utils_update(e, {
+                begin: i
+            });
+        }, $author$project$Lia$Markdown$Effect$Parser$effect_number);
+    };
+    var $author$project$Lia$Markdown$Effect$Parser$end_ = function(e) {
+        return A2($andre_dietrich$parser_combinators$Combine$map, function(i) {
+            return _Utils_update(e, {
+                end: $elm$core$Maybe$Just(i)
+            });
+        }, A2($andre_dietrich$parser_combinators$Combine$keep, $andre_dietrich$parser_combinators$Combine$Num$int, $andre_dietrich$parser_combinators$Combine$regex('-[\t ]*')));
+    };
+    var $author$project$Lia$Markdown$Effect$Parser$playback_ = function(e) {
+        return A2($andre_dietrich$parser_combinators$Combine$keep, $andre_dietrich$parser_combinators$Combine$succeed(_Utils_update(e, {
+            playback: true
+        })), A2($andre_dietrich$parser_combinators$Combine$or, $andre_dietrich$parser_combinators$Combine$string('!>'), $andre_dietrich$parser_combinators$Combine$string('|>')));
+    };
+    var $author$project$Lia$Markdown$Effect$Parser$voice_ = function(e) {
+        return A2($andre_dietrich$parser_combinators$Combine$map, function(str) {
+            return _Utils_update(e, {
+                voice: $elm$core$String$trim(str)
+            });
+        }, A2($andre_dietrich$parser_combinators$Combine$keep, $andre_dietrich$parser_combinators$Combine$regex('([A-Za-z][A-Za-z0-9]+[ \t]*)+'), $author$project$Lia$Markdown$Macro$Parser$macro));
+    };
+    var $author$project$Lia$Markdown$Effect$Parser$effect = function(e) {
+        return A2($andre_dietrich$parser_combinators$Combine$optional, e, A2($andre_dietrich$parser_combinators$Combine$keep, $andre_dietrich$parser_combinators$Combine$choice(_List_fromArray([
+            $author$project$Lia$Markdown$Effect$Parser$end_(e),
+            $author$project$Lia$Markdown$Effect$Parser$begin_(e),
+            $author$project$Lia$Markdown$Effect$Parser$playback_(e),
+            $author$project$Lia$Markdown$Effect$Parser$voice_(e)
+        ])), $andre_dietrich$parser_combinators$Combine$whitespace));
+    };
+    var $author$project$Lia$Markdown$Effect$Types$empty = function(e) {
+        return !e.playback && e.begin < 0;
+    };
+    var $author$project$Lia$Markdown$Effect$Types$init = function(voice) {
+        return {
+            begin: -1,
+            content: _List_Nil,
+            end: $elm$core$Maybe$Nothing,
+            id: -1,
+            playback: false,
+            voice: voice
+        };
+    };
+    var $author$project$Lia$Markdown$Effect$Parser$definition = A2($andre_dietrich$parser_combinators$Combine$andThen, function(e) {
+        return $author$project$Lia$Markdown$Effect$Types$empty(e) ? $andre_dietrich$parser_combinators$Combine$fail('no effect definition') : $andre_dietrich$parser_combinators$Combine$succeed(e);
+    }, A2($andre_dietrich$parser_combinators$Combine$andThen, $author$project$Lia$Markdown$Effect$Parser$effect, A2($andre_dietrich$parser_combinators$Combine$andThen, $author$project$Lia$Markdown$Effect$Parser$effect, A2($andre_dietrich$parser_combinators$Combine$andThen, $author$project$Lia$Markdown$Effect$Parser$effect, A2($andre_dietrich$parser_combinators$Combine$andThen, $author$project$Lia$Markdown$Effect$Parser$effect, A2($andre_dietrich$parser_combinators$Combine$map, $author$project$Lia$Markdown$Effect$Types$init, $andre_dietrich$parser_combinators$Combine$withState(A2($elm$core$Basics$composeR, function($) {
+        return $.defines;
+    }, A2($elm$core$Basics$composeR, function($) {
+        return $.narrator;
+    }, $andre_dietrich$parser_combinators$Combine$succeed)))))))));
+    var $author$project$Lia$Markdown$Effect$Parser$effect_id = A2($andre_dietrich$parser_combinators$Combine$ignore, $andre_dietrich$parser_combinators$Combine$modifyState(function(s) {
+        return _Utils_update(s, {
+            effect_id: s.effect_id + 1
+        });
+    }), $andre_dietrich$parser_combinators$Combine$withState(A2($elm$core$Basics$composeR, function($) {
+        return $.effect_id;
+    }, $andre_dietrich$parser_combinators$Combine$succeed)));
+    var $author$project$Lia$Markdown$Effect$Parser$inline = function(inlines) {
+        return A2($andre_dietrich$parser_combinators$Combine$andMap, $author$project$Lia$Markdown$Effect$Parser$effect_id, A2($andre_dietrich$parser_combinators$Combine$ignore, $author$project$Lia$Markdown$Effect$Parser$reset_effect_number, A2($andre_dietrich$parser_combinators$Combine$andMap, A2($andre_dietrich$parser_combinators$Combine$manyTill, inlines, $andre_dietrich$parser_combinators$Combine$string('}')), A2($andre_dietrich$parser_combinators$Combine$ignore, $andre_dietrich$parser_combinators$Combine$string('}{'), A2($andre_dietrich$parser_combinators$Combine$map, F3(function(e, b, c) {
+            return _Utils_update(e, {
+                content: b,
+                id: c
+            });
+        }), A2($andre_dietrich$parser_combinators$Combine$keep, $author$project$Lia$Markdown$Effect$Parser$definition, $andre_dietrich$parser_combinators$Combine$string('{')))))));
+    };
+    var $author$project$Lia$Markdown$Inline$Types$FootnoteMark = F2(function(a, b) {
+        return {
+            $: 'FootnoteMark',
+            a: a,
+            b: b
+        };
+    });
+    var $author$project$Lia$Markdown$Types$Paragraph = F2(function(a, b) {
+        return {
+            $: 'Paragraph',
+            a: a,
+            b: b
+        };
+    });
+    var $author$project$Lia$Markdown$Footnote$Model$insert = F3(function(key, val, model) {
+        return A3($elm$core$Dict$insert, key, val, model);
+    });
+    var $author$project$Lia$Markdown$Footnote$Parser$add_footnote = function(_v0) {
+        var key = _v0.a;
+        var val = _v0.b;
+        return $andre_dietrich$parser_combinators$Combine$modifyState(function(s) {
+            return _Utils_update(s, {
+                footnotes: A3($author$project$Lia$Markdown$Footnote$Model$insert, key, val, s.footnotes)
+            });
+        });
+    };
+    var $author$project$Lia$Markdown$Footnote$Parser$store = function(_v0) {
+        var key = _v0.a;
+        var val = _v0.b;
+        if (val.$ === 'Just') {
+            var v = val.a;
+            return A2($andre_dietrich$parser_combinators$Combine$keep, $andre_dietrich$parser_combinators$Combine$succeed($author$project$Lia$Markdown$Inline$Types$FootnoteMark(key)), $author$project$Lia$Markdown$Footnote$Parser$add_footnote(_Utils_Tuple2(key, _List_fromArray([
+                A2($author$project$Lia$Markdown$Types$Paragraph, _List_Nil, v)
+            ]))));
+        } else return $andre_dietrich$parser_combinators$Combine$succeed($author$project$Lia$Markdown$Inline$Types$FootnoteMark(key));
+    };
+    var $author$project$Lia$Markdown$Footnote$Parser$inline = function(parser) {
+        return A2($andre_dietrich$parser_combinators$Combine$andThen, $author$project$Lia$Markdown$Footnote$Parser$store, A2($andre_dietrich$parser_combinators$Combine$andMap, $andre_dietrich$parser_combinators$Combine$maybe(A2($andre_dietrich$parser_combinators$Combine$andMap, $andre_dietrich$parser_combinators$Combine$withState($andre_dietrich$parser_combinators$Combine$succeed), A2($andre_dietrich$parser_combinators$Combine$map, F2(function(str, state) {
+            return A2(parser, state, str);
+        }), A2($andre_dietrich$parser_combinators$Combine$keep, $author$project$Lia$Parser$Helper$stringTill($andre_dietrich$parser_combinators$Combine$string(')')), $andre_dietrich$parser_combinators$Combine$string('('))))), A2($andre_dietrich$parser_combinators$Combine$map, $elm$core$Tuple$pair, A2($andre_dietrich$parser_combinators$Combine$keep, $author$project$Lia$Parser$Helper$stringTill($andre_dietrich$parser_combinators$Combine$string(']')), $andre_dietrich$parser_combinators$Combine$string('[^')))));
+    };
+    var $author$project$Lia$Markdown$Inline$Parser$baseURL = function(u) {
+        return A2($andre_dietrich$parser_combinators$Combine$map, function(base) {
+            return A2($author$project$Lia$Markdown$HTML$Attributes$toURL, base, u);
+        }, $andre_dietrich$parser_combinators$Combine$withState(A2($elm$core$Basics$composeR, function($) {
+            return $.defines;
+        }, A2($elm$core$Basics$composeR, function($) {
+            return $.base;
+        }, $andre_dietrich$parser_combinators$Combine$succeed))));
+    };
+    var $author$project$Lia$Markdown$Inline$Parser$url = A2($andre_dietrich$parser_combinators$Combine$andThen, $author$project$Lia$Markdown$Inline$Parser$baseURL, $andre_dietrich$parser_combinators$Combine$regex('[a-zA-Z]+://(/)?[a-zA-Z0-9\\.\\-\\_]+\\.([a-z\\.]{2,6})[^ \\]\\)\t\n]*'));
+    var $author$project$Lia$Markdown$Inline$Parser$inline_url = A2($andre_dietrich$parser_combinators$Combine$map, function(u) {
+        return $author$project$Lia$Markdown$Inline$Types$Ref(A3($author$project$Lia$Markdown$Inline$Types$Link, _List_fromArray([
+            A2($author$project$Lia$Markdown$Inline$Types$Chars, u, _List_Nil)
+        ]), u, $elm$core$Maybe$Nothing));
+    }, $author$project$Lia$Markdown$Inline$Parser$url);
+    var $andre_dietrich$parser_combinators$Combine$lazy = function(t) {
+        return A2($andre_dietrich$parser_combinators$Combine$andThen, t, $andre_dietrich$parser_combinators$Combine$succeed(_Utils_Tuple0));
+    };
+    var $andre_dietrich$parser_combinators$Combine$many1Till = function(p) {
+        return A2($elm$core$Basics$composeR, $andre_dietrich$parser_combinators$Combine$manyTill(p), $andre_dietrich$parser_combinators$Combine$andThen(function(result) {
+            if (!result.b) return $andre_dietrich$parser_combinators$Combine$fail('not enough results');
+            else return $andre_dietrich$parser_combinators$Combine$succeed(result);
+        }));
+    };
+    var $author$project$Lia$Markdown$Inline$Multimedia$tuFreibergRules = _List_fromArray([
+        'key',
+        'width',
+        'height',
+        'autoplay',
+        'autolightsoff',
+        'loop',
+        'chapters',
+        'related',
+        'responsive',
+        't'
+    ]);
+    var $author$project$Lia$Markdown$Inline$Multimedia$vimeoRules = _List_fromArray([
+        'autopause',
+        'autoplay',
+        'background',
+        'byline',
+        'color',
+        'controls',
+        'dnt',
+        'keyboard',
+        'loop',
+        'muted',
+        'pip',
+        'playsinline',
+        'portrait',
+        'quality',
+        'speed',
+        'texttrack',
+        'title',
+        'transparent'
+    ]);
+    var $author$project$Lia$Markdown$Inline$Multimedia$movie = $author$project$Lia$Parser$PatReplace$replace(_List_fromArray([
+        {
+            by: F2(function(url, w) {
+                return 'https://www.youtube.com/embed/' + (w + A2($author$project$Lia$Markdown$Inline$Multimedia$preserve, url, $author$project$Lia$Markdown$Inline$Multimedia$youTubeRules));
+            }),
+            pattern: $author$project$Lia$Parser$PatReplace$root('(?:youtu\\.be/|youtube\\.com/(?:(?:watch)?\\?(?:.*&)?v(?:i)?=|(?:v|vi|user)/))([^\\?&\"\'<> #]+)')
+        },
+        {
+            by: F2(function(url, w) {
+                return 'https://player.vimeo.com/video/' + (w + A2($author$project$Lia$Markdown$Inline$Multimedia$preserve, url, $author$project$Lia$Markdown$Inline$Multimedia$vimeoRules));
+            }),
+            pattern: $author$project$Lia$Parser$PatReplace$root('(?:player.)?(?:vimeo\\.com).*?(\\d+)')
+        },
+        {
+            by: F2(function(_v0, w) {
+                return 'https://www.dailymotion.com/embed/video/' + w;
+            }),
+            pattern: $author$project$Lia$Parser$PatReplace$root('(?:dailymotion\\.com(?:/embed)?/video/)(.+)')
+        },
+        {
+            by: F2(function(_v1, w) {
+                return 'https://peertube.tv/videos/embed/' + w;
+            }),
+            pattern: $author$project$Lia$Parser$PatReplace$root('(?:peertube\\.tv/videos/watch/)(.+)')
+        },
+        {
+            by: F2(function(_v2, w) {
+                return 'https://www.teachertube.com/embed/video/' + w;
+            }),
+            pattern: $author$project$Lia$Parser$PatReplace$root('(?:teachertube\\.com).*?(\\d+.*)')
+        },
+        {
+            by: F2(function(url, w) {
+                return 'https://video.tu-freiberg.de/media/embed?key=' + (w + A2($author$project$Lia$Markdown$Inline$Multimedia$preserve, url, $author$project$Lia$Markdown$Inline$Multimedia$tuFreibergRules));
+            }),
+            pattern: $author$project$Lia$Parser$PatReplace$root('(?:video\\.tu\\-freiberg\\.de/video/[^/]+/)(.+)')
+        }
+    ]));
+    var $author$project$Lia$Markdown$Inline$Parser$nicer_ref = F4(function(ref_type, info_string, url_string, title_string) {
+        return A3(ref_type, info_string, url_string, title_string);
+    });
+    var $author$project$Lia$Markdown$HTML$Types$InnerHtml = function(a) {
+        return {
+            $: 'InnerHtml',
+            a: a
+        };
+    };
+    var $author$project$Lia$Markdown$HTML$Parser$liaKeep = A2($andre_dietrich$parser_combinators$Combine$map, $author$project$Lia$Markdown$HTML$Types$InnerHtml, A2($andre_dietrich$parser_combinators$Combine$keep, $author$project$Lia$Parser$Helper$stringTill($andre_dietrich$parser_combinators$Combine$string('</lia-keep>')), $andre_dietrich$parser_combinators$Combine$string('<lia-keep>')));
+    var $author$project$Lia$Markdown$HTML$Types$Node = F3(function(a, b, c) {
+        return {
+            $: 'Node',
+            a: a,
+            b: b,
+            c: c
+        };
+    });
+    var $author$project$Lia$Markdown$HTML$Parser$closingTag = function(name) {
+        var chompName = A2($andre_dietrich$parser_combinators$Combine$andThen, function(closingName) {
+            return _Utils_eq($elm$core$String$toLower(closingName), name) ? $andre_dietrich$parser_combinators$Combine$succeed(_Utils_Tuple0) : $andre_dietrich$parser_combinators$Combine$fail('closing tag does not match opening tag: ' + name);
+        }, $andre_dietrich$parser_combinators$Combine$regex('\\w+(\\-\\w+)*'));
+        return A2($andre_dietrich$parser_combinators$Combine$ignore, $andre_dietrich$parser_combinators$Combine$regex('[ \\t\\n]*>'), A2($andre_dietrich$parser_combinators$Combine$keep, chompName, $andre_dietrich$parser_combinators$Combine$regex('[ \\t\\n]*</[ \\t]*')));
+    };
+    var $author$project$Lia$Markdown$HTML$Parser$voidElements = _List_fromArray([
+        'area',
+        'base',
+        'br',
+        'col',
+        'embed',
+        'hr',
+        'img',
+        'input',
+        'link',
+        'meta',
+        'param',
+        'source',
+        'track',
+        'wbr'
+    ]);
+    var $author$project$Lia$Markdown$HTML$Parser$isVoidElement = function(name) {
+        return A2($elm$core$List$member, name, $author$project$Lia$Markdown$HTML$Parser$voidElements);
+    };
+    var $author$project$Lia$Markdown$HTML$Parser$unscript = function(name) {
+        return name === 'script' ? $andre_dietrich$parser_combinators$Combine$fail('') : $andre_dietrich$parser_combinators$Combine$succeed(name);
+    };
+    var $author$project$Lia$Markdown$HTML$Parser$tagName = A2($andre_dietrich$parser_combinators$Combine$andThen, $author$project$Lia$Markdown$HTML$Parser$unscript, A2($andre_dietrich$parser_combinators$Combine$map, $elm$core$String$toLower, $andre_dietrich$parser_combinators$Combine$regex('\\w+(\\-\\w+)*')));
+    var $author$project$Lia$Markdown$HTML$Parser$tag = function(parser) {
+        var attr = A2($andre_dietrich$parser_combinators$Combine$andThen, $author$project$Lia$Markdown$HTML$Attributes$parse, $andre_dietrich$parser_combinators$Combine$withState(A2($elm$core$Basics$composeR, function($) {
+            return $.defines;
+        }, A2($elm$core$Basics$composeR, function($) {
+            return $.base;
+        }, $andre_dietrich$parser_combinators$Combine$succeed))));
+        return A2($andre_dietrich$parser_combinators$Combine$andThen, function(_v0) {
+            var name = _v0.a;
+            var attributes = _v0.b;
+            return $author$project$Lia$Markdown$HTML$Parser$isVoidElement(name) ? A2($andre_dietrich$parser_combinators$Combine$ignore, $andre_dietrich$parser_combinators$Combine$string('>'), A2($andre_dietrich$parser_combinators$Combine$ignore, $andre_dietrich$parser_combinators$Combine$whitespace, A2($andre_dietrich$parser_combinators$Combine$ignore, $andre_dietrich$parser_combinators$Combine$maybe($andre_dietrich$parser_combinators$Combine$string('/')), A2($andre_dietrich$parser_combinators$Combine$ignore, $andre_dietrich$parser_combinators$Combine$whitespace, $andre_dietrich$parser_combinators$Combine$succeed(A3($author$project$Lia$Markdown$HTML$Types$Node, name, attributes, _List_Nil)))))) : A2($andre_dietrich$parser_combinators$Combine$andMap, A2($andre_dietrich$parser_combinators$Combine$manyTill, A2($andre_dietrich$parser_combinators$Combine$ignore, $andre_dietrich$parser_combinators$Combine$regex('[\\n]*'), parser), $author$project$Lia$Markdown$HTML$Parser$closingTag(name)), A2($andre_dietrich$parser_combinators$Combine$ignore, $andre_dietrich$parser_combinators$Combine$regex('[ \\t]*>[ \\t]*\\n*'), $andre_dietrich$parser_combinators$Combine$succeed(A2($author$project$Lia$Markdown$HTML$Types$Node, name, attributes))));
+        }, A2($andre_dietrich$parser_combinators$Combine$andMap, $andre_dietrich$parser_combinators$Combine$many(attr), A2($andre_dietrich$parser_combinators$Combine$ignore, $andre_dietrich$parser_combinators$Combine$whitespace, A2($andre_dietrich$parser_combinators$Combine$map, $elm$core$Tuple$pair, A2($andre_dietrich$parser_combinators$Combine$keep, $author$project$Lia$Markdown$HTML$Parser$tagName, $andre_dietrich$parser_combinators$Combine$regex('[ \\t]*<[ \\t]*'))))));
+    };
+    var $author$project$Lia$Markdown$HTML$Parser$parse = A2($elm$core$Basics$composeR, $author$project$Lia$Markdown$HTML$Parser$tag, $andre_dietrich$parser_combinators$Combine$or($author$project$Lia$Markdown$HTML$Parser$liaKeep));
+    var $author$project$Lia$Parser$Context$searchIndex = $andre_dietrich$parser_combinators$Combine$withState(A2($elm$core$Basics$composeR, function($) {
+        return $.search_index;
+    }, $andre_dietrich$parser_combinators$Combine$succeed));
+    var $author$project$Lia$Markdown$Inline$Parser$ref_url_1 = $andre_dietrich$parser_combinators$Combine$choice(_List_fromArray([
+        $author$project$Lia$Markdown$Inline$Parser$url,
+        A2($andre_dietrich$parser_combinators$Combine$andMap, $andre_dietrich$parser_combinators$Combine$regex('#[^ \t\\)]+'), $author$project$Lia$Parser$Context$searchIndex),
+        A2($andre_dietrich$parser_combinators$Combine$andThen, $author$project$Lia$Markdown$Inline$Parser$baseURL, $andre_dietrich$parser_combinators$Combine$regex('[^\\)\n \"]*'))
+    ]));
+    var $author$project$Lia$Markdown$Inline$Parser$ref_url_2 = A2($andre_dietrich$parser_combinators$Combine$or, $author$project$Lia$Markdown$Inline$Parser$url, A2($andre_dietrich$parser_combinators$Combine$andMap, $andre_dietrich$parser_combinators$Combine$regex('[^\\)\n \"]*'), A2($andre_dietrich$parser_combinators$Combine$map, $elm$core$Basics$append, $andre_dietrich$parser_combinators$Combine$withState(function(s) {
+        return $andre_dietrich$parser_combinators$Combine$succeed(s.defines.base);
+    }))));
+    var $author$project$Lia$Markdown$Inline$Parser$Symbol$smileys = A2($andre_dietrich$parser_combinators$Combine$map, $author$project$Lia$Markdown$Inline$Types$Symbol, $andre_dietrich$parser_combinators$Combine$choice(_List_fromArray([
+        A2($andre_dietrich$parser_combinators$Combine$onsuccess, '🙂', $andre_dietrich$parser_combinators$Combine$string(':-)')),
+        A2($andre_dietrich$parser_combinators$Combine$onsuccess, '😉', $andre_dietrich$parser_combinators$Combine$string(';-)')),
+        A2($andre_dietrich$parser_combinators$Combine$onsuccess, '😀', $andre_dietrich$parser_combinators$Combine$string(':-D')),
+        A2($andre_dietrich$parser_combinators$Combine$onsuccess, '😮', $andre_dietrich$parser_combinators$Combine$string(':-O')),
+        A2($andre_dietrich$parser_combinators$Combine$onsuccess, '🙁', $andre_dietrich$parser_combinators$Combine$string(':-(')),
+        A2($andre_dietrich$parser_combinators$Combine$onsuccess, '😐', $andre_dietrich$parser_combinators$Combine$string(':-|')),
+        A2($andre_dietrich$parser_combinators$Combine$onsuccess, '😕', $andre_dietrich$parser_combinators$Combine$string(':-/')),
+        A2($andre_dietrich$parser_combinators$Combine$onsuccess, '😕', $andre_dietrich$parser_combinators$Combine$string(':-\\')),
+        A2($andre_dietrich$parser_combinators$Combine$onsuccess, '😛', $andre_dietrich$parser_combinators$Combine$string(':-P')),
+        A2($andre_dietrich$parser_combinators$Combine$onsuccess, '😛', $andre_dietrich$parser_combinators$Combine$string(':-p')),
+        A2($andre_dietrich$parser_combinators$Combine$onsuccess, '😜', $andre_dietrich$parser_combinators$Combine$string(';-P')),
+        A2($andre_dietrich$parser_combinators$Combine$onsuccess, '😜', $andre_dietrich$parser_combinators$Combine$string(';-p')),
+        A2($andre_dietrich$parser_combinators$Combine$onsuccess, '😗', $andre_dietrich$parser_combinators$Combine$string(':-*')),
+        A2($andre_dietrich$parser_combinators$Combine$onsuccess, '😘', $andre_dietrich$parser_combinators$Combine$string(';-*')),
+        A2($andre_dietrich$parser_combinators$Combine$onsuccess, '😂', $andre_dietrich$parser_combinators$Combine$string(':\')')),
+        A2($andre_dietrich$parser_combinators$Combine$onsuccess, '😢', $andre_dietrich$parser_combinators$Combine$string(':\'(')),
+        A2($andre_dietrich$parser_combinators$Combine$onsuccess, '😭', $andre_dietrich$parser_combinators$Combine$string(':\'[')),
+        A2($andre_dietrich$parser_combinators$Combine$onsuccess, '😠', $andre_dietrich$parser_combinators$Combine$string(':-[')),
+        A2($andre_dietrich$parser_combinators$Combine$onsuccess, '😷', $andre_dietrich$parser_combinators$Combine$string(':-#')),
+        A2($andre_dietrich$parser_combinators$Combine$onsuccess, '😷', $andre_dietrich$parser_combinators$Combine$string(':-X')),
+        A2($andre_dietrich$parser_combinators$Combine$onsuccess, '😖', $andre_dietrich$parser_combinators$Combine$string(':-§'))
+    ])));
+    var $author$project$Lia$Markdown$Inline$Parser$stringBase = A2($andre_dietrich$parser_combinators$Combine$map, $author$project$Lia$Markdown$Inline$Types$Chars, $andre_dietrich$parser_combinators$Combine$regex('[^\\[\\]\\(\\)@*+_~:;`\\^|{}\\\\\\n<>=$ \"\\-]+'));
+    var $author$project$Lia$Markdown$Inline$Parser$stringBase2 = A2($andre_dietrich$parser_combinators$Combine$map, $author$project$Lia$Markdown$Inline$Types$Chars, $andre_dietrich$parser_combinators$Combine$regex('[^\n*|<>+\\-]+'));
+    var $author$project$Lia$Markdown$Inline$Parser$stringCharacters = A2($andre_dietrich$parser_combinators$Combine$map, $author$project$Lia$Markdown$Inline$Types$Chars, $andre_dietrich$parser_combinators$Combine$regex('[\\[\\]\\(\\)~:_;=${}\\-+\"*]'));
+    var $author$project$Lia$Markdown$Inline$Parser$stringEscape = A2($andre_dietrich$parser_combinators$Combine$map, $author$project$Lia$Markdown$Inline$Types$Chars, A2($andre_dietrich$parser_combinators$Combine$keep, $andre_dietrich$parser_combinators$Combine$regex('[@\\^*_+~`\\\\${}\\[\\]|#\\-]'), $andre_dietrich$parser_combinators$Combine$string('\\')));
+    var $author$project$Lia$Markdown$Inline$Parser$stringSpaces = A2($andre_dietrich$parser_combinators$Combine$map, $author$project$Lia$Markdown$Inline$Types$Chars, $andre_dietrich$parser_combinators$Combine$regex('[ \t]+'));
+    var $author$project$Lia$Markdown$Inline$Types$Container = F2(function(a, b) {
+        return {
+            $: 'Container',
+            a: a,
+            b: b
+        };
+    });
+    var $author$project$Lia$Markdown$Inline$Parser$toContainer = function(inline_list) {
+        var _v0 = $author$project$Lia$Markdown$Inline$Types$combine(inline_list);
+        if (_v0.b && !_v0.b.b) {
+            var one = _v0.a;
+            return one;
+        } else {
+            var moreThanOne = _v0;
+            return A2($author$project$Lia$Markdown$Inline$Types$Container, moreThanOne, _List_Nil);
+        }
+    };
+    var $author$project$Lia$Markdown$Inline$Parser$between_ = function(str) {
+        return A2($andre_dietrich$parser_combinators$Combine$map, A2($elm$core$Basics$composeR, $author$project$Lia$Markdown$Inline$Types$combine, $author$project$Lia$Markdown$Inline$Parser$toContainer), A2($andre_dietrich$parser_combinators$Combine$keep, A2($andre_dietrich$parser_combinators$Combine$many1Till, $author$project$Lia$Markdown$Inline$Parser$cyclic$inlines(), $andre_dietrich$parser_combinators$Combine$string(str)), $andre_dietrich$parser_combinators$Combine$string(str)));
+    };
+    var $author$project$Lia$Markdown$Inline$Parser$parse_inlines = F2(function(state, str) {
+        var _v1 = A3($andre_dietrich$parser_combinators$Combine$runParser, $author$project$Lia$Markdown$Inline$Parser$cyclic$line(), state, A3($elm$core$String$replace, '\n', ' ', str));
+        if (_v1.$ === 'Ok') {
+            var _v2 = _v1.a;
+            var rslt = _v2.c;
+            return rslt;
+        } else return _List_Nil;
+    });
+    var $author$project$Lia$Markdown$Inline$Parser$ref_pattern = F3(function(ref_type, info_type, url_type) {
+        return A2($andre_dietrich$parser_combinators$Combine$ignore, $andre_dietrich$parser_combinators$Combine$string(')'), A2($andre_dietrich$parser_combinators$Combine$andMap, $author$project$Lia$Markdown$Inline$Parser$cyclic$ref_title(), A2($andre_dietrich$parser_combinators$Combine$andMap, url_type, A2($andre_dietrich$parser_combinators$Combine$ignore, $andre_dietrich$parser_combinators$Combine$string('('), A2($andre_dietrich$parser_combinators$Combine$map, $author$project$Lia$Markdown$Inline$Parser$nicer_ref(ref_type), info_type)))));
+    });
+    function $author$project$Lia$Markdown$Inline$Parser$cyclic$stringUnderline() {
+        return A2($andre_dietrich$parser_combinators$Combine$map, $author$project$Lia$Markdown$Inline$Types$Underline, $author$project$Lia$Markdown$Inline$Parser$between_('~~'));
+    }
+    function $author$project$Lia$Markdown$Inline$Parser$cyclic$stringSuperscript() {
+        return A2($andre_dietrich$parser_combinators$Combine$map, $author$project$Lia$Markdown$Inline$Types$Superscript, $author$project$Lia$Markdown$Inline$Parser$between_('^'));
+    }
+    function $author$project$Lia$Markdown$Inline$Parser$cyclic$stringStrike() {
+        return A2($andre_dietrich$parser_combinators$Combine$map, $author$project$Lia$Markdown$Inline$Types$Strike, $author$project$Lia$Markdown$Inline$Parser$between_('~'));
+    }
+    function $author$project$Lia$Markdown$Inline$Parser$cyclic$stringItalic() {
+        return A2($andre_dietrich$parser_combinators$Combine$map, $author$project$Lia$Markdown$Inline$Types$Italic, A2($andre_dietrich$parser_combinators$Combine$or, $author$project$Lia$Markdown$Inline$Parser$between_('*'), $author$project$Lia$Markdown$Inline$Parser$between_('_')));
+    }
+    function $author$project$Lia$Markdown$Inline$Parser$cyclic$stringBold() {
+        return A2($andre_dietrich$parser_combinators$Combine$map, $author$project$Lia$Markdown$Inline$Types$Bold, A2($andre_dietrich$parser_combinators$Combine$or, $author$project$Lia$Markdown$Inline$Parser$between_('**'), $author$project$Lia$Markdown$Inline$Parser$between_('__')));
+    }
+    function $author$project$Lia$Markdown$Inline$Parser$cyclic$reference() {
+        return A2($andre_dietrich$parser_combinators$Combine$map, $author$project$Lia$Markdown$Inline$Types$Ref, $andre_dietrich$parser_combinators$Combine$choice(_List_fromArray([
+            $author$project$Lia$Markdown$Inline$Parser$cyclic$refEmbed(),
+            $author$project$Lia$Markdown$Inline$Parser$cyclic$refMovie(),
+            $author$project$Lia$Markdown$Inline$Parser$cyclic$refAudio(),
+            $author$project$Lia$Markdown$Inline$Parser$cyclic$refImage(),
+            $author$project$Lia$Markdown$Inline$Parser$cyclic$refMail(),
+            $author$project$Lia$Markdown$Inline$Parser$cyclic$refPreview(),
+            $author$project$Lia$Markdown$Inline$Parser$cyclic$refQr(),
+            $author$project$Lia$Markdown$Inline$Parser$cyclic$refLink()
+        ])));
+    }
+    function $author$project$Lia$Markdown$Inline$Parser$cyclic$refMovie() {
+        return A2($andre_dietrich$parser_combinators$Combine$keep, $author$project$Lia$Markdown$Inline$Parser$cyclic$ref_video(), $andre_dietrich$parser_combinators$Combine$string('!?'));
+    }
+    function $author$project$Lia$Markdown$Inline$Parser$cyclic$ref_video() {
+        return A2($andre_dietrich$parser_combinators$Combine$ignore, $andre_dietrich$parser_combinators$Combine$string(')'), A2($andre_dietrich$parser_combinators$Combine$andMap, $author$project$Lia$Markdown$Inline$Parser$cyclic$ref_title(), A2($andre_dietrich$parser_combinators$Combine$andMap, A2($andre_dietrich$parser_combinators$Combine$map, $author$project$Lia$Markdown$Inline$Multimedia$movie, $author$project$Lia$Markdown$Inline$Parser$ref_url_2), A2($andre_dietrich$parser_combinators$Combine$ignore, $andre_dietrich$parser_combinators$Combine$string('('), A2($andre_dietrich$parser_combinators$Combine$map, $author$project$Lia$Markdown$Inline$Types$Movie, $author$project$Lia$Markdown$Inline$Parser$cyclic$ref_info())))));
+    }
+    function $author$project$Lia$Markdown$Inline$Parser$cyclic$refAudio() {
+        return A2($andre_dietrich$parser_combinators$Combine$keep, $author$project$Lia$Markdown$Inline$Parser$cyclic$ref_audio(), $andre_dietrich$parser_combinators$Combine$string('?'));
+    }
+    function $author$project$Lia$Markdown$Inline$Parser$cyclic$ref_audio() {
+        return A2($andre_dietrich$parser_combinators$Combine$ignore, $andre_dietrich$parser_combinators$Combine$string(')'), A2($andre_dietrich$parser_combinators$Combine$andMap, $author$project$Lia$Markdown$Inline$Parser$cyclic$ref_title(), A2($andre_dietrich$parser_combinators$Combine$andMap, A2($andre_dietrich$parser_combinators$Combine$map, $author$project$Lia$Markdown$Inline$Multimedia$audio, $author$project$Lia$Markdown$Inline$Parser$ref_url_2), A2($andre_dietrich$parser_combinators$Combine$ignore, $andre_dietrich$parser_combinators$Combine$string('('), A2($andre_dietrich$parser_combinators$Combine$map, $author$project$Lia$Markdown$Inline$Types$Audio, $author$project$Lia$Markdown$Inline$Parser$cyclic$ref_info())))));
+    }
+    function $author$project$Lia$Markdown$Inline$Parser$cyclic$refQr() {
+        return A2($andre_dietrich$parser_combinators$Combine$ignore, $andre_dietrich$parser_combinators$Combine$string(')'), A2($andre_dietrich$parser_combinators$Combine$andMap, $author$project$Lia$Markdown$Inline$Parser$cyclic$ref_title(), A2($andre_dietrich$parser_combinators$Combine$andMap, $author$project$Lia$Markdown$Inline$Parser$ref_url_1, A2($andre_dietrich$parser_combinators$Combine$ignore, $andre_dietrich$parser_combinators$Combine$string('('), A2($andre_dietrich$parser_combinators$Combine$onsuccess, $author$project$Lia$Markdown$Inline$Types$QR_Link, A3($andre_dietrich$parser_combinators$Combine$regexWith, true, false, '\\[\\w*qr-code\\w*]'))))));
+    }
+    function $author$project$Lia$Markdown$Inline$Parser$cyclic$refPreview() {
+        return A2($andre_dietrich$parser_combinators$Combine$ignore, $andre_dietrich$parser_combinators$Combine$string(')'), A2($andre_dietrich$parser_combinators$Combine$ignore, $author$project$Lia$Markdown$Inline$Parser$cyclic$ref_title(), A2($andre_dietrich$parser_combinators$Combine$andMap, $author$project$Lia$Markdown$Inline$Parser$ref_url_1, A2($andre_dietrich$parser_combinators$Combine$ignore, $andre_dietrich$parser_combinators$Combine$string('('), A2($andre_dietrich$parser_combinators$Combine$ignore, $andre_dietrich$parser_combinators$Combine$regex('\\w*]'), A2($andre_dietrich$parser_combinators$Combine$keep, $andre_dietrich$parser_combinators$Combine$choice(_List_fromArray([
+            A2($andre_dietrich$parser_combinators$Combine$onsuccess, $author$project$Lia$Markdown$Inline$Types$Preview_Lia, A3($andre_dietrich$parser_combinators$Combine$regexWith, true, false, 'lia')),
+            A2($andre_dietrich$parser_combinators$Combine$onsuccess, $author$project$Lia$Markdown$Inline$Types$Preview_Link, A3($andre_dietrich$parser_combinators$Combine$regexWith, true, false, 'link'))
+        ])), A3($andre_dietrich$parser_combinators$Combine$regexWith, true, false, '\\[\\w*preview-')))))));
+    }
+    function $author$project$Lia$Markdown$Inline$Parser$cyclic$ref_title() {
+        return $andre_dietrich$parser_combinators$Combine$maybe(A2($andre_dietrich$parser_combinators$Combine$map, $author$project$Lia$Markdown$Inline$Types$combine, A2($andre_dietrich$parser_combinators$Combine$ignore, $author$project$Lia$Parser$Helper$spaces, A2($andre_dietrich$parser_combinators$Combine$keep, A2($andre_dietrich$parser_combinators$Combine$manyTill, $author$project$Lia$Markdown$Inline$Parser$cyclic$inlines(), $andre_dietrich$parser_combinators$Combine$string('\"')), A2($andre_dietrich$parser_combinators$Combine$ignore, $andre_dietrich$parser_combinators$Combine$string('\"'), $author$project$Lia$Parser$Helper$spaces)))));
+    }
+    function $author$project$Lia$Markdown$Inline$Parser$cyclic$refMail() {
+        return A3($author$project$Lia$Markdown$Inline$Parser$ref_pattern, $author$project$Lia$Markdown$Inline$Types$Mail, $author$project$Lia$Markdown$Inline$Parser$cyclic$ref_info(), $author$project$Lia$Markdown$Inline$Parser$email);
+    }
+    function $author$project$Lia$Markdown$Inline$Parser$cyclic$refLink() {
+        return A3($author$project$Lia$Markdown$Inline$Parser$ref_pattern, $author$project$Lia$Markdown$Inline$Types$Link, $author$project$Lia$Markdown$Inline$Parser$cyclic$ref_info(), $author$project$Lia$Markdown$Inline$Parser$ref_url_1);
+    }
+    function $author$project$Lia$Markdown$Inline$Parser$cyclic$refImage() {
+        return A2($andre_dietrich$parser_combinators$Combine$keep, A3($author$project$Lia$Markdown$Inline$Parser$ref_pattern, $author$project$Lia$Markdown$Inline$Types$Image, $author$project$Lia$Markdown$Inline$Parser$cyclic$ref_info(), $author$project$Lia$Markdown$Inline$Parser$ref_url_2), $andre_dietrich$parser_combinators$Combine$string('!'));
+    }
+    function $author$project$Lia$Markdown$Inline$Parser$cyclic$refEmbed() {
+        return A2($andre_dietrich$parser_combinators$Combine$keep, A3($author$project$Lia$Markdown$Inline$Parser$ref_pattern, $author$project$Lia$Markdown$Inline$Types$Embed, $author$project$Lia$Markdown$Inline$Parser$cyclic$ref_info(), $author$project$Lia$Markdown$Inline$Parser$ref_url_1), $andre_dietrich$parser_combinators$Combine$string('??'));
+    }
+    function $author$project$Lia$Markdown$Inline$Parser$cyclic$ref_info() {
+        return A2($andre_dietrich$parser_combinators$Combine$map, $author$project$Lia$Markdown$Inline$Types$combine, A2($andre_dietrich$parser_combinators$Combine$keep, A2($andre_dietrich$parser_combinators$Combine$manyTill, $author$project$Lia$Markdown$Inline$Parser$cyclic$inlines(), $andre_dietrich$parser_combinators$Combine$string(']')), $andre_dietrich$parser_combinators$Combine$string('[')));
+    }
+    function $author$project$Lia$Markdown$Inline$Parser$cyclic$line() {
+        return A2($andre_dietrich$parser_combinators$Combine$map, $author$project$Lia$Markdown$Inline$Types$combine, $andre_dietrich$parser_combinators$Combine$many1($author$project$Lia$Markdown$Inline$Parser$cyclic$inlines()));
+    }
+    function $author$project$Lia$Markdown$Inline$Parser$cyclic$inlines() {
+        return $andre_dietrich$parser_combinators$Combine$lazy(function(_v3) {
+            return A2($andre_dietrich$parser_combinators$Combine$keep, A2($andre_dietrich$parser_combinators$Combine$or, A2($andre_dietrich$parser_combinators$Combine$map, function(_v4) {
+                var attr = _v4.a;
+                var id = _v4.b;
+                return A2($author$project$Lia$Markdown$Inline$Types$Script, id, attr);
+            }, $author$project$Lia$Markdown$Inline$Parser$eScript(_List_Nil)), A2($andre_dietrich$parser_combinators$Combine$andMap, A2($andre_dietrich$parser_combinators$Combine$keep, $author$project$Lia$Markdown$Inline$Parser$annotations, $author$project$Lia$Markdown$Macro$Parser$macro), $andre_dietrich$parser_combinators$Combine$choice(_List_fromArray([
+                $author$project$Lia$Markdown$Inline$Parser$code,
+                $author$project$Lia$Markdown$Footnote$Parser$inline($author$project$Lia$Markdown$Inline$Parser$parse_inlines),
+                $author$project$Lia$Markdown$Inline$Parser$cyclic$reference(),
+                $author$project$Lia$Markdown$Inline$Parser$Formula$formula,
+                A2($andre_dietrich$parser_combinators$Combine$map, $author$project$Lia$Markdown$Inline$Types$EInline, $author$project$Lia$Markdown$Effect$Parser$inline($author$project$Lia$Markdown$Inline$Parser$cyclic$inlines())),
+                $author$project$Lia$Markdown$Inline$Parser$cyclic$strings()
+            ])))), $author$project$Lia$Markdown$Macro$Parser$macro);
+        });
+    }
+    function $author$project$Lia$Markdown$Inline$Parser$cyclic$strings() {
+        return $andre_dietrich$parser_combinators$Combine$lazy(function(_v0) {
+            return $andre_dietrich$parser_combinators$Combine$choice(_List_fromArray([
+                $author$project$Lia$Markdown$Inline$Parser$inline_url,
+                $author$project$Lia$Markdown$Inline$Parser$stringBase,
+                $author$project$Lia$Markdown$Inline$Parser$Symbol$arrows,
+                $author$project$Lia$Markdown$Inline$Parser$Symbol$smileys,
+                $author$project$Lia$Markdown$Inline$Parser$stringEscape,
+                $author$project$Lia$Markdown$Inline$Parser$cyclic$stringBold(),
+                $author$project$Lia$Markdown$Inline$Parser$cyclic$stringItalic(),
+                $author$project$Lia$Markdown$Inline$Parser$cyclic$stringUnderline(),
+                $author$project$Lia$Markdown$Inline$Parser$cyclic$stringStrike(),
+                $author$project$Lia$Markdown$Inline$Parser$cyclic$stringSuperscript(),
+                $author$project$Lia$Markdown$Inline$Parser$stringSpaces,
+                A2($andre_dietrich$parser_combinators$Combine$map, $author$project$Lia$Markdown$Inline$Types$IHTML, $author$project$Lia$Markdown$HTML$Parser$parse($author$project$Lia$Markdown$Inline$Parser$cyclic$inlines())),
+                $author$project$Lia$Markdown$Inline$Parser$stringCharacters,
+                $author$project$Lia$Markdown$Inline$Parser$stringBase2
+            ]));
+        });
+    }
+    try {
+        var $author$project$Lia$Markdown$Inline$Parser$stringUnderline = $author$project$Lia$Markdown$Inline$Parser$cyclic$stringUnderline();
+        $author$project$Lia$Markdown$Inline$Parser$cyclic$stringUnderline = function() {
+            return $author$project$Lia$Markdown$Inline$Parser$stringUnderline;
+        };
+        var $author$project$Lia$Markdown$Inline$Parser$stringSuperscript = $author$project$Lia$Markdown$Inline$Parser$cyclic$stringSuperscript();
+        $author$project$Lia$Markdown$Inline$Parser$cyclic$stringSuperscript = function() {
+            return $author$project$Lia$Markdown$Inline$Parser$stringSuperscript;
+        };
+        var $author$project$Lia$Markdown$Inline$Parser$stringStrike = $author$project$Lia$Markdown$Inline$Parser$cyclic$stringStrike();
+        $author$project$Lia$Markdown$Inline$Parser$cyclic$stringStrike = function() {
+            return $author$project$Lia$Markdown$Inline$Parser$stringStrike;
+        };
+        var $author$project$Lia$Markdown$Inline$Parser$stringItalic = $author$project$Lia$Markdown$Inline$Parser$cyclic$stringItalic();
+        $author$project$Lia$Markdown$Inline$Parser$cyclic$stringItalic = function() {
+            return $author$project$Lia$Markdown$Inline$Parser$stringItalic;
+        };
+        var $author$project$Lia$Markdown$Inline$Parser$stringBold = $author$project$Lia$Markdown$Inline$Parser$cyclic$stringBold();
+        $author$project$Lia$Markdown$Inline$Parser$cyclic$stringBold = function() {
+            return $author$project$Lia$Markdown$Inline$Parser$stringBold;
+        };
+        var $author$project$Lia$Markdown$Inline$Parser$reference = $author$project$Lia$Markdown$Inline$Parser$cyclic$reference();
+        $author$project$Lia$Markdown$Inline$Parser$cyclic$reference = function() {
+            return $author$project$Lia$Markdown$Inline$Parser$reference;
+        };
+        var $author$project$Lia$Markdown$Inline$Parser$refMovie = $author$project$Lia$Markdown$Inline$Parser$cyclic$refMovie();
+        $author$project$Lia$Markdown$Inline$Parser$cyclic$refMovie = function() {
+            return $author$project$Lia$Markdown$Inline$Parser$refMovie;
+        };
+        var $author$project$Lia$Markdown$Inline$Parser$ref_video = $author$project$Lia$Markdown$Inline$Parser$cyclic$ref_video();
+        $author$project$Lia$Markdown$Inline$Parser$cyclic$ref_video = function() {
+            return $author$project$Lia$Markdown$Inline$Parser$ref_video;
+        };
+        var $author$project$Lia$Markdown$Inline$Parser$refAudio = $author$project$Lia$Markdown$Inline$Parser$cyclic$refAudio();
+        $author$project$Lia$Markdown$Inline$Parser$cyclic$refAudio = function() {
+            return $author$project$Lia$Markdown$Inline$Parser$refAudio;
+        };
+        var $author$project$Lia$Markdown$Inline$Parser$ref_audio = $author$project$Lia$Markdown$Inline$Parser$cyclic$ref_audio();
+        $author$project$Lia$Markdown$Inline$Parser$cyclic$ref_audio = function() {
+            return $author$project$Lia$Markdown$Inline$Parser$ref_audio;
+        };
+        var $author$project$Lia$Markdown$Inline$Parser$refQr = $author$project$Lia$Markdown$Inline$Parser$cyclic$refQr();
+        $author$project$Lia$Markdown$Inline$Parser$cyclic$refQr = function() {
+            return $author$project$Lia$Markdown$Inline$Parser$refQr;
+        };
+        var $author$project$Lia$Markdown$Inline$Parser$refPreview = $author$project$Lia$Markdown$Inline$Parser$cyclic$refPreview();
+        $author$project$Lia$Markdown$Inline$Parser$cyclic$refPreview = function() {
+            return $author$project$Lia$Markdown$Inline$Parser$refPreview;
+        };
+        var $author$project$Lia$Markdown$Inline$Parser$ref_title = $author$project$Lia$Markdown$Inline$Parser$cyclic$ref_title();
+        $author$project$Lia$Markdown$Inline$Parser$cyclic$ref_title = function() {
+            return $author$project$Lia$Markdown$Inline$Parser$ref_title;
+        };
+        var $author$project$Lia$Markdown$Inline$Parser$refMail = $author$project$Lia$Markdown$Inline$Parser$cyclic$refMail();
+        $author$project$Lia$Markdown$Inline$Parser$cyclic$refMail = function() {
+            return $author$project$Lia$Markdown$Inline$Parser$refMail;
+        };
+        var $author$project$Lia$Markdown$Inline$Parser$refLink = $author$project$Lia$Markdown$Inline$Parser$cyclic$refLink();
+        $author$project$Lia$Markdown$Inline$Parser$cyclic$refLink = function() {
+            return $author$project$Lia$Markdown$Inline$Parser$refLink;
+        };
+        var $author$project$Lia$Markdown$Inline$Parser$refImage = $author$project$Lia$Markdown$Inline$Parser$cyclic$refImage();
+        $author$project$Lia$Markdown$Inline$Parser$cyclic$refImage = function() {
+            return $author$project$Lia$Markdown$Inline$Parser$refImage;
+        };
+        var $author$project$Lia$Markdown$Inline$Parser$refEmbed = $author$project$Lia$Markdown$Inline$Parser$cyclic$refEmbed();
+        $author$project$Lia$Markdown$Inline$Parser$cyclic$refEmbed = function() {
+            return $author$project$Lia$Markdown$Inline$Parser$refEmbed;
+        };
+        var $author$project$Lia$Markdown$Inline$Parser$ref_info = $author$project$Lia$Markdown$Inline$Parser$cyclic$ref_info();
+        $author$project$Lia$Markdown$Inline$Parser$cyclic$ref_info = function() {
+            return $author$project$Lia$Markdown$Inline$Parser$ref_info;
+        };
+        var $author$project$Lia$Markdown$Inline$Parser$line = $author$project$Lia$Markdown$Inline$Parser$cyclic$line();
+        $author$project$Lia$Markdown$Inline$Parser$cyclic$line = function() {
+            return $author$project$Lia$Markdown$Inline$Parser$line;
+        };
+        var $author$project$Lia$Markdown$Inline$Parser$inlines = $author$project$Lia$Markdown$Inline$Parser$cyclic$inlines();
+        $author$project$Lia$Markdown$Inline$Parser$cyclic$inlines = function() {
+            return $author$project$Lia$Markdown$Inline$Parser$inlines;
+        };
+        var $author$project$Lia$Markdown$Inline$Parser$strings = $author$project$Lia$Markdown$Inline$Parser$cyclic$strings();
+        $author$project$Lia$Markdown$Inline$Parser$cyclic$strings = function() {
+            return $author$project$Lia$Markdown$Inline$Parser$strings;
+        };
+    } catch ($2) {
+        throw 'Some top-level definitions from `Lia.Markdown.Inline.Parser` are causing infinite recursion:\n\n  ┌─────┐\n  │    stringUnderline\n  │     ↓\n  │    stringSuperscript\n  │     ↓\n  │    stringStrike\n  │     ↓\n  │    stringItalic\n  │     ↓\n  │    stringBold\n  │     ↓\n  │    between_\n  │     ↓\n  │    reference\n  │     ↓\n  │    refMovie\n  │     ↓\n  │    ref_video\n  │     ↓\n  │    refAudio\n  │     ↓\n  │    ref_audio\n  │     ↓\n  │    refQr\n  │     ↓\n  │    refPreview\n  │     ↓\n  │    ref_title\n  │     ↓\n  │    refMail\n  │     ↓\n  │    refLink\n  │     ↓\n  │    refImage\n  │     ↓\n  │    refEmbed\n  │     ↓\n  │    ref_info\n  │     ↓\n  │    line\n  │     ↓\n  │    inlines\n  │     ↓\n  │    parse_inlines\n  │     ↓\n  │    ref_pattern\n  │     ↓\n  │    strings\n  └─────┘\n\nThese errors are very tricky, so read https://elm-lang.org/0.19.1/bad-recursion to learn how to fix it!';
+    }
+    var $author$project$Lia$Definition$Parser$inline_parser = F2(function(defines, str) {
+        var _v0 = A3($andre_dietrich$parser_combinators$Combine$runParser, $author$project$Lia$Markdown$Inline$Parser$line, A2($author$project$Lia$Parser$Context$init, $elm$core$Maybe$Nothing, defines), A3($elm$core$String$replace, '\n', ' ', str));
+        if (_v0.$ === 'Ok') {
+            var _v1 = _v0.a;
+            var rslt = _v1.c;
+            return rslt;
+        } else return _List_Nil;
+    });
+    var $author$project$Lia$Definition$Parser$set = function(fct) {
+        return $andre_dietrich$parser_combinators$Combine$modifyState(function(s) {
+            return _Utils_update(s, {
+                defines: fct(s.defines)
+            });
+        });
+    };
+    var $author$project$Lia$Definition$Parser$store = function(_v0) {
+        var key_ = _v0.a;
+        var value_ = _v0.b;
+        switch(key_){
+            case 'attribute':
+                return $author$project$Lia$Definition$Parser$set(function(c) {
+                    return _Utils_update(c, {
+                        attributes: A2($elm$core$List$append, c.attributes, _List_fromArray([
+                            A2($author$project$Lia$Definition$Parser$inline_parser, c, value_)
+                        ]))
+                    });
+                });
+            case 'author':
+                return $author$project$Lia$Definition$Parser$set(function(c) {
+                    return _Utils_update(c, {
+                        author: value_
+                    });
+                });
+            case 'base':
+                return $author$project$Lia$Definition$Parser$set(function(c) {
+                    return _Utils_update(c, {
+                        base: value_
+                    });
+                });
+            case 'comment':
+                return $author$project$Lia$Definition$Parser$set(function(c) {
+                    var singleLineComment = $author$project$Lia$Definition$Parser$reduce(value_);
+                    return A2($author$project$Lia$Markdown$Macro$Parser$add, _Utils_Tuple2('comment', singleLineComment), _Utils_update(c, {
+                        comment: A2($author$project$Lia$Definition$Parser$inline_parser, c, singleLineComment)
+                    }));
+                });
+            case 'dark':
+                return $author$project$Lia$Definition$Parser$set(function(c) {
+                    return _Utils_update(c, {
+                        lightMode: function() {
+                            var _v2 = $elm$core$String$toLower(value_);
+                            switch(_v2){
+                                case 'true':
+                                    return $elm$core$Maybe$Just(false);
+                                case 'false':
+                                    return $elm$core$Maybe$Just(true);
+                                default:
+                                    return $elm$core$Maybe$Nothing;
+                            }
+                        }()
+                    });
+                });
+            case 'date':
+                return $author$project$Lia$Definition$Parser$set(function(c) {
+                    return _Utils_update(c, {
+                        date: value_
+                    });
+                });
+            case 'email':
+                return $author$project$Lia$Definition$Parser$set(function(c) {
+                    return _Utils_update(c, {
+                        email: value_
+                    });
+                });
+            case 'import':
+                return $author$project$Lia$Definition$Parser$set($author$project$Lia$Definition$Types$add_imports(value_));
+            case 'language':
+                return $author$project$Lia$Definition$Parser$set(function(c) {
+                    return _Utils_update(c, {
+                        language: value_
+                    });
+                });
+            case 'link':
+                return $author$project$Lia$Definition$Parser$set(A2($author$project$Lia$Definition$Types$addToResources, $author$project$Lia$Definition$Types$Link, value_));
+            case 'logo':
+                return $author$project$Lia$Definition$Parser$set(function(c) {
+                    return _Utils_update(c, {
+                        logo: A2($author$project$Lia$Markdown$HTML$Attributes$toURL, c.base, value_)
+                    });
+                });
+            case 'narrator':
+                return $author$project$Lia$Definition$Parser$set(function(c) {
+                    return _Utils_update(c, {
+                        narrator: value_
+                    });
+                });
+            case 'script':
+                return $author$project$Lia$Definition$Parser$set(A2($author$project$Lia$Definition$Types$addToResources, $author$project$Lia$Definition$Types$Script, value_));
+            case 'translation':
+                return $author$project$Lia$Definition$Parser$set($author$project$Lia$Definition$Types$add_translation(value_));
+            case 'version':
+                return $author$project$Lia$Definition$Parser$set(function(c) {
+                    return _Utils_update(c, {
+                        version: value_
+                    });
+                });
+            case 'mode':
+                return $author$project$Lia$Definition$Parser$set(function(c) {
+                    return _Utils_update(c, {
+                        mode: function() {
+                            var _v3 = $elm$core$String$toLower(value_);
+                            switch(_v3){
+                                case 'textbook':
+                                    return $elm$core$Maybe$Just($author$project$Lia$Settings$Types$Textbook);
+                                case 'presentation':
+                                    return $elm$core$Maybe$Just($author$project$Lia$Settings$Types$Presentation);
+                                case 'slides':
+                                    return $elm$core$Maybe$Just($author$project$Lia$Settings$Types$Slides);
+                                default:
+                                    return $elm$core$Maybe$Nothing;
+                            }
+                        }()
+                    });
+                });
+            case 'debug':
+                return $author$project$Lia$Definition$Parser$set(function(c) {
+                    return _Utils_update(c, {
+                        debug: value_ === 'true'
+                    });
+                });
+            case 'onload':
+                return $author$project$Lia$Definition$Parser$set(function(c) {
+                    return _Utils_update(c, {
+                        onload: value_
+                    });
+                });
+            case 'icon':
+                return $author$project$Lia$Definition$Parser$set(function(c) {
+                    return _Utils_update(c, {
+                        macro: A3($elm$core$Dict$insert, 'icon', A2($author$project$Lia$Markdown$HTML$Attributes$toURL, c.base, value_), c.macro)
+                    });
+                });
+            default:
+                return $author$project$Lia$Definition$Parser$set($author$project$Lia$Markdown$Macro$Parser$add(_Utils_Tuple2(key_, value_)));
+        }
+    };
+    var $author$project$Lia$Definition$Parser$defs = $andre_dietrich$parser_combinators$Combine$choice(_List_fromArray([
+        $andre_dietrich$parser_combinators$Combine$skip(A2($andre_dietrich$parser_combinators$Combine$ignore, $author$project$Lia$Definition$Parser$multiline, $andre_dietrich$parser_combinators$Combine$regex('@@@.*\n'))),
+        $andre_dietrich$parser_combinators$Combine$skip(A2($andre_dietrich$parser_combinators$Combine$ignore, $author$project$Lia$Definition$Parser$lines, $andre_dietrich$parser_combinators$Combine$regex('@@.*\n'))),
+        A2($andre_dietrich$parser_combinators$Combine$andThen, $author$project$Lia$Definition$Parser$store, $author$project$Lia$Definition$Parser$key_value)
+    ]));
+    var $author$project$Lia$Definition$Parser$definition = $andre_dietrich$parser_combinators$Combine$lazy(function(_v0) {
+        return $andre_dietrich$parser_combinators$Combine$skip($author$project$Lia$Markdown$Inline$Parser$comment(A2($andre_dietrich$parser_combinators$Combine$ignore, $andre_dietrich$parser_combinators$Combine$whitespace, $andre_dietrich$parser_combinators$Combine$many1(A2($andre_dietrich$parser_combinators$Combine$keep, $author$project$Lia$Definition$Parser$defs, $andre_dietrich$parser_combinators$Combine$whitespace)))));
+    });
+    var $author$project$Lia$Definition$Parser$parse = $andre_dietrich$parser_combinators$Combine$skip(A2($andre_dietrich$parser_combinators$Combine$ignore, $andre_dietrich$parser_combinators$Combine$whitespace, $andre_dietrich$parser_combinators$Combine$maybe(A2($andre_dietrich$parser_combinators$Combine$keep, $andre_dietrich$parser_combinators$Combine$modifyState(function(s) {
+        return _Utils_update(s, {
+            defines_updated: true
+        });
+    }), $author$project$Lia$Definition$Parser$definition))));
+    var $elm$core$List$takeReverse = F3(function(n, list, kept) {
+        takeReverse: while(true){
+            if (n <= 0) return kept;
+            else {
+                if (!list.b) return kept;
+                else {
+                    var x = list.a;
+                    var xs = list.b;
+                    var $temp$n = n - 1, $temp$list = xs, $temp$kept = A2($elm$core$List$cons, x, kept);
+                    n = $temp$n;
+                    list = $temp$list;
+                    kept = $temp$kept;
+                    continue takeReverse;
+                }
+            }
+        }
+    });
+    var $elm$core$List$takeTailRec = F2(function(n, list) {
+        return $elm$core$List$reverse(A3($elm$core$List$takeReverse, n, list, _List_Nil));
+    });
+    var $elm$core$List$takeFast = F3(function(ctr, n, list) {
+        if (n <= 0) return _List_Nil;
+        else {
+            var _v0 = _Utils_Tuple2(n, list);
+            _v0$1: while(true){
+                _v0$5: while(true){
+                    if (!_v0.b.b) return list;
+                    else if (_v0.b.b.b) switch(_v0.a){
+                        case 1:
+                            break _v0$1;
+                        case 2:
+                            var _v2 = _v0.b;
+                            var x = _v2.a;
+                            var _v3 = _v2.b;
+                            var y = _v3.a;
+                            return _List_fromArray([
+                                x,
+                                y
+                            ]);
+                        case 3:
+                            if (_v0.b.b.b.b) {
+                                var _v4 = _v0.b;
+                                var x = _v4.a;
+                                var _v5 = _v4.b;
+                                var y = _v5.a;
+                                var _v6 = _v5.b;
+                                var z = _v6.a;
+                                return _List_fromArray([
+                                    x,
+                                    y,
+                                    z
+                                ]);
+                            } else break _v0$5;
+                        default:
+                            if (_v0.b.b.b.b && _v0.b.b.b.b.b) {
+                                var _v7 = _v0.b;
+                                var x = _v7.a;
+                                var _v8 = _v7.b;
+                                var y = _v8.a;
+                                var _v9 = _v8.b;
+                                var z = _v9.a;
+                                var _v10 = _v9.b;
+                                var w = _v10.a;
+                                var tl = _v10.b;
+                                return ctr > 1000 ? A2($elm$core$List$cons, x, A2($elm$core$List$cons, y, A2($elm$core$List$cons, z, A2($elm$core$List$cons, w, A2($elm$core$List$takeTailRec, n - 4, tl))))) : A2($elm$core$List$cons, x, A2($elm$core$List$cons, y, A2($elm$core$List$cons, z, A2($elm$core$List$cons, w, A3($elm$core$List$takeFast, ctr + 1, n - 4, tl)))));
+                            } else break _v0$5;
+                    }
+                    else {
+                        if (_v0.a === 1) break _v0$1;
+                        else break _v0$5;
+                    }
+                }
+                return list;
+            }
+            var _v1 = _v0.b;
+            var x = _v1.a;
+            return _List_fromArray([
+                x
+            ]);
+        }
+    });
+    var $elm$core$List$take = F2(function(n, list) {
+        return A3($elm$core$List$takeFast, 0, n, list);
+    });
+    var $author$project$Error$Message$parseDefinition = F2(function(code, message) {
+        return '\n> I was trying to parse the **first** part of the course, which is either an\n> HTML-comment or something else, until I reach the header (which is marked by\n> an `#`). But, everything I got was the following:\n\n```\n' + ($elm$core$String$concat(A2($elm$core$List$intersperse, '\n', A2($elm$core$List$take, 15, $elm$core$String$lines(code)))) + ('\n...\n```\n\n> I might be wrong, but in most cases this refers to a falsely loaded HTML page!\n>\n> Please make sure, that the course you try to load is a Markdown file, which\n> is served as a plain text file...\n\n---\n\n**Error Message:**\n\n```\n' + (message + '\n```\n\n---\n\nIf it should work, and you think you have detected bug, please contact us. For\nmore information see the [last Section](#get-help?).\n')));
+    });
+    var $author$project$Lia$Parser$Parser$parse_definition = F2(function(base, code) {
+        var _v0 = A3($andre_dietrich$parser_combinators$Combine$runParser, A2($andre_dietrich$parser_combinators$Combine$ignore, A2($andre_dietrich$parser_combinators$Combine$or, $andre_dietrich$parser_combinators$Combine$string('#'), $author$project$Lia$Parser$Helper$stringTill($andre_dietrich$parser_combinators$Combine$regex('\n#'))), $author$project$Lia$Definition$Parser$parse), A2($author$project$Lia$Parser$Context$init, $elm$core$Maybe$Nothing, $author$project$Lia$Definition$Types$default(base)), code + '\n');
+        if (_v0.$ === 'Ok') {
+            var _v1 = _v0.a;
+            var state = _v1.a;
+            var data = _v1.b;
+            return $elm$core$Result$Ok(_Utils_Tuple2(state.defines, '#' + data.input));
+        } else {
+            var _v2 = _v0.a;
+            var stream = _v2.b;
+            var ms = _v2.c;
+            return $elm$core$Result$Err($elm$core$String$trim(code) === '' ? $author$project$Error$Message$emptyFile : A2($author$project$Error$Message$parseDefinition, code, A2($author$project$Lia$Parser$Parser$formatError, ms, stream)));
+        }
+    });
+    var $elm$core$Result$withDefault = F2(function(def, result) {
+        if (result.$ === 'Ok') {
+            var a = result.a;
+            return a;
+        } else return def;
+    });
+    var $author$project$Worker$defines = function(str) {
+        return A2($elm$core$Result$withDefault, _Utils_Tuple2(false, ''), A2($elm$core$Result$map, A2($elm$core$Basics$composeR, $elm$core$Tuple$first, A2($elm$core$Basics$composeR, $author$project$Lia$Definition$Json$Encode$encode, A2($elm$core$Basics$composeR, $elm$json$Json$Encode$encode(2), $elm$core$Tuple$pair(true)))), A2($author$project$Lia$Parser$Parser$parse_definition, '', str)));
+    };
+    var $author$project$Translations$En = {
+        $: 'En'
+    };
+    var $author$project$Lia$Index$Model$init = '';
+    var $author$project$Lia$Settings$Types$init = F2(function(hasShareApi, mode) {
+        return {
+            action: $elm$core$Maybe$Nothing,
+            customTheme: $elm$core$Maybe$Nothing,
+            editor: 'dreamweaver',
+            font_size: 100,
+            hasShareApi: hasShareApi,
+            initialized: false,
+            lang: 'default',
+            light: true,
+            mode: mode,
+            sound: true,
+            speaking: false,
+            support_menu: false,
+            sync: false,
+            table_of_contents: true,
+            theme: 'default',
+            tooltips: false,
+            translateWithGoogle: false
+        };
+    });
+    var $author$project$Lia$Sync$Types$Disconnected = {
+        $: 'Disconnected'
+    };
+    var $elm$core$Set$Set_elm_builtin = function(a) {
+        return {
+            $: 'Set_elm_builtin',
+            a: a
+        };
+    };
+    var $elm$core$Set$empty = $elm$core$Set$Set_elm_builtin($elm$core$Dict$empty);
+    var $author$project$Lia$Sync$Via$Beaker = {
+        $: 'Beaker'
+    };
+    var $author$project$Lia$Sync$Via$GUN = {
+        $: 'GUN'
+    };
+    var $author$project$Lia$Sync$Via$Jitsi = {
+        $: 'Jitsi'
+    };
+    var $author$project$Lia$Sync$Via$Matrix = {
+        $: 'Matrix'
+    };
+    var $author$project$Lia$Sync$Via$PubNub = {
+        $: 'PubNub'
+    };
+    var $author$project$Lia$Sync$Via$fromString = function(via) {
+        var _v0 = $elm$core$String$toLower(via);
+        switch(_v0){
+            case 'beaker':
+                return $elm$core$Maybe$Just($author$project$Lia$Sync$Via$Beaker);
+            case 'gun':
+                return $elm$core$Maybe$Just($author$project$Lia$Sync$Via$GUN);
+            case 'jitsi':
+                return $elm$core$Maybe$Just($author$project$Lia$Sync$Via$Jitsi);
+            case 'matrix':
+                return $elm$core$Maybe$Just($author$project$Lia$Sync$Via$Matrix);
+            case 'pubnub':
+                return $elm$core$Maybe$Just($author$project$Lia$Sync$Via$PubNub);
+            default:
+                return $elm$core$Maybe$Nothing;
+        }
+    };
+    var $author$project$Lia$Sync$Types$init = function(supportedBackends) {
+        return {
+            error: $elm$core$Maybe$Nothing,
+            password: '',
+            peers: $elm$core$Set$empty,
+            room: '',
+            state: $author$project$Lia$Sync$Types$Disconnected,
+            sync: {
+                open: false,
+                select: $elm$core$Maybe$Nothing,
+                support: A2($elm$core$List$filterMap, $author$project$Lia$Sync$Via$fromString, supportedBackends)
+            }
+        };
+    };
+    var $author$project$Const$urlProxy = 'https://api.allorigins.win/raw?url=';
+    var $author$project$Lia$Parser$PatReplace$urlProxy = A3($elm$core$String$replace, '?', '\\?', A3($elm$core$String$replace, '.', '\\.', $author$project$Const$urlProxy));
+    var $author$project$Lia$Parser$PatReplace$repo = A2($elm$core$Basics$composeR, $author$project$Lia$Parser$PatReplace$replace(_List_fromArray([
+        {
+            by: F2(function(_v0, w) {
+                return 'https://github.com/' + (function() {
+                    var _v1 = A2($elm$core$String$split, '/', w);
+                    if (_v1.b && _v1.b.b && _v1.b.b.b) {
+                        if (_v1.b.b.a === 'blob' && _v1.b.b.b.b) {
+                            var user = _v1.a;
+                            var _v2 = _v1.b;
+                            var repository = _v2.a;
+                            var _v3 = _v2.b;
+                            var _v4 = _v3.b;
+                            var hash = _v4.a;
+                            return user + ('/' + (repository + ('/tree/' + hash)));
+                        } else {
+                            var user = _v1.a;
+                            var _v5 = _v1.b;
+                            var repository = _v5.a;
+                            var _v6 = _v5.b;
+                            var branch = _v6.a;
+                            return user + ('/' + (repository + ('/tree/' + branch)));
+                        }
+                    } else return w;
+                })();
+            }),
+            pattern: $author$project$Lia$Parser$PatReplace$root('raw.githubusercontent\\.com/(.*)')
+        },
+        {
+            by: F2(function(_v7, w) {
+                return 'https://gitlab.com/' + A3($elm$core$String$replace, '-/raw/', '-/tree/', w);
+            }),
+            pattern: $author$project$Lia$Parser$PatReplace$root($author$project$Lia$Parser$PatReplace$urlProxy + 'https://gitlab\\.com/(.*)')
+        },
+        {
+            by: F2(function(_v8, w) {
+                var _v9 = A2($elm$core$List$map, $elm$core$String$split('.'), A2($elm$core$String$split, '/', w));
+                if (_v9.b && _v9.a.b && _v9.a.b.b && _v9.a.b.a === 'gitlab' && _v9.a.b.b.b && _v9.a.b.b.a === 'io' && !_v9.a.b.b.b.b && _v9.b.b && _v9.b.a.b && !_v9.b.a.b.b) {
+                    var _v10 = _v9.a;
+                    var user = _v10.a;
+                    var _v11 = _v10.b;
+                    var _v12 = _v11.b;
+                    var _v13 = _v9.b;
+                    var _v14 = _v13.a;
+                    var project = _v14.a;
+                    return 'https://gitlab.com/' + (user + ('/' + project));
+                } else return 'https://' + w;
+            }),
+            pattern: $author$project$Lia$Parser$PatReplace$root('(.*\\.gitlab\\.io/.*)')
+        },
+        {
+            by: F2(function(_v15, w) {
+                return 'https://dropbox.com/s/' + w;
+            }),
+            pattern: $author$project$Lia$Parser$PatReplace$root('dl\\.dropbox\\.com/s/(.*)')
+        }
+    ])), function(_v16) {
+        var found = _v16.a;
+        var string = _v16.b;
+        return found ? $elm$core$Maybe$Just(A3($elm$core$String$replace, $author$project$Const$urlProxy, '', string)) : $elm$core$Maybe$Nothing;
+    });
+    var $elm$json$Json$Decode$bool = _Json_decodeBool;
+    var $elm$json$Json$Decode$decodeValue = _Json_run;
+    var $elm$json$Json$Decode$int = _Json_decodeInt;
+    var $elm$json$Json$Decode$map = _Json_map1;
+    var $elm$json$Json$Decode$map2 = _Json_map2;
+    var $elm$json$Json$Decode$map8 = _Json_map8;
+    var $elm$json$Json$Decode$oneOf = _Json_oneOf;
+    var $elm$json$Json$Decode$succeed = _Json_succeed;
+    var $elm$json$Json$Decode$maybe = function(decoder) {
+        return $elm$json$Json$Decode$oneOf(_List_fromArray([
+            A2($elm$json$Json$Decode$map, $elm$core$Maybe$Just, decoder),
+            $elm$json$Json$Decode$succeed($elm$core$Maybe$Nothing)
+        ]));
+    };
+    var $author$project$Lia$Settings$Json$settings = function(model) {
+        return function(toc) {
+            return function(mode) {
+                return function(theme) {
+                    return function(light) {
+                        return function(editor) {
+                            return function(font_size) {
+                                return function(sound) {
+                                    return function(lang) {
+                                        return function(tooltips) {
+                                            return _Utils_update(model, {
+                                                editor: editor,
+                                                font_size: font_size,
+                                                lang: lang,
+                                                light: light,
+                                                mode: mode,
+                                                sound: sound,
+                                                table_of_contents: toc,
+                                                theme: theme,
+                                                tooltips: tooltips
+                                            });
+                                        };
+                                    };
+                                };
+                            };
+                        };
+                    };
+                };
+            };
+        };
+    };
+    var $elm$json$Json$Decode$string = _Json_decodeString;
+    var $elm$json$Json$Decode$fail = _Json_fail;
+    var $author$project$Lia$Settings$Json$toMode = function(str) {
+        switch(str){
+            case 'Textbook':
+                return $elm$json$Json$Decode$succeed($author$project$Lia$Settings$Types$Textbook);
+            case 'Presentation':
+                return $elm$json$Json$Decode$succeed($author$project$Lia$Settings$Types$Presentation);
+            case 'Slides':
+                return $elm$json$Json$Decode$succeed($author$project$Lia$Settings$Types$Slides);
+            default:
+                return $elm$json$Json$Decode$fail('unknown presentation mode');
+        }
+    };
+    var $author$project$Lia$Settings$Json$toModel = function(model) {
+        return $elm$json$Json$Decode$decodeValue(A3($elm$json$Json$Decode$map2, $elm$core$Basics$apR, A2($elm$json$Json$Decode$map, $elm$core$Maybe$withDefault(false), $elm$json$Json$Decode$maybe(A2($elm$json$Json$Decode$field, 'tooltips', $elm$json$Json$Decode$bool))), A9($elm$json$Json$Decode$map8, $author$project$Lia$Settings$Json$settings(model), A2($elm$json$Json$Decode$field, 'table_of_contents', $elm$json$Json$Decode$bool), A2($elm$json$Json$Decode$andThen, $author$project$Lia$Settings$Json$toMode, A2($elm$json$Json$Decode$field, 'mode', $elm$json$Json$Decode$string)), A2($elm$json$Json$Decode$field, 'theme', $elm$json$Json$Decode$string), A2($elm$json$Json$Decode$field, 'light', $elm$json$Json$Decode$bool), A2($elm$json$Json$Decode$field, 'editor', $elm$json$Json$Decode$string), A2($elm$json$Json$Decode$field, 'font_size', $elm$json$Json$Decode$int), A2($elm$json$Json$Decode$field, 'sound', $elm$json$Json$Decode$bool), A2($elm$json$Json$Decode$field, 'lang', $elm$json$Json$Decode$string))));
+    };
+    var $author$project$Lia$Model$init = F8(function(hasShareApi, openTOC, settings, allowedBackends, url, readme, origin, anchor) {
+        var _default = A2($author$project$Lia$Settings$Types$init, hasShareApi, $author$project$Lia$Settings$Types$Presentation);
+        return {
+            anchor: anchor,
+            definition: $author$project$Lia$Definition$Types$default(url),
+            error: $elm$core$Maybe$Nothing,
+            index_model: $author$project$Lia$Index$Model$init,
+            langCode: 'en',
+            langCodeOriginal: 'en',
+            media: $elm$core$Dict$empty,
+            modal: $elm$core$Maybe$Nothing,
+            origin: origin,
+            readme: readme,
+            repositoryUrl: $author$project$Lia$Parser$PatReplace$repo(readme),
+            resource: _List_Nil,
+            search_index: $elm$core$Basics$identity,
+            section_active: 0,
+            sections: $elm$core$Array$empty,
+            settings: (function(set) {
+                return _Utils_update(set, {
+                    table_of_contents: openTOC
+                });
+            })(A2($elm$core$Result$withDefault, _default, A2($author$project$Lia$Settings$Json$toModel, _default, settings))),
+            sync: $author$project$Lia$Sync$Types$init(allowedBackends),
+            title: 'Lia',
+            to_do: _List_Nil,
+            translation: $author$project$Translations$En,
+            url: url
+        };
+    });
+    var $author$project$Lia$Script$init = $author$project$Lia$Model$init;
+    var $elm$core$Platform$Cmd$batch = _Platform_batch;
+    var $elm$core$Platform$Cmd$none = $elm$core$Platform$Cmd$batch(_List_Nil);
+    var $author$project$Worker$output = _Platform_outgoingPort('output', function($) {
+        var a = $.a;
+        var b = $.b;
+        return A2($elm$json$Json$Encode$list, $elm$core$Basics$identity, _List_fromArray([
+            $elm$json$Json$Encode$bool(a),
+            $elm$json$Json$Encode$string(b)
+        ]));
+    });
+    var $author$project$Worker$init = function(flags) {
+        return _Utils_Tuple2(A4($author$project$Worker$Model, $author$project$Model$Idle, '', $elm$core$Maybe$Nothing, A8($author$project$Lia$Script$init, false, true, $elm$json$Json$Encode$null, _List_Nil, '', '', '', $elm$core$Maybe$Nothing)), flags.cmd === '' ? $elm$core$Platform$Cmd$none : $author$project$Worker$output($author$project$Worker$defines(flags.cmd)));
+    };
+    var $elm$json$Json$Decode$list = _Json_decodeList;
+    var $author$project$Worker$input = _Platform_incomingPort('input', $elm$json$Json$Decode$list($elm$json$Json$Decode$string));
+    var $author$project$Model$Parsing = F2(function(a, b) {
+        return {
+            $: 'Parsing',
+            a: a,
+            b: b
+        };
+    });
+    var $author$project$Model$Error = function(a) {
+        return {
+            $: 'Error',
+            a: a
+        };
+    };
+    var $author$project$Error$Report$add = F2(function(state, message) {
+        if (state.$ === 'Error') {
+            var messages = state.a;
+            return $author$project$Model$Error(A2($elm$core$List$append, messages, _List_fromArray([
+                message
+            ])));
+        } else return $author$project$Model$Error(_List_fromArray([
+            message
+        ]));
+    });
+    var $elm$core$Dict$union = F2(function(t1, t2) {
+        return A3($elm$core$Dict$foldl, $elm$core$Dict$insert, t2, t1);
+    });
+    var $author$project$Lia$Definition$Types$add_macros = F2(function(orig, temp) {
+        return _Utils_update(orig, {
+            attributes: A2($elm$core$List$append, orig.attributes, temp.attributes),
+            macro: A2($elm$core$Dict$union, orig.macro, temp.macro),
+            onload: $elm$core$String$trim(_Utils_ap(orig.onload, !_Utils_eq(orig.onload, temp.onload) ? '\n' + temp.onload : '')),
+            resources: A2($elm$core$List$append, orig.resources, temp.resources)
+        });
+    });
+    var $author$project$Service$Event$Event = F4(function(reply, track, service, message) {
+        return {
+            message: message,
+            reply: reply,
+            service: service,
+            track: track
+        };
+    });
+    var $author$project$Service$Event$init = A2($author$project$Service$Event$Event, true, _List_Nil);
+    var $author$project$Service$Event$withNoReply = function(e) {
+        return _Utils_update(e, {
+            reply: false
+        });
+    };
+    var $author$project$Service$Resource$event = F2(function(type_, url) {
+        return $author$project$Service$Event$withNoReply(A2($author$project$Service$Event$init, 'resource', {
+            cmd: type_,
+            param: $elm$json$Json$Encode$string(url)
+        }));
+    });
+    var $author$project$Service$Resource$link = function(url) {
+        return A2($author$project$Service$Resource$event, 'link', url);
+    };
+    var $author$project$Service$Resource$script = function(url) {
+        return A2($author$project$Service$Resource$event, 'script', url);
+    };
+    var $author$project$Lia$Model$loadResource = F2(function(old, _new) {
+        var member = function(x) {
+            return !A2($elm$core$List$member, x, old);
+        };
+        var to_load = A2($elm$core$List$filter, member, _new);
+        return _Utils_Tuple2(A2($elm$core$List$append, old, to_load), A2($elm$core$List$map, function(res) {
+            if (res.$ === 'Script') {
+                var url = res.a;
+                return $author$project$Service$Resource$script(url);
+            } else {
+                var url = res.a;
+                return $author$project$Service$Resource$link(url);
+            }
+        }, to_load));
+    });
+    var $author$project$Lia$Script$add_todos = F2(function(definition, model) {
+        var _v0 = A2($author$project$Lia$Model$loadResource, model.resource, definition.resources);
+        var res = _v0.a;
+        var events = _v0.b;
+        return _Utils_update(model, {
+            definition: A2($author$project$Lia$Definition$Types$add_macros, model.definition, definition),
+            resource: res,
+            to_do: A2($elm$core$List$append, model.to_do, $elm$core$List$reverse(events))
+        });
+    });
+    var $author$project$Lia$Script$add_imports = F2(function(model, code) {
+        var _v0 = A2($author$project$Lia$Parser$Parser$parse_definition, model.url, code);
+        if (_v0.$ === 'Ok') {
+            var _v1 = _v0.a;
+            var definition = _v1.a;
+            return A2($author$project$Lia$Script$add_todos, definition, model);
+        } else return model;
+    });
+    var $author$project$Worker$error = function(title) {
+        return A2($elm$core$Basics$composeR, $elm$core$Basics$append('Error (' + (title + ') -> ')), A2($elm$core$Basics$composeR, $elm$core$Tuple$pair(false), $author$project$Worker$output));
+    };
+    var $author$project$Translations$Ar = {
+        $: 'Ar'
+    };
+    var $author$project$Translations$Bg = {
+        $: 'Bg'
+    };
+    var $author$project$Translations$De = {
+        $: 'De'
+    };
+    var $author$project$Translations$Es = {
+        $: 'Es'
+    };
+    var $author$project$Translations$Fa = {
+        $: 'Fa'
+    };
+    var $author$project$Translations$Hy = {
+        $: 'Hy'
+    };
+    var $author$project$Translations$Ko = {
+        $: 'Ko'
+    };
+    var $author$project$Translations$Nl = {
+        $: 'Nl'
+    };
+    var $author$project$Translations$Ru = {
+        $: 'Ru'
+    };
+    var $author$project$Translations$Tw = {
+        $: 'Tw'
+    };
+    var $author$project$Translations$Ua = {
+        $: 'Ua'
+    };
+    var $author$project$Translations$Zh = {
+        $: 'Zh'
+    };
+    var $author$project$Translations$getLnFromCode = function(code) {
+        var _v0 = $elm$core$String$toLower(code);
+        switch(_v0){
+            case 'ar':
+                return $elm$core$Maybe$Just($author$project$Translations$Ar);
+            case 'bg':
+                return $elm$core$Maybe$Just($author$project$Translations$Bg);
+            case 'de':
+                return $elm$core$Maybe$Just($author$project$Translations$De);
+            case 'es':
+                return $elm$core$Maybe$Just($author$project$Translations$Es);
+            case 'fa':
+                return $elm$core$Maybe$Just($author$project$Translations$Fa);
+            case 'hy':
+                return $elm$core$Maybe$Just($author$project$Translations$Hy);
+            case 'ko':
+                return $elm$core$Maybe$Just($author$project$Translations$Ko);
+            case 'nl':
+                return $elm$core$Maybe$Just($author$project$Translations$Nl);
+            case 'ru':
+                return $elm$core$Maybe$Just($author$project$Translations$Ru);
+            case 'tw':
+                return $elm$core$Maybe$Just($author$project$Translations$Tw);
+            case 'ua':
+                return $elm$core$Maybe$Just($author$project$Translations$Ua);
+            case 'zh':
+                return $elm$core$Maybe$Just($author$project$Translations$Zh);
+            case 'en':
+                return $elm$core$Maybe$Just($author$project$Translations$En);
+            default:
+                return $elm$core$Maybe$Nothing;
+        }
+    };
+    var $author$project$Lia$Script$init_script = F2(function(model, script) {
+        var _v0 = A2($author$project$Lia$Parser$Parser$parse_definition, model.origin, script);
+        if (_v0.$ === 'Ok') {
+            var _v1 = _v0.a;
+            var definition = _v1.a;
+            var code = _v1.b;
+            var settings = model.settings;
+            return _Utils_Tuple3(A2($author$project$Lia$Script$add_todos, definition, _Utils_update(model, {
+                definition: _Utils_update(definition, {
+                    attributes: _List_Nil
+                }),
+                langCode: definition.language,
+                langCodeOriginal: definition.language,
+                settings: _Utils_update(settings, {
+                    customTheme: A2($elm$core$Dict$get, 'custom', definition.macro),
+                    light: A2($elm$core$Maybe$withDefault, settings.light, definition.lightMode),
+                    mode: A2($elm$core$Maybe$withDefault, settings.mode, definition.mode)
+                }),
+                translation: A2($elm$core$Maybe$withDefault, $author$project$Translations$En, $author$project$Translations$getLnFromCode(definition.language))
+            })), $elm$core$Maybe$Just(code), definition.imports);
+        } else {
+            var msg = _v0.a;
+            return _Utils_Tuple3(_Utils_update(model, {
+                error: $elm$core$Maybe$Just(msg)
+            }), $elm$core$Maybe$Nothing, _List_Nil);
+        }
+    });
+    var $author$project$Worker$LiaParse = {
+        $: 'LiaParse'
+    };
+    var $author$project$Worker$Load_Template_Result = function(a) {
+        return {
+            $: 'Load_Template_Result',
+            a: a
+        };
+    };
+    var $elm$http$Http$BadStatus_ = F2(function(a, b) {
+        return {
+            $: 'BadStatus_',
+            a: a,
+            b: b
+        };
+    });
+    var $elm$http$Http$BadUrl_ = function(a) {
+        return {
+            $: 'BadUrl_',
+            a: a
+        };
+    };
+    var $elm$http$Http$GoodStatus_ = F2(function(a, b) {
+        return {
+            $: 'GoodStatus_',
+            a: a,
+            b: b
+        };
+    });
+    var $elm$http$Http$NetworkError_ = {
+        $: 'NetworkError_'
+    };
+    var $elm$http$Http$Receiving = function(a) {
+        return {
+            $: 'Receiving',
+            a: a
+        };
+    };
+    var $elm$http$Http$Sending = function(a) {
+        return {
+            $: 'Sending',
+            a: a
+        };
+    };
+    var $elm$http$Http$Timeout_ = {
+        $: 'Timeout_'
+    };
+    var $elm$core$Maybe$isJust = function(maybe) {
+        if (maybe.$ === 'Just') return true;
+        else return false;
+    };
+    var $elm$core$Platform$sendToSelf = _Platform_sendToSelf;
+    var $elm$core$Dict$getMin = function(dict) {
+        getMin: while(true){
+            if (dict.$ === 'RBNode_elm_builtin' && dict.d.$ === 'RBNode_elm_builtin') {
+                var left = dict.d;
+                var $temp$dict = left;
+                dict = $temp$dict;
+                continue getMin;
+            } else return dict;
+        }
+    };
+    var $elm$core$Dict$moveRedLeft = function(dict) {
+        if (dict.$ === 'RBNode_elm_builtin' && dict.d.$ === 'RBNode_elm_builtin' && dict.e.$ === 'RBNode_elm_builtin') {
+            if (dict.e.d.$ === 'RBNode_elm_builtin' && dict.e.d.a.$ === 'Red') {
+                var clr = dict.a;
+                var k = dict.b;
+                var v = dict.c;
+                var _v1 = dict.d;
+                var lClr = _v1.a;
+                var lK = _v1.b;
+                var lV = _v1.c;
+                var lLeft = _v1.d;
+                var lRight = _v1.e;
+                var _v2 = dict.e;
+                var rClr = _v2.a;
+                var rK = _v2.b;
+                var rV = _v2.c;
+                var rLeft = _v2.d;
+                var _v3 = rLeft.a;
+                var rlK = rLeft.b;
+                var rlV = rLeft.c;
+                var rlL = rLeft.d;
+                var rlR = rLeft.e;
+                var rRight = _v2.e;
+                return A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Red, rlK, rlV, A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Black, k, v, A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Red, lK, lV, lLeft, lRight), rlL), A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Black, rK, rV, rlR, rRight));
+            } else {
+                var clr = dict.a;
+                var k = dict.b;
+                var v = dict.c;
+                var _v4 = dict.d;
+                var lClr = _v4.a;
+                var lK = _v4.b;
+                var lV = _v4.c;
+                var lLeft = _v4.d;
+                var lRight = _v4.e;
+                var _v5 = dict.e;
+                var rClr = _v5.a;
+                var rK = _v5.b;
+                var rV = _v5.c;
+                var rLeft = _v5.d;
+                var rRight = _v5.e;
+                if (clr.$ === 'Black') return A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Black, k, v, A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Red, lK, lV, lLeft, lRight), A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Red, rK, rV, rLeft, rRight));
+                else return A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Black, k, v, A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Red, lK, lV, lLeft, lRight), A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Red, rK, rV, rLeft, rRight));
+            }
+        } else return dict;
+    };
+    var $elm$core$Dict$moveRedRight = function(dict) {
+        if (dict.$ === 'RBNode_elm_builtin' && dict.d.$ === 'RBNode_elm_builtin' && dict.e.$ === 'RBNode_elm_builtin') {
+            if (dict.d.d.$ === 'RBNode_elm_builtin' && dict.d.d.a.$ === 'Red') {
+                var clr = dict.a;
+                var k = dict.b;
+                var v = dict.c;
+                var _v1 = dict.d;
+                var lClr = _v1.a;
+                var lK = _v1.b;
+                var lV = _v1.c;
+                var _v2 = _v1.d;
+                var _v3 = _v2.a;
+                var llK = _v2.b;
+                var llV = _v2.c;
+                var llLeft = _v2.d;
+                var llRight = _v2.e;
+                var lRight = _v1.e;
+                var _v4 = dict.e;
+                var rClr = _v4.a;
+                var rK = _v4.b;
+                var rV = _v4.c;
+                var rLeft = _v4.d;
+                var rRight = _v4.e;
+                return A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Red, lK, lV, A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Black, llK, llV, llLeft, llRight), A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Black, k, v, lRight, A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Red, rK, rV, rLeft, rRight)));
+            } else {
+                var clr = dict.a;
+                var k = dict.b;
+                var v = dict.c;
+                var _v5 = dict.d;
+                var lClr = _v5.a;
+                var lK = _v5.b;
+                var lV = _v5.c;
+                var lLeft = _v5.d;
+                var lRight = _v5.e;
+                var _v6 = dict.e;
+                var rClr = _v6.a;
+                var rK = _v6.b;
+                var rV = _v6.c;
+                var rLeft = _v6.d;
+                var rRight = _v6.e;
+                if (clr.$ === 'Black') return A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Black, k, v, A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Red, lK, lV, lLeft, lRight), A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Red, rK, rV, rLeft, rRight));
+                else return A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Black, k, v, A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Red, lK, lV, lLeft, lRight), A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Red, rK, rV, rLeft, rRight));
+            }
+        } else return dict;
+    };
+    var $elm$core$Dict$removeHelpPrepEQGT = F7(function(targetKey, dict, color, key, value, left, right) {
+        if (left.$ === 'RBNode_elm_builtin' && left.a.$ === 'Red') {
+            var _v1 = left.a;
+            var lK = left.b;
+            var lV = left.c;
+            var lLeft = left.d;
+            var lRight = left.e;
+            return A5($elm$core$Dict$RBNode_elm_builtin, color, lK, lV, lLeft, A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Red, key, value, lRight, right));
+        } else {
+            _v2$2: while(true){
+                if (right.$ === 'RBNode_elm_builtin' && right.a.$ === 'Black') {
+                    if (right.d.$ === 'RBNode_elm_builtin') {
+                        if (right.d.a.$ === 'Black') {
+                            var _v3 = right.a;
+                            var _v4 = right.d;
+                            var _v5 = _v4.a;
+                            return $elm$core$Dict$moveRedRight(dict);
+                        } else break _v2$2;
+                    } else {
+                        var _v6 = right.a;
+                        var _v7 = right.d;
+                        return $elm$core$Dict$moveRedRight(dict);
+                    }
+                } else break _v2$2;
+            }
+            return dict;
+        }
+    });
+    var $elm$core$Dict$removeMin = function(dict) {
+        if (dict.$ === 'RBNode_elm_builtin' && dict.d.$ === 'RBNode_elm_builtin') {
+            var color = dict.a;
+            var key = dict.b;
+            var value = dict.c;
+            var left = dict.d;
+            var lColor = left.a;
+            var lLeft = left.d;
+            var right = dict.e;
+            if (lColor.$ === 'Black') {
+                if (lLeft.$ === 'RBNode_elm_builtin' && lLeft.a.$ === 'Red') {
+                    var _v3 = lLeft.a;
+                    return A5($elm$core$Dict$RBNode_elm_builtin, color, key, value, $elm$core$Dict$removeMin(left), right);
+                } else {
+                    var _v4 = $elm$core$Dict$moveRedLeft(dict);
+                    if (_v4.$ === 'RBNode_elm_builtin') {
+                        var nColor = _v4.a;
+                        var nKey = _v4.b;
+                        var nValue = _v4.c;
+                        var nLeft = _v4.d;
+                        var nRight = _v4.e;
+                        return A5($elm$core$Dict$balance, nColor, nKey, nValue, $elm$core$Dict$removeMin(nLeft), nRight);
+                    } else return $elm$core$Dict$RBEmpty_elm_builtin;
+                }
+            } else return A5($elm$core$Dict$RBNode_elm_builtin, color, key, value, $elm$core$Dict$removeMin(left), right);
+        } else return $elm$core$Dict$RBEmpty_elm_builtin;
+    };
+    var $elm$core$Dict$removeHelp = F2(function(targetKey, dict) {
+        if (dict.$ === 'RBEmpty_elm_builtin') return $elm$core$Dict$RBEmpty_elm_builtin;
+        else {
+            var color = dict.a;
+            var key = dict.b;
+            var value = dict.c;
+            var left = dict.d;
+            var right = dict.e;
+            if (_Utils_cmp(targetKey, key) < 0) {
+                if (left.$ === 'RBNode_elm_builtin' && left.a.$ === 'Black') {
+                    var _v4 = left.a;
+                    var lLeft = left.d;
+                    if (lLeft.$ === 'RBNode_elm_builtin' && lLeft.a.$ === 'Red') {
+                        var _v6 = lLeft.a;
+                        return A5($elm$core$Dict$RBNode_elm_builtin, color, key, value, A2($elm$core$Dict$removeHelp, targetKey, left), right);
+                    } else {
+                        var _v7 = $elm$core$Dict$moveRedLeft(dict);
+                        if (_v7.$ === 'RBNode_elm_builtin') {
+                            var nColor = _v7.a;
+                            var nKey = _v7.b;
+                            var nValue = _v7.c;
+                            var nLeft = _v7.d;
+                            var nRight = _v7.e;
+                            return A5($elm$core$Dict$balance, nColor, nKey, nValue, A2($elm$core$Dict$removeHelp, targetKey, nLeft), nRight);
+                        } else return $elm$core$Dict$RBEmpty_elm_builtin;
+                    }
+                } else return A5($elm$core$Dict$RBNode_elm_builtin, color, key, value, A2($elm$core$Dict$removeHelp, targetKey, left), right);
+            } else return A2($elm$core$Dict$removeHelpEQGT, targetKey, A7($elm$core$Dict$removeHelpPrepEQGT, targetKey, dict, color, key, value, left, right));
+        }
+    });
+    var $elm$core$Dict$removeHelpEQGT = F2(function(targetKey, dict) {
+        if (dict.$ === 'RBNode_elm_builtin') {
+            var color = dict.a;
+            var key = dict.b;
+            var value = dict.c;
+            var left = dict.d;
+            var right = dict.e;
+            if (_Utils_eq(targetKey, key)) {
+                var _v1 = $elm$core$Dict$getMin(right);
+                if (_v1.$ === 'RBNode_elm_builtin') {
+                    var minKey = _v1.b;
+                    var minValue = _v1.c;
+                    return A5($elm$core$Dict$balance, color, minKey, minValue, left, $elm$core$Dict$removeMin(right));
+                } else return $elm$core$Dict$RBEmpty_elm_builtin;
+            } else return A5($elm$core$Dict$balance, color, key, value, left, A2($elm$core$Dict$removeHelp, targetKey, right));
+        } else return $elm$core$Dict$RBEmpty_elm_builtin;
+    });
+    var $elm$core$Dict$remove = F2(function(key, dict) {
+        var _v0 = A2($elm$core$Dict$removeHelp, key, dict);
+        if (_v0.$ === 'RBNode_elm_builtin' && _v0.a.$ === 'Red') {
+            var _v1 = _v0.a;
+            var k = _v0.b;
+            var v = _v0.c;
+            var l = _v0.d;
+            var r = _v0.e;
+            return A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Black, k, v, l, r);
+        } else {
+            var x = _v0;
+            return x;
+        }
+    });
+    var $elm$core$Dict$update = F3(function(targetKey, alter, dictionary) {
+        var _v0 = alter(A2($elm$core$Dict$get, targetKey, dictionary));
+        if (_v0.$ === 'Just') {
+            var value = _v0.a;
+            return A3($elm$core$Dict$insert, targetKey, value, dictionary);
+        } else return A2($elm$core$Dict$remove, targetKey, dictionary);
+    });
+    var $elm$http$Http$expectStringResponse = F2(function(toMsg, toResult) {
+        return A3(_Http_expect, '', $elm$core$Basics$identity, A2($elm$core$Basics$composeR, toResult, toMsg));
+    });
+    var $elm$http$Http$BadBody = function(a) {
+        return {
+            $: 'BadBody',
+            a: a
+        };
+    };
+    var $elm$http$Http$BadStatus = function(a) {
+        return {
+            $: 'BadStatus',
+            a: a
+        };
+    };
+    var $elm$http$Http$BadUrl = function(a) {
+        return {
+            $: 'BadUrl',
+            a: a
+        };
+    };
+    var $elm$http$Http$NetworkError = {
+        $: 'NetworkError'
+    };
+    var $elm$http$Http$Timeout = {
+        $: 'Timeout'
+    };
+    var $elm$http$Http$resolve = F2(function(toResult, response) {
+        switch(response.$){
+            case 'BadUrl_':
+                var url = response.a;
+                return $elm$core$Result$Err($elm$http$Http$BadUrl(url));
+            case 'Timeout_':
+                return $elm$core$Result$Err($elm$http$Http$Timeout);
+            case 'NetworkError_':
+                return $elm$core$Result$Err($elm$http$Http$NetworkError);
+            case 'BadStatus_':
+                var metadata = response.a;
+                return $elm$core$Result$Err($elm$http$Http$BadStatus(metadata.statusCode));
+            default:
+                var body = response.b;
+                return A2($elm$core$Result$mapError, $elm$http$Http$BadBody, toResult(body));
+        }
+    });
+    var $elm$http$Http$expectString = function(toMsg) {
+        return A2($elm$http$Http$expectStringResponse, toMsg, $elm$http$Http$resolve($elm$core$Result$Ok));
+    };
+    var $elm$http$Http$emptyBody = _Http_emptyBody;
+    var $elm$http$Http$Request = function(a) {
+        return {
+            $: 'Request',
+            a: a
+        };
+    };
+    var $elm$http$Http$State = F2(function(reqs, subs) {
+        return {
+            reqs: reqs,
+            subs: subs
+        };
+    });
+    var $elm$core$Task$succeed = _Scheduler_succeed;
+    var $elm$http$Http$init = $elm$core$Task$succeed(A2($elm$http$Http$State, $elm$core$Dict$empty, _List_Nil));
+    var $elm$core$Task$andThen = _Scheduler_andThen;
+    var $elm$core$Process$kill = _Scheduler_kill;
+    var $elm$core$Platform$sendToApp = _Platform_sendToApp;
+    var $elm$core$Process$spawn = _Scheduler_spawn;
+    var $elm$http$Http$updateReqs = F3(function(router, cmds, reqs) {
+        updateReqs: while(true){
+            if (!cmds.b) return $elm$core$Task$succeed(reqs);
+            else {
+                var cmd = cmds.a;
+                var otherCmds = cmds.b;
+                if (cmd.$ === 'Cancel') {
+                    var tracker = cmd.a;
+                    var _v2 = A2($elm$core$Dict$get, tracker, reqs);
+                    if (_v2.$ === 'Nothing') {
+                        var $temp$router = router, $temp$cmds = otherCmds, $temp$reqs = reqs;
+                        router = $temp$router;
+                        cmds = $temp$cmds;
+                        reqs = $temp$reqs;
+                        continue updateReqs;
+                    } else {
+                        var pid = _v2.a;
+                        return A2($elm$core$Task$andThen, function(_v3) {
+                            return A3($elm$http$Http$updateReqs, router, otherCmds, A2($elm$core$Dict$remove, tracker, reqs));
+                        }, $elm$core$Process$kill(pid));
+                    }
+                } else {
+                    var req = cmd.a;
+                    return A2($elm$core$Task$andThen, function(pid) {
+                        var _v4 = req.tracker;
+                        if (_v4.$ === 'Nothing') return A3($elm$http$Http$updateReqs, router, otherCmds, reqs);
+                        else {
+                            var tracker = _v4.a;
+                            return A3($elm$http$Http$updateReqs, router, otherCmds, A3($elm$core$Dict$insert, tracker, pid, reqs));
+                        }
+                    }, $elm$core$Process$spawn(A3(_Http_toTask, router, $elm$core$Platform$sendToApp(router), req)));
+                }
+            }
+        }
+    });
+    var $elm$http$Http$onEffects = F4(function(router, cmds, subs, state) {
+        return A2($elm$core$Task$andThen, function(reqs) {
+            return $elm$core$Task$succeed(A2($elm$http$Http$State, reqs, subs));
+        }, A3($elm$http$Http$updateReqs, router, cmds, state.reqs));
+    });
+    var $elm$http$Http$maybeSend = F4(function(router, desiredTracker, progress, _v0) {
+        var actualTracker = _v0.a;
+        var toMsg = _v0.b;
+        return _Utils_eq(desiredTracker, actualTracker) ? $elm$core$Maybe$Just(A2($elm$core$Platform$sendToApp, router, toMsg(progress))) : $elm$core$Maybe$Nothing;
+    });
+    var $elm$core$Task$map2 = F3(function(func, taskA, taskB) {
+        return A2($elm$core$Task$andThen, function(a) {
+            return A2($elm$core$Task$andThen, function(b) {
+                return $elm$core$Task$succeed(A2(func, a, b));
+            }, taskB);
+        }, taskA);
+    });
+    var $elm$core$Task$sequence = function(tasks) {
+        return A3($elm$core$List$foldr, $elm$core$Task$map2($elm$core$List$cons), $elm$core$Task$succeed(_List_Nil), tasks);
+    };
+    var $elm$http$Http$onSelfMsg = F3(function(router, _v0, state) {
+        var tracker = _v0.a;
+        var progress = _v0.b;
+        return A2($elm$core$Task$andThen, function(_v1) {
+            return $elm$core$Task$succeed(state);
+        }, $elm$core$Task$sequence(A2($elm$core$List$filterMap, A3($elm$http$Http$maybeSend, router, tracker, progress), state.subs)));
+    });
+    var $elm$http$Http$Cancel = function(a) {
+        return {
+            $: 'Cancel',
+            a: a
+        };
+    };
+    var $elm$http$Http$cmdMap = F2(function(func, cmd) {
+        if (cmd.$ === 'Cancel') {
+            var tracker = cmd.a;
+            return $elm$http$Http$Cancel(tracker);
+        } else {
+            var r = cmd.a;
+            return $elm$http$Http$Request({
+                allowCookiesFromOtherDomains: r.allowCookiesFromOtherDomains,
+                body: r.body,
+                expect: A2(_Http_mapExpect, func, r.expect),
+                headers: r.headers,
+                method: r.method,
+                timeout: r.timeout,
+                tracker: r.tracker,
+                url: r.url
+            });
+        }
+    });
+    var $elm$http$Http$MySub = F2(function(a, b) {
+        return {
+            $: 'MySub',
+            a: a,
+            b: b
+        };
+    });
+    var $elm$http$Http$subMap = F2(function(func, _v0) {
+        var tracker = _v0.a;
+        var toMsg = _v0.b;
+        return A2($elm$http$Http$MySub, tracker, A2($elm$core$Basics$composeR, toMsg, func));
+    });
+    _Platform_effectManagers['Http'] = _Platform_createManager($elm$http$Http$init, $elm$http$Http$onEffects, $elm$http$Http$onSelfMsg, $elm$http$Http$cmdMap, $elm$http$Http$subMap);
+    var $elm$http$Http$command = _Platform_leaf('Http');
+    var $elm$http$Http$subscription = _Platform_leaf('Http');
+    var $elm$http$Http$request = function(r) {
+        return $elm$http$Http$command($elm$http$Http$Request({
+            allowCookiesFromOtherDomains: false,
+            body: r.body,
+            expect: r.expect,
+            headers: r.headers,
+            method: r.method,
+            timeout: r.timeout,
+            tracker: r.tracker,
+            url: r.url
+        }));
+    };
+    var $elm$http$Http$get = function(r) {
+        return $elm$http$Http$request({
+            body: $elm$http$Http$emptyBody,
+            expect: r.expect,
+            headers: _List_Nil,
+            method: 'GET',
+            timeout: $elm$core$Maybe$Nothing,
+            tracker: $elm$core$Maybe$Nothing,
+            url: r.url
+        });
+    };
+    var $author$project$Worker$download = F2(function(msg, url) {
+        return $elm$http$Http$get({
+            expect: $elm$http$Http$expectString(msg),
+            url: url
+        });
+    });
+    var $elm$core$Task$Perform = function(a) {
+        return {
+            $: 'Perform',
+            a: a
+        };
+    };
+    var $elm$core$Task$init = $elm$core$Task$succeed(_Utils_Tuple0);
+    var $elm$core$Task$map = F2(function(func, taskA) {
+        return A2($elm$core$Task$andThen, function(a) {
+            return $elm$core$Task$succeed(func(a));
+        }, taskA);
+    });
+    var $elm$core$Task$spawnCmd = F2(function(router, _v0) {
+        var task = _v0.a;
+        return _Scheduler_spawn(A2($elm$core$Task$andThen, $elm$core$Platform$sendToApp(router), task));
+    });
+    var $elm$core$Task$onEffects = F3(function(router, commands, state) {
+        return A2($elm$core$Task$map, function(_v0) {
+            return _Utils_Tuple0;
+        }, $elm$core$Task$sequence(A2($elm$core$List$map, $elm$core$Task$spawnCmd(router), commands)));
+    });
+    var $elm$core$Task$onSelfMsg = F3(function(_v0, _v1, _v2) {
+        return $elm$core$Task$succeed(_Utils_Tuple0);
+    });
+    var $elm$core$Task$cmdMap = F2(function(tagger, _v0) {
+        var task = _v0.a;
+        return $elm$core$Task$Perform(A2($elm$core$Task$map, tagger, task));
+    });
+    _Platform_effectManagers['Task'] = _Platform_createManager($elm$core$Task$init, $elm$core$Task$onEffects, $elm$core$Task$onSelfMsg, $elm$core$Task$cmdMap);
+    var $elm$core$Task$command = _Platform_leaf('Task');
+    var $elm$core$Task$perform = F2(function(toMessage, task) {
+        return $elm$core$Task$command($elm$core$Task$Perform(A2($elm$core$Task$map, toMessage, task)));
+    });
+    var $elm$core$Process$sleep = _Process_sleep;
+    var $author$project$Worker$message = function(msg) {
+        return A2($elm$core$Task$perform, $elm$core$Basics$identity, A2($elm$core$Task$andThen, $elm$core$Basics$always($elm$core$Task$succeed(msg)), $elm$core$Process$sleep(0)));
+    };
+    var $author$project$Worker$load = F4(function(model, lia, code, templates) {
+        var _v0 = _Utils_Tuple2(code, templates);
+        if (_v0.a.$ === 'Just') {
+            if (!_v0.b.b) {
+                var code_ = _v0.a.a;
+                return _Utils_Tuple2(_Utils_update(model, {
+                    code: $elm$core$Maybe$Just(code_),
+                    lia: lia,
+                    state: A2($author$project$Model$Parsing, true, 0)
+                }), $author$project$Worker$message($author$project$Worker$LiaParse));
+            } else {
+                var code_ = _v0.a.a;
+                var templates_ = _v0.b;
+                return _Utils_Tuple2(_Utils_update(model, {
+                    code: $elm$core$Maybe$Just(code_),
+                    lia: lia,
+                    state: A2($author$project$Model$Parsing, true, $elm$core$List$length(templates_))
+                }), $elm$core$Platform$Cmd$batch(A2($elm$core$List$cons, $author$project$Worker$message($author$project$Worker$LiaParse), A2($elm$core$List$map, $author$project$Worker$download($author$project$Worker$Load_Template_Result), templates))));
+            }
+        } else {
+            var _v1 = _v0.a;
+            return _Utils_Tuple2(_Utils_update(model, {
+                state: A2($author$project$Error$Report$add, model.state, A2($elm$core$Maybe$withDefault, '', lia.error))
+            }), $elm$core$Platform$Cmd$none);
+        }
+    });
+    var $author$project$Worker$load_readme = F2(function(readme, model) {
+        var _v0 = A2($author$project$Lia$Script$init_script, model.lia, A3($elm$core$String$replace, '\u000D', '', readme));
+        var lia = _v0.a;
+        var code = _v0.b;
+        var templates = _v0.c;
+        return A4($author$project$Worker$load, model, lia, code, templates);
+    });
+    var $author$project$Worker$parse_error = function(msg) {
+        switch(msg.$){
+            case 'BadUrl':
+                var url = msg.a;
+                return 'Bad Url ' + url;
+            case 'Timeout':
+                return 'Network timeout';
+            case 'BadStatus':
+                var _int = msg.a;
+                return 'Bad status ' + $elm$core$String$fromInt(_int);
+            case 'NetworkError':
+                return 'Network error';
+            default:
+                var body = msg.a;
+                return 'Bad body ' + body;
+        }
+    };
+    var $elm$core$Basics$modBy = _Basics_modBy;
+    var $author$project$Lia$Script$pages = A2($elm$core$Basics$composeR, function($) {
+        return $.sections;
+    }, $elm$core$Array$length);
+    var $author$project$Lia$Section$init = F2(function(id, base) {
+        return {
+            body: _List_Nil,
+            code: base.code,
+            code_model: $author$project$Lia$Markdown$Code$Types$init,
+            definition: $elm$core$Maybe$Nothing,
+            effect_model: $author$project$Lia$Markdown$Effect$Model$init,
+            error: $elm$core$Maybe$Nothing,
+            footnote2show: $elm$core$Maybe$Nothing,
+            footnotes: $author$project$Lia$Markdown$Footnote$Model$init,
+            gallery_vector: $elm$core$Array$empty,
+            id: id,
+            indentation: base.indentation,
+            parsed: false,
+            quiz_vector: $elm$core$Array$empty,
+            survey_vector: $elm$core$Array$empty,
+            sync: $elm$core$Maybe$Nothing,
+            table_vector: $elm$core$Array$empty,
+            task_vector: $elm$core$Array$empty,
+            title: base.title,
+            visible: true
+        };
+    });
+    var $author$project$Lia$Section$Base = F3(function(indentation, title, code) {
+        return {
+            code: code,
+            indentation: indentation,
+            title: title
+        };
+    });
+    var $author$project$Lia$Parser$Preprocessor$check = function(c) {
+        return !c ? $andre_dietrich$parser_combinators$Combine$fail('') : $andre_dietrich$parser_combinators$Combine$succeed(_Utils_Tuple0);
+    };
+    var $andre_dietrich$parser_combinators$Combine$currentColumn = A2($elm$core$Basics$composeR, $andre_dietrich$parser_combinators$Combine$currentLocation, function($) {
+        return $.column;
+    });
+    var $andre_dietrich$parser_combinators$Combine$withColumn = function(f) {
+        return $andre_dietrich$parser_combinators$Combine$Parser(F2(function(state, stream) {
+            return A3($andre_dietrich$parser_combinators$Combine$app, f($andre_dietrich$parser_combinators$Combine$currentColumn(stream)), state, stream);
+        }));
+    };
+    var $author$project$Lia$Parser$Preprocessor$body = A2($andre_dietrich$parser_combinators$Combine$map, $elm$core$String$concat, $andre_dietrich$parser_combinators$Combine$many($andre_dietrich$parser_combinators$Combine$choice(_List_fromArray([
+        $andre_dietrich$parser_combinators$Combine$regex('(?:[^#`<]+|[\\x0D\n]+|<!--[\\S\\s]{0,1000}?-->)'),
+        $andre_dietrich$parser_combinators$Combine$regex('(`{3,})[\\S\\s]*?\\1'),
+        $andre_dietrich$parser_combinators$Combine$regex('`.+?`'),
+        $andre_dietrich$parser_combinators$Combine$regex('(?:<([\\w+\\-]+)[\\S\\s]*?</\\1>|`|<)'),
+        $andre_dietrich$parser_combinators$Combine$regex('#+(\\w|[^\\u0000-\\u007F]|[ \t]*\n)'),
+        A2($andre_dietrich$parser_combinators$Combine$keep, $andre_dietrich$parser_combinators$Combine$string('#'), $andre_dietrich$parser_combinators$Combine$withColumn($author$project$Lia$Parser$Preprocessor$check))
+    ]))));
+    var $author$project$Lia$Parser$Helper$newline = $andre_dietrich$parser_combinators$Combine$string('\n');
+    var $author$project$Lia$Parser$Preprocessor$title_str = A2($andre_dietrich$parser_combinators$Combine$ignore, $author$project$Lia$Parser$Helper$newline, $author$project$Lia$Markdown$Inline$Parser$line);
+    var $author$project$Lia$Parser$Preprocessor$title_tag = A2($andre_dietrich$parser_combinators$Combine$ignore, $author$project$Lia$Parser$Helper$spaces1, A2($andre_dietrich$parser_combinators$Combine$map, $elm$core$String$length, $andre_dietrich$parser_combinators$Combine$regex('#+')));
+    var $author$project$Lia$Parser$Preprocessor$section = A2($andre_dietrich$parser_combinators$Combine$andMap, $author$project$Lia$Parser$Preprocessor$body, A2($andre_dietrich$parser_combinators$Combine$andMap, $author$project$Lia$Parser$Preprocessor$title_str, A2($andre_dietrich$parser_combinators$Combine$map, $author$project$Lia$Section$Base, $author$project$Lia$Parser$Preprocessor$title_tag)));
+    var $author$project$Lia$Parser$Parser$parse_titles = F2(function(defines, code) {
+        var _v0 = A3($andre_dietrich$parser_combinators$Combine$runParser, $author$project$Lia$Parser$Preprocessor$section, A2($author$project$Lia$Parser$Context$init, $elm$core$Maybe$Nothing, defines), code);
+        if (_v0.$ === 'Ok') {
+            var _v1 = _v0.a;
+            var data = _v1.b;
+            var rslt = _v1.c;
+            return $elm$core$Result$Ok(_Utils_Tuple2(rslt, data.input));
+        } else {
+            var _v2 = _v0.a;
+            var stream = _v2.b;
+            var ms = _v2.c;
+            return $elm$core$Result$Err(A2($author$project$Lia$Parser$Parser$formatError, ms, stream));
+        }
+    });
+    var $author$project$Lia$Script$parse_section = F2(function(model, code) {
+        var _v0 = A2($author$project$Lia$Parser$Parser$parse_titles, model.definition, code);
+        if (_v0.$ === 'Ok') {
+            var _v1 = _v0.a;
+            var sec = _v1.a;
+            var rest = _v1.b;
+            return _Utils_Tuple2(_Utils_update(model, {
+                sections: A2($elm$core$Array$push, A2($author$project$Lia$Section$init, $author$project$Lia$Script$pages(model), sec), model.sections)
+            }), $elm$core$String$isEmpty(rest) ? $elm$core$Maybe$Nothing : $elm$core$Maybe$Just(rest));
+        } else {
+            var msg = _v0.a;
+            return _Utils_Tuple2(_Utils_update(model, {
+                error: $elm$core$Maybe$Just(msg)
+            }), $elm$core$Maybe$Nothing);
+        }
+    });
+    var $elm$core$Elm$JsArray$foldl = _JsArray_foldl;
+    var $elm$core$Array$foldl = F3(function(func, baseCase, _v0) {
+        var tree = _v0.c;
+        var tail = _v0.d;
+        var helper = F2(function(node, acc) {
+            if (node.$ === 'SubTree') {
+                var subTree = node.a;
+                return A3($elm$core$Elm$JsArray$foldl, helper, acc, subTree);
+            } else {
+                var values = node.a;
+                return A3($elm$core$Elm$JsArray$foldl, func, acc, values);
+            }
+        });
+        return A3($elm$core$Elm$JsArray$foldl, func, A3($elm$core$Elm$JsArray$foldl, helper, baseCase, tree), tail);
+    });
+    var $elm$json$Json$Encode$array = F2(function(func, entries) {
+        return _Json_wrap(A3($elm$core$Array$foldl, _Json_addEntry(func), _Json_emptyArray(_Utils_Tuple0), entries));
+    });
+    var $author$project$Lia$Json$Encode$encSection = function(sec) {
+        return $elm$json$Json$Encode$object(_List_fromArray([
+            _Utils_Tuple2('title', $author$project$Lia$Markdown$Inline$Json$Encode$encode(sec.title)),
+            _Utils_Tuple2('code', $elm$json$Json$Encode$string(sec.code)),
+            _Utils_Tuple2('indentation', $elm$json$Json$Encode$int(sec.indentation))
+        ]));
+    };
+    var $elm$core$Array$getHelp = F3(function(shift, index, tree) {
+        getHelp: while(true){
+            var pos = $elm$core$Array$bitMask & index >>> shift;
+            var _v0 = A2($elm$core$Elm$JsArray$unsafeGet, pos, tree);
+            if (_v0.$ === 'SubTree') {
+                var subTree = _v0.a;
+                var $temp$shift = shift - $elm$core$Array$shiftStep, $temp$index = index, $temp$tree = subTree;
+                shift = $temp$shift;
+                index = $temp$index;
+                tree = $temp$tree;
+                continue getHelp;
+            } else {
+                var values = _v0.a;
+                return A2($elm$core$Elm$JsArray$unsafeGet, $elm$core$Array$bitMask & index, values);
+            }
+        }
+    });
+    var $elm$core$Array$tailIndex = function(len) {
+        return len >>> 5 << 5;
+    };
+    var $elm$core$Array$get = F2(function(index, _v0) {
+        var len = _v0.a;
+        var startShift = _v0.b;
+        var tree = _v0.c;
+        var tail = _v0.d;
+        return index < 0 || _Utils_cmp(index, len) > -1 ? $elm$core$Maybe$Nothing : _Utils_cmp(index, $elm$core$Array$tailIndex(len)) > -1 ? $elm$core$Maybe$Just(A2($elm$core$Elm$JsArray$unsafeGet, $elm$core$Array$bitMask & index, tail)) : $elm$core$Maybe$Just(A3($elm$core$Array$getHelp, startShift, index, tree));
+    });
+    var $author$project$Translations$getCodeFromLn = function(lang) {
+        switch(lang.$){
+            case 'Ar':
+                return 'ar';
+            case 'Bg':
+                return 'bg';
+            case 'De':
+                return 'de';
+            case 'Es':
+                return 'es';
+            case 'Fa':
+                return 'fa';
+            case 'Hy':
+                return 'hy';
+            case 'Ko':
+                return 'ko';
+            case 'Nl':
+                return 'nl';
+            case 'Ru':
+                return 'ru';
+            case 'Tw':
+                return 'tw';
+            case 'Ua':
+                return 'ua';
+            case 'Zh':
+                return 'zh';
+            default:
+                return 'en';
+        }
+    };
+    var $author$project$Lia$Markdown$Effect$Types$isIn_ = F2(function(effect, id) {
+        var _v0 = effect.end;
+        if (_v0.$ === 'Nothing') return _Utils_cmp(effect.begin, id) < 1;
+        else {
+            var end = _v0.a;
+            return _Utils_cmp(effect.begin, id) < 1 && _Utils_cmp(end, id) > 0;
+        }
+    });
+    var $author$project$Lia$Markdown$Effect$Types$isIn = F2(function(id, effect) {
+        return A2($elm$core$Maybe$withDefault, true, A2($elm$core$Maybe$map, $author$project$Lia$Markdown$Effect$Types$isIn_(effect), id));
+    });
+    var $author$project$Lia$Markdown$Effect$Script$Types$text = function(stdout) {
+        if (stdout.$ === 'Text') {
+            var str = stdout.a;
+            return $elm$core$Maybe$Just(str);
+        } else return $elm$core$Maybe$Nothing;
+    };
+    var $author$project$Lia$Markdown$Inline$Stringify$inline2string = F3(function(effects, id, inline) {
+        inline2string: while(true){
+            _v1$13: while(true)switch(inline.$){
+                case 'Chars':
+                    var str = inline.a;
+                    return str;
+                case 'Bold':
+                    var x = inline.a;
+                    var $temp$effects = effects, $temp$id = id, $temp$inline = x;
+                    effects = $temp$effects;
+                    id = $temp$id;
+                    inline = $temp$inline;
+                    continue inline2string;
+                case 'Italic':
+                    var x = inline.a;
+                    var $temp$effects = effects, $temp$id = id, $temp$inline = x;
+                    effects = $temp$effects;
+                    id = $temp$id;
+                    inline = $temp$inline;
+                    continue inline2string;
+                case 'Strike':
+                    var x = inline.a;
+                    var $temp$effects = effects, $temp$id = id, $temp$inline = x;
+                    effects = $temp$effects;
+                    id = $temp$id;
+                    inline = $temp$inline;
+                    continue inline2string;
+                case 'Underline':
+                    var x = inline.a;
+                    var $temp$effects = effects, $temp$id = id, $temp$inline = x;
+                    effects = $temp$effects;
+                    id = $temp$id;
+                    inline = $temp$inline;
+                    continue inline2string;
+                case 'Superscript':
+                    var x = inline.a;
+                    var $temp$effects = effects, $temp$id = id, $temp$inline = x;
+                    effects = $temp$effects;
+                    id = $temp$id;
+                    inline = $temp$inline;
+                    continue inline2string;
+                case 'Verbatim':
+                    var str = inline.a;
+                    return str;
+                case 'Formula':
+                    var str = inline.b;
+                    return str;
+                case 'Ref':
+                    var ref = inline.a;
+                    return A3($author$project$Lia$Markdown$Inline$Stringify$ref2string, effects, id, ref);
+                case 'IHTML':
+                    if (inline.a.$ === 'Node') {
+                        var _v2 = inline.a;
+                        var x = _v2.c;
+                        return A3($author$project$Lia$Markdown$Inline$Stringify$stringify_, effects, id, x);
+                    } else break _v1$13;
+                case 'Container':
+                    var x = inline.a;
+                    return A3($author$project$Lia$Markdown$Inline$Stringify$stringify_, effects, id, x);
+                case 'EInline':
+                    var e = inline.a;
+                    return A2($author$project$Lia$Markdown$Effect$Types$isIn, id, e) ? A3($author$project$Lia$Markdown$Inline$Stringify$stringify_, effects, id, e.content) : '';
+                case 'Script':
+                    var i = inline.a;
+                    return A2($elm$core$Maybe$withDefault, '', A2($elm$core$Maybe$andThen, $author$project$Lia$Markdown$Effect$Script$Types$text, A2($elm$core$Maybe$andThen, function($) {
+                        return $.result;
+                    }, A2($elm$core$Array$get, i, effects))));
+                default:
+                    break _v1$13;
+            }
+            return '';
+        }
+    });
+    var $author$project$Lia$Markdown$Inline$Stringify$ref2string = F3(function(effects, id, ref) {
+        switch(ref.$){
+            case 'Movie':
+                var alt = ref.a;
+                return A3($author$project$Lia$Markdown$Inline$Stringify$stringify_, effects, id, alt);
+            case 'Image':
+                var alt = ref.a;
+                return A3($author$project$Lia$Markdown$Inline$Stringify$stringify_, effects, id, alt);
+            case 'Audio':
+                var alt = ref.a;
+                return A3($author$project$Lia$Markdown$Inline$Stringify$stringify_, effects, id, alt);
+            case 'Link':
+                var alt = ref.a;
+                return A3($author$project$Lia$Markdown$Inline$Stringify$stringify_, effects, id, alt);
+            case 'Mail':
+                var alt = ref.a;
+                return A3($author$project$Lia$Markdown$Inline$Stringify$stringify_, effects, id, alt);
+            case 'Embed':
+                var alt = ref.a;
+                return A3($author$project$Lia$Markdown$Inline$Stringify$stringify_, effects, id, alt);
+            case 'Preview_Lia':
+                return 'preview-lia';
+            case 'Preview_Link':
+                return 'preview-link';
+            default:
+                return 'qr-code';
+        }
+    });
+    var $author$project$Lia$Markdown$Inline$Stringify$stringify_ = F2(function(effects, id) {
+        return A2($elm$core$Basics$composeR, $elm$core$List$map(A2($author$project$Lia$Markdown$Inline$Stringify$inline2string, effects, id)), $elm$core$String$concat);
+    });
+    var $author$project$Lia$Markdown$Inline$Stringify$stringify = A2($author$project$Lia$Markdown$Inline$Stringify$stringify_, $elm$core$Array$empty, $elm$core$Maybe$Nothing);
+    var $author$project$Lia$Json$Encode$get_title = function(sections) {
+        return $elm$core$String$trim(A2($elm$core$Maybe$withDefault, 'Lia', A2($elm$core$Maybe$map, $author$project$Lia$Markdown$Inline$Stringify$stringify, A2($elm$core$Maybe$map, function($) {
+            return $.title;
+        }, A2($elm$core$Array$get, 0, sections)))));
+    };
+    var $author$project$Lia$Json$Encode$encodeWith = F2(function(sectionEncoder, model) {
+        return $elm$json$Json$Encode$object(_List_fromArray([
+            _Utils_Tuple2('title', $author$project$Lia$Markdown$Inline$Json$Encode$encode(A2($elm$core$Maybe$withDefault, _List_fromArray([
+                A2($author$project$Lia$Markdown$Inline$Types$Chars, model.title, _List_Nil)
+            ]), A2($elm$core$Maybe$map, function($) {
+                return $.title;
+            }, A2($elm$core$Array$get, 0, model.sections))))),
+            _Utils_Tuple2('str_title', $elm$json$Json$Encode$string($author$project$Lia$Json$Encode$get_title(model.sections))),
+            _Utils_Tuple2('definition', $author$project$Lia$Definition$Json$Encode$encode(model.definition)),
+            _Utils_Tuple2('comment', $elm$json$Json$Encode$string($author$project$Lia$Markdown$Inline$Stringify$stringify(model.definition.comment))),
+            _Utils_Tuple2('readme', $elm$json$Json$Encode$string(model.readme)),
+            _Utils_Tuple2('url', $elm$json$Json$Encode$string(model.url)),
+            _Utils_Tuple2('origin', $elm$json$Json$Encode$string(model.origin)),
+            _Utils_Tuple2('sections', A2($elm$json$Json$Encode$array, sectionEncoder, model.sections)),
+            _Utils_Tuple2('section_active', $elm$json$Json$Encode$int(model.section_active)),
+            _Utils_Tuple2('version', $elm$json$Json$Encode$int(A2($elm$core$Maybe$withDefault, 0, $elm$core$String$toInt(A2($elm$core$Maybe$withDefault, '0', $elm$core$List$head(A2($elm$core$String$split, '.', model.definition.version))))))),
+            _Utils_Tuple2('translation', $elm$json$Json$Encode$string($author$project$Translations$getCodeFromLn(model.translation)))
+        ]));
+    });
+    var $author$project$Lia$Json$Encode$encode = $author$project$Lia$Json$Encode$encodeWith($author$project$Lia$Json$Encode$encSection);
+    var $author$project$Lia$Markdown$HTML$Json$encode = F2(function(encoder, node) {
+        if (node.$ === 'Node') {
+            var tag = node.a;
+            var a = node.b;
+            var content = node.c;
+            return _Utils_Tuple2('Node', $elm$json$Json$Encode$object(_List_fromArray([
+                _Utils_Tuple2('tag', $elm$json$Json$Encode$string(tag)),
+                _Utils_Tuple2('a', $author$project$Lia$Markdown$HTML$Json$encParameters(a)),
+                _Utils_Tuple2('content', A2($elm$json$Json$Encode$list, encoder, content))
+            ])));
+        } else {
+            var code = node.a;
+            return _Utils_Tuple2('InnerHtml', $elm$json$Json$Encode$string(code));
+        }
+    });
+    var $author$project$Lia$Markdown$Quiz$Block$Json$fromState = function(state) {
+        return $elm$json$Json$Encode$object(function() {
+            if (state.$ === 'Text') {
+                var x = state.a;
+                return _List_fromArray([
+                    _Utils_Tuple2('Text', $elm$json$Json$Encode$string(x))
+                ]);
+            } else {
+                if (state.b.b && !state.b.b.b) {
+                    var _v1 = state.b;
+                    var x = _v1.a;
+                    return _List_fromArray([
+                        _Utils_Tuple2('Select', $elm$json$Json$Encode$int(x))
+                    ]);
+                } else return _List_fromArray([
+                    _Utils_Tuple2('Select', $elm$json$Json$Encode$int(-1))
+                ]);
+            }
+        }());
+    };
+    var $author$project$Lia$Markdown$Quiz$Block$Json$encode = function(quiz) {
+        return _Utils_Tuple2(function() {
+            var _v0 = quiz.solution;
+            if (_v0.$ === 'Text') return 'Text';
+            else return 'Select';
+        }(), $elm$json$Json$Encode$object(_List_fromArray([
+            _Utils_Tuple2('options', A2($elm$json$Json$Encode$list, $author$project$Lia$Markdown$Inline$Json$Encode$encode, quiz.options)),
+            _Utils_Tuple2('solution', $author$project$Lia$Markdown$Quiz$Block$Json$fromState(quiz.solution))
+        ])));
+    };
+    var $author$project$Lia$Markdown$Quiz$Vector$Json$fromState = function(state) {
+        return $elm$json$Json$Encode$object(function() {
+            if (state.$ === 'SingleChoice') {
+                var list = state.a;
+                return _List_fromArray([
+                    _Utils_Tuple2('SingleChoice', A2($elm$json$Json$Encode$list, $elm$json$Json$Encode$bool, list))
+                ]);
+            } else {
+                var list = state.a;
+                return _List_fromArray([
+                    _Utils_Tuple2('MultipleChoice', A2($elm$json$Json$Encode$list, $elm$json$Json$Encode$bool, list))
+                ]);
+            }
+        }());
+    };
+    var $author$project$Lia$Markdown$Quiz$Matrix$Json$uid = 'Matrix';
+    var $author$project$Lia$Markdown$Quiz$Matrix$Json$fromState = function(state) {
+        return $elm$json$Json$Encode$object(_List_fromArray([
+            _Utils_Tuple2($author$project$Lia$Markdown$Quiz$Matrix$Json$uid, A2($elm$json$Json$Encode$array, $author$project$Lia$Markdown$Quiz$Vector$Json$fromState, state))
+        ]));
+    };
+    var $author$project$Lia$Markdown$Quiz$Matrix$Json$encode = function(quiz) {
+        return _Utils_Tuple2($author$project$Lia$Markdown$Quiz$Matrix$Json$uid, $elm$json$Json$Encode$object(_List_fromArray([
+            _Utils_Tuple2('headers', A2($elm$json$Json$Encode$list, $author$project$Lia$Markdown$Inline$Json$Encode$encode, quiz.headers)),
+            _Utils_Tuple2('options', A2($elm$json$Json$Encode$list, $author$project$Lia$Markdown$Inline$Json$Encode$encode, quiz.options)),
+            _Utils_Tuple2('solution', $author$project$Lia$Markdown$Quiz$Matrix$Json$fromState(quiz.solution))
+        ])));
+    };
+    var $author$project$Lia$Markdown$Quiz$Vector$Json$encode = function(quiz) {
+        return _Utils_Tuple2(function() {
+            var _v0 = quiz.solution;
+            if (_v0.$ === 'SingleChoice') return 'SingleChoice';
+            else return 'MultipleChoice';
+        }(), $elm$json$Json$Encode$object(_List_fromArray([
+            _Utils_Tuple2('options', A2($elm$json$Json$Encode$list, $author$project$Lia$Markdown$Inline$Json$Encode$encode, quiz.options)),
+            _Utils_Tuple2('solution', $author$project$Lia$Markdown$Quiz$Vector$Json$fromState(quiz.solution))
+        ])));
+    };
+    var $author$project$Lia$Markdown$Quiz$Json$encode = function(quiz) {
+        return $elm$json$Json$Encode$object(_List_fromArray([
+            function() {
+                var _v0 = quiz.quiz;
+                switch(_v0.$){
+                    case 'Generic_Type':
+                        return _Utils_Tuple2('Generic', $elm$json$Json$Encode$null);
+                    case 'Block_Type':
+                        var block = _v0.a;
+                        return $author$project$Lia$Markdown$Quiz$Block$Json$encode(block);
+                    case 'Vector_Type':
+                        var vector = _v0.a;
+                        return $author$project$Lia$Markdown$Quiz$Vector$Json$encode(vector);
+                    default:
+                        var matrix = _v0.a;
+                        return $author$project$Lia$Markdown$Quiz$Matrix$Json$encode(matrix);
+                }
+            }(),
+            _Utils_Tuple2('id', $elm$json$Json$Encode$int(quiz.id)),
+            _Utils_Tuple2('hints', A2($elm$json$Json$Encode$list, $author$project$Lia$Markdown$Inline$Json$Encode$encode, quiz.hints))
+        ]));
+    };
+    var $elm$core$Tuple$mapSecond = F2(function(func, _v0) {
+        var x = _v0.a;
+        var y = _v0.b;
+        return _Utils_Tuple2(x, func(y));
+    });
+    var $author$project$Lia$Markdown$Survey$Json$encode = function(survey) {
+        return $elm$json$Json$Encode$object(_List_fromArray([
+            _Utils_Tuple2('id', $elm$json$Json$Encode$int(survey.id)),
+            function() {
+                var _v0 = survey.survey;
+                switch(_v0.$){
+                    case 'Text':
+                        var i = _v0.a;
+                        return _Utils_Tuple2('Text', $elm$json$Json$Encode$int(i));
+                    case 'Select':
+                        var elements = _v0.a;
+                        return _Utils_Tuple2('Select', A2($elm$json$Json$Encode$list, $author$project$Lia$Markdown$Inline$Json$Encode$encode, elements));
+                    case 'Vector':
+                        var bool = _v0.a;
+                        var options = _v0.b;
+                        return _Utils_Tuple2('Vector', $elm$json$Json$Encode$object(_List_fromArray([
+                            _Utils_Tuple2('bool', $elm$json$Json$Encode$bool(bool)),
+                            _Utils_Tuple2('options', $elm$json$Json$Encode$object(A2($elm$core$List$map, $elm$core$Tuple$mapSecond($author$project$Lia$Markdown$Inline$Json$Encode$encode), options)))
+                        ])));
+                    default:
+                        var bool = _v0.a;
+                        var cols = _v0.b;
+                        var ids = _v0.c;
+                        var rows = _v0.d;
+                        return _Utils_Tuple2('Matrix', $elm$json$Json$Encode$object(_List_fromArray([
+                            _Utils_Tuple2('bool', $elm$json$Json$Encode$bool(bool)),
+                            _Utils_Tuple2('cols', A2($elm$json$Json$Encode$list, $author$project$Lia$Markdown$Inline$Json$Encode$encode, cols)),
+                            _Utils_Tuple2('ids', A2($elm$json$Json$Encode$list, $elm$json$Json$Encode$string, ids)),
+                            _Utils_Tuple2('rows', A2($elm$json$Json$Encode$list, $author$project$Lia$Markdown$Inline$Json$Encode$encode, rows))
+                        ])));
+                }
+            }()
+        ]));
+    };
+    var $author$project$Lia$Markdown$Table$Json$cell = function(_v0) {
+        var p = _v0.a;
+        var inlines = _v0.b;
+        return $elm$json$Json$Encode$object(_List_fromArray([
+            _Utils_Tuple2('cell', $author$project$Lia$Markdown$Inline$Json$Encode$encode(inlines)),
+            _Utils_Tuple2('a', $elm$json$Json$Encode$null)
+        ]));
+    };
+    var $author$project$Lia$Markdown$Table$Json$encode = function(table) {
+        return $elm$json$Json$Encode$object(_List_fromArray([
+            _Utils_Tuple2('class', $elm$json$Json$Encode$string(function() {
+                var _v0 = table._class;
+                switch(_v0.$){
+                    case 'None':
+                        return 'none';
+                    case 'LinePlot':
+                        return 'lineplot';
+                    case 'ScatterPlot':
+                        return 'scatterplot';
+                    case 'BarChart':
+                        return 'barchart';
+                    case 'PieChart':
+                        return 'piechart';
+                    case 'HeatMap':
+                        return 'heatmap';
+                    case 'Radar':
+                        return 'radar';
+                    case 'Parallel':
+                        return 'parallel';
+                    case 'Sankey':
+                        return 'sankey';
+                    case 'BoxPlot':
+                        return 'boxplot';
+                    case 'Graph':
+                        return 'graph';
+                    case 'Map':
+                        return 'map';
+                    default:
+                        return 'funnel';
+                }
+            }())),
+            _Utils_Tuple2('head', A2($elm$json$Json$Encode$list, $author$project$Lia$Markdown$Table$Json$cell, table.head)),
+            _Utils_Tuple2('format', A2($elm$json$Json$Encode$list, $elm$json$Json$Encode$string, table.format)),
+            _Utils_Tuple2('body', A2($elm$json$Json$Encode$list, $elm$json$Json$Encode$list($author$project$Lia$Markdown$Table$Json$cell), table.body)),
+            _Utils_Tuple2('id', $elm$json$Json$Encode$int(table.id))
+        ]));
+    };
+    var $author$project$Lia$Markdown$Task$Json$encode = function(task) {
+        return $elm$json$Json$Encode$object(_List_fromArray([
+            _Utils_Tuple2('id', $elm$json$Json$Encode$int(task.id)),
+            _Utils_Tuple2('tasks', A2($elm$json$Json$Encode$list, $author$project$Lia$Markdown$Inline$Json$Encode$encode, task.task))
+        ]));
+    };
+    var $elm$core$List$isEmpty = function(xs) {
+        if (!xs.b) return true;
+        else return false;
+    };
+    var $author$project$Lia$Markdown$HTML$Json$maybeEncParameters = function(a) {
+        return $elm$core$List$isEmpty(a) ? $elm$core$Basics$identity : $elm$core$List$cons(_Utils_Tuple2('a', $author$project$Lia$Markdown$HTML$Json$encParameters(a)));
+    };
+    var $author$project$Lia$Markdown$Json$Encode$encBlock = function(b) {
+        return $elm$json$Json$Encode$object(function() {
+            switch(b.$){
+                case 'Paragraph':
+                    var a = b.a;
+                    var elements = b.b;
+                    return A2($author$project$Lia$Markdown$HTML$Json$maybeEncParameters, a, _List_fromArray([
+                        _Utils_Tuple2('Paragraph', $author$project$Lia$Markdown$Inline$Json$Encode$encode(elements))
+                    ]));
+                case 'HLine':
+                    var a = b.a;
+                    return A2($author$project$Lia$Markdown$HTML$Json$maybeEncParameters, a, _List_fromArray([
+                        _Utils_Tuple2('HLine', $elm$json$Json$Encode$null)
+                    ]));
+                case 'Quote':
+                    var a = b.a;
+                    var blocks1 = b.b;
+                    return A2($author$project$Lia$Markdown$HTML$Json$maybeEncParameters, a, _List_fromArray([
+                        _Utils_Tuple2('Quote', $author$project$Lia$Markdown$Json$Encode$cyclic$encode()(blocks1))
+                    ]));
+                case 'BulletList':
+                    var a = b.a;
+                    var blocksList = b.b;
+                    return A2($author$project$Lia$Markdown$HTML$Json$maybeEncParameters, a, _List_fromArray([
+                        _Utils_Tuple2('BulletList', A2($elm$json$Json$Encode$list, $author$project$Lia$Markdown$Json$Encode$cyclic$encode(), blocksList))
+                    ]));
+                case 'OrderedList':
+                    var a = b.a;
+                    var list = b.b;
+                    return A2($author$project$Lia$Markdown$HTML$Json$maybeEncParameters, a, _List_fromArray([
+                        _Utils_Tuple2('OrderedList', A2($elm$json$Json$Encode$list, $author$project$Lia$Markdown$Json$Encode$ol, list))
+                    ]));
+                case 'Header':
+                    var a = b.a;
+                    var _v2 = b.b;
+                    var level = _v2.a;
+                    var elements = _v2.b;
+                    return A2($author$project$Lia$Markdown$HTML$Json$maybeEncParameters, a, _List_fromArray([
+                        _Utils_Tuple2('Header', $author$project$Lia$Markdown$Inline$Json$Encode$encode(elements)),
+                        _Utils_Tuple2('level', $elm$json$Json$Encode$int(level))
+                    ]));
+                case 'Citation':
+                    var a = b.a;
+                    var elements = b.b;
+                    return A2($author$project$Lia$Markdown$HTML$Json$maybeEncParameters, a, _List_fromArray([
+                        _Utils_Tuple2('Citation', $author$project$Lia$Markdown$Inline$Json$Encode$encode(elements))
+                    ]));
+                case 'Problem':
+                    var elements = b.a;
+                    return _List_fromArray([
+                        _Utils_Tuple2('Problem', $author$project$Lia$Markdown$Inline$Json$Encode$encode(elements))
+                    ]);
+                case 'Quiz':
+                    var a = b.a;
+                    var quiz = b.b;
+                    var solution = b.c;
+                    return A2($author$project$Lia$Markdown$HTML$Json$maybeEncParameters, a, _List_fromArray([
+                        _Utils_Tuple2('Quiz', $author$project$Lia$Markdown$Quiz$Json$encode(quiz)),
+                        _Utils_Tuple2('solution', function() {
+                            if (solution.$ === 'Nothing') return $elm$json$Json$Encode$null;
+                            else {
+                                var _v4 = solution.a;
+                                var blocks = _v4.a;
+                                var hidden_effects = _v4.b;
+                                return $elm$json$Json$Encode$object(_List_fromArray([
+                                    _Utils_Tuple2('hidden_effects', $elm$json$Json$Encode$int(hidden_effects)),
+                                    _Utils_Tuple2('blocks', $author$project$Lia$Markdown$Json$Encode$cyclic$encode()(blocks))
+                                ]));
+                            }
+                        }())
+                    ]));
+                case 'Survey':
+                    var a = b.a;
+                    var survey = b.b;
+                    return A2($author$project$Lia$Markdown$HTML$Json$maybeEncParameters, a, _List_fromArray([
+                        _Utils_Tuple2('Survey', $author$project$Lia$Markdown$Survey$Json$encode(survey))
+                    ]));
+                case 'Task':
+                    var a = b.a;
+                    var tasks = b.b;
+                    return A2($author$project$Lia$Markdown$HTML$Json$maybeEncParameters, a, _List_fromArray([
+                        _Utils_Tuple2('Task', $author$project$Lia$Markdown$Task$Json$encode(tasks))
+                    ]));
+                case 'Gallery':
+                    var a = b.a;
+                    var media = b.b.media;
+                    var id = b.b.id;
+                    return A2($author$project$Lia$Markdown$HTML$Json$maybeEncParameters, a, _List_fromArray([
+                        _Utils_Tuple2('Gallery', $elm$json$Json$Encode$object(_List_fromArray([
+                            _Utils_Tuple2('media', $author$project$Lia$Markdown$Inline$Json$Encode$encode(media)),
+                            _Utils_Tuple2('id', $elm$json$Json$Encode$int(id))
+                        ])))
+                    ]));
+                case 'Effect':
+                    var a = b.a;
+                    var eBlock = b.b;
+                    return A2($author$project$Lia$Markdown$HTML$Json$maybeEncParameters, a, _List_fromArray([
+                        _Utils_Tuple2('Effect', $elm$json$Json$Encode$object(_List_fromArray([
+                            _Utils_Tuple2('id', $elm$json$Json$Encode$int(eBlock.id)),
+                            _Utils_Tuple2('begin', $elm$json$Json$Encode$int(eBlock.begin)),
+                            _Utils_Tuple2('end', A2($elm$core$Maybe$withDefault, $elm$json$Json$Encode$null, A2($elm$core$Maybe$map, $elm$json$Json$Encode$int, eBlock.end))),
+                            _Utils_Tuple2('content', $author$project$Lia$Markdown$Json$Encode$cyclic$encode()(eBlock.content)),
+                            _Utils_Tuple2('playback', $elm$json$Json$Encode$bool(eBlock.playback)),
+                            _Utils_Tuple2('voice', $elm$json$Json$Encode$string(eBlock.voice))
+                        ])))
+                    ]));
+                case 'Table':
+                    var a = b.a;
+                    var table = b.b;
+                    return A2($author$project$Lia$Markdown$HTML$Json$maybeEncParameters, a, _List_fromArray([
+                        _Utils_Tuple2('Table', $author$project$Lia$Markdown$Table$Json$encode(table))
+                    ]));
+                case 'Chart':
+                    var a = b.a;
+                    return A2($author$project$Lia$Markdown$HTML$Json$maybeEncParameters, a, _List_fromArray([
+                        _Utils_Tuple2('Chart', $elm$json$Json$Encode$null)
+                    ]));
+                case 'Code':
+                    return _List_fromArray([
+                        _Utils_Tuple2('Code', $elm$json$Json$Encode$null)
+                    ]);
+                case 'Comment':
+                    return _List_fromArray([
+                        _Utils_Tuple2('Comment', $elm$json$Json$Encode$null)
+                    ]);
+                case 'ASCII':
+                    var a = b.a;
+                    return A2($author$project$Lia$Markdown$HTML$Json$maybeEncParameters, a, _List_fromArray([
+                        _Utils_Tuple2('ASCII', $elm$json$Json$Encode$null)
+                    ]));
+                default:
+                    var a = b.a;
+                    var node = b.b;
+                    return A2($author$project$Lia$Markdown$HTML$Json$maybeEncParameters, a, _List_fromArray([
+                        _Utils_Tuple2('HTML', $elm$json$Json$Encode$object(_List_fromArray([
+                            A2($author$project$Lia$Markdown$HTML$Json$encode, $author$project$Lia$Markdown$Json$Encode$encBlock, node)
+                        ])))
+                    ]));
+            }
+        }());
+    };
+    var $author$project$Lia$Markdown$Json$Encode$ol = function(_v0) {
+        var id = _v0.a;
+        var blocks = _v0.b;
+        return $elm$json$Json$Encode$object(_List_fromArray([
+            _Utils_Tuple2(id, $author$project$Lia$Markdown$Json$Encode$cyclic$encode()(blocks))
+        ]));
+    };
+    function $author$project$Lia$Markdown$Json$Encode$cyclic$encode() {
+        return $elm$json$Json$Encode$list($author$project$Lia$Markdown$Json$Encode$encBlock);
+    }
+    try {
+        var $author$project$Lia$Markdown$Json$Encode$encode = $author$project$Lia$Markdown$Json$Encode$cyclic$encode();
+        $author$project$Lia$Markdown$Json$Encode$cyclic$encode = function() {
+            return $author$project$Lia$Markdown$Json$Encode$encode;
+        };
+    } catch ($3) {
+        throw 'Some top-level definitions from `Lia.Markdown.Json.Encode` are causing infinite recursion:\n\n  ┌─────┐\n  │    encode\n  │     ↓\n  │    encBlock\n  │     ↓\n  │    ol\n  └─────┘\n\nThese errors are very tricky, so read https://elm-lang.org/0.19.1/bad-recursion to learn how to fix it!';
+    }
+    var $author$project$Lia$Json$Encode$encSectionFull = function(sec) {
+        return $elm$json$Json$Encode$object(_List_fromArray([
+            _Utils_Tuple2('title', $author$project$Lia$Markdown$Inline$Json$Encode$encode(sec.title)),
+            _Utils_Tuple2('code', $elm$json$Json$Encode$string(sec.code)),
+            _Utils_Tuple2('indentation', $elm$json$Json$Encode$int(sec.indentation)),
+            _Utils_Tuple2('body', $author$project$Lia$Markdown$Json$Encode$encode(sec.body))
+        ]));
+    };
+    var $author$project$Lia$Json$Encode$encodeFull = $author$project$Lia$Json$Encode$encodeWith($author$project$Lia$Json$Encode$encSectionFull);
+    var $author$project$Lia$Markdown$Quiz$Json$fromState = function(state) {
+        switch(state.$){
+            case 'Generic_State':
+                return $elm$json$Json$Encode$object(_List_fromArray([
+                    _Utils_Tuple2('Generic', $elm$json$Json$Encode$null)
+                ]));
+            case 'Block_State':
+                var s = state.a;
+                return $author$project$Lia$Markdown$Quiz$Block$Json$fromState(s);
+            case 'Vector_State':
+                var s = state.a;
+                return $author$project$Lia$Markdown$Quiz$Vector$Json$fromState(s);
+            default:
+                var s = state.a;
+                return $author$project$Lia$Markdown$Quiz$Matrix$Json$fromState(s);
+        }
+    };
+    var $author$project$Lia$Markdown$Quiz$Json$fromElement = function(element) {
+        return $elm$json$Json$Encode$object(_List_fromArray([
+            _Utils_Tuple2('solved', $elm$json$Json$Encode$int(function() {
+                var _v0 = element.solved;
+                switch(_v0.$){
+                    case 'Open':
+                        return 0;
+                    case 'Solved':
+                        return 1;
+                    default:
+                        return -1;
+                }
+            }())),
+            _Utils_Tuple2('state', $author$project$Lia$Markdown$Quiz$Json$fromState(element.state)),
+            _Utils_Tuple2('trial', $elm$json$Json$Encode$int(element.trial)),
+            _Utils_Tuple2('hint', $elm$json$Json$Encode$int(element.hint)),
+            _Utils_Tuple2('error_msg', $elm$json$Json$Encode$string(element.error_msg))
+        ]));
+    };
+    var $author$project$Lia$Markdown$Quiz$Json$fromVector = $elm$json$Json$Encode$array($author$project$Lia$Markdown$Quiz$Json$fromElement);
+    var $andre_dietrich$elm_conditional$Conditional$apply2When = F3(function(_function, a, b) {
+        if (a.$ === 'Just') {
+            var a_ = a.a;
+            return A2(_function, a_, b);
+        } else return b;
+    });
+    var $andre_dietrich$elm_conditional$Conditional$List$addWhen = $andre_dietrich$elm_conditional$Conditional$apply2When($elm$core$List$cons);
+    var $author$project$Lia$Markdown$Survey$Json$fromError = $elm$core$Maybe$map(A2($elm$core$Basics$composeR, $elm$json$Json$Encode$string, $elm$core$Tuple$pair('errorMessage')));
+    var $author$project$Lia$Markdown$Survey$Json$dict2json = function(dict) {
+        return $elm$json$Json$Encode$object(A2($elm$core$List$map, function(_v0) {
+            var s = _v0.a;
+            var b = _v0.b;
+            return _Utils_Tuple2(s, $elm$json$Json$Encode$bool(b));
+        }, $elm$core$Dict$toList(dict)));
+    };
+    var $author$project$Lia$Markdown$Survey$Json$fromState = function(state) {
+        return $elm$json$Json$Encode$object(function() {
+            switch(state.$){
+                case 'Text_State':
+                    var str = state.a;
+                    return _List_fromArray([
+                        _Utils_Tuple2('Text', $elm$json$Json$Encode$string(str))
+                    ]);
+                case 'Select_State':
+                    var i = state.b;
+                    return _List_fromArray([
+                        _Utils_Tuple2('Select', $elm$json$Json$Encode$int(i))
+                    ]);
+                case 'Vector_State':
+                    var single = state.a;
+                    var vector = state.b;
+                    return _List_fromArray([
+                        _Utils_Tuple2(single ? 'SingleChoice' : 'MultipleChoice', $author$project$Lia$Markdown$Survey$Json$dict2json(vector))
+                    ]);
+                default:
+                    var single = state.a;
+                    var matrix = state.b;
+                    return _List_fromArray([
+                        _Utils_Tuple2(single ? 'SingleChoiceMatrix' : 'MultipleChoiceMatrix', A2($elm$json$Json$Encode$array, $author$project$Lia$Markdown$Survey$Json$dict2json, matrix))
+                    ]);
+            }
+        }());
+    };
+    var $author$project$Lia$Markdown$Survey$Json$fromElement = function(element) {
+        return $elm$json$Json$Encode$object(A2($andre_dietrich$elm_conditional$Conditional$List$addWhen, $author$project$Lia$Markdown$Survey$Json$fromError(element.errorMsg), _List_fromArray([
+            _Utils_Tuple2('submitted', $elm$json$Json$Encode$bool(element.submitted)),
+            _Utils_Tuple2('state', $author$project$Lia$Markdown$Survey$Json$fromState(element.state))
+        ])));
+    };
+    var $author$project$Lia$Markdown$Survey$Json$fromVector = $elm$json$Json$Encode$array($author$project$Lia$Markdown$Survey$Json$fromElement);
+    var $author$project$Lia$Markdown$Task$Json$fromVector = $elm$json$Json$Encode$array(A2($elm$core$Basics$composeR, function($) {
+        return $.state;
+    }, $elm$json$Json$Encode$array($elm$json$Json$Encode$bool)));
+    var $elm$core$Elm$JsArray$map = _JsArray_map;
+    var $elm$core$Array$map = F2(function(func, _v0) {
+        var len = _v0.a;
+        var startShift = _v0.b;
+        var tree = _v0.c;
+        var tail = _v0.d;
+        var helper = function(node) {
+            if (node.$ === 'SubTree') {
+                var subTree = node.a;
+                return $elm$core$Array$SubTree(A2($elm$core$Elm$JsArray$map, helper, subTree));
+            } else {
+                var values = node.a;
+                return $elm$core$Array$Leaf(A2($elm$core$Elm$JsArray$map, func, values));
+            }
+        };
+        return A4($elm$core$Array$Array_elm_builtin, len, startShift, A2($elm$core$Elm$JsArray$map, helper, tree), A2($elm$core$Elm$JsArray$map, func, tail));
+    });
+    var $elm$core$Array$isEmpty = function(_v0) {
+        var len = _v0.a;
+        return !len;
+    };
+    var $author$project$Service$Database$event = F2(function(cmd, param) {
+        return A2($author$project$Service$Event$init, 'db', {
+            cmd: cmd,
+            param: param
+        });
+    });
+    var $author$project$Service$Database$record = F3(function(table, id, data) {
+        return $elm$json$Json$Encode$object(_List_fromArray([
+            _Utils_Tuple2('table', $elm$json$Json$Encode$string(table)),
+            _Utils_Tuple2('id', $elm$json$Json$Encode$int(id)),
+            _Utils_Tuple2('data', A2($elm$core$Maybe$withDefault, $elm$json$Json$Encode$null, data))
+        ]));
+    });
+    var $author$project$Service$Database$load = F2(function(table, id) {
+        return A2($author$project$Service$Database$event, 'load', A3($author$project$Service$Database$record, table, id, $elm$core$Maybe$Nothing));
+    });
+    var $author$project$Service$Event$pushWithId = F3(function(po, i, to) {
+        return _Utils_update(to, {
+            track: A2($elm$core$List$cons, _Utils_Tuple2(po, i), to.track)
+        });
+    });
+    var $author$project$Lia$Update$add_load = F4(function(vector, sectionID, name, logs) {
+        return $elm$core$Array$isEmpty(vector) ? logs : A2($elm$core$List$cons, A3($author$project$Service$Event$pushWithId, name, sectionID, A2($author$project$Service$Database$load, name, sectionID)), logs);
+    });
+    var $author$project$Lia$Update$get_active_section = function(model) {
+        return A2($elm$core$Array$get, model.section_active, model.sections);
+    };
+    var $author$project$Lia$Parser$Parser$return = F3(function(sec, state, es) {
+        return $elm$core$Result$Ok(_Utils_update(sec, {
+            body: es,
+            code_model: state.code_model,
+            definition: state.defines_updated ? $elm$core$Maybe$Just(state.defines) : $elm$core$Maybe$Nothing,
+            effect_model: state.effect_model,
+            error: $elm$core$Maybe$Nothing,
+            footnotes: state.footnotes,
+            gallery_vector: state.gallery_vector,
+            parsed: true,
+            quiz_vector: state.quiz_vector,
+            survey_vector: state.survey_vector,
+            table_vector: state.table_vector,
+            task_vector: state.task_vector
+        }));
+    });
+    var $author$project$Lia$Markdown$Types$ASCII = F2(function(a, b) {
+        return {
+            $: 'ASCII',
+            a: a,
+            b: b
+        };
+    });
+    var $author$project$Lia$Markdown$Types$BulletList = F2(function(a, b) {
+        return {
+            $: 'BulletList',
+            a: a,
+            b: b
+        };
+    });
+    var $author$project$Lia$Markdown$Types$Chart = F2(function(a, b) {
+        return {
+            $: 'Chart',
+            a: a,
+            b: b
+        };
+    });
+    var $author$project$Lia$Markdown$Types$Code = function(a) {
+        return {
+            $: 'Code',
+            a: a
+        };
+    };
+    var $author$project$Lia$Markdown$Types$Effect = F2(function(a, b) {
+        return {
+            $: 'Effect',
+            a: a,
+            b: b
+        };
+    });
+    var $author$project$Lia$Markdown$Types$Gallery = F2(function(a, b) {
+        return {
+            $: 'Gallery',
+            a: a,
+            b: b
+        };
+    });
+    var $author$project$Lia$Markdown$Types$HTML = F2(function(a, b) {
+        return {
+            $: 'HTML',
+            a: a,
+            b: b
+        };
+    });
+    var $author$project$Lia$Markdown$Types$Header = F2(function(a, b) {
+        return {
+            $: 'Header',
+            a: a,
+            b: b
+        };
+    });
+    var $author$project$Lia$Markdown$Types$OrderedList = F2(function(a, b) {
+        return {
+            $: 'OrderedList',
+            a: a,
+            b: b
+        };
+    });
+    var $author$project$Lia$Markdown$Types$Quiz = F3(function(a, b, c) {
+        return {
+            $: 'Quiz',
+            a: a,
+            b: b,
+            c: c
+        };
+    });
+    var $author$project$Lia$Markdown$Types$Quote = F2(function(a, b) {
+        return {
+            $: 'Quote',
+            a: a,
+            b: b
+        };
+    });
+    var $author$project$Lia$Markdown$Types$Survey = F2(function(a, b) {
+        return {
+            $: 'Survey',
+            a: a,
+            b: b
+        };
+    });
+    var $author$project$Lia$Markdown$Types$Table = F2(function(a, b) {
+        return {
+            $: 'Table',
+            a: a,
+            b: b
+        };
+    });
+    var $author$project$Lia$Markdown$Types$Task = F2(function(a, b) {
+        return {
+            $: 'Task',
+            a: a,
+            b: b
+        };
+    });
+    var $author$project$Lia$Parser$Indentation$push = function(str) {
+        return $andre_dietrich$parser_combinators$Combine$modifyState(function(state) {
+            return _Utils_update(state, {
+                indentation: A2($elm$core$List$append, state.indentation, _List_fromArray([
+                    str
+                ])),
+                indentation_skip: true
+            });
+        });
+    };
+    var $author$project$Lia$Markdown$Footnote$Parser$block = function(p) {
+        return A2($andre_dietrich$parser_combinators$Combine$andThen, $author$project$Lia$Markdown$Footnote$Parser$add_footnote, A2($andre_dietrich$parser_combinators$Combine$andMap, p, A2($andre_dietrich$parser_combinators$Combine$ignore, $author$project$Lia$Parser$Indentation$push('[ ]{2,}'), A2($andre_dietrich$parser_combinators$Combine$map, $elm$core$Tuple$pair, A2($andre_dietrich$parser_combinators$Combine$keep, $author$project$Lia$Parser$Helper$stringTill($andre_dietrich$parser_combinators$Combine$string(']:')), $andre_dietrich$parser_combinators$Combine$string('[^'))))));
+    };
+    var $author$project$Lia$Markdown$Types$Citation = F2(function(a, b) {
+        return {
+            $: 'Citation',
+            a: a,
+            b: b
+        };
+    });
+    var $author$project$Lia$Markdown$Parser$checkForCitation = F2(function(attr, p) {
+        if (p.b && p.a.$ === 'Chars') {
+            var _v1 = p.a;
+            var chars = _v1.a;
+            var cAttr = _v1.b;
+            var rest = p.b;
+            return A2($elm$core$String$startsWith, '--', chars) ? A2($author$project$Lia$Markdown$Types$Citation, attr, A2($elm$core$List$cons, A2($author$project$Lia$Markdown$Inline$Types$Chars, A2($elm$core$String$dropLeft, 2, chars), cAttr), rest)) : A2($author$project$Lia$Markdown$Types$Paragraph, attr, p);
+        } else return A2($author$project$Lia$Markdown$Types$Paragraph, attr, p);
+    });
+    var $author$project$Lia$Markdown$Table$Types$Map = {
+        $: 'Map'
+    };
+    var $author$project$Lia$Markdown$Table$Types$BarChart = {
+        $: 'BarChart'
+    };
+    var $author$project$Lia$Markdown$Table$Types$Graph = {
+        $: 'Graph'
+    };
+    var $author$project$Lia$Markdown$Table$Types$HeatMap = {
+        $: 'HeatMap'
+    };
+    var $author$project$Lia$Markdown$Table$Types$LinePlot = {
+        $: 'LinePlot'
+    };
+    var $author$project$Lia$Markdown$Table$Types$None = {
+        $: 'None'
+    };
+    var $author$project$Lia$Markdown$Table$Types$Parallel = {
+        $: 'Parallel'
+    };
+    var $author$project$Lia$Markdown$Table$Types$PieChart = {
+        $: 'PieChart'
+    };
+    var $author$project$Lia$Markdown$Table$Types$Radar = {
+        $: 'Radar'
+    };
+    var $author$project$Lia$Markdown$Table$Types$ScatterPlot = {
+        $: 'ScatterPlot'
+    };
+    var $elm$core$Basics$abs = function(n) {
+        return n < 0 ? -n : n;
+    };
+    var $elm$core$Basics$composeL = F3(function(g, f, x) {
+        return g(f(x));
+    });
+    var $elm$core$List$all = F2(function(isOkay, list) {
+        return !A2($elm$core$List$any, A2($elm$core$Basics$composeL, $elm$core$Basics$not, isOkay), list);
+    });
+    var $author$project$Lia$Markdown$Table$Matrix$any = function(fn) {
+        return $elm$core$List$any($elm$core$List$any(fn));
+    };
+    var $author$project$Lia$Utils$get = F2(function(i, list) {
+        get: while(true){
+            if (!list.b) return $elm$core$Maybe$Nothing;
+            else {
+                var r = list.a;
+                var rs = list.b;
+                if (i <= 0) return $elm$core$Maybe$Just(r);
+                else {
+                    var $temp$i = i - 1, $temp$list = rs;
+                    i = $temp$i;
+                    list = $temp$list;
+                    continue get;
+                }
+            }
+        }
+    });
+    var $elm$core$List$repeatHelp = F3(function(result, n, value) {
+        repeatHelp: while(true){
+            if (n <= 0) return result;
+            else {
+                var $temp$result = A2($elm$core$List$cons, value, result), $temp$n = n - 1, $temp$value = value;
+                result = $temp$result;
+                n = $temp$n;
+                value = $temp$value;
+                continue repeatHelp;
+            }
+        }
+    });
+    var $elm$core$List$repeat = F2(function(n, value) {
+        return A3($elm$core$List$repeatHelp, _List_Nil, n, value);
+    });
+    var $author$project$Lia$Markdown$Table$Matrix$transpose = function(matrix) {
+        return A3($elm$core$List$foldl, F2(function(input, output) {
+            return A3($elm$core$List$map2, F2(function(i, o) {
+                return A2($elm$core$List$append, o, _List_fromArray([
+                    i
+                ]));
+            }), input, output);
+        }), A2($elm$core$List$repeat, $elm$core$List$length(A2($elm$core$Maybe$withDefault, _List_Nil, $elm$core$List$head(matrix))), _List_Nil), matrix);
+    };
+    var $author$project$Lia$Markdown$Table$Matrix$column = function(i) {
+        return A2($elm$core$Basics$composeR, $author$project$Lia$Markdown$Table$Matrix$transpose, $author$project$Lia$Utils$get(i));
+    };
+    var $elm$core$Set$insert = F2(function(key, _v0) {
+        var dict = _v0.a;
+        return $elm$core$Set$Set_elm_builtin(A3($elm$core$Dict$insert, key, _Utils_Tuple0, dict));
+    });
+    var $elm$core$Set$fromList = function(list) {
+        return A3($elm$core$List$foldl, $elm$core$Set$insert, $elm$core$Set$empty, list);
+    };
+    var $author$project$Lia$Markdown$Table$Types$isNumber = A2($elm$core$Basics$composeR, function($) {
+        return $._float;
+    }, $elm$core$Basics$neq($elm$core$Maybe$Nothing));
+    var $author$project$Lia$Markdown$Table$Matrix$map = function(fn) {
+        return $elm$core$List$map($elm$core$List$map(fn));
+    };
+    var $elm$core$List$maximum = function(list) {
+        if (list.b) {
+            var x = list.a;
+            var xs = list.b;
+            return $elm$core$Maybe$Just(A3($elm$core$List$foldl, $elm$core$Basics$max, x, xs));
+        } else return $elm$core$Maybe$Nothing;
+    };
+    var $elm$core$Basics$min = F2(function(x, y) {
+        return _Utils_cmp(x, y) < 0 ? x : y;
+    });
+    var $elm$core$List$minimum = function(list) {
+        if (list.b) {
+            var x = list.a;
+            var xs = list.b;
+            return $elm$core$Maybe$Just(A3($elm$core$List$foldl, $elm$core$Basics$min, x, xs));
+        } else return $elm$core$Maybe$Nothing;
+    };
+    var $elm$core$Dict$sizeHelp = F2(function(n, dict) {
+        sizeHelp: while(true){
+            if (dict.$ === 'RBEmpty_elm_builtin') return n;
+            else {
+                var left = dict.d;
+                var right = dict.e;
+                var $temp$n = A2($elm$core$Dict$sizeHelp, n + 1, right), $temp$dict = left;
+                n = $temp$n;
+                dict = $temp$dict;
+                continue sizeHelp;
+            }
+        }
+    });
+    var $elm$core$Dict$size = function(dict) {
+        return A2($elm$core$Dict$sizeHelp, 0, dict);
+    };
+    var $elm$core$Set$size = function(_v0) {
+        var dict = _v0.a;
+        return $elm$core$Dict$size(dict);
+    };
+    var $author$project$Lia$Markdown$Table$Matrix$some = F2(function(percent, fn) {
+        return A2($elm$core$Basics$composeR, $author$project$Lia$Markdown$Table$Matrix$map(fn), A2($elm$core$Basics$composeR, $elm$core$List$concat, A2($elm$core$Basics$composeR, A2($elm$core$List$foldl, F2(function(cell, _v0) {
+            var _true = _v0.a;
+            var _false = _v0.b;
+            return cell ? _Utils_Tuple2(_true + 1, _false) : _Utils_Tuple2(_true, _false + 1);
+        }), _Utils_Tuple2(0, 0)), function(_v1) {
+            var _true = _v1.a;
+            var _false = _v1.b;
+            return _Utils_cmp(_true / (_true + _false), percent) > -1;
+        })));
+    });
+    var $author$project$Lia$Markdown$Table$Matrix$split = function(matrix) {
+        if (!matrix.b) return _Utils_Tuple2(_List_Nil, _List_Nil);
+        else {
+            var r = matrix.a;
+            var rs = matrix.b;
+            return _Utils_Tuple2(r, rs);
+        }
+    };
+    var $author$project$Lia$Markdown$Table$Parser$checkDiagram = F2(function(headLine, rows) {
+        if (A2($author$project$Lia$Markdown$Table$Matrix$any, $author$project$Lia$Markdown$Table$Types$isNumber, A2($elm$core$List$filterMap, $elm$core$List$tail, rows))) {
+            var firstColumn = A2($elm$core$List$map, A2($elm$core$Basics$composeR, $elm$core$List$head, $elm$core$Maybe$andThen(function($) {
+                return $._float;
+            })), rows);
+            if (A2($elm$core$List$all, $elm$core$Basics$neq($elm$core$Maybe$Nothing), firstColumn)) {
+                if (!_Utils_eq(headLine, $elm$core$Maybe$Nothing) && $elm$core$List$length(firstColumn) === 1) return $author$project$Lia$Markdown$Table$Types$PieChart;
+                else if (_Utils_eq($elm$core$List$length(firstColumn), $elm$core$Set$size($elm$core$Set$fromList(A2($elm$core$List$filterMap, $elm$core$Basics$identity, firstColumn))))) {
+                    var headNumbers = A2($elm$core$Maybe$withDefault, _List_fromArray([
+                        $elm$core$Maybe$Nothing
+                    ]), A2($elm$core$Maybe$map, $elm$core$List$map(function($) {
+                        return $._float;
+                    }), A2($elm$core$Maybe$andThen, $elm$core$List$tail, headLine)));
+                    return $elm$core$List$length(headNumbers) > 1 && A2($elm$core$List$all, $elm$core$Basics$neq($elm$core$Maybe$Nothing), headNumbers) ? $author$project$Lia$Markdown$Table$Types$HeatMap : A3($author$project$Lia$Markdown$Table$Matrix$some, 0.3, $author$project$Lia$Markdown$Table$Types$isNumber, $author$project$Lia$Markdown$Table$Matrix$split($author$project$Lia$Markdown$Table$Matrix$transpose(rows)).b) ? $author$project$Lia$Markdown$Table$Types$LinePlot : $author$project$Lia$Markdown$Table$Types$None;
+                } else {
+                    if (A3($author$project$Lia$Markdown$Table$Matrix$some, 0.3, $author$project$Lia$Markdown$Table$Types$isNumber, $author$project$Lia$Markdown$Table$Matrix$split($author$project$Lia$Markdown$Table$Matrix$transpose(rows)).b)) return $author$project$Lia$Markdown$Table$Types$ScatterPlot;
+                    else return $author$project$Lia$Markdown$Table$Types$None;
+                }
+            } else {
+                if (!_Utils_eq(headLine, $elm$core$Maybe$Nothing)) {
+                    if ($elm$core$List$length(firstColumn) === 1) return $author$project$Lia$Markdown$Table$Types$PieChart;
+                    else {
+                        if (_Utils_eq(A2($elm$core$Maybe$map, $elm$core$List$map(function($) {
+                            return $.string;
+                        }), A2($elm$core$Maybe$andThen, $elm$core$List$tail, headLine)), A2($elm$core$Maybe$map, $elm$core$List$map(function($) {
+                            return $.string;
+                        }), A2($author$project$Lia$Markdown$Table$Matrix$column, 0, rows)))) return $author$project$Lia$Markdown$Table$Types$Graph;
+                        else {
+                            if ($elm$core$List$length(rows) * A2($elm$core$Maybe$withDefault, 1, A2($elm$core$Maybe$map, $elm$core$List$length, headLine)) >= 50) return $author$project$Lia$Markdown$Table$Types$Parallel;
+                            else {
+                                var maxima = A2($elm$core$List$filterMap, $elm$core$Basics$identity, A2($elm$core$List$map, A2($elm$core$Basics$composeR, $elm$core$List$filterMap($elm$core$Basics$identity), $elm$core$List$maximum), A2($author$project$Lia$Markdown$Table$Matrix$map, function($) {
+                                    return $._float;
+                                }, $author$project$Lia$Markdown$Table$Matrix$split($author$project$Lia$Markdown$Table$Matrix$transpose(rows)).b)));
+                                return _Utils_cmp($elm$core$Basics$abs(A2($elm$core$Maybe$withDefault, 0, $elm$core$List$maximum(maxima))), 10 * $elm$core$Basics$abs(A2($elm$core$Maybe$withDefault, 0, $elm$core$List$minimum(maxima)))) > 0 ? $author$project$Lia$Markdown$Table$Types$Radar : $author$project$Lia$Markdown$Table$Types$BarChart;
+                            }
+                        }
+                    }
+                } else return $author$project$Lia$Markdown$Table$Types$None;
+            }
+        } else return $author$project$Lia$Markdown$Table$Types$None;
+    });
+    var $author$project$Lia$Markdown$Table$Types$BoxPlot = {
+        $: 'BoxPlot'
+    };
+    var $author$project$Lia$Markdown$Table$Types$Funnel = {
+        $: 'Funnel'
+    };
+    var $author$project$Lia$Markdown$Table$Types$Sankey = {
+        $: 'Sankey'
+    };
+    var $author$project$Lia$Markdown$Table$Parser$diagramType = A2($elm$core$Basics$composeR, $author$project$Lia$Markdown$HTML$Attributes$get('data-type'), A2($elm$core$Basics$composeR, $elm$core$Maybe$withDefault(''), A2($elm$core$Basics$composeR, $elm$core$String$toLower, A2($elm$core$Basics$composeR, $elm$core$String$trim, function(param) {
+        switch(param){
+            case 'lineplot':
+                return $elm$core$Maybe$Just($author$project$Lia$Markdown$Table$Types$LinePlot);
+            case 'line':
+                return $elm$core$Maybe$Just($author$project$Lia$Markdown$Table$Types$LinePlot);
+            case 'scatterplot':
+                return $elm$core$Maybe$Just($author$project$Lia$Markdown$Table$Types$ScatterPlot);
+            case 'scatter':
+                return $elm$core$Maybe$Just($author$project$Lia$Markdown$Table$Types$ScatterPlot);
+            case 'barchart':
+                return $elm$core$Maybe$Just($author$project$Lia$Markdown$Table$Types$BarChart);
+            case 'bar':
+                return $elm$core$Maybe$Just($author$project$Lia$Markdown$Table$Types$BarChart);
+            case 'piechart':
+                return $elm$core$Maybe$Just($author$project$Lia$Markdown$Table$Types$PieChart);
+            case 'pie':
+                return $elm$core$Maybe$Just($author$project$Lia$Markdown$Table$Types$PieChart);
+            case 'heatmap':
+                return $elm$core$Maybe$Just($author$project$Lia$Markdown$Table$Types$HeatMap);
+            case 'map':
+                return $elm$core$Maybe$Just($author$project$Lia$Markdown$Table$Types$Map);
+            case 'radar':
+                return $elm$core$Maybe$Just($author$project$Lia$Markdown$Table$Types$Radar);
+            case 'graph':
+                return $elm$core$Maybe$Just($author$project$Lia$Markdown$Table$Types$Graph);
+            case 'parallel':
+                return $elm$core$Maybe$Just($author$project$Lia$Markdown$Table$Types$Parallel);
+            case 'sankey':
+                return $elm$core$Maybe$Just($author$project$Lia$Markdown$Table$Types$Sankey);
+            case 'boxplot':
+                return $elm$core$Maybe$Just($author$project$Lia$Markdown$Table$Types$BoxPlot);
+            case 'funnel':
+                return $elm$core$Maybe$Just($author$project$Lia$Markdown$Table$Types$Funnel);
+            case 'none':
+                return $elm$core$Maybe$Just($author$project$Lia$Markdown$Table$Types$None);
+            default:
+                return $elm$core$Maybe$Nothing;
+        }
+    }))));
+    var $author$project$Lia$Markdown$Table$Types$Cell = F4(function(attr, inlines, string, _float) {
+        return {
+            attr: attr,
+            _float: _float,
+            inlines: inlines,
+            string: string
+        };
+    });
+    var $elm$core$String$toFloat = _String_toFloat;
+    var $author$project$Lia$Markdown$Table$Types$float = A2($elm$core$Basics$composeR, $elm$core$String$split(' '), A2($elm$core$Basics$composeR, $elm$core$List$head, $elm$core$Maybe$andThen($elm$core$String$toFloat)));
+    var $author$project$Lia$Markdown$Table$Types$toCell = F3(function(effects, effectId, _v0) {
+        var attr = _v0.a;
+        var data = _v0.b;
+        var str = $elm$core$String$trim(A3($author$project$Lia$Markdown$Inline$Stringify$stringify_, effects, effectId, data));
+        return A4($author$project$Lia$Markdown$Table$Types$Cell, attr, data, str, $author$project$Lia$Markdown$Table$Types$float(str));
+    });
+    var $author$project$Lia$Markdown$Table$Types$toMatrix = F2(function(effects, id) {
+        return $author$project$Lia$Markdown$Table$Matrix$map(A2($author$project$Lia$Markdown$Table$Types$toCell, effects, id));
+    });
+    var $author$project$Lia$Markdown$Table$Parser$classify = F3(function(attr, table, js) {
+        return _Utils_update(table, {
+            _class: function() {
+                var _v0 = $author$project$Lia$Markdown$Table$Parser$diagramType(attr);
+                if (_v0.$ === 'Just') {
+                    var _class = _v0.a;
+                    return _class;
+                } else {
+                    if (!_Utils_eq(A2($author$project$Lia$Markdown$HTML$Attributes$get, 'data-src', attr), $elm$core$Maybe$Nothing)) return $author$project$Lia$Markdown$Table$Types$Map;
+                    else {
+                        var matrix = A2($author$project$Lia$Markdown$HTML$Attributes$isSet, 'data-transpose', attr) ? _Utils_update(table, {
+                            body: $author$project$Lia$Markdown$Table$Matrix$split($author$project$Lia$Markdown$Table$Matrix$transpose(A2($elm$core$List$cons, table.head, table.body))).b,
+                            head: function() {
+                                var _v1 = $elm$core$List$head(table.head);
+                                if (_v1.$ === 'Nothing') return _List_Nil;
+                                else {
+                                    var cell = _v1.a;
+                                    return A2($elm$core$List$cons, cell, A2($elm$core$Maybe$withDefault, _List_Nil, A2($author$project$Lia$Markdown$Table$Matrix$column, 0, table.body)));
+                                }
+                            }()
+                        }) : table;
+                        return A2($author$project$Lia$Markdown$Table$Parser$checkDiagram, _Utils_eq(matrix.head, _List_Nil) ? $elm$core$Maybe$Nothing : $elm$core$Maybe$Just(A2($elm$core$List$map, A2($author$project$Lia$Markdown$Table$Types$toCell, js, $elm$core$Maybe$Nothing), matrix.head)), A3($author$project$Lia$Markdown$Table$Types$toMatrix, js, $elm$core$Maybe$Nothing, matrix.body));
+                    }
+                }
+            }()
+        });
+    });
+    var $author$project$Lia$Parser$Helper$newlines = $andre_dietrich$parser_combinators$Combine$regex('\\n*');
+    var $author$project$Lia$Markdown$Effect$Parser$comment = function(paragraph) {
+        return A2($andre_dietrich$parser_combinators$Combine$ignore, $author$project$Lia$Markdown$Effect$Parser$reset_effect_number, A2($andre_dietrich$parser_combinators$Combine$andThen, $author$project$Lia$Markdown$Effect$Parser$add_comment(true), A2($andre_dietrich$parser_combinators$Combine$andMap, paragraph, A2($andre_dietrich$parser_combinators$Combine$ignore, $andre_dietrich$parser_combinators$Combine$maybe(A2($andre_dietrich$parser_combinators$Combine$ignore, $author$project$Lia$Parser$Indentation$check, $author$project$Lia$Parser$Helper$newlines)), A2($andre_dietrich$parser_combinators$Combine$ignore, $andre_dietrich$parser_combinators$Combine$regex('}}--[\t ]*'), A2($andre_dietrich$parser_combinators$Combine$andMap, $andre_dietrich$parser_combinators$Combine$maybe(A2($andre_dietrich$parser_combinators$Combine$keep, $andre_dietrich$parser_combinators$Combine$regex('[A-Za-z0-9 ]+'), A2($andre_dietrich$parser_combinators$Combine$keep, $author$project$Lia$Markdown$Macro$Parser$macro, $author$project$Lia$Parser$Helper$spaces1))), A2($andre_dietrich$parser_combinators$Combine$map, F3(function(a, b, c) {
+            return _Utils_Tuple3(a, b, c);
+        }), A2($andre_dietrich$parser_combinators$Combine$keep, $author$project$Lia$Markdown$Effect$Parser$effect_number, $andre_dietrich$parser_combinators$Combine$regex('[\t ]*--{{')))))))));
+    };
+    var $andre_dietrich$elm_svgbob$SvgBob$Types$Point = F2(function(x, y) {
+        return {
+            x: x,
+            y: y
+        };
+    });
+    var $andre_dietrich$elm_svgbob$SvgBob$Types$AlphaNumeric = {
+        $: 'AlphaNumeric'
+    };
+    var $andre_dietrich$elm_svgbob$SvgBob$Types$Box = {
+        $: 'Box'
+    };
+    var $andre_dietrich$elm_svgbob$SvgBob$Types$East = {
+        $: 'East'
+    };
+    var $andre_dietrich$elm_svgbob$SvgBob$Types$Ext = F2(function(a, b) {
+        return {
+            $: 'Ext',
+            a: a,
+            b: b
+        };
+    });
+    var $andre_dietrich$elm_svgbob$SvgBob$Types$Ext_ = F3(function(a, b, c) {
+        return {
+            $: 'Ext_',
+            a: a,
+            b: b,
+            c: c
+        };
+    });
+    var $andre_dietrich$elm_svgbob$SvgBob$Types$ForeignObject = F2(function(a, b) {
+        return {
+            $: 'ForeignObject',
+            a: a,
+            b: b
+        };
+    });
+    var $andre_dietrich$elm_svgbob$SvgBob$Types$Horizontal = {
+        $: 'Horizontal'
+    };
+    var $andre_dietrich$elm_svgbob$SvgBob$Types$Line = F2(function(a, b) {
+        return {
+            $: 'Line',
+            a: a,
+            b: b
+        };
+    });
+    var $andre_dietrich$elm_svgbob$SvgBob$Types$North = {
+        $: 'North'
+    };
+    var $andre_dietrich$elm_svgbob$SvgBob$Types$Sequence = function(a) {
+        return {
+            $: 'Sequence',
+            a: a
+        };
+    };
+    var $andre_dietrich$elm_svgbob$SvgBob$Types$SlantLeft = {
+        $: 'SlantLeft'
+    };
+    var $andre_dietrich$elm_svgbob$SvgBob$Types$SlantRight = {
+        $: 'SlantRight'
+    };
+    var $andre_dietrich$elm_svgbob$SvgBob$Types$South = {
+        $: 'South'
+    };
+    var $andre_dietrich$elm_svgbob$SvgBob$Types$Text = function(a) {
+        return {
+            $: 'Text',
+            a: a
+        };
+    };
+    var $andre_dietrich$elm_svgbob$SvgBob$Types$Triangle = function(a) {
+        return {
+            $: 'Triangle',
+            a: a
+        };
+    };
+    var $andre_dietrich$elm_svgbob$SvgBob$Types$Vertical = {
+        $: 'Vertical'
+    };
+    var $andre_dietrich$elm_svgbob$SvgBob$Types$West = {
+        $: 'West'
+    };
+    var $andre_dietrich$elm_svgbob$SvgBob$Types$Circle = function(a) {
+        return {
+            $: 'Circle',
+            a: a
+        };
+    };
+    var $andre_dietrich$elm_svgbob$SvgBob$Types$Center = {
+        $: 'Center'
+    };
+    var $andre_dietrich$elm_svgbob$SvgBob$Types$Corner = {
+        $: 'Corner'
+    };
+    var $andre_dietrich$elm_svgbob$SvgBob$Types$Intersection = {
+        $: 'Intersection'
+    };
+    var $andre_dietrich$elm_svgbob$SvgBob$Grid$apply_ = F3(function(matrix, input, output) {
+        apply_: while(true){
+            if (!input.b) return $elm$core$List$reverse(output);
+            else {
+                var _v1 = input.a;
+                var if_ = _v1.a;
+                var then_ = _v1.b;
+                var fns = input.b;
+                if (if_(matrix)) {
+                    var $temp$matrix = matrix, $temp$input = fns, $temp$output = A2($elm$core$List$cons, then_, output);
+                    matrix = $temp$matrix;
+                    input = $temp$input;
+                    output = $temp$output;
+                    continue apply_;
+                } else {
+                    var $temp$matrix = matrix, $temp$input = fns, $temp$output = output;
+                    matrix = $temp$matrix;
+                    input = $temp$input;
+                    output = $temp$output;
+                    continue apply_;
+                }
+            }
+        }
+    });
+    var $andre_dietrich$elm_svgbob$SvgBob$Grid$apply = F2(function(matrix, list) {
+        return A3($andre_dietrich$elm_svgbob$SvgBob$Grid$apply_, matrix, list, _List_Nil);
+    });
+    var $andre_dietrich$elm_svgbob$SvgBob$Grid$sequenceWithDefault = F2(function(_char, list) {
+        return _Utils_eq(list, _List_Nil) ? $andre_dietrich$elm_svgbob$SvgBob$Types$Text(_char) : $andre_dietrich$elm_svgbob$SvgBob$Types$Sequence(list);
+    });
+    var $andre_dietrich$elm_svgbob$SvgBob$Grid$intersection = F2(function(_char, matrix) {
+        return A2($andre_dietrich$elm_svgbob$SvgBob$Grid$sequenceWithDefault, _char, A2($andre_dietrich$elm_svgbob$SvgBob$Grid$apply, matrix, _List_fromArray([
+            _Utils_Tuple2(function(_v0) {
+                var north = _v0.north;
+                return _Utils_eq(north, $andre_dietrich$elm_svgbob$SvgBob$Types$Vertical) || _Utils_eq(north, $andre_dietrich$elm_svgbob$SvgBob$Types$Intersection) || _Utils_eq(north, $andre_dietrich$elm_svgbob$SvgBob$Types$Corner);
+            }, A2($andre_dietrich$elm_svgbob$SvgBob$Types$Line, $andre_dietrich$elm_svgbob$SvgBob$Types$Center, $andre_dietrich$elm_svgbob$SvgBob$Types$North)),
+            _Utils_Tuple2(function(m) {
+                return _Utils_eq(m.south, $andre_dietrich$elm_svgbob$SvgBob$Types$Vertical) || _Utils_eq(m.south, $andre_dietrich$elm_svgbob$SvgBob$Types$Intersection) || _Utils_eq(m.south, $andre_dietrich$elm_svgbob$SvgBob$Types$Corner);
+            }, A2($andre_dietrich$elm_svgbob$SvgBob$Types$Line, $andre_dietrich$elm_svgbob$SvgBob$Types$Center, $andre_dietrich$elm_svgbob$SvgBob$Types$South)),
+            _Utils_Tuple2(A2($elm$core$Basics$composeR, function($) {
+                return $.east;
+            }, $elm$core$Basics$eq($andre_dietrich$elm_svgbob$SvgBob$Types$Horizontal)), A2($andre_dietrich$elm_svgbob$SvgBob$Types$Line, $andre_dietrich$elm_svgbob$SvgBob$Types$Center, $andre_dietrich$elm_svgbob$SvgBob$Types$East)),
+            _Utils_Tuple2(A2($elm$core$Basics$composeR, function($) {
+                return $.west;
+            }, $elm$core$Basics$eq($andre_dietrich$elm_svgbob$SvgBob$Types$Horizontal)), A2($andre_dietrich$elm_svgbob$SvgBob$Types$Line, $andre_dietrich$elm_svgbob$SvgBob$Types$Center, $andre_dietrich$elm_svgbob$SvgBob$Types$West)),
+            _Utils_Tuple2(A2($elm$core$Basics$composeR, function($) {
+                return $.north_west;
+            }, $elm$core$Basics$eq($andre_dietrich$elm_svgbob$SvgBob$Types$SlantLeft)), A2($andre_dietrich$elm_svgbob$SvgBob$Types$Line, $andre_dietrich$elm_svgbob$SvgBob$Types$Center, A2($andre_dietrich$elm_svgbob$SvgBob$Types$Ext, $andre_dietrich$elm_svgbob$SvgBob$Types$North, $andre_dietrich$elm_svgbob$SvgBob$Types$West))),
+            _Utils_Tuple2(A2($elm$core$Basics$composeR, function($) {
+                return $.north_east;
+            }, $elm$core$Basics$eq($andre_dietrich$elm_svgbob$SvgBob$Types$SlantRight)), A2($andre_dietrich$elm_svgbob$SvgBob$Types$Line, $andre_dietrich$elm_svgbob$SvgBob$Types$Center, A2($andre_dietrich$elm_svgbob$SvgBob$Types$Ext, $andre_dietrich$elm_svgbob$SvgBob$Types$North, $andre_dietrich$elm_svgbob$SvgBob$Types$East))),
+            _Utils_Tuple2(A2($elm$core$Basics$composeR, function($) {
+                return $.south_west;
+            }, $elm$core$Basics$eq($andre_dietrich$elm_svgbob$SvgBob$Types$SlantRight)), A2($andre_dietrich$elm_svgbob$SvgBob$Types$Line, $andre_dietrich$elm_svgbob$SvgBob$Types$Center, A2($andre_dietrich$elm_svgbob$SvgBob$Types$Ext, $andre_dietrich$elm_svgbob$SvgBob$Types$South, $andre_dietrich$elm_svgbob$SvgBob$Types$West))),
+            _Utils_Tuple2(A2($elm$core$Basics$composeR, function($) {
+                return $.south_east;
+            }, $elm$core$Basics$eq($andre_dietrich$elm_svgbob$SvgBob$Types$SlantLeft)), A2($andre_dietrich$elm_svgbob$SvgBob$Types$Line, $andre_dietrich$elm_svgbob$SvgBob$Types$Center, A2($andre_dietrich$elm_svgbob$SvgBob$Types$Ext, $andre_dietrich$elm_svgbob$SvgBob$Types$South, $andre_dietrich$elm_svgbob$SvgBob$Types$East)))
+        ])));
+    });
+    var $andre_dietrich$elm_svgbob$SvgBob$Grid$circle = F3(function(filled, _char, m) {
+        if (_Utils_eq($andre_dietrich$elm_svgbob$SvgBob$Types$AlphaNumeric, m.west) || _Utils_eq($andre_dietrich$elm_svgbob$SvgBob$Types$AlphaNumeric, m.east)) return $andre_dietrich$elm_svgbob$SvgBob$Types$Text(_char);
+        else {
+            var _v0 = A2($andre_dietrich$elm_svgbob$SvgBob$Grid$intersection, _char, m);
+            if (_v0.$ === 'Sequence') {
+                var list = _v0.a;
+                return $andre_dietrich$elm_svgbob$SvgBob$Types$Sequence(A2($elm$core$List$append, list, _List_fromArray([
+                    $andre_dietrich$elm_svgbob$SvgBob$Types$Circle(filled)
+                ])));
+            } else return $andre_dietrich$elm_svgbob$SvgBob$Types$Text(_char);
+        }
+    });
+    var $andre_dietrich$elm_svgbob$SvgBob$Types$Curve = F3(function(a, b, c) {
+        return {
+            $: 'Curve',
+            a: a,
+            b: b,
+            c: c
+        };
+    });
+    var $andre_dietrich$elm_svgbob$SvgBob$Grid$closeCurve = F2(function(_char, matrix) {
+        return A2($andre_dietrich$elm_svgbob$SvgBob$Grid$sequenceWithDefault, _char, A2($andre_dietrich$elm_svgbob$SvgBob$Grid$apply, matrix, _List_fromArray([
+            _Utils_Tuple2(function(m) {
+                return _Utils_eq($andre_dietrich$elm_svgbob$SvgBob$Types$Corner, m.north_west) && _Utils_eq($andre_dietrich$elm_svgbob$SvgBob$Types$Corner, m.south_west);
+            }, A3($andre_dietrich$elm_svgbob$SvgBob$Types$Curve, 4, $andre_dietrich$elm_svgbob$SvgBob$Types$South, A2($andre_dietrich$elm_svgbob$SvgBob$Types$Ext, $andre_dietrich$elm_svgbob$SvgBob$Types$North, $andre_dietrich$elm_svgbob$SvgBob$Types$North))),
+            _Utils_Tuple2(function(m) {
+                return _Utils_eq($andre_dietrich$elm_svgbob$SvgBob$Types$SlantLeft, m.north_west) && _Utils_eq($andre_dietrich$elm_svgbob$SvgBob$Types$SlantRight, m.south_west);
+            }, A3($andre_dietrich$elm_svgbob$SvgBob$Types$Curve, 4, A2($andre_dietrich$elm_svgbob$SvgBob$Types$Ext, $andre_dietrich$elm_svgbob$SvgBob$Types$South, $andre_dietrich$elm_svgbob$SvgBob$Types$West), A2($andre_dietrich$elm_svgbob$SvgBob$Types$Ext, $andre_dietrich$elm_svgbob$SvgBob$Types$North, $andre_dietrich$elm_svgbob$SvgBob$Types$North)))
+        ])));
+    });
+    var $andre_dietrich$elm_svgbob$SvgBob$Types$CloseCurve = {
+        $: 'CloseCurve'
+    };
+    var $andre_dietrich$elm_svgbob$SvgBob$Types$East_ = function(a) {
+        return {
+            $: 'East_',
+            a: a
+        };
+    };
+    var $andre_dietrich$elm_svgbob$SvgBob$Types$LowHorizontal = {
+        $: 'LowHorizontal'
+    };
+    var $andre_dietrich$elm_svgbob$SvgBob$Types$North_ = function(a) {
+        return {
+            $: 'North_',
+            a: a
+        };
+    };
+    var $andre_dietrich$elm_svgbob$SvgBob$Types$OpenCurve = {
+        $: 'OpenCurve'
+    };
+    var $andre_dietrich$elm_svgbob$SvgBob$Types$South_ = function(a) {
+        return {
+            $: 'South_',
+            a: a
+        };
+    };
+    var $andre_dietrich$elm_svgbob$SvgBob$Types$West_ = function(a) {
+        return {
+            $: 'West_',
+            a: a
+        };
+    };
+    var $andre_dietrich$elm_svgbob$SvgBob$Grid$corner = F2(function(_char, matrix) {
+        return A2($andre_dietrich$elm_svgbob$SvgBob$Grid$sequenceWithDefault, _char, A2($andre_dietrich$elm_svgbob$SvgBob$Grid$apply, matrix, _List_fromArray([
+            _Utils_Tuple2(function(m) {
+                return _Utils_eq($andre_dietrich$elm_svgbob$SvgBob$Types$Horizontal, m.west) && _Utils_eq($andre_dietrich$elm_svgbob$SvgBob$Types$Horizontal, m.east);
+            }, A2($andre_dietrich$elm_svgbob$SvgBob$Types$Line, $andre_dietrich$elm_svgbob$SvgBob$Types$West, $andre_dietrich$elm_svgbob$SvgBob$Types$East_(2))),
+            _Utils_Tuple2(function(m) {
+                return _Utils_eq($andre_dietrich$elm_svgbob$SvgBob$Types$Vertical, m.north) && _Utils_eq($andre_dietrich$elm_svgbob$SvgBob$Types$Vertical, m.south);
+            }, A2($andre_dietrich$elm_svgbob$SvgBob$Types$Line, $andre_dietrich$elm_svgbob$SvgBob$Types$North, $andre_dietrich$elm_svgbob$SvgBob$Types$South_(2))),
+            _Utils_Tuple2(function(m) {
+                return _Utils_eq($andre_dietrich$elm_svgbob$SvgBob$Types$Corner, m.north_east) && _Utils_eq($andre_dietrich$elm_svgbob$SvgBob$Types$Corner, m.south_west);
+            }, A2($andre_dietrich$elm_svgbob$SvgBob$Types$Line, $andre_dietrich$elm_svgbob$SvgBob$Types$Center, A2($andre_dietrich$elm_svgbob$SvgBob$Types$Ext, $andre_dietrich$elm_svgbob$SvgBob$Types$North, $andre_dietrich$elm_svgbob$SvgBob$Types$East_(2)))),
+            _Utils_Tuple2(function(m) {
+                return _Utils_eq($andre_dietrich$elm_svgbob$SvgBob$Types$SlantRight, m.north_east) && _Utils_eq($andre_dietrich$elm_svgbob$SvgBob$Types$SlantRight, m.south_west);
+            }, A2($andre_dietrich$elm_svgbob$SvgBob$Types$Line, A2($andre_dietrich$elm_svgbob$SvgBob$Types$Ext, $andre_dietrich$elm_svgbob$SvgBob$Types$North, $andre_dietrich$elm_svgbob$SvgBob$Types$East), A3($andre_dietrich$elm_svgbob$SvgBob$Types$Ext_, 2, $andre_dietrich$elm_svgbob$SvgBob$Types$South, $andre_dietrich$elm_svgbob$SvgBob$Types$West))),
+            _Utils_Tuple2(function(m) {
+                return _Utils_eq($andre_dietrich$elm_svgbob$SvgBob$Types$SlantLeft, m.north_west) && _Utils_eq($andre_dietrich$elm_svgbob$SvgBob$Types$SlantLeft, m.south_east);
+            }, A2($andre_dietrich$elm_svgbob$SvgBob$Types$Line, A2($andre_dietrich$elm_svgbob$SvgBob$Types$Ext, $andre_dietrich$elm_svgbob$SvgBob$Types$North, $andre_dietrich$elm_svgbob$SvgBob$Types$West), A3($andre_dietrich$elm_svgbob$SvgBob$Types$Ext_, 2, $andre_dietrich$elm_svgbob$SvgBob$Types$South, $andre_dietrich$elm_svgbob$SvgBob$Types$East))),
+            _Utils_Tuple2(function(m) {
+                return (_Utils_eq($andre_dietrich$elm_svgbob$SvgBob$Types$Vertical, m.north) || _Utils_eq($andre_dietrich$elm_svgbob$SvgBob$Types$Corner, m.north) || _Utils_eq($andre_dietrich$elm_svgbob$SvgBob$Types$Intersection, m.north)) && _Utils_eq($andre_dietrich$elm_svgbob$SvgBob$Types$Horizontal, m.west);
+            }, $andre_dietrich$elm_svgbob$SvgBob$Types$Sequence(_List_fromArray([
+                A3($andre_dietrich$elm_svgbob$SvgBob$Types$Curve, 1, $andre_dietrich$elm_svgbob$SvgBob$Types$West, A2($andre_dietrich$elm_svgbob$SvgBob$Types$Ext, $andre_dietrich$elm_svgbob$SvgBob$Types$North_(0.5), $andre_dietrich$elm_svgbob$SvgBob$Types$East)),
+                A2($andre_dietrich$elm_svgbob$SvgBob$Types$Line, $andre_dietrich$elm_svgbob$SvgBob$Types$North, $andre_dietrich$elm_svgbob$SvgBob$Types$South_(0.5))
+            ]))),
+            _Utils_Tuple2(function(m) {
+                return (_Utils_eq($andre_dietrich$elm_svgbob$SvgBob$Types$Vertical, m.north) || _Utils_eq($andre_dietrich$elm_svgbob$SvgBob$Types$Corner, m.north) || _Utils_eq($andre_dietrich$elm_svgbob$SvgBob$Types$Intersection, m.north)) && _Utils_eq($andre_dietrich$elm_svgbob$SvgBob$Types$Horizontal, m.east);
+            }, $andre_dietrich$elm_svgbob$SvgBob$Types$Sequence(_List_fromArray([
+                A3($andre_dietrich$elm_svgbob$SvgBob$Types$Curve, 1, $andre_dietrich$elm_svgbob$SvgBob$Types$North_(0.5), A2($andre_dietrich$elm_svgbob$SvgBob$Types$Ext, $andre_dietrich$elm_svgbob$SvgBob$Types$South_(0.5), $andre_dietrich$elm_svgbob$SvgBob$Types$East)),
+                A2($andre_dietrich$elm_svgbob$SvgBob$Types$Line, $andre_dietrich$elm_svgbob$SvgBob$Types$North, $andre_dietrich$elm_svgbob$SvgBob$Types$South_(0.5))
+            ]))),
+            _Utils_Tuple2(function(m) {
+                return (_Utils_eq($andre_dietrich$elm_svgbob$SvgBob$Types$Vertical, m.south) || _Utils_eq($andre_dietrich$elm_svgbob$SvgBob$Types$Corner, m.south) || _Utils_eq($andre_dietrich$elm_svgbob$SvgBob$Types$Intersection, m.south)) && _Utils_eq($andre_dietrich$elm_svgbob$SvgBob$Types$Horizontal, m.west);
+            }, $andre_dietrich$elm_svgbob$SvgBob$Types$Sequence(_List_fromArray([
+                A3($andre_dietrich$elm_svgbob$SvgBob$Types$Curve, 1, $andre_dietrich$elm_svgbob$SvgBob$Types$South_(0.5), A2($andre_dietrich$elm_svgbob$SvgBob$Types$Ext, $andre_dietrich$elm_svgbob$SvgBob$Types$North_(0.5), $andre_dietrich$elm_svgbob$SvgBob$Types$West)),
+                A2($andre_dietrich$elm_svgbob$SvgBob$Types$Line, $andre_dietrich$elm_svgbob$SvgBob$Types$South, $andre_dietrich$elm_svgbob$SvgBob$Types$North_(0.5))
+            ]))),
+            _Utils_Tuple2(function(m) {
+                return (_Utils_eq($andre_dietrich$elm_svgbob$SvgBob$Types$Vertical, m.north) || _Utils_eq($andre_dietrich$elm_svgbob$SvgBob$Types$Corner, m.north) || _Utils_eq($andre_dietrich$elm_svgbob$SvgBob$Types$Intersection, m.north)) && _Utils_eq($andre_dietrich$elm_svgbob$SvgBob$Types$LowHorizontal, m.west);
+            }, $andre_dietrich$elm_svgbob$SvgBob$Types$Sequence(_List_fromArray([
+                A3($andre_dietrich$elm_svgbob$SvgBob$Types$Curve, 1, A2($andre_dietrich$elm_svgbob$SvgBob$Types$Ext, $andre_dietrich$elm_svgbob$SvgBob$Types$South, $andre_dietrich$elm_svgbob$SvgBob$Types$West), A2($andre_dietrich$elm_svgbob$SvgBob$Types$Ext, $andre_dietrich$elm_svgbob$SvgBob$Types$North_(0.5), $andre_dietrich$elm_svgbob$SvgBob$Types$East)),
+                A2($andre_dietrich$elm_svgbob$SvgBob$Types$Line, $andre_dietrich$elm_svgbob$SvgBob$Types$North, $andre_dietrich$elm_svgbob$SvgBob$Types$South_(1.5))
+            ]))),
+            _Utils_Tuple2(function(m) {
+                return (_Utils_eq($andre_dietrich$elm_svgbob$SvgBob$Types$Vertical, m.south) || _Utils_eq($andre_dietrich$elm_svgbob$SvgBob$Types$Corner, m.south) || _Utils_eq($andre_dietrich$elm_svgbob$SvgBob$Types$Intersection, m.south)) && _Utils_eq($andre_dietrich$elm_svgbob$SvgBob$Types$LowHorizontal, m.west);
+            }, A3($andre_dietrich$elm_svgbob$SvgBob$Types$Curve, 1, $andre_dietrich$elm_svgbob$SvgBob$Types$South_(1.5), A2($andre_dietrich$elm_svgbob$SvgBob$Types$Ext, $andre_dietrich$elm_svgbob$SvgBob$Types$North_(0.5), $andre_dietrich$elm_svgbob$SvgBob$Types$West))),
+            _Utils_Tuple2(function(m) {
+                return (_Utils_eq($andre_dietrich$elm_svgbob$SvgBob$Types$Vertical, m.south) || _Utils_eq($andre_dietrich$elm_svgbob$SvgBob$Types$Corner, m.south) || _Utils_eq($andre_dietrich$elm_svgbob$SvgBob$Types$Intersection, m.south)) && _Utils_eq($andre_dietrich$elm_svgbob$SvgBob$Types$LowHorizontal, m.east);
+            }, A3($andre_dietrich$elm_svgbob$SvgBob$Types$Curve, 1, A2($andre_dietrich$elm_svgbob$SvgBob$Types$Ext, $andre_dietrich$elm_svgbob$SvgBob$Types$South, $andre_dietrich$elm_svgbob$SvgBob$Types$East), A2($andre_dietrich$elm_svgbob$SvgBob$Types$Ext, $andre_dietrich$elm_svgbob$SvgBob$Types$South_(0.5), $andre_dietrich$elm_svgbob$SvgBob$Types$West))),
+            _Utils_Tuple2(function(m) {
+                return (_Utils_eq($andre_dietrich$elm_svgbob$SvgBob$Types$Vertical, m.north) || _Utils_eq($andre_dietrich$elm_svgbob$SvgBob$Types$Corner, m.north) || _Utils_eq($andre_dietrich$elm_svgbob$SvgBob$Types$Intersection, m.north)) && _Utils_eq($andre_dietrich$elm_svgbob$SvgBob$Types$LowHorizontal, m.east);
+            }, $andre_dietrich$elm_svgbob$SvgBob$Types$Sequence(_List_fromArray([
+                A3($andre_dietrich$elm_svgbob$SvgBob$Types$Curve, 1, $andre_dietrich$elm_svgbob$SvgBob$Types$South_(0.5), A2($andre_dietrich$elm_svgbob$SvgBob$Types$Ext, $andre_dietrich$elm_svgbob$SvgBob$Types$South_(0.5), $andre_dietrich$elm_svgbob$SvgBob$Types$East)),
+                A2($andre_dietrich$elm_svgbob$SvgBob$Types$Line, $andre_dietrich$elm_svgbob$SvgBob$Types$North, $andre_dietrich$elm_svgbob$SvgBob$Types$South_(1.5))
+            ]))),
+            _Utils_Tuple2(function(m) {
+                return (_Utils_eq($andre_dietrich$elm_svgbob$SvgBob$Types$Vertical, m.south) || _Utils_eq($andre_dietrich$elm_svgbob$SvgBob$Types$Corner, m.south) || _Utils_eq($andre_dietrich$elm_svgbob$SvgBob$Types$Intersection, m.south)) && _Utils_eq($andre_dietrich$elm_svgbob$SvgBob$Types$Horizontal, m.east);
+            }, $andre_dietrich$elm_svgbob$SvgBob$Types$Sequence(_List_fromArray([
+                A3($andre_dietrich$elm_svgbob$SvgBob$Types$Curve, 1, $andre_dietrich$elm_svgbob$SvgBob$Types$East, A2($andre_dietrich$elm_svgbob$SvgBob$Types$Ext, $andre_dietrich$elm_svgbob$SvgBob$Types$South_(0.5), $andre_dietrich$elm_svgbob$SvgBob$Types$West)),
+                A2($andre_dietrich$elm_svgbob$SvgBob$Types$Line, $andre_dietrich$elm_svgbob$SvgBob$Types$South, $andre_dietrich$elm_svgbob$SvgBob$Types$North_(0.5))
+            ]))),
+            _Utils_Tuple2(function(m) {
+                return _Utils_eq($andre_dietrich$elm_svgbob$SvgBob$Types$SlantLeft, m.south_east) && _Utils_eq($andre_dietrich$elm_svgbob$SvgBob$Types$Horizontal, m.west);
+            }, A3($andre_dietrich$elm_svgbob$SvgBob$Types$Curve, 3, A2($andre_dietrich$elm_svgbob$SvgBob$Types$Ext, $andre_dietrich$elm_svgbob$SvgBob$Types$South, $andre_dietrich$elm_svgbob$SvgBob$Types$East), A3($andre_dietrich$elm_svgbob$SvgBob$Types$Ext_, 2, $andre_dietrich$elm_svgbob$SvgBob$Types$North_(0.5), $andre_dietrich$elm_svgbob$SvgBob$Types$West))),
+            _Utils_Tuple2(function(m) {
+                return _Utils_eq($andre_dietrich$elm_svgbob$SvgBob$Types$SlantRight, m.north_east) && _Utils_eq($andre_dietrich$elm_svgbob$SvgBob$Types$Horizontal, m.west);
+            }, A3($andre_dietrich$elm_svgbob$SvgBob$Types$Curve, 3, $andre_dietrich$elm_svgbob$SvgBob$Types$West, A2($andre_dietrich$elm_svgbob$SvgBob$Types$Ext, $andre_dietrich$elm_svgbob$SvgBob$Types$North, $andre_dietrich$elm_svgbob$SvgBob$Types$East_(2)))),
+            _Utils_Tuple2(function(m) {
+                return _Utils_eq($andre_dietrich$elm_svgbob$SvgBob$Types$SlantLeft, m.north_west) && _Utils_eq($andre_dietrich$elm_svgbob$SvgBob$Types$Horizontal, m.east);
+            }, A3($andre_dietrich$elm_svgbob$SvgBob$Types$Curve, 3, A2($andre_dietrich$elm_svgbob$SvgBob$Types$Ext, $andre_dietrich$elm_svgbob$SvgBob$Types$North, $andre_dietrich$elm_svgbob$SvgBob$Types$West), A2($andre_dietrich$elm_svgbob$SvgBob$Types$Ext, $andre_dietrich$elm_svgbob$SvgBob$Types$South, $andre_dietrich$elm_svgbob$SvgBob$Types$East_(2)))),
+            _Utils_Tuple2(function(m) {
+                return _Utils_eq($andre_dietrich$elm_svgbob$SvgBob$Types$SlantRight, m.north_west) && _Utils_eq($andre_dietrich$elm_svgbob$SvgBob$Types$Horizontal, m.east);
+            }, A3($andre_dietrich$elm_svgbob$SvgBob$Types$Curve, 3, A2($andre_dietrich$elm_svgbob$SvgBob$Types$Ext, $andre_dietrich$elm_svgbob$SvgBob$Types$North, $andre_dietrich$elm_svgbob$SvgBob$Types$West), A2($andre_dietrich$elm_svgbob$SvgBob$Types$Ext, $andre_dietrich$elm_svgbob$SvgBob$Types$South, $andre_dietrich$elm_svgbob$SvgBob$Types$East_(20)))),
+            _Utils_Tuple2(function(m) {
+                return _Utils_eq($andre_dietrich$elm_svgbob$SvgBob$Types$SlantRight, m.south_west) && _Utils_eq($andre_dietrich$elm_svgbob$SvgBob$Types$Horizontal, m.east);
+            }, A3($andre_dietrich$elm_svgbob$SvgBob$Types$Curve, 3, $andre_dietrich$elm_svgbob$SvgBob$Types$East, A2($andre_dietrich$elm_svgbob$SvgBob$Types$Ext, $andre_dietrich$elm_svgbob$SvgBob$Types$South, $andre_dietrich$elm_svgbob$SvgBob$Types$West_(2)))),
+            _Utils_Tuple2(function(m) {
+                return _Utils_eq($andre_dietrich$elm_svgbob$SvgBob$Types$Vertical, m.north) && _Utils_eq($andre_dietrich$elm_svgbob$SvgBob$Types$SlantRight, m.south_west);
+            }, A3($andre_dietrich$elm_svgbob$SvgBob$Types$Curve, 8, A2($andre_dietrich$elm_svgbob$SvgBob$Types$Ext, $andre_dietrich$elm_svgbob$SvgBob$Types$South, $andre_dietrich$elm_svgbob$SvgBob$Types$West), A3($andre_dietrich$elm_svgbob$SvgBob$Types$Ext_, 2, $andre_dietrich$elm_svgbob$SvgBob$Types$North, $andre_dietrich$elm_svgbob$SvgBob$Types$East_(0.5)))),
+            _Utils_Tuple2(function(m) {
+                return _Utils_eq($andre_dietrich$elm_svgbob$SvgBob$Types$Vertical, m.north) && _Utils_eq($andre_dietrich$elm_svgbob$SvgBob$Types$SlantLeft, m.south_east);
+            }, A3($andre_dietrich$elm_svgbob$SvgBob$Types$Curve, 8, $andre_dietrich$elm_svgbob$SvgBob$Types$North, A3($andre_dietrich$elm_svgbob$SvgBob$Types$Ext_, 2, $andre_dietrich$elm_svgbob$SvgBob$Types$South, $andre_dietrich$elm_svgbob$SvgBob$Types$East_(0.5)))),
+            _Utils_Tuple2(function(m) {
+                return _Utils_eq($andre_dietrich$elm_svgbob$SvgBob$Types$Vertical, m.south) && _Utils_eq($andre_dietrich$elm_svgbob$SvgBob$Types$SlantRight, m.north_east);
+            }, A3($andre_dietrich$elm_svgbob$SvgBob$Types$Curve, 8, A2($andre_dietrich$elm_svgbob$SvgBob$Types$Ext, $andre_dietrich$elm_svgbob$SvgBob$Types$North, $andre_dietrich$elm_svgbob$SvgBob$Types$East), A3($andre_dietrich$elm_svgbob$SvgBob$Types$Ext_, 2, $andre_dietrich$elm_svgbob$SvgBob$Types$South, $andre_dietrich$elm_svgbob$SvgBob$Types$West_(0.5)))),
+            _Utils_Tuple2(function(m) {
+                return _Utils_eq($andre_dietrich$elm_svgbob$SvgBob$Types$Vertical, m.south) && _Utils_eq($andre_dietrich$elm_svgbob$SvgBob$Types$SlantLeft, m.north_west);
+            }, A3($andre_dietrich$elm_svgbob$SvgBob$Types$Curve, 8, $andre_dietrich$elm_svgbob$SvgBob$Types$South, A3($andre_dietrich$elm_svgbob$SvgBob$Types$Ext_, 2, $andre_dietrich$elm_svgbob$SvgBob$Types$North, $andre_dietrich$elm_svgbob$SvgBob$Types$West_(0.5)))),
+            _Utils_Tuple2(function(m) {
+                return _Utils_eq($andre_dietrich$elm_svgbob$SvgBob$Types$Horizontal, m.east) && _Utils_eq($andre_dietrich$elm_svgbob$SvgBob$Types$SlantRight, m.north_east);
+            }, A3($andre_dietrich$elm_svgbob$SvgBob$Types$Curve, 2, A2($andre_dietrich$elm_svgbob$SvgBob$Types$Ext, $andre_dietrich$elm_svgbob$SvgBob$Types$North, $andre_dietrich$elm_svgbob$SvgBob$Types$East), $andre_dietrich$elm_svgbob$SvgBob$Types$South)),
+            _Utils_Tuple2(function(m) {
+                return _Utils_eq($andre_dietrich$elm_svgbob$SvgBob$Types$Horizontal, m.west) && _Utils_eq($andre_dietrich$elm_svgbob$SvgBob$Types$SlantLeft, m.north_west);
+            }, A3($andre_dietrich$elm_svgbob$SvgBob$Types$Curve, 2, $andre_dietrich$elm_svgbob$SvgBob$Types$West, $andre_dietrich$elm_svgbob$SvgBob$Types$North)),
+            _Utils_Tuple2(function(m) {
+                return _Utils_eq($andre_dietrich$elm_svgbob$SvgBob$Types$Horizontal, m.west) && _Utils_eq($andre_dietrich$elm_svgbob$SvgBob$Types$SlantRight, m.south_west);
+            }, A3($andre_dietrich$elm_svgbob$SvgBob$Types$Curve, 2, A2($andre_dietrich$elm_svgbob$SvgBob$Types$Ext, $andre_dietrich$elm_svgbob$SvgBob$Types$South, $andre_dietrich$elm_svgbob$SvgBob$Types$West), $andre_dietrich$elm_svgbob$SvgBob$Types$North)),
+            _Utils_Tuple2(function(m) {
+                return _Utils_eq($andre_dietrich$elm_svgbob$SvgBob$Types$Horizontal, m.east) && _Utils_eq($andre_dietrich$elm_svgbob$SvgBob$Types$SlantLeft, m.south_east);
+            }, A3($andre_dietrich$elm_svgbob$SvgBob$Types$Curve, 2, $andre_dietrich$elm_svgbob$SvgBob$Types$East, $andre_dietrich$elm_svgbob$SvgBob$Types$South)),
+            _Utils_Tuple2(function(m) {
+                return _Utils_eq($andre_dietrich$elm_svgbob$SvgBob$Types$LowHorizontal, m.east) && _Utils_eq($andre_dietrich$elm_svgbob$SvgBob$Types$SlantRight, m.north_east);
+            }, A3($andre_dietrich$elm_svgbob$SvgBob$Types$Curve, 4, A2($andre_dietrich$elm_svgbob$SvgBob$Types$Ext, $andre_dietrich$elm_svgbob$SvgBob$Types$North, $andre_dietrich$elm_svgbob$SvgBob$Types$East), $andre_dietrich$elm_svgbob$SvgBob$Types$South_(2))),
+            _Utils_Tuple2(function(m) {
+                return _Utils_eq($andre_dietrich$elm_svgbob$SvgBob$Types$LowHorizontal, m.west) && _Utils_eq($andre_dietrich$elm_svgbob$SvgBob$Types$SlantLeft, m.north_west);
+            }, A3($andre_dietrich$elm_svgbob$SvgBob$Types$Curve, 4, A2($andre_dietrich$elm_svgbob$SvgBob$Types$Ext, $andre_dietrich$elm_svgbob$SvgBob$Types$South, $andre_dietrich$elm_svgbob$SvgBob$Types$West), $andre_dietrich$elm_svgbob$SvgBob$Types$North_(2))),
+            _Utils_Tuple2(function(m) {
+                return _Utils_eq($andre_dietrich$elm_svgbob$SvgBob$Types$Horizontal, m.west) && _Utils_eq($andre_dietrich$elm_svgbob$SvgBob$Types$CloseCurve, m.south_east);
+            }, A3($andre_dietrich$elm_svgbob$SvgBob$Types$Curve, 4, A2($andre_dietrich$elm_svgbob$SvgBob$Types$Ext, $andre_dietrich$elm_svgbob$SvgBob$Types$South, $andre_dietrich$elm_svgbob$SvgBob$Types$East_(2)), A2($andre_dietrich$elm_svgbob$SvgBob$Types$Ext, $andre_dietrich$elm_svgbob$SvgBob$Types$North, $andre_dietrich$elm_svgbob$SvgBob$Types$West_(3)))),
+            _Utils_Tuple2(function(m) {
+                return _Utils_eq($andre_dietrich$elm_svgbob$SvgBob$Types$OpenCurve, m.south_west);
+            }, A3($andre_dietrich$elm_svgbob$SvgBob$Types$Curve, 4, $andre_dietrich$elm_svgbob$SvgBob$Types$East, A2($andre_dietrich$elm_svgbob$SvgBob$Types$Ext, $andre_dietrich$elm_svgbob$SvgBob$Types$South, $andre_dietrich$elm_svgbob$SvgBob$Types$West_(3)))),
+            _Utils_Tuple2(function(m) {
+                return _Utils_eq($andre_dietrich$elm_svgbob$SvgBob$Types$CloseCurve, m.south_east);
+            }, A3($andre_dietrich$elm_svgbob$SvgBob$Types$Curve, 4, A2($andre_dietrich$elm_svgbob$SvgBob$Types$Ext, $andre_dietrich$elm_svgbob$SvgBob$Types$South, $andre_dietrich$elm_svgbob$SvgBob$Types$East_(2)), A2($andre_dietrich$elm_svgbob$SvgBob$Types$Ext, $andre_dietrich$elm_svgbob$SvgBob$Types$North, $andre_dietrich$elm_svgbob$SvgBob$Types$West_(3)))),
+            _Utils_Tuple2(function(m) {
+                return _Utils_eq($andre_dietrich$elm_svgbob$SvgBob$Types$OpenCurve, m.north_west);
+            }, A3($andre_dietrich$elm_svgbob$SvgBob$Types$Curve, 4, A2($andre_dietrich$elm_svgbob$SvgBob$Types$Ext, $andre_dietrich$elm_svgbob$SvgBob$Types$North, $andre_dietrich$elm_svgbob$SvgBob$Types$West_(2)), A2($andre_dietrich$elm_svgbob$SvgBob$Types$Ext, $andre_dietrich$elm_svgbob$SvgBob$Types$South, $andre_dietrich$elm_svgbob$SvgBob$Types$East_(3)))),
+            _Utils_Tuple2(function(m) {
+                return _Utils_eq($andre_dietrich$elm_svgbob$SvgBob$Types$CloseCurve, m.north_east);
+            }, A3($andre_dietrich$elm_svgbob$SvgBob$Types$Curve, 4, $andre_dietrich$elm_svgbob$SvgBob$Types$West, A2($andre_dietrich$elm_svgbob$SvgBob$Types$Ext, $andre_dietrich$elm_svgbob$SvgBob$Types$North, $andre_dietrich$elm_svgbob$SvgBob$Types$East_(3)))),
+            _Utils_Tuple2(function(m) {
+                return _Utils_eq($andre_dietrich$elm_svgbob$SvgBob$Types$Vertical, m.north) && _Utils_eq($andre_dietrich$elm_svgbob$SvgBob$Types$SlantRight, m.north_east);
+            }, $andre_dietrich$elm_svgbob$SvgBob$Types$Sequence(_List_fromArray([
+                A2($andre_dietrich$elm_svgbob$SvgBob$Types$Line, $andre_dietrich$elm_svgbob$SvgBob$Types$Center, $andre_dietrich$elm_svgbob$SvgBob$Types$North),
+                A2($andre_dietrich$elm_svgbob$SvgBob$Types$Line, $andre_dietrich$elm_svgbob$SvgBob$Types$Center, A2($andre_dietrich$elm_svgbob$SvgBob$Types$Ext, $andre_dietrich$elm_svgbob$SvgBob$Types$North, $andre_dietrich$elm_svgbob$SvgBob$Types$East))
+            ]))),
+            _Utils_Tuple2(function(m) {
+                return _Utils_eq($andre_dietrich$elm_svgbob$SvgBob$Types$Vertical, m.north) && _Utils_eq($andre_dietrich$elm_svgbob$SvgBob$Types$SlantLeft, m.north_west);
+            }, $andre_dietrich$elm_svgbob$SvgBob$Types$Sequence(_List_fromArray([
+                A2($andre_dietrich$elm_svgbob$SvgBob$Types$Line, $andre_dietrich$elm_svgbob$SvgBob$Types$Center, $andre_dietrich$elm_svgbob$SvgBob$Types$North),
+                A2($andre_dietrich$elm_svgbob$SvgBob$Types$Line, $andre_dietrich$elm_svgbob$SvgBob$Types$Center, A2($andre_dietrich$elm_svgbob$SvgBob$Types$Ext, $andre_dietrich$elm_svgbob$SvgBob$Types$North, $andre_dietrich$elm_svgbob$SvgBob$Types$West))
+            ]))),
+            _Utils_Tuple2(function(m) {
+                return _Utils_eq($andre_dietrich$elm_svgbob$SvgBob$Types$SlantRight, m.north_east) && _Utils_eq($andre_dietrich$elm_svgbob$SvgBob$Types$SlantLeft, m.north_west);
+            }, $andre_dietrich$elm_svgbob$SvgBob$Types$Sequence(_List_fromArray([
+                A2($andre_dietrich$elm_svgbob$SvgBob$Types$Line, $andre_dietrich$elm_svgbob$SvgBob$Types$Center, A2($andre_dietrich$elm_svgbob$SvgBob$Types$Ext, $andre_dietrich$elm_svgbob$SvgBob$Types$North, $andre_dietrich$elm_svgbob$SvgBob$Types$East)),
+                A2($andre_dietrich$elm_svgbob$SvgBob$Types$Line, $andre_dietrich$elm_svgbob$SvgBob$Types$Center, A2($andre_dietrich$elm_svgbob$SvgBob$Types$Ext, $andre_dietrich$elm_svgbob$SvgBob$Types$North, $andre_dietrich$elm_svgbob$SvgBob$Types$West))
+            ])))
+        ])));
+    });
+    var $andre_dietrich$elm_svgbob$SvgBob$Model$dim = function(lines) {
+        return _Utils_Tuple2($elm$core$List$length(lines), A2($elm$core$Maybe$withDefault, 0, $elm$core$List$maximum(A2($elm$core$List$map, $elm$core$String$length, lines))));
+    };
+    var $andre_dietrich$elm_svgbob$SvgBob$Grid$horizontal = F2(function(_char, matrix) {
+        return A2($andre_dietrich$elm_svgbob$SvgBob$Grid$sequenceWithDefault, _char, A2($andre_dietrich$elm_svgbob$SvgBob$Grid$apply, matrix, _List_fromArray([
+            _Utils_Tuple2(function(m) {
+                return !_Utils_eq($andre_dietrich$elm_svgbob$SvgBob$Types$AlphaNumeric, m.west) || !_Utils_eq($andre_dietrich$elm_svgbob$SvgBob$Types$AlphaNumeric, m.east);
+            }, A2($andre_dietrich$elm_svgbob$SvgBob$Types$Line, $andre_dietrich$elm_svgbob$SvgBob$Types$East, $andre_dietrich$elm_svgbob$SvgBob$Types$West_(2)))
+        ])));
+    });
+    var $andre_dietrich$elm_svgbob$SvgBob$Grid$lowHorizontal = F2(function(_char, matrix) {
+        return A2($andre_dietrich$elm_svgbob$SvgBob$Grid$sequenceWithDefault, _char, A2($andre_dietrich$elm_svgbob$SvgBob$Grid$apply, matrix, _List_fromArray([
+            _Utils_Tuple2(A2($elm$core$Basics$composeR, function($) {
+                return $.west;
+            }, $elm$core$Basics$eq($andre_dietrich$elm_svgbob$SvgBob$Types$SlantRight)), A2($andre_dietrich$elm_svgbob$SvgBob$Types$Line, A2($andre_dietrich$elm_svgbob$SvgBob$Types$Ext, $andre_dietrich$elm_svgbob$SvgBob$Types$South, $andre_dietrich$elm_svgbob$SvgBob$Types$East), $andre_dietrich$elm_svgbob$SvgBob$Types$West_(4))),
+            _Utils_Tuple2(A2($elm$core$Basics$composeR, function($) {
+                return $.west;
+            }, $elm$core$Basics$eq($andre_dietrich$elm_svgbob$SvgBob$Types$Vertical)), A2($andre_dietrich$elm_svgbob$SvgBob$Types$Line, A2($andre_dietrich$elm_svgbob$SvgBob$Types$Ext, $andre_dietrich$elm_svgbob$SvgBob$Types$South, $andre_dietrich$elm_svgbob$SvgBob$Types$East), $andre_dietrich$elm_svgbob$SvgBob$Types$West_(3))),
+            _Utils_Tuple2(A2($elm$core$Basics$composeR, function($) {
+                return $.east;
+            }, $elm$core$Basics$eq($andre_dietrich$elm_svgbob$SvgBob$Types$SlantLeft)), A2($andre_dietrich$elm_svgbob$SvgBob$Types$Line, A2($andre_dietrich$elm_svgbob$SvgBob$Types$Ext, $andre_dietrich$elm_svgbob$SvgBob$Types$South, $andre_dietrich$elm_svgbob$SvgBob$Types$West), $andre_dietrich$elm_svgbob$SvgBob$Types$East_(4))),
+            _Utils_Tuple2(A2($elm$core$Basics$composeR, function($) {
+                return $.east;
+            }, $elm$core$Basics$eq($andre_dietrich$elm_svgbob$SvgBob$Types$SlantLeft)), A2($andre_dietrich$elm_svgbob$SvgBob$Types$Line, A2($andre_dietrich$elm_svgbob$SvgBob$Types$Ext, $andre_dietrich$elm_svgbob$SvgBob$Types$South, $andre_dietrich$elm_svgbob$SvgBob$Types$West), $andre_dietrich$elm_svgbob$SvgBob$Types$East_(4))),
+            _Utils_Tuple2(A2($elm$core$Basics$composeR, function($) {
+                return $.east;
+            }, $elm$core$Basics$eq($andre_dietrich$elm_svgbob$SvgBob$Types$Vertical)), A2($andre_dietrich$elm_svgbob$SvgBob$Types$Line, A2($andre_dietrich$elm_svgbob$SvgBob$Types$Ext, $andre_dietrich$elm_svgbob$SvgBob$Types$South, $andre_dietrich$elm_svgbob$SvgBob$Types$West), $andre_dietrich$elm_svgbob$SvgBob$Types$East_(3))),
+            _Utils_Tuple2(A2($elm$core$Basics$composeR, function($) {
+                return $.south_west;
+            }, $elm$core$Basics$eq($andre_dietrich$elm_svgbob$SvgBob$Types$Vertical)), A2($andre_dietrich$elm_svgbob$SvgBob$Types$Line, A2($andre_dietrich$elm_svgbob$SvgBob$Types$Ext, $andre_dietrich$elm_svgbob$SvgBob$Types$South, $andre_dietrich$elm_svgbob$SvgBob$Types$West_(2)), $andre_dietrich$elm_svgbob$SvgBob$Types$East_(3))),
+            _Utils_Tuple2(A2($elm$core$Basics$composeR, function($) {
+                return $.south_east;
+            }, $elm$core$Basics$eq($andre_dietrich$elm_svgbob$SvgBob$Types$Vertical)), A2($andre_dietrich$elm_svgbob$SvgBob$Types$Line, A2($andre_dietrich$elm_svgbob$SvgBob$Types$Ext, $andre_dietrich$elm_svgbob$SvgBob$Types$South, $andre_dietrich$elm_svgbob$SvgBob$Types$West), $andre_dietrich$elm_svgbob$SvgBob$Types$East_(3))),
+            _Utils_Tuple2(function(m) {
+                return !_Utils_eq($andre_dietrich$elm_svgbob$SvgBob$Types$AlphaNumeric, m.west) && !_Utils_eq($andre_dietrich$elm_svgbob$SvgBob$Types$AlphaNumeric, m.east);
+            }, A2($andre_dietrich$elm_svgbob$SvgBob$Types$Line, A2($andre_dietrich$elm_svgbob$SvgBob$Types$Ext, $andre_dietrich$elm_svgbob$SvgBob$Types$South, $andre_dietrich$elm_svgbob$SvgBob$Types$East), $andre_dietrich$elm_svgbob$SvgBob$Types$West_(2))),
+            _Utils_Tuple2(function(m) {
+                return _Utils_eq($andre_dietrich$elm_svgbob$SvgBob$Types$OpenCurve, m.south_west);
+            }, A3($andre_dietrich$elm_svgbob$SvgBob$Types$Curve, 1, A2($andre_dietrich$elm_svgbob$SvgBob$Types$Ext, $andre_dietrich$elm_svgbob$SvgBob$Types$South, $andre_dietrich$elm_svgbob$SvgBob$Types$West), A3($andre_dietrich$elm_svgbob$SvgBob$Types$Ext_, 0.15, $andre_dietrich$elm_svgbob$SvgBob$Types$South, $andre_dietrich$elm_svgbob$SvgBob$Types$West_(4)))),
+            _Utils_Tuple2(function(m) {
+                return _Utils_eq($andre_dietrich$elm_svgbob$SvgBob$Types$OpenCurve, m.west);
+            }, A3($andre_dietrich$elm_svgbob$SvgBob$Types$Curve, 1, A2($andre_dietrich$elm_svgbob$SvgBob$Types$Ext, $andre_dietrich$elm_svgbob$SvgBob$Types$South_(0.75), $andre_dietrich$elm_svgbob$SvgBob$Types$West_(1.6)), A3($andre_dietrich$elm_svgbob$SvgBob$Types$Ext_, 0.2, $andre_dietrich$elm_svgbob$SvgBob$Types$South, $andre_dietrich$elm_svgbob$SvgBob$Types$East_(4)))),
+            _Utils_Tuple2(function(m) {
+                return _Utils_eq($andre_dietrich$elm_svgbob$SvgBob$Types$CloseCurve, m.south_east);
+            }, A3($andre_dietrich$elm_svgbob$SvgBob$Types$Curve, 1, A2($andre_dietrich$elm_svgbob$SvgBob$Types$Ext, $andre_dietrich$elm_svgbob$SvgBob$Types$South_(1.15), $andre_dietrich$elm_svgbob$SvgBob$Types$East_(1.7)), A3($andre_dietrich$elm_svgbob$SvgBob$Types$Ext_, 0.15, $andre_dietrich$elm_svgbob$SvgBob$Types$North, $andre_dietrich$elm_svgbob$SvgBob$Types$West_(4)))),
+            _Utils_Tuple2(function(m) {
+                return _Utils_eq($andre_dietrich$elm_svgbob$SvgBob$Types$CloseCurve, m.east);
+            }, A3($andre_dietrich$elm_svgbob$SvgBob$Types$Curve, 1, A2($andre_dietrich$elm_svgbob$SvgBob$Types$Ext, $andre_dietrich$elm_svgbob$SvgBob$Types$South, $andre_dietrich$elm_svgbob$SvgBob$Types$East_(1)), A3($andre_dietrich$elm_svgbob$SvgBob$Types$Ext_, 0.2, $andre_dietrich$elm_svgbob$SvgBob$Types$North_(2), $andre_dietrich$elm_svgbob$SvgBob$Types$East_(4))))
+        ])));
+    });
+    var $andre_dietrich$elm_svgbob$SvgBob$Grid$openCurve = F2(function(_char, matrix) {
+        return A2($andre_dietrich$elm_svgbob$SvgBob$Grid$sequenceWithDefault, _char, A2($andre_dietrich$elm_svgbob$SvgBob$Grid$apply, matrix, _List_fromArray([
+            _Utils_Tuple2(function(m) {
+                return _Utils_eq($andre_dietrich$elm_svgbob$SvgBob$Types$Corner, m.north_east) && _Utils_eq($andre_dietrich$elm_svgbob$SvgBob$Types$Corner, m.south_east);
+            }, A3($andre_dietrich$elm_svgbob$SvgBob$Types$Curve, 4, $andre_dietrich$elm_svgbob$SvgBob$Types$North, A2($andre_dietrich$elm_svgbob$SvgBob$Types$Ext, $andre_dietrich$elm_svgbob$SvgBob$Types$South, $andre_dietrich$elm_svgbob$SvgBob$Types$South))),
+            _Utils_Tuple2(function(m) {
+                return _Utils_eq($andre_dietrich$elm_svgbob$SvgBob$Types$SlantRight, m.north_east) && _Utils_eq($andre_dietrich$elm_svgbob$SvgBob$Types$SlantLeft, m.south_east);
+            }, A3($andre_dietrich$elm_svgbob$SvgBob$Types$Curve, 4, A2($andre_dietrich$elm_svgbob$SvgBob$Types$Ext, $andre_dietrich$elm_svgbob$SvgBob$Types$North, $andre_dietrich$elm_svgbob$SvgBob$Types$East), A2($andre_dietrich$elm_svgbob$SvgBob$Types$Ext, $andre_dietrich$elm_svgbob$SvgBob$Types$South, $andre_dietrich$elm_svgbob$SvgBob$Types$South)))
+        ])));
+    });
+    var $andre_dietrich$elm_svgbob$SvgBob$Grid$getElement = F2(function(m, _v0) {
+        var _char = _v0.a;
+        var elem = _v0.b;
+        _v1$16: while(true)switch(elem.$){
+            case 'Vertical':
+                return !_Utils_eq($andre_dietrich$elm_svgbob$SvgBob$Types$AlphaNumeric, m.west) || !_Utils_eq($andre_dietrich$elm_svgbob$SvgBob$Types$AlphaNumeric, m.east) ? A2($andre_dietrich$elm_svgbob$SvgBob$Types$Line, $andre_dietrich$elm_svgbob$SvgBob$Types$South, A2($andre_dietrich$elm_svgbob$SvgBob$Types$Ext, $andre_dietrich$elm_svgbob$SvgBob$Types$North, $andre_dietrich$elm_svgbob$SvgBob$Types$North)) : $andre_dietrich$elm_svgbob$SvgBob$Types$Text(_char);
+            case 'Horizontal':
+                return A2($andre_dietrich$elm_svgbob$SvgBob$Grid$horizontal, _char, m);
+            case 'LowHorizontal':
+                return A2($andre_dietrich$elm_svgbob$SvgBob$Grid$lowHorizontal, _char, m);
+            case 'Intersection':
+                return A2($andre_dietrich$elm_svgbob$SvgBob$Grid$intersection, _char, m);
+            case 'Arrow':
+                switch(elem.a.$){
+                    case 'South':
+                        var _v2 = elem.a;
+                        return _Utils_eq($andre_dietrich$elm_svgbob$SvgBob$Types$Vertical, m.north) ? $andre_dietrich$elm_svgbob$SvgBob$Types$Triangle($andre_dietrich$elm_svgbob$SvgBob$Types$North) : _Utils_eq($andre_dietrich$elm_svgbob$SvgBob$Types$SlantRight, m.north_east) ? $andre_dietrich$elm_svgbob$SvgBob$Types$Triangle(A2($andre_dietrich$elm_svgbob$SvgBob$Types$Ext, $andre_dietrich$elm_svgbob$SvgBob$Types$North, $andre_dietrich$elm_svgbob$SvgBob$Types$East)) : _Utils_eq($andre_dietrich$elm_svgbob$SvgBob$Types$SlantLeft, m.north_west) ? $andre_dietrich$elm_svgbob$SvgBob$Types$Triangle(A2($andre_dietrich$elm_svgbob$SvgBob$Types$Ext, $andre_dietrich$elm_svgbob$SvgBob$Types$North, $andre_dietrich$elm_svgbob$SvgBob$Types$West)) : $andre_dietrich$elm_svgbob$SvgBob$Types$Text(_char);
+                    case 'North':
+                        var _v3 = elem.a;
+                        return _Utils_eq($andre_dietrich$elm_svgbob$SvgBob$Types$Vertical, m.south) ? $andre_dietrich$elm_svgbob$SvgBob$Types$Triangle($andre_dietrich$elm_svgbob$SvgBob$Types$South) : _Utils_eq($andre_dietrich$elm_svgbob$SvgBob$Types$SlantRight, m.south_west) ? $andre_dietrich$elm_svgbob$SvgBob$Types$Triangle(A2($andre_dietrich$elm_svgbob$SvgBob$Types$Ext, $andre_dietrich$elm_svgbob$SvgBob$Types$South, $andre_dietrich$elm_svgbob$SvgBob$Types$West)) : _Utils_eq($andre_dietrich$elm_svgbob$SvgBob$Types$SlantLeft, m.south_east) ? $andre_dietrich$elm_svgbob$SvgBob$Types$Triangle(A2($andre_dietrich$elm_svgbob$SvgBob$Types$Ext, $andre_dietrich$elm_svgbob$SvgBob$Types$South, $andre_dietrich$elm_svgbob$SvgBob$Types$East)) : $andre_dietrich$elm_svgbob$SvgBob$Types$Text(_char);
+                    case 'East':
+                        var _v4 = elem.a;
+                        return _Utils_eq($andre_dietrich$elm_svgbob$SvgBob$Types$Horizontal, m.west) || _Utils_eq($andre_dietrich$elm_svgbob$SvgBob$Types$Horizontal, m.east) ? $andre_dietrich$elm_svgbob$SvgBob$Types$Triangle($andre_dietrich$elm_svgbob$SvgBob$Types$East) : $andre_dietrich$elm_svgbob$SvgBob$Types$Text(_char);
+                    case 'West':
+                        var _v5 = elem.a;
+                        return _Utils_eq($andre_dietrich$elm_svgbob$SvgBob$Types$Horizontal, m.west) || _Utils_eq($andre_dietrich$elm_svgbob$SvgBob$Types$Horizontal, m.east) ? $andre_dietrich$elm_svgbob$SvgBob$Types$Triangle($andre_dietrich$elm_svgbob$SvgBob$Types$West) : $andre_dietrich$elm_svgbob$SvgBob$Types$Text(_char);
+                    default:
+                        break _v1$16;
+                }
+            case 'Corner':
+                return A2($andre_dietrich$elm_svgbob$SvgBob$Grid$corner, _char, m);
+            case 'SlantRight':
+                return A2($andre_dietrich$elm_svgbob$SvgBob$Types$Line, A2($andre_dietrich$elm_svgbob$SvgBob$Types$Ext, $andre_dietrich$elm_svgbob$SvgBob$Types$North, $andre_dietrich$elm_svgbob$SvgBob$Types$East), A3($andre_dietrich$elm_svgbob$SvgBob$Types$Ext_, 2, $andre_dietrich$elm_svgbob$SvgBob$Types$South, $andre_dietrich$elm_svgbob$SvgBob$Types$West));
+            case 'SlantLeft':
+                return A2($andre_dietrich$elm_svgbob$SvgBob$Types$Line, A2($andre_dietrich$elm_svgbob$SvgBob$Types$Ext, $andre_dietrich$elm_svgbob$SvgBob$Types$South, $andre_dietrich$elm_svgbob$SvgBob$Types$East), A3($andre_dietrich$elm_svgbob$SvgBob$Types$Ext_, 2, $andre_dietrich$elm_svgbob$SvgBob$Types$North, $andre_dietrich$elm_svgbob$SvgBob$Types$West));
+            case 'OpenCurve':
+                return A2($andre_dietrich$elm_svgbob$SvgBob$Grid$openCurve, _char, m);
+            case 'CloseCurve':
+                return A2($andre_dietrich$elm_svgbob$SvgBob$Grid$closeCurve, _char, m);
+            case 'Square':
+                var _v6 = A2($andre_dietrich$elm_svgbob$SvgBob$Grid$intersection, _char, m);
+                if (_v6.$ === 'Sequence') {
+                    var list = _v6.a;
+                    return $andre_dietrich$elm_svgbob$SvgBob$Types$Sequence(A2($elm$core$List$cons, $andre_dietrich$elm_svgbob$SvgBob$Types$Box, list));
+                } else return $andre_dietrich$elm_svgbob$SvgBob$Types$Text(_char);
+            case 'O':
+                var filled = elem.a;
+                return A3($andre_dietrich$elm_svgbob$SvgBob$Grid$circle, filled, _char, m);
+            case 'Verbatim':
+                var str = elem.a;
+                return A2($andre_dietrich$elm_svgbob$SvgBob$Types$ForeignObject, str, $andre_dietrich$elm_svgbob$SvgBob$Model$dim($elm$core$String$lines(str)));
+            default:
+                break _v1$16;
+        }
+        return $andre_dietrich$elm_svgbob$SvgBob$Types$Text(_char);
+    });
+    var $andre_dietrich$elm_svgbob$SvgBob$Types$None = {
+        $: 'None'
+    };
+    var $andre_dietrich$elm_svgbob$SvgBob$Grid$get = F2(function(pos, dict) {
+        return A2($elm$core$Maybe$withDefault, $andre_dietrich$elm_svgbob$SvgBob$Types$None, A2($elm$core$Maybe$map, $elm$core$Tuple$second, A2($elm$core$Dict$get, pos, dict)));
+    });
+    var $andre_dietrich$elm_svgbob$SvgBob$Grid$getMatrix = F3(function(x, y, dict) {
+        return {
+            east: A2($andre_dietrich$elm_svgbob$SvgBob$Grid$get, _Utils_Tuple2(x + 1, y), dict),
+            north: A2($andre_dietrich$elm_svgbob$SvgBob$Grid$get, _Utils_Tuple2(x, y - 1), dict),
+            north_east: A2($andre_dietrich$elm_svgbob$SvgBob$Grid$get, _Utils_Tuple2(x + 1, y - 1), dict),
+            north_west: A2($andre_dietrich$elm_svgbob$SvgBob$Grid$get, _Utils_Tuple2(x - 1, y - 1), dict),
+            south: A2($andre_dietrich$elm_svgbob$SvgBob$Grid$get, _Utils_Tuple2(x, y + 1), dict),
+            south_east: A2($andre_dietrich$elm_svgbob$SvgBob$Grid$get, _Utils_Tuple2(x + 1, y + 1), dict),
+            south_west: A2($andre_dietrich$elm_svgbob$SvgBob$Grid$get, _Utils_Tuple2(x - 1, y + 1), dict),
+            west: A2($andre_dietrich$elm_svgbob$SvgBob$Grid$get, _Utils_Tuple2(x - 1, y), dict)
+        };
+    });
+    var $andre_dietrich$elm_svgbob$SvgBob$Types$Verbatim = function(a) {
+        return {
+            $: 'Verbatim',
+            a: a
+        };
+    };
+    var $andre_dietrich$elm_svgbob$SvgBob$Types$mergeVerbatim = F2(function(scan, scan2) {
+        var _v0 = _Utils_Tuple2(scan, scan2);
+        if (_v0.a.$ === 'Verbatim' && _v0.b.$ === 'Verbatim') {
+            var str = _v0.a.a;
+            var str2 = _v0.b.a;
+            return $andre_dietrich$elm_svgbob$SvgBob$Types$Verbatim(str + ('\n' + str2));
+        } else return scan;
+    });
+    var $andre_dietrich$elm_svgbob$SvgBob$Grid$merge = F2(function(combined, verbs) {
+        merge: while(true){
+            var _v0 = _Utils_Tuple2($elm$core$List$head(verbs), $elm$core$List$tail(verbs));
+            if (_v0.a.$ === 'Nothing') {
+                var _v1 = _v0.a;
+                return combined;
+            } else if (_v0.b.$ === 'Nothing') {
+                var _v2 = _v0.b;
+                return combined;
+            } else {
+                var head = _v0.a.a;
+                var tail = _v0.b.a;
+                var _v3 = A3($elm$core$List$foldl, F2(function(_v4, _v5) {
+                    var pos = _v4.a;
+                    var x = pos.a;
+                    var y = pos.b;
+                    var scan = _v4.b;
+                    var c = scan.a;
+                    var s = scan.b;
+                    var currentY = _v5.a;
+                    var v = _v5.b;
+                    var _v6 = v.a;
+                    var v_x = _v6.a;
+                    var v_y = _v6.b;
+                    var _v7 = v.b;
+                    var v_s = _v7.b;
+                    var rest = _v5.c;
+                    return _Utils_eq(x, v_x) && _Utils_eq(currentY + 1, y) ? _Utils_Tuple3(currentY + 1, _Utils_Tuple2(_Utils_Tuple2(v_x, v_y), _Utils_Tuple2(c, A2($andre_dietrich$elm_svgbob$SvgBob$Types$mergeVerbatim, v_s, s))), rest) : _Utils_Tuple3(currentY, v, A2($elm$core$List$cons, _Utils_Tuple2(pos, scan), rest));
+                }), _Utils_Tuple3(head.a.b, head, _List_Nil), tail);
+                var verb = _v3.b;
+                var newTail = _v3.c;
+                var $temp$combined = A2($elm$core$List$cons, verb, combined), $temp$verbs = $elm$core$List$reverse(newTail);
+                combined = $temp$combined;
+                verbs = $temp$verbs;
+                continue merge;
+            }
+        }
+    });
+    var $elm$core$String$append = _String_append;
+    var $andre_dietrich$elm_svgbob$SvgBob$Grid$appendToVerbatim = function(str) {
+        return A2($elm$core$Basics$composeR, $elm$core$String$fromChar, A2($elm$core$Basics$composeR, $elm$core$String$append(str), A2($elm$core$Basics$composeR, $andre_dietrich$elm_svgbob$SvgBob$Types$Verbatim, $elm$core$Tuple$pair(_Utils_chr(' ')))));
+    };
+    var $elm$core$String$dropRight = F2(function(n, string) {
+        return n < 1 ? string : A3($elm$core$String$slice, 0, -n, string);
+    });
+    var $andre_dietrich$elm_svgbob$SvgBob$Types$Arrow = function(a) {
+        return {
+            $: 'Arrow',
+            a: a
+        };
+    };
+    var $andre_dietrich$elm_svgbob$SvgBob$Types$O = function(a) {
+        return {
+            $: 'O',
+            a: a
+        };
+    };
+    var $andre_dietrich$elm_svgbob$SvgBob$Types$Square = {
+        $: 'Square'
+    };
+    var $andre_dietrich$elm_svgbob$SvgBob$Grid$getScan = function(_char) {
+        switch(_char.valueOf()){
+            case ' ':
+                return $elm$core$Maybe$Nothing;
+            case '-':
+                return $elm$core$Maybe$Just($andre_dietrich$elm_svgbob$SvgBob$Types$Horizontal);
+            case '_':
+                return $elm$core$Maybe$Just($andre_dietrich$elm_svgbob$SvgBob$Types$LowHorizontal);
+            case '+':
+                return $elm$core$Maybe$Just($andre_dietrich$elm_svgbob$SvgBob$Types$Intersection);
+            case '.':
+                return $elm$core$Maybe$Just($andre_dietrich$elm_svgbob$SvgBob$Types$Corner);
+            case '\'':
+                return $elm$core$Maybe$Just($andre_dietrich$elm_svgbob$SvgBob$Types$Corner);
+            case ',':
+                return $elm$core$Maybe$Just($andre_dietrich$elm_svgbob$SvgBob$Types$Corner);
+            case '`':
+                return $elm$core$Maybe$Just($andre_dietrich$elm_svgbob$SvgBob$Types$Corner);
+            case '´':
+                return $elm$core$Maybe$Just($andre_dietrich$elm_svgbob$SvgBob$Types$Corner);
+            case '>':
+                return $elm$core$Maybe$Just($andre_dietrich$elm_svgbob$SvgBob$Types$Arrow($andre_dietrich$elm_svgbob$SvgBob$Types$West));
+            case '<':
+                return $elm$core$Maybe$Just($andre_dietrich$elm_svgbob$SvgBob$Types$Arrow($andre_dietrich$elm_svgbob$SvgBob$Types$East));
+            case 'V':
+                return $elm$core$Maybe$Just($andre_dietrich$elm_svgbob$SvgBob$Types$Arrow($andre_dietrich$elm_svgbob$SvgBob$Types$South));
+            case 'v':
+                return $elm$core$Maybe$Just($andre_dietrich$elm_svgbob$SvgBob$Types$Arrow($andre_dietrich$elm_svgbob$SvgBob$Types$South));
+            case '^':
+                return $elm$core$Maybe$Just($andre_dietrich$elm_svgbob$SvgBob$Types$Arrow($andre_dietrich$elm_svgbob$SvgBob$Types$North));
+            case 'A':
+                return $elm$core$Maybe$Just($andre_dietrich$elm_svgbob$SvgBob$Types$Arrow($andre_dietrich$elm_svgbob$SvgBob$Types$North));
+            case '/':
+                return $elm$core$Maybe$Just($andre_dietrich$elm_svgbob$SvgBob$Types$SlantRight);
+            case '\\':
+                return $elm$core$Maybe$Just($andre_dietrich$elm_svgbob$SvgBob$Types$SlantLeft);
+            case '(':
+                return $elm$core$Maybe$Just($andre_dietrich$elm_svgbob$SvgBob$Types$OpenCurve);
+            case ')':
+                return $elm$core$Maybe$Just($andre_dietrich$elm_svgbob$SvgBob$Types$CloseCurve);
+            case '|':
+                return $elm$core$Maybe$Just($andre_dietrich$elm_svgbob$SvgBob$Types$Vertical);
+            case '#':
+                return $elm$core$Maybe$Just($andre_dietrich$elm_svgbob$SvgBob$Types$Square);
+            case 'O':
+                return $elm$core$Maybe$Just($andre_dietrich$elm_svgbob$SvgBob$Types$O(false));
+            case 'o':
+                return $elm$core$Maybe$Just($andre_dietrich$elm_svgbob$SvgBob$Types$O(false));
+            case '*':
+                return $elm$core$Maybe$Just($andre_dietrich$elm_svgbob$SvgBob$Types$O(true));
+            default:
+                return $elm$core$Maybe$Just($andre_dietrich$elm_svgbob$SvgBob$Types$AlphaNumeric);
+        }
+    };
+    var $andre_dietrich$elm_svgbob$SvgBob$Grid$scanElement = F5(function(verbatim, withVerbatim, y, _char, scan) {
+        return (function(s) {
+            return _Utils_update(s, {
+                lastChars: A2($elm$core$List$cons, _Utils_eq(_char, verbatim), s.lastChars),
+                x: s.x + 1
+            });
+        })(function() {
+            if (_Utils_eq(_char, verbatim)) {
+                var _v0 = _Utils_Tuple2(scan.verbatimCounter, scan.lastChars);
+                _v0$4: while(true)switch(_v0.a){
+                    case 0:
+                        return _Utils_update(scan, {
+                            verbatimCounter: 1
+                        });
+                    case 1:
+                        if (_v0.b.b) {
+                            if (!_v0.b.a) {
+                                var _v1 = _v0.b;
+                                return _Utils_update(scan, {
+                                    verbatimCounter: 0
+                                });
+                            } else {
+                                var _v2 = _v0.b;
+                                return _Utils_update(scan, {
+                                    verbatimCounter: 2
+                                });
+                            }
+                        } else break _v0$4;
+                    case 2:
+                        if (_v0.b.b && _v0.b.a) {
+                            var _v3 = _v0.b;
+                            return _Utils_update(scan, {
+                                result: function() {
+                                    var _v4 = _Utils_Tuple2(withVerbatim, scan.result);
+                                    if (_v4.a && _v4.b.b && _v4.b.a.b.b.$ === 'Verbatim') {
+                                        var _v5 = _v4.b;
+                                        var _v6 = _v5.a;
+                                        var pos = _v6.a;
+                                        var _v7 = _v6.b;
+                                        var str = _v7.b.a;
+                                        var xs = _v5.b;
+                                        return A2($elm$core$List$cons, _Utils_Tuple2(pos, _Utils_Tuple2(_Utils_chr(' '), $andre_dietrich$elm_svgbob$SvgBob$Types$Verbatim(A2($elm$core$String$dropRight, 1, str) + '  '))), xs);
+                                    } else {
+                                        var result = _v4.b;
+                                        return A2($elm$core$Maybe$withDefault, _List_Nil, $elm$core$List$tail(result));
+                                    }
+                                }(),
+                                verbatimCounter: 0
+                            });
+                        } else break _v0$4;
+                    default:
+                        break _v0$4;
+                }
+                return _Utils_update(scan, {
+                    result: function() {
+                        var _v8 = _Utils_Tuple2(withVerbatim, scan.result);
+                        if (!_v8.a) return A2($elm$core$List$cons, _Utils_Tuple2(_Utils_Tuple2(scan.x, y), _Utils_Tuple2(_char, $andre_dietrich$elm_svgbob$SvgBob$Types$AlphaNumeric)), scan.result);
+                        else {
+                            if (_v8.b.b && _v8.b.a.b.b.$ === 'Verbatim') {
+                                var _v9 = _v8.b;
+                                var _v10 = _v9.a;
+                                var pos = _v10.a;
+                                var _v11 = _v10.b;
+                                var str = _v11.b.a;
+                                var xs = _v9.b;
+                                return A2($elm$core$List$cons, _Utils_Tuple2(pos, A2($andre_dietrich$elm_svgbob$SvgBob$Grid$appendToVerbatim, str, _char)), xs);
+                            } else return A2($elm$core$List$cons, _Utils_Tuple2(_Utils_Tuple2(scan.x, y), A2($andre_dietrich$elm_svgbob$SvgBob$Grid$appendToVerbatim, '', _char)), scan.result);
+                        }
+                    }()
+                });
+            } else {
+                if (scan.verbatimCounter > 0) return _Utils_update(scan, {
+                    result: function() {
+                        var _v12 = _Utils_Tuple2(withVerbatim, scan.result);
+                        if (!_v12.a) return A2($elm$core$List$cons, _Utils_Tuple2(_Utils_Tuple2(scan.x, y), _Utils_Tuple2(_char, $andre_dietrich$elm_svgbob$SvgBob$Types$AlphaNumeric)), scan.result);
+                        else {
+                            if (_v12.b.b && _v12.b.a.b.b.$ === 'Verbatim') {
+                                var _v13 = _v12.b;
+                                var _v14 = _v13.a;
+                                var _v15 = _v14.a;
+                                var x = _v15.a;
+                                var _v16 = _v14.b;
+                                var str = _v16.b.a;
+                                var xs = _v13.b;
+                                return _Utils_eq(x + $elm$core$String$length(str), scan.x) ? A2($elm$core$List$cons, _Utils_Tuple2(_Utils_Tuple2(x, y), A2($andre_dietrich$elm_svgbob$SvgBob$Grid$appendToVerbatim, str, _char)), xs) : A2($elm$core$List$cons, _Utils_Tuple2(_Utils_Tuple2(scan.x, y), A2($andre_dietrich$elm_svgbob$SvgBob$Grid$appendToVerbatim, '', _char)), scan.result);
+                            } else return A2($elm$core$List$cons, _Utils_Tuple2(_Utils_Tuple2(scan.x + 1 - scan.verbatimCounter, y), A2($andre_dietrich$elm_svgbob$SvgBob$Grid$appendToVerbatim, '', _char)), scan.result);
+                        }
+                    }()
+                });
+                else {
+                    var _v17 = $andre_dietrich$elm_svgbob$SvgBob$Grid$getScan(_char);
+                    if (_v17.$ === 'Nothing') return scan;
+                    else {
+                        var elem = _v17.a;
+                        return _Utils_update(scan, {
+                            result: A2($elm$core$List$cons, _Utils_Tuple2(_Utils_Tuple2(scan.x, y), _Utils_Tuple2(_char, elem)), scan.result)
+                        });
+                    }
+                }
+            }
+        }());
+    });
+    var $elm$core$String$trimRight = _String_trimRight;
+    var $andre_dietrich$elm_svgbob$SvgBob$Grid$scanLine = F3(function(verbatim, withVerbatim, y) {
+        return A2($elm$core$Basics$composeR, $elm$core$String$trimRight, A2($elm$core$Basics$composeR, $elm$core$String$toList, A2($elm$core$Basics$composeR, A2($elm$core$List$foldl, A3($andre_dietrich$elm_svgbob$SvgBob$Grid$scanElement, verbatim, withVerbatim, y), {
+            lastChars: _List_Nil,
+            result: _List_Nil,
+            verbatimCounter: 0,
+            x: 0
+        }), function($) {
+            return $.result;
+        })));
+    });
+    var $elm$core$List$sortBy = _List_sortBy;
+    var $andre_dietrich$elm_svgbob$SvgBob$Grid$getScans = F2(function(withVerbatim, model) {
+        var scanFn = A2($andre_dietrich$elm_svgbob$SvgBob$Grid$scanLine, model.settings.verbatim, withVerbatim);
+        var elements = $elm$core$List$concat(A2($elm$core$List$indexedMap, scanFn, model.lines));
+        if (model.settings.multilineVerbatim) {
+            var _v0 = A3($elm$core$List$foldl, F2(function(_v1, _v3) {
+                var pos = _v1.a;
+                var _v2 = _v1.b;
+                var _char = _v2.a;
+                var scan = _v2.b;
+                var v = _v3.a;
+                var s = _v3.b;
+                if (scan.$ === 'Verbatim') return _Utils_Tuple2(A2($elm$core$List$cons, _Utils_Tuple2(pos, _Utils_Tuple2(_char, scan)), v), s);
+                else return _Utils_Tuple2(v, A2($elm$core$List$cons, _Utils_Tuple2(pos, _Utils_Tuple2(_char, scan)), s));
+            }), _Utils_Tuple2(_List_Nil, _List_Nil), elements);
+            var verbs = _v0.a;
+            var scans = _v0.b;
+            return A2($elm$core$List$append, scans, $elm$core$List$reverse(A2($andre_dietrich$elm_svgbob$SvgBob$Grid$merge, _List_Nil, A2($elm$core$List$sortBy, A2($elm$core$Basics$composeR, $elm$core$Tuple$first, $elm$core$Tuple$second), verbs))));
+        } else return elements;
+    });
+    var $andre_dietrich$elm_svgbob$SvgBob$Model$init = F2(function(settings, str) {
+        var lines = $elm$core$String$lines(str);
+        var _v0 = $andre_dietrich$elm_svgbob$SvgBob$Model$dim(lines);
+        var rows = _v0.a;
+        var columns = _v0.b;
+        return {
+            columns: columns,
+            lines: lines,
+            rows: rows,
+            settings: settings
+        };
+    });
+    var $andre_dietrich$elm_svgbob$SvgBob$Grid$textWidth = 8;
+    var $andre_dietrich$elm_svgbob$SvgBob$Grid$measureX = function(x) {
+        return x * $andre_dietrich$elm_svgbob$SvgBob$Grid$textWidth;
+    };
+    var $andre_dietrich$elm_svgbob$SvgBob$Grid$textHeight = 16;
+    var $andre_dietrich$elm_svgbob$SvgBob$Grid$measureY = function(y) {
+        return y * $andre_dietrich$elm_svgbob$SvgBob$Grid$textHeight;
+    };
+    var $andre_dietrich$elm_svgbob$SvgBob$Grid$getElements = F2(function(settings, code) {
+        var model = A2($andre_dietrich$elm_svgbob$SvgBob$Model$init, settings, code);
+        var intermediate = A2($andre_dietrich$elm_svgbob$SvgBob$Grid$getScans, true, model);
+        var dict = $elm$core$Dict$fromList(intermediate);
+        return A3($elm$core$List$foldl, F2(function(_v0, container) {
+            var _v1 = _v0.a;
+            var x = _v1.a;
+            var y = _v1.b;
+            var _v2 = _v0.b;
+            var _char = _v2.a;
+            var element = _v2.b;
+            var point = A2($andre_dietrich$elm_svgbob$SvgBob$Types$Point, $andre_dietrich$elm_svgbob$SvgBob$Grid$measureX(x) + $andre_dietrich$elm_svgbob$SvgBob$Grid$textWidth / 2, $andre_dietrich$elm_svgbob$SvgBob$Grid$measureY(y) + $andre_dietrich$elm_svgbob$SvgBob$Grid$textHeight / 2);
+            var _v3 = A2($andre_dietrich$elm_svgbob$SvgBob$Grid$getElement, A3($andre_dietrich$elm_svgbob$SvgBob$Grid$getMatrix, x, y, dict), _Utils_Tuple2(_char, element));
+            if (_v3.$ === 'ForeignObject') {
+                var str = _v3.a;
+                var dim = _v3.b;
+                return _Utils_update(container, {
+                    foreign: A2($elm$core$List$cons, _Utils_Tuple2(str, _Utils_Tuple2(point, dim)), container.foreign)
+                });
+            } else {
+                var e = _v3;
+                return _Utils_update(container, {
+                    svg: A2($elm$core$List$cons, _Utils_Tuple2(point, e), container.svg)
+                });
+            }
+        }), {
+            columns: model.columns,
+            foreign: _List_Nil,
+            rows: model.rows,
+            settings: settings,
+            svg: _List_Nil
+        }, intermediate);
+    });
+    var $andre_dietrich$elm_svgbob$SvgBob$getElements = $andre_dietrich$elm_svgbob$SvgBob$Grid$getElements;
+    var $author$project$Lia$Markdown$Types$HLine = function(a) {
+        return {
+            $: 'HLine',
+            a: a
+        };
+    };
+    var $author$project$Lia$Markdown$Parser$md_annotations = function() {
+        var attr = A2($andre_dietrich$parser_combinators$Combine$andThen, $author$project$Lia$Markdown$HTML$Attributes$parse, $andre_dietrich$parser_combinators$Combine$withState(A2($elm$core$Basics$composeR, function($) {
+            return $.defines;
+        }, A2($elm$core$Basics$composeR, function($) {
+            return $.base;
+        }, $andre_dietrich$parser_combinators$Combine$succeed))));
+        return A2($andre_dietrich$parser_combinators$Combine$optional, _List_Nil, A2($andre_dietrich$parser_combinators$Combine$ignore, $andre_dietrich$parser_combinators$Combine$maybe(A2($andre_dietrich$parser_combinators$Combine$ignore, $author$project$Lia$Parser$Indentation$check, $andre_dietrich$parser_combinators$Combine$regex('[\t ]*\\n'))), A2($andre_dietrich$parser_combinators$Combine$keep, $author$project$Lia$Markdown$Inline$Parser$comment(attr), A2($andre_dietrich$parser_combinators$Combine$keep, $author$project$Lia$Markdown$Macro$Parser$macro, $author$project$Lia$Parser$Helper$spaces))));
+    }();
+    var $author$project$Lia$Markdown$Parser$horizontal_line = A2($andre_dietrich$parser_combinators$Combine$map, $author$project$Lia$Markdown$Types$HLine, A2($andre_dietrich$parser_combinators$Combine$ignore, $andre_dietrich$parser_combinators$Combine$regex('-{3,}'), $author$project$Lia$Markdown$Parser$md_annotations));
+    var $author$project$Lia$Markdown$Effect$Parser$multi = function(blocks) {
+        return A2($andre_dietrich$parser_combinators$Combine$keep, A2($andre_dietrich$parser_combinators$Combine$manyTill, A2($andre_dietrich$parser_combinators$Combine$ignore, $author$project$Lia$Parser$Helper$newlines, blocks), $andre_dietrich$parser_combinators$Combine$regex('[\t ]*\\*{3,}')), A2($andre_dietrich$parser_combinators$Combine$ignore, $andre_dietrich$parser_combinators$Combine$regex('[\t ]*\\*{3,}\\n+'), $author$project$Lia$Parser$Indentation$check));
+    };
+    var $author$project$Lia$Markdown$Effect$Parser$single = $andre_dietrich$parser_combinators$Combine$map($elm$core$List$singleton);
+    var $author$project$Lia$Parser$Indentation$skip = $andre_dietrich$parser_combinators$Combine$modifyState($author$project$Lia$Parser$Indentation$skip_(true));
+    var $author$project$Lia$Markdown$Effect$Parser$markdown = function(blocks) {
+        return A2($andre_dietrich$parser_combinators$Combine$andMap, $author$project$Lia$Markdown$Effect$Parser$effect_id, A2($andre_dietrich$parser_combinators$Combine$ignore, $author$project$Lia$Markdown$Effect$Parser$reset_effect_number, A2($andre_dietrich$parser_combinators$Combine$andMap, A2($andre_dietrich$parser_combinators$Combine$or, $author$project$Lia$Markdown$Effect$Parser$multi(blocks), $author$project$Lia$Markdown$Effect$Parser$single(blocks)), A2($andre_dietrich$parser_combinators$Combine$ignore, A2($andre_dietrich$parser_combinators$Combine$or, $andre_dietrich$parser_combinators$Combine$skip($andre_dietrich$parser_combinators$Combine$string('\n')), $author$project$Lia$Parser$Indentation$skip), A2($andre_dietrich$parser_combinators$Combine$ignore, $andre_dietrich$parser_combinators$Combine$regex('}}[\t ]*'), A2($andre_dietrich$parser_combinators$Combine$map, F3(function(e, b, c) {
+            return _Utils_update(e, {
+                content: b,
+                id: c
+            });
+        }), A2($andre_dietrich$parser_combinators$Combine$keep, $author$project$Lia$Markdown$Effect$Parser$definition, $andre_dietrich$parser_combinators$Combine$regex('[\t ]*{{'))))))));
+    };
+    var $author$project$Lia$Parser$Indentation$maybePar_ = function(s) {
+        if (_Utils_eq(s.indentation, _List_Nil)) return $andre_dietrich$parser_combinators$Combine$succeed(_Utils_Tuple0);
+        else {
+            if (s.indentation_skip) return $andre_dietrich$parser_combinators$Combine$skip($andre_dietrich$parser_combinators$Combine$succeed(_Utils_Tuple0));
+            else {
+                var pattern = $elm$core$String$concat(s.indentation);
+                if ($elm$core$String$trim(pattern) === '') return $andre_dietrich$parser_combinators$Combine$skip($andre_dietrich$parser_combinators$Combine$maybe($andre_dietrich$parser_combinators$Combine$regex(pattern)));
+                else {
+                    var subPattern = $elm$core$String$trimRight(pattern);
+                    return $andre_dietrich$parser_combinators$Combine$skip(A3($elm$core$Basics$apR, $andre_dietrich$parser_combinators$Combine$maybe($andre_dietrich$parser_combinators$Combine$string(A2($elm$core$String$repeat, $elm$core$String$length(pattern) - $elm$core$String$length(subPattern), ' '))), $andre_dietrich$parser_combinators$Combine$ignore, $andre_dietrich$parser_combinators$Combine$regex(subPattern)));
+                }
+            }
+        }
+    };
+    var $author$project$Lia$Parser$Indentation$maybeCheck = A2($andre_dietrich$parser_combinators$Combine$ignore, $andre_dietrich$parser_combinators$Combine$modifyState($author$project$Lia$Parser$Indentation$skip_(false)), $andre_dietrich$parser_combinators$Combine$withState($author$project$Lia$Parser$Indentation$maybePar_));
+    var $author$project$Lia$Markdown$Parser$newlineWithIndentation = A2($andre_dietrich$parser_combinators$Combine$ignore, $author$project$Lia$Parser$Helper$newline, $author$project$Lia$Parser$Indentation$maybeCheck);
+    var $andre_dietrich$parser_combinators$Combine$lookAhead = function(p) {
+        return $andre_dietrich$parser_combinators$Combine$Parser(F2(function(state, stream) {
+            var _v0 = A3($andre_dietrich$parser_combinators$Combine$app, p, state, stream);
+            if (_v0.c.$ === 'Ok') {
+                var rstate = _v0.a;
+                var res = _v0.c.a;
+                return _Utils_Tuple3(rstate, stream, $elm$core$Result$Ok(res));
+            } else {
+                var err = _v0;
+                return err;
+            }
+        }));
+    };
+    var $author$project$Lia$Markdown$Parser$checkParagraph = $andre_dietrich$parser_combinators$Combine$lookAhead(A2($andre_dietrich$parser_combinators$Combine$andThen, function(e) {
+        return _Utils_eq(e, $elm$core$Maybe$Nothing) ? $andre_dietrich$parser_combinators$Combine$succeed(_Utils_Tuple0) : $andre_dietrich$parser_combinators$Combine$fail('');
+    }, $andre_dietrich$parser_combinators$Combine$maybe(A2($andre_dietrich$parser_combinators$Combine$or, $andre_dietrich$parser_combinators$Combine$regex('[ \t]*--{{\\d+}}--'), $andre_dietrich$parser_combinators$Combine$regex('[ \t]*{{\\d+}}')))));
+    var $author$project$Lia$Markdown$Parser$paragraph = A2($andre_dietrich$parser_combinators$Combine$map, A2($elm$core$Basics$composeR, $elm$core$List$intersperse(_List_fromArray([
+        A2($author$project$Lia$Markdown$Inline$Types$Chars, ' ', _List_Nil)
+    ])), A2($elm$core$Basics$composeR, $elm$core$List$concat, $author$project$Lia$Markdown$Inline$Types$combine)), A2($andre_dietrich$parser_combinators$Combine$keep, $andre_dietrich$parser_combinators$Combine$many1(A2($andre_dietrich$parser_combinators$Combine$ignore, $author$project$Lia$Parser$Helper$newline, A2($andre_dietrich$parser_combinators$Combine$keep, $author$project$Lia$Markdown$Inline$Parser$line, $author$project$Lia$Parser$Indentation$check))), A2($andre_dietrich$parser_combinators$Combine$ignore, $author$project$Lia$Parser$Indentation$skip, $author$project$Lia$Markdown$Parser$checkParagraph)));
+    var $author$project$Lia$Markdown$Chart$Types$Chart = F5(function(title, yLabel, xLabel, legend, diagrams) {
+        return {
+            diagrams: diagrams,
+            legend: legend,
+            title: title,
+            xLabel: xLabel,
+            yLabel: yLabel
+        };
+    });
+    var $author$project$Lia$Markdown$Chart$Types$Dots = F2(function(a, b) {
+        return {
+            $: 'Dots',
+            a: a,
+            b: b
+        };
+    });
+    var $author$project$Lia$Markdown$Chart$Types$Lines = F2(function(a, b) {
+        return {
+            $: 'Lines',
+            a: a,
+            b: b
+        };
+    });
+    var $author$project$Lia$Markdown$Chart$Types$Point = F2(function(x, y) {
+        return {
+            x: x,
+            y: y
+        };
+    });
+    var $elm$core$Dict$merge = F6(function(leftStep, bothStep, rightStep, leftDict, rightDict, initialResult) {
+        var stepState = F3(function(rKey, rValue, _v0) {
+            stepState: while(true){
+                var list = _v0.a;
+                var result = _v0.b;
+                if (!list.b) return _Utils_Tuple2(list, A3(rightStep, rKey, rValue, result));
+                else {
+                    var _v2 = list.a;
+                    var lKey = _v2.a;
+                    var lValue = _v2.b;
+                    var rest = list.b;
+                    if (_Utils_cmp(lKey, rKey) < 0) {
+                        var $temp$rKey = rKey, $temp$rValue = rValue, $temp$_v0 = _Utils_Tuple2(rest, A3(leftStep, lKey, lValue, result));
+                        rKey = $temp$rKey;
+                        rValue = $temp$rValue;
+                        _v0 = $temp$_v0;
+                        continue stepState;
+                    } else {
+                        if (_Utils_cmp(lKey, rKey) > 0) return _Utils_Tuple2(list, A3(rightStep, rKey, rValue, result));
+                        else return _Utils_Tuple2(rest, A4(bothStep, lKey, lValue, rValue, result));
+                    }
+                }
+            }
+        });
+        var _v3 = A3($elm$core$Dict$foldl, stepState, _Utils_Tuple2($elm$core$Dict$toList(leftDict), initialResult), rightDict);
+        var leftovers = _v3.a;
+        var intermediateResult = _v3.b;
+        return A3($elm$core$List$foldl, F2(function(_v4, result) {
+            var k = _v4.a;
+            var v = _v4.b;
+            return A3(leftStep, k, v, result);
+        }), intermediateResult, leftovers);
+    });
+    var $author$project$Lia$Markdown$Chart$Parser$magicMerge = F2(function(left, right) {
+        return A6($elm$core$Dict$merge, $elm$core$Dict$insert, F4(function(key, l, r, dict) {
+            return A3($elm$core$Dict$insert, key, _Utils_ap(l, r), dict);
+        }), $elm$core$Dict$insert, left, right, $elm$core$Dict$empty);
+    });
+    var $elm$core$Dict$map = F2(function(func, dict) {
+        if (dict.$ === 'RBEmpty_elm_builtin') return $elm$core$Dict$RBEmpty_elm_builtin;
+        else {
+            var color = dict.a;
+            var key = dict.b;
+            var value = dict.c;
+            var left = dict.d;
+            var right = dict.e;
+            return A5($elm$core$Dict$RBNode_elm_builtin, color, key, A2(func, key, value), A2($elm$core$Dict$map, func, left), A2($elm$core$Dict$map, func, right));
+        }
+    });
+    var $andre_dietrich$parser_combinators$Combine$Num$float = A2($andre_dietrich$parser_combinators$Combine$onerror, 'expected a float', A2($andre_dietrich$parser_combinators$Combine$andThen, $andre_dietrich$parser_combinators$Combine$Num$unwrap, A2($andre_dietrich$parser_combinators$Combine$map, $elm$core$String$toFloat, $andre_dietrich$parser_combinators$Combine$regex('-?(?:0|[1-9]\\d*)\\.\\d+'))));
+    var $author$project$Lia$Markdown$Chart$Parser$number = A2($andre_dietrich$parser_combinators$Combine$or, $andre_dietrich$parser_combinators$Combine$Num$float, A2($andre_dietrich$parser_combinators$Combine$map, $elm$core$Basics$toFloat, A2($andre_dietrich$parser_combinators$Combine$ignore, A2($andre_dietrich$parser_combinators$Combine$optional, '.', $andre_dietrich$parser_combinators$Combine$string('.')), $andre_dietrich$parser_combinators$Combine$Num$int)));
+    var $elm$core$String$indexes = _String_indexes;
+    var $elm$core$Set$remove = F2(function(key, _v0) {
+        var dict = _v0.a;
+        return $elm$core$Set$Set_elm_builtin(A2($elm$core$Dict$remove, key, dict));
+    });
+    var $author$project$Lia$Markdown$Chart$Parser$row = function() {
+        var indexes = F3(function(y_label, str, label) {
+            return _Utils_Tuple2(_Utils_Tuple2(function(w) {
+                return w === '' ? ' ' : w;
+            }($elm$core$String$trim(y_label)), label), $elm$core$Dict$fromList(A2($elm$core$List$map, function(c) {
+                return _Utils_Tuple2(c, A2($elm$core$String$indexes, $elm$core$String$fromChar(c), str));
+            }, $elm$core$Set$toList(A2($elm$core$Set$remove, _Utils_chr(' '), $elm$core$Set$fromList($elm$core$String$toList(str)))))));
+        });
+        return A2($andre_dietrich$parser_combinators$Combine$ignore, $andre_dietrich$parser_combinators$Combine$regex('[\t ]*\\n'), A2($andre_dietrich$parser_combinators$Combine$andMap, $andre_dietrich$parser_combinators$Combine$maybe(A2($andre_dietrich$parser_combinators$Combine$ignore, $andre_dietrich$parser_combinators$Combine$string(')'), A2($andre_dietrich$parser_combinators$Combine$andMap, $andre_dietrich$parser_combinators$Combine$regex('[^)]+'), A2($andre_dietrich$parser_combinators$Combine$map, $elm$core$Tuple$pair, A2($andre_dietrich$parser_combinators$Combine$keep, $andre_dietrich$parser_combinators$Combine$regex('[A-Za-z\\+\\*#]?'), A2($andre_dietrich$parser_combinators$Combine$ignore, $andre_dietrich$parser_combinators$Combine$whitespace, $andre_dietrich$parser_combinators$Combine$string('('))))))), A2($andre_dietrich$parser_combinators$Combine$andMap, $andre_dietrich$parser_combinators$Combine$regex('[ \\*a-zA-Z\\+#]*'), A2($andre_dietrich$parser_combinators$Combine$map, indexes, A2($andre_dietrich$parser_combinators$Combine$ignore, $andre_dietrich$parser_combinators$Combine$string('|'), $andre_dietrich$parser_combinators$Combine$regex('[^\n|]*'))))));
+    }();
+    var $author$project$Lia$Markdown$Chart$Parser$segmentation = F3(function(elements, i0, i1) {
+        return _Utils_Tuple2(i0, (i1 - i0) / elements);
+    });
+    var $author$project$Lia$Markdown$Chart$Parser$unique = F2(function(start, list) {
+        unique: while(true){
+            var _v0 = _Utils_Tuple2(list, start);
+            if (_v0.a.b) {
+                if (_v0.b.$ === 'Nothing') {
+                    var _v1 = _v0.a;
+                    var x = _v1.a;
+                    var xs = _v1.b;
+                    var _v2 = _v0.b;
+                    var $temp$start = $elm$core$Maybe$Just(x), $temp$list = xs;
+                    start = $temp$start;
+                    list = $temp$list;
+                    continue unique;
+                } else {
+                    var _v3 = _v0.a;
+                    var x = _v3.a;
+                    var xs = _v3.b;
+                    var s = _v0.b.a;
+                    if (_Utils_eq(x, s)) return false;
+                    else {
+                        var $temp$start = $elm$core$Maybe$Just(x), $temp$list = xs;
+                        start = $temp$start;
+                        list = $temp$list;
+                        continue unique;
+                    }
+                }
+            } else return true;
+        }
+    });
+    var $elm$core$List$unzip = function(pairs) {
+        var step = F2(function(_v0, _v1) {
+            var x = _v0.a;
+            var y = _v0.b;
+            var xs = _v1.a;
+            var ys = _v1.b;
+            return _Utils_Tuple2(A2($elm$core$List$cons, x, xs), A2($elm$core$List$cons, y, ys));
+        });
+        return A3($elm$core$List$foldr, step, _Utils_Tuple2(_List_Nil, _List_Nil), pairs);
+    };
+    var $elm$core$Dict$values = function(dict) {
+        return A3($elm$core$Dict$foldr, F3(function(key, value, valueList) {
+            return A2($elm$core$List$cons, value, valueList);
+        }), _List_Nil, dict);
+    };
+    var $author$project$Lia$Markdown$Chart$Parser$x_axis = A2($andre_dietrich$parser_combinators$Combine$andMap, A2($andre_dietrich$parser_combinators$Combine$optional, 1, A2($andre_dietrich$parser_combinators$Combine$ignore, $andre_dietrich$parser_combinators$Combine$regex('[\t ]*\\n'), A2($andre_dietrich$parser_combinators$Combine$keep, $author$project$Lia$Markdown$Chart$Parser$number, $andre_dietrich$parser_combinators$Combine$regex('[\t ]*')))), A2($andre_dietrich$parser_combinators$Combine$andMap, A2($andre_dietrich$parser_combinators$Combine$optional, '', $andre_dietrich$parser_combinators$Combine$regex('[a-zA-Z_ .\\\\()\\-]+')), A2($andre_dietrich$parser_combinators$Combine$andMap, A2($andre_dietrich$parser_combinators$Combine$optional, 0, $author$project$Lia$Markdown$Chart$Parser$number), A2($andre_dietrich$parser_combinators$Combine$map, F4(function(e, x0, x_label, x1) {
+        return _Utils_Tuple2($elm$core$String$trim(x_label), A3($author$project$Lia$Markdown$Chart$Parser$segmentation, $elm$core$String$length(e), x0, x1));
+    }), A2($andre_dietrich$parser_combinators$Combine$ignore, $andre_dietrich$parser_combinators$Combine$regex('[\t ]*\\n[\t ]*'), A2($andre_dietrich$parser_combinators$Combine$keep, $andre_dietrich$parser_combinators$Combine$regex('\\-+'), $andre_dietrich$parser_combinators$Combine$regex('[\t ]*\\+')))))));
+    var $author$project$Lia$Markdown$Chart$Parser$parse = function() {
+        var chart = F5(function(title, y_max, rows, y_min, _v6) {
+            var x_label = _v6.a;
+            var _v7 = _v6.b;
+            var x0 = _v7.a;
+            var x_segment = _v7.b;
+            var _v0 = A3($author$project$Lia$Markdown$Chart$Parser$segmentation, $elm$core$List$length(rows), y_min, y_max);
+            var y0 = _v0.a;
+            var y_segment = _v0.b;
+            var _v1 = $elm$core$List$unzip(rows);
+            var label = _v1.a;
+            var data = _v1.b;
+            var _v2 = $elm$core$List$unzip(label);
+            var y_label = _v2.a;
+            var data_labels = _v2.b;
+            var labels = $elm$core$Dict$fromList(A2($elm$core$List$filterMap, $elm$core$Basics$identity, data_labels));
+            return A5($author$project$Lia$Markdown$Chart$Types$Chart, title, $elm$core$String$trim($elm$core$String$concat(y_label)), x_label, $elm$core$Dict$values(labels), A2($elm$core$Dict$map, F2(function(k, v) {
+                return A2($author$project$Lia$Markdown$Chart$Parser$unique, $elm$core$Maybe$Nothing, A2($elm$core$List$map, function($) {
+                    return $.x;
+                }, v)) ? A2($author$project$Lia$Markdown$Chart$Types$Lines, v, A2($elm$core$Dict$get, $elm$core$String$fromChar(k), labels)) : A2($author$project$Lia$Markdown$Chart$Types$Dots, v, A2($elm$core$Dict$get, $elm$core$String$fromChar(k), labels));
+            }), A2($elm$core$Dict$map, F2(function(_v5, v) {
+                return A2($elm$core$List$sortBy, function($) {
+                    return $.x;
+                }, v);
+            }), A3($elm$core$List$foldr, $author$project$Lia$Markdown$Chart$Parser$magicMerge, $elm$core$Dict$empty, A2($elm$core$List$map, function(_v3) {
+                var y = _v3.a;
+                var l = _v3.b;
+                return A2($elm$core$Dict$map, F2(function(_v4, xs) {
+                    return A2($elm$core$List$map, function(x) {
+                        return A2($author$project$Lia$Markdown$Chart$Types$Point, x * x_segment + x0, y * y_segment + y0);
+                    }, xs);
+                }), l);
+            }, A2($elm$core$List$indexedMap, $elm$core$Tuple$pair, $elm$core$List$reverse(data)))))));
+        });
+        return A2($andre_dietrich$parser_combinators$Combine$andMap, $author$project$Lia$Markdown$Chart$Parser$x_axis, A2($andre_dietrich$parser_combinators$Combine$andMap, A2($andre_dietrich$parser_combinators$Combine$optional, 0, A2($andre_dietrich$parser_combinators$Combine$keep, $author$project$Lia$Markdown$Chart$Parser$number, $andre_dietrich$parser_combinators$Combine$regex('[\t ]*'))), A2($andre_dietrich$parser_combinators$Combine$andMap, $andre_dietrich$parser_combinators$Combine$many1($author$project$Lia$Markdown$Chart$Parser$row), A2($andre_dietrich$parser_combinators$Combine$andMap, A2($andre_dietrich$parser_combinators$Combine$optional, 1, A2($andre_dietrich$parser_combinators$Combine$keep, $author$project$Lia$Markdown$Chart$Parser$number, $andre_dietrich$parser_combinators$Combine$regex('[\t ]*'))), A2($andre_dietrich$parser_combinators$Combine$map, A2($elm$core$Basics$composeR, $elm$core$String$trim, chart), A2($andre_dietrich$parser_combinators$Combine$optional, '', $andre_dietrich$parser_combinators$Combine$regex('[\t ]*[^\n\\|`]*\n')))))));
+    }();
+    var $author$project$Lia$Markdown$Inline$Parser$javascript = A2($andre_dietrich$parser_combinators$Combine$keep, $author$project$Lia$Markdown$Inline$Parser$scriptBody, A3($andre_dietrich$parser_combinators$Combine$regexWith, true, false, '<script>'));
+    var $author$project$Lia$Markdown$Code$Types$Snippet = F4(function(attr, lang, name, code) {
+        return {
+            attr: attr,
+            code: code,
+            lang: lang,
+            name: name
+        };
+    });
+    var $author$project$Lia$Markdown$Code$Parser$code_body = F2(function(_char, len) {
+        var control_frame = _char + ('{' + ($elm$core$String$fromInt(len) + '}'));
+        return A2($andre_dietrich$parser_combinators$Combine$map, A2($elm$core$Basics$composeR, $elm$core$String$concat, $elm$core$String$dropRight(1)), A2($andre_dietrich$parser_combinators$Combine$manyTill, A2($andre_dietrich$parser_combinators$Combine$keep, $andre_dietrich$parser_combinators$Combine$regex('(?:.(?!' + (control_frame + '))*\\n')), $author$project$Lia$Parser$Indentation$maybeCheck), A2($andre_dietrich$parser_combinators$Combine$keep, A2($andre_dietrich$parser_combinators$Combine$ignore, $author$project$Lia$Parser$Helper$newline, A2($andre_dietrich$parser_combinators$Combine$ignore, $author$project$Lia$Parser$Helper$spaces, $andre_dietrich$parser_combinators$Combine$regex(control_frame))), $author$project$Lia$Parser$Indentation$check)));
+    });
+    var $author$project$Lia$Markdown$Code$Parser$header = A2($andre_dietrich$parser_combinators$Combine$map, $elm$core$String$toLower, A2($andre_dietrich$parser_combinators$Combine$keep, $andre_dietrich$parser_combinators$Combine$regex('\\w*'), $author$project$Lia$Parser$Helper$spaces));
+    var $author$project$Lia$Markdown$Code$Parser$title = A2($andre_dietrich$parser_combinators$Combine$ignore, $author$project$Lia$Parser$Helper$newline, A2($andre_dietrich$parser_combinators$Combine$andMap, $andre_dietrich$parser_combinators$Combine$regex('.*'), A2($andre_dietrich$parser_combinators$Combine$map, $elm$core$Tuple$pair, A2($andre_dietrich$parser_combinators$Combine$optional, true, A2($andre_dietrich$parser_combinators$Combine$keep, $andre_dietrich$parser_combinators$Combine$choice(_List_fromArray([
+        A2($andre_dietrich$parser_combinators$Combine$onsuccess, true, $andre_dietrich$parser_combinators$Combine$string('+')),
+        A2($andre_dietrich$parser_combinators$Combine$onsuccess, false, $andre_dietrich$parser_combinators$Combine$string('-'))
+    ])), $author$project$Lia$Parser$Helper$spaces)))));
+    var $author$project$Lia$Markdown$Code$Parser$listing = function(attr) {
+        var body = function(len) {
+            return A2($andre_dietrich$parser_combinators$Combine$andMap, A2($andre_dietrich$parser_combinators$Combine$or, A2($author$project$Lia$Markdown$Code$Parser$code_body, '`', len), A2($author$project$Lia$Markdown$Code$Parser$code_body, '~', len)), A2($andre_dietrich$parser_combinators$Combine$andMap, $author$project$Lia$Markdown$Code$Parser$title, A2($andre_dietrich$parser_combinators$Combine$map, F3(function(h, _v0, c) {
+                var v = _v0.a;
+                var t = _v0.b;
+                return _Utils_Tuple2(A4($author$project$Lia$Markdown$Code$Types$Snippet, attr, h, $elm$core$String$trim(t), c), v);
+            }), $author$project$Lia$Markdown$Code$Parser$header)));
+        };
+        return A2($andre_dietrich$parser_combinators$Combine$andThen, body, $author$project$Lia$Parser$Helper$c_frame);
+    };
+    var $author$project$Service$Script$Eval = F3(function(ok, result, details) {
+        return {
+            details: details,
+            ok: ok,
+            result: result
+        };
+    });
+    var $author$project$Lia$Markdown$Code$Types$Evaluate = function(a) {
+        return {
+            $: 'Evaluate',
+            a: a
+        };
+    };
+    var $author$project$Lia$Markdown$Code$Log$Error = {
+        $: 'Error'
+    };
+    var $author$project$Lia$Markdown$Code$Log$Info = {
+        $: 'Info'
+    };
+    var $author$project$Lia$Markdown$Code$Log$Message = F2(function(level, text) {
+        return {
+            level: level,
+            text: text
+        };
+    });
+    var $author$project$Lia$Markdown$Code$Log$Stream = {
+        $: 'Stream'
+    };
+    var $author$project$Lia$Utils$array_getLast = function(array) {
+        return A2($elm$core$Array$get, $elm$core$Array$length(array) - 1, array);
+    };
+    var $elm$core$Array$setHelp = F4(function(shift, index, value, tree) {
+        var pos = $elm$core$Array$bitMask & index >>> shift;
+        var _v0 = A2($elm$core$Elm$JsArray$unsafeGet, pos, tree);
+        if (_v0.$ === 'SubTree') {
+            var subTree = _v0.a;
+            var newSub = A4($elm$core$Array$setHelp, shift - $elm$core$Array$shiftStep, index, value, subTree);
+            return A3($elm$core$Elm$JsArray$unsafeSet, pos, $elm$core$Array$SubTree(newSub), tree);
+        } else {
+            var values = _v0.a;
+            var newLeaf = A3($elm$core$Elm$JsArray$unsafeSet, $elm$core$Array$bitMask & index, value, values);
+            return A3($elm$core$Elm$JsArray$unsafeSet, pos, $elm$core$Array$Leaf(newLeaf), tree);
+        }
+    });
+    var $elm$core$Array$set = F3(function(index, value, array) {
+        var len = array.a;
+        var startShift = array.b;
+        var tree = array.c;
+        var tail = array.d;
+        return index < 0 || _Utils_cmp(index, len) > -1 ? array : _Utils_cmp(index, $elm$core$Array$tailIndex(len)) > -1 ? A4($elm$core$Array$Array_elm_builtin, len, startShift, tree, A3($elm$core$Elm$JsArray$unsafeSet, $elm$core$Array$bitMask & index, value, tail)) : A4($elm$core$Array$Array_elm_builtin, len, startShift, A4($elm$core$Array$setHelp, startShift, index, value, tree), tail);
+    });
+    var $author$project$Lia$Utils$array_setLast = F2(function(a, array) {
+        return A3($elm$core$Array$set, $elm$core$Array$length(array) - 1, a, array);
+    });
+    var $elm$core$Elm$JsArray$appendN = _JsArray_appendN;
+    var $elm$core$Elm$JsArray$slice = _JsArray_slice;
+    var $elm$core$Array$appendHelpBuilder = F2(function(tail, builder) {
+        var tailLen = $elm$core$Elm$JsArray$length(tail);
+        var notAppended = $elm$core$Array$branchFactor - $elm$core$Elm$JsArray$length(builder.tail) - tailLen;
+        var appended = A3($elm$core$Elm$JsArray$appendN, $elm$core$Array$branchFactor, builder.tail, tail);
+        return notAppended < 0 ? {
+            nodeList: A2($elm$core$List$cons, $elm$core$Array$Leaf(appended), builder.nodeList),
+            nodeListSize: builder.nodeListSize + 1,
+            tail: A3($elm$core$Elm$JsArray$slice, notAppended, tailLen, tail)
+        } : !notAppended ? {
+            nodeList: A2($elm$core$List$cons, $elm$core$Array$Leaf(appended), builder.nodeList),
+            nodeListSize: builder.nodeListSize + 1,
+            tail: $elm$core$Elm$JsArray$empty
+        } : {
+            nodeList: builder.nodeList,
+            nodeListSize: builder.nodeListSize,
+            tail: appended
+        };
+    });
+    var $elm$core$Array$sliceLeft = F2(function(from, array) {
+        var len = array.a;
+        var tree = array.c;
+        var tail = array.d;
+        if (!from) return array;
+        else {
+            if (_Utils_cmp(from, $elm$core$Array$tailIndex(len)) > -1) return A4($elm$core$Array$Array_elm_builtin, len - from, $elm$core$Array$shiftStep, $elm$core$Elm$JsArray$empty, A3($elm$core$Elm$JsArray$slice, from - $elm$core$Array$tailIndex(len), $elm$core$Elm$JsArray$length(tail), tail));
+            else {
+                var skipNodes = from / $elm$core$Array$branchFactor | 0;
+                var helper = F2(function(node, acc) {
+                    if (node.$ === 'SubTree') {
+                        var subTree = node.a;
+                        return A3($elm$core$Elm$JsArray$foldr, helper, acc, subTree);
+                    } else {
+                        var leaf = node.a;
+                        return A2($elm$core$List$cons, leaf, acc);
+                    }
+                });
+                var leafNodes = A3($elm$core$Elm$JsArray$foldr, helper, _List_fromArray([
+                    tail
+                ]), tree);
+                var nodesToInsert = A2($elm$core$List$drop, skipNodes, leafNodes);
+                if (!nodesToInsert.b) return $elm$core$Array$empty;
+                else {
+                    var head = nodesToInsert.a;
+                    var rest = nodesToInsert.b;
+                    var firstSlice = from - skipNodes * $elm$core$Array$branchFactor;
+                    var initialBuilder = {
+                        nodeList: _List_Nil,
+                        nodeListSize: 0,
+                        tail: A3($elm$core$Elm$JsArray$slice, firstSlice, $elm$core$Elm$JsArray$length(head), head)
+                    };
+                    return A2($elm$core$Array$builderToArray, true, A3($elm$core$List$foldl, $elm$core$Array$appendHelpBuilder, initialBuilder, rest));
+                }
+            }
+        }
+    });
+    var $elm$core$Array$fetchNewTail = F4(function(shift, end, treeEnd, tree) {
+        fetchNewTail: while(true){
+            var pos = $elm$core$Array$bitMask & treeEnd >>> shift;
+            var _v0 = A2($elm$core$Elm$JsArray$unsafeGet, pos, tree);
+            if (_v0.$ === 'SubTree') {
+                var sub = _v0.a;
+                var $temp$shift = shift - $elm$core$Array$shiftStep, $temp$end = end, $temp$treeEnd = treeEnd, $temp$tree = sub;
+                shift = $temp$shift;
+                end = $temp$end;
+                treeEnd = $temp$treeEnd;
+                tree = $temp$tree;
+                continue fetchNewTail;
+            } else {
+                var values = _v0.a;
+                return A3($elm$core$Elm$JsArray$slice, 0, $elm$core$Array$bitMask & end, values);
+            }
+        }
+    });
+    var $elm$core$Array$hoistTree = F3(function(oldShift, newShift, tree) {
+        hoistTree: while(true){
+            if (_Utils_cmp(oldShift, newShift) < 1 || !$elm$core$Elm$JsArray$length(tree)) return tree;
+            else {
+                var _v0 = A2($elm$core$Elm$JsArray$unsafeGet, 0, tree);
+                if (_v0.$ === 'SubTree') {
+                    var sub = _v0.a;
+                    var $temp$oldShift = oldShift - $elm$core$Array$shiftStep, $temp$newShift = newShift, $temp$tree = sub;
+                    oldShift = $temp$oldShift;
+                    newShift = $temp$newShift;
+                    tree = $temp$tree;
+                    continue hoistTree;
+                } else return tree;
+            }
+        }
+    });
+    var $elm$core$Array$sliceTree = F3(function(shift, endIdx, tree) {
+        var lastPos = $elm$core$Array$bitMask & endIdx >>> shift;
+        var _v0 = A2($elm$core$Elm$JsArray$unsafeGet, lastPos, tree);
+        if (_v0.$ === 'SubTree') {
+            var sub = _v0.a;
+            var newSub = A3($elm$core$Array$sliceTree, shift - $elm$core$Array$shiftStep, endIdx, sub);
+            return !$elm$core$Elm$JsArray$length(newSub) ? A3($elm$core$Elm$JsArray$slice, 0, lastPos, tree) : A3($elm$core$Elm$JsArray$unsafeSet, lastPos, $elm$core$Array$SubTree(newSub), A3($elm$core$Elm$JsArray$slice, 0, lastPos + 1, tree));
+        } else return A3($elm$core$Elm$JsArray$slice, 0, lastPos, tree);
+    });
+    var $elm$core$Array$sliceRight = F2(function(end, array) {
+        var len = array.a;
+        var startShift = array.b;
+        var tree = array.c;
+        var tail = array.d;
+        if (_Utils_eq(end, len)) return array;
+        else {
+            if (_Utils_cmp(end, $elm$core$Array$tailIndex(len)) > -1) return A4($elm$core$Array$Array_elm_builtin, end, startShift, tree, A3($elm$core$Elm$JsArray$slice, 0, $elm$core$Array$bitMask & end, tail));
+            else {
+                var endIdx = $elm$core$Array$tailIndex(end);
+                var depth = $elm$core$Basics$floor(A2($elm$core$Basics$logBase, $elm$core$Array$branchFactor, A2($elm$core$Basics$max, 1, endIdx - 1)));
+                var newShift = A2($elm$core$Basics$max, 5, depth * $elm$core$Array$shiftStep);
+                return A4($elm$core$Array$Array_elm_builtin, end, newShift, A3($elm$core$Array$hoistTree, startShift, newShift, A3($elm$core$Array$sliceTree, startShift, endIdx, tree)), A4($elm$core$Array$fetchNewTail, startShift, end, endIdx, tree));
+            }
+        }
+    });
+    var $elm$core$Array$translateIndex = F2(function(index, _v0) {
+        var len = _v0.a;
+        var posIndex = index < 0 ? len + index : index;
+        return posIndex < 0 ? 0 : _Utils_cmp(posIndex, len) > 0 ? len : posIndex;
+    });
+    var $elm$core$Array$slice = F3(function(from, to, array) {
+        var correctTo = A2($elm$core$Array$translateIndex, to, array);
+        var correctFrom = A2($elm$core$Array$translateIndex, from, array);
+        return _Utils_cmp(correctFrom, correctTo) > 0 ? $elm$core$Array$empty : A2($elm$core$Array$sliceLeft, correctFrom, A2($elm$core$Array$sliceRight, correctTo, array));
+    });
+    var $author$project$Lia$Markdown$Code$Log$crop = function(messages) {
+        return $elm$core$Array$length(messages) < 250 ? messages : A3($elm$core$Array$slice, 1, 250, messages);
+    };
+    var $author$project$Lia$Markdown$Code$Log$add = F3(function(level, str, log) {
+        return _Utils_update(log, {
+            messages: $author$project$Lia$Markdown$Code$Log$crop(function() {
+                if (level.$ === 'Stream') {
+                    var _v1 = $author$project$Lia$Utils$array_getLast(log.messages);
+                    if (_v1.$ === 'Just') {
+                        var message = _v1.a;
+                        return _Utils_eq(message.level, $author$project$Lia$Markdown$Code$Log$Stream) ? A2($author$project$Lia$Utils$array_setLast, A2($author$project$Lia$Markdown$Code$Log$Message, level, _Utils_ap(message.text, str)), log.messages) : A2($elm$core$Array$push, A2($author$project$Lia$Markdown$Code$Log$Message, level, str), log.messages);
+                    } else return A2($elm$core$Array$push, A2($author$project$Lia$Markdown$Code$Log$Message, level, str), log.messages);
+                } else return A2($elm$core$Array$push, A2($author$project$Lia$Markdown$Code$Log$Message, level, str), log.messages);
+            }())
+        });
+    });
+    var $author$project$Lia$Markdown$Code$Log$add_Eval = F2(function(_eval, log) {
+        return (_eval.ok ? A2($author$project$Lia$Markdown$Code$Log$add, $author$project$Lia$Markdown$Code$Log$Info, _eval.result) : A2($author$project$Lia$Markdown$Code$Log$add, $author$project$Lia$Markdown$Code$Log$Error, _eval.result))(_Utils_update(log, {
+            details: _eval.details,
+            ok: _eval.ok
+        }));
+    });
+    var $author$project$Lia$Markdown$Code$Log$Debug = {
+        $: 'Debug'
+    };
+    var $author$project$Lia$Markdown$Code$Log$Log = F4(function(ok, level, messages, details) {
+        return {
+            details: details,
+            level: level,
+            messages: messages,
+            ok: ok
+        };
+    });
+    var $author$project$Lia$Markdown$Code$Log$empty = A4($author$project$Lia$Markdown$Code$Log$Log, true, $author$project$Lia$Markdown$Code$Log$Debug, $elm$core$Array$empty, _List_Nil);
+    var $elm$core$Array$repeat = F2(function(n, e) {
+        return A2($elm$core$Array$initialize, n, function(_v0) {
+            return e;
+        });
+    });
+    var $truqu$elm_md5$MD5$emptyWords = A2($elm$core$Array$repeat, 16, 0);
+    var $truqu$elm_md5$MD5$addUnsigned = F2(function(x, y) {
+        return 4294967295 & x + y;
+    });
+    var $elm$core$Bitwise$or = _Bitwise_or;
+    var $truqu$elm_md5$MD5$rotateLeft = F2(function(bits, input) {
+        return input << bits | input >>> 32 - bits;
+    });
+    var $truqu$elm_md5$MD5$cmn = F8(function(fun, a, b, c, d, x, s, ac) {
+        return A2($truqu$elm_md5$MD5$addUnsigned, b, A2($truqu$elm_md5$MD5$rotateLeft, s, A2($truqu$elm_md5$MD5$addUnsigned, a, A2($truqu$elm_md5$MD5$addUnsigned, ac, A2($truqu$elm_md5$MD5$addUnsigned, A3(fun, b, c, d), x)))));
+    });
+    var $elm$core$Bitwise$xor = _Bitwise_xor;
+    var $truqu$elm_md5$MD5$f = F3(function(x, y, z) {
+        return z ^ x & (y ^ z);
+    });
+    var $truqu$elm_md5$MD5$ff = F7(function(a, b, c, d, x, s, ac) {
+        return A8($truqu$elm_md5$MD5$cmn, $truqu$elm_md5$MD5$f, a, b, c, d, x, s, ac);
+    });
+    var $truqu$elm_md5$MD5$g = F3(function(x, y, z) {
+        return y ^ z & (x ^ y);
+    });
+    var $truqu$elm_md5$MD5$gg = F7(function(a, b, c, d, x, s, ac) {
+        return A8($truqu$elm_md5$MD5$cmn, $truqu$elm_md5$MD5$g, a, b, c, d, x, s, ac);
+    });
+    var $truqu$elm_md5$MD5$h = F3(function(x, y, z) {
+        return z ^ (x ^ y);
+    });
+    var $truqu$elm_md5$MD5$hh = F7(function(a, b, c, d, x, s, ac) {
+        return A8($truqu$elm_md5$MD5$cmn, $truqu$elm_md5$MD5$h, a, b, c, d, x, s, ac);
+    });
+    var $elm$core$Bitwise$complement = _Bitwise_complement;
+    var $truqu$elm_md5$MD5$i = F3(function(x, y, z) {
+        return y ^ (x | ~z);
+    });
+    var $truqu$elm_md5$MD5$ii = F7(function(a, b, c, d, x, s, ac) {
+        return A8($truqu$elm_md5$MD5$cmn, $truqu$elm_md5$MD5$i, a, b, c, d, x, s, ac);
+    });
+    var $truqu$elm_md5$MD5$hex_ = F2(function(xs, acc) {
+        var a = acc.a;
+        var b = acc.b;
+        var c = acc.c;
+        var d = acc.d;
+        if (xs.b && xs.b.b && xs.b.b.b && xs.b.b.b.b && xs.b.b.b.b.b && xs.b.b.b.b.b.b && xs.b.b.b.b.b.b.b && xs.b.b.b.b.b.b.b.b && xs.b.b.b.b.b.b.b.b.b && xs.b.b.b.b.b.b.b.b.b.b && xs.b.b.b.b.b.b.b.b.b.b.b && xs.b.b.b.b.b.b.b.b.b.b.b.b && xs.b.b.b.b.b.b.b.b.b.b.b.b.b && xs.b.b.b.b.b.b.b.b.b.b.b.b.b.b && xs.b.b.b.b.b.b.b.b.b.b.b.b.b.b.b && xs.b.b.b.b.b.b.b.b.b.b.b.b.b.b.b.b && !xs.b.b.b.b.b.b.b.b.b.b.b.b.b.b.b.b.b) {
+            var x0 = xs.a;
+            var _v1 = xs.b;
+            var x1 = _v1.a;
+            var _v2 = _v1.b;
+            var x2 = _v2.a;
+            var _v3 = _v2.b;
+            var x3 = _v3.a;
+            var _v4 = _v3.b;
+            var x4 = _v4.a;
+            var _v5 = _v4.b;
+            var x5 = _v5.a;
+            var _v6 = _v5.b;
+            var x6 = _v6.a;
+            var _v7 = _v6.b;
+            var x7 = _v7.a;
+            var _v8 = _v7.b;
+            var x8 = _v8.a;
+            var _v9 = _v8.b;
+            var x9 = _v9.a;
+            var _v10 = _v9.b;
+            var x10 = _v10.a;
+            var _v11 = _v10.b;
+            var x11 = _v11.a;
+            var _v12 = _v11.b;
+            var x12 = _v12.a;
+            var _v13 = _v12.b;
+            var x13 = _v13.a;
+            var _v14 = _v13.b;
+            var x14 = _v14.a;
+            var _v15 = _v14.b;
+            var x15 = _v15.a;
+            var s44 = 21;
+            var s43 = 15;
+            var s42 = 10;
+            var s41 = 6;
+            var s34 = 23;
+            var s33 = 16;
+            var s32 = 11;
+            var s31 = 4;
+            var s24 = 20;
+            var s23 = 14;
+            var s22 = 9;
+            var s21 = 5;
+            var s14 = 22;
+            var s13 = 17;
+            var s12 = 12;
+            var s11 = 7;
+            var d00 = d;
+            var c00 = c;
+            var b00 = b;
+            var a00 = a;
+            var a01 = A7($truqu$elm_md5$MD5$ff, a00, b00, c00, d00, x0, s11, 3614090360);
+            var d01 = A7($truqu$elm_md5$MD5$ff, d00, a01, b00, c00, x1, s12, 3905402710);
+            var c01 = A7($truqu$elm_md5$MD5$ff, c00, d01, a01, b00, x2, s13, 606105819);
+            var b01 = A7($truqu$elm_md5$MD5$ff, b00, c01, d01, a01, x3, s14, 3250441966);
+            var a02 = A7($truqu$elm_md5$MD5$ff, a01, b01, c01, d01, x4, s11, 4118548399);
+            var d02 = A7($truqu$elm_md5$MD5$ff, d01, a02, b01, c01, x5, s12, 1200080426);
+            var c02 = A7($truqu$elm_md5$MD5$ff, c01, d02, a02, b01, x6, s13, 2821735955);
+            var b02 = A7($truqu$elm_md5$MD5$ff, b01, c02, d02, a02, x7, s14, 4249261313);
+            var a03 = A7($truqu$elm_md5$MD5$ff, a02, b02, c02, d02, x8, s11, 1770035416);
+            var d03 = A7($truqu$elm_md5$MD5$ff, d02, a03, b02, c02, x9, s12, 2336552879);
+            var c03 = A7($truqu$elm_md5$MD5$ff, c02, d03, a03, b02, x10, s13, 4294925233);
+            var b03 = A7($truqu$elm_md5$MD5$ff, b02, c03, d03, a03, x11, s14, 2304563134);
+            var a04 = A7($truqu$elm_md5$MD5$ff, a03, b03, c03, d03, x12, s11, 1804603682);
+            var d04 = A7($truqu$elm_md5$MD5$ff, d03, a04, b03, c03, x13, s12, 4254626195);
+            var c04 = A7($truqu$elm_md5$MD5$ff, c03, d04, a04, b03, x14, s13, 2792965006);
+            var b04 = A7($truqu$elm_md5$MD5$ff, b03, c04, d04, a04, x15, s14, 1236535329);
+            var a05 = A7($truqu$elm_md5$MD5$gg, a04, b04, c04, d04, x1, s21, 4129170786);
+            var d05 = A7($truqu$elm_md5$MD5$gg, d04, a05, b04, c04, x6, s22, 3225465664);
+            var c05 = A7($truqu$elm_md5$MD5$gg, c04, d05, a05, b04, x11, s23, 643717713);
+            var b05 = A7($truqu$elm_md5$MD5$gg, b04, c05, d05, a05, x0, s24, 3921069994);
+            var a06 = A7($truqu$elm_md5$MD5$gg, a05, b05, c05, d05, x5, s21, 3593408605);
+            var d06 = A7($truqu$elm_md5$MD5$gg, d05, a06, b05, c05, x10, s22, 38016083);
+            var c06 = A7($truqu$elm_md5$MD5$gg, c05, d06, a06, b05, x15, s23, 3634488961);
+            var b06 = A7($truqu$elm_md5$MD5$gg, b05, c06, d06, a06, x4, s24, 3889429448);
+            var a07 = A7($truqu$elm_md5$MD5$gg, a06, b06, c06, d06, x9, s21, 568446438);
+            var d07 = A7($truqu$elm_md5$MD5$gg, d06, a07, b06, c06, x14, s22, 3275163606);
+            var c07 = A7($truqu$elm_md5$MD5$gg, c06, d07, a07, b06, x3, s23, 4107603335);
+            var b07 = A7($truqu$elm_md5$MD5$gg, b06, c07, d07, a07, x8, s24, 1163531501);
+            var a08 = A7($truqu$elm_md5$MD5$gg, a07, b07, c07, d07, x13, s21, 2850285829);
+            var d08 = A7($truqu$elm_md5$MD5$gg, d07, a08, b07, c07, x2, s22, 4243563512);
+            var c08 = A7($truqu$elm_md5$MD5$gg, c07, d08, a08, b07, x7, s23, 1735328473);
+            var b08 = A7($truqu$elm_md5$MD5$gg, b07, c08, d08, a08, x12, s24, 2368359562);
+            var a09 = A7($truqu$elm_md5$MD5$hh, a08, b08, c08, d08, x5, s31, 4294588738);
+            var d09 = A7($truqu$elm_md5$MD5$hh, d08, a09, b08, c08, x8, s32, 2272392833);
+            var c09 = A7($truqu$elm_md5$MD5$hh, c08, d09, a09, b08, x11, s33, 1839030562);
+            var b09 = A7($truqu$elm_md5$MD5$hh, b08, c09, d09, a09, x14, s34, 4259657740);
+            var a10 = A7($truqu$elm_md5$MD5$hh, a09, b09, c09, d09, x1, s31, 2763975236);
+            var d10 = A7($truqu$elm_md5$MD5$hh, d09, a10, b09, c09, x4, s32, 1272893353);
+            var c10 = A7($truqu$elm_md5$MD5$hh, c09, d10, a10, b09, x7, s33, 4139469664);
+            var b10 = A7($truqu$elm_md5$MD5$hh, b09, c10, d10, a10, x10, s34, 3200236656);
+            var a11 = A7($truqu$elm_md5$MD5$hh, a10, b10, c10, d10, x13, s31, 681279174);
+            var d11 = A7($truqu$elm_md5$MD5$hh, d10, a11, b10, c10, x0, s32, 3936430074);
+            var c11 = A7($truqu$elm_md5$MD5$hh, c10, d11, a11, b10, x3, s33, 3572445317);
+            var b11 = A7($truqu$elm_md5$MD5$hh, b10, c11, d11, a11, x6, s34, 76029189);
+            var a12 = A7($truqu$elm_md5$MD5$hh, a11, b11, c11, d11, x9, s31, 3654602809);
+            var d12 = A7($truqu$elm_md5$MD5$hh, d11, a12, b11, c11, x12, s32, 3873151461);
+            var c12 = A7($truqu$elm_md5$MD5$hh, c11, d12, a12, b11, x15, s33, 530742520);
+            var b12 = A7($truqu$elm_md5$MD5$hh, b11, c12, d12, a12, x2, s34, 3299628645);
+            var a13 = A7($truqu$elm_md5$MD5$ii, a12, b12, c12, d12, x0, s41, 4096336452);
+            var d13 = A7($truqu$elm_md5$MD5$ii, d12, a13, b12, c12, x7, s42, 1126891415);
+            var c13 = A7($truqu$elm_md5$MD5$ii, c12, d13, a13, b12, x14, s43, 2878612391);
+            var b13 = A7($truqu$elm_md5$MD5$ii, b12, c13, d13, a13, x5, s44, 4237533241);
+            var a14 = A7($truqu$elm_md5$MD5$ii, a13, b13, c13, d13, x12, s41, 1700485571);
+            var d14 = A7($truqu$elm_md5$MD5$ii, d13, a14, b13, c13, x3, s42, 2399980690);
+            var c14 = A7($truqu$elm_md5$MD5$ii, c13, d14, a14, b13, x10, s43, 4293915773);
+            var b14 = A7($truqu$elm_md5$MD5$ii, b13, c14, d14, a14, x1, s44, 2240044497);
+            var a15 = A7($truqu$elm_md5$MD5$ii, a14, b14, c14, d14, x8, s41, 1873313359);
+            var d15 = A7($truqu$elm_md5$MD5$ii, d14, a15, b14, c14, x15, s42, 4264355552);
+            var c15 = A7($truqu$elm_md5$MD5$ii, c14, d15, a15, b14, x6, s43, 2734768916);
+            var b15 = A7($truqu$elm_md5$MD5$ii, b14, c15, d15, a15, x13, s44, 1309151649);
+            var a16 = A7($truqu$elm_md5$MD5$ii, a15, b15, c15, d15, x4, s41, 4149444226);
+            var d16 = A7($truqu$elm_md5$MD5$ii, d15, a16, b15, c15, x11, s42, 3174756917);
+            var c16 = A7($truqu$elm_md5$MD5$ii, c15, d16, a16, b15, x2, s43, 718787259);
+            var b16 = A7($truqu$elm_md5$MD5$ii, b15, c16, d16, a16, x9, s44, 3951481745);
+            var b17 = A2($truqu$elm_md5$MD5$addUnsigned, b00, b16);
+            var c17 = A2($truqu$elm_md5$MD5$addUnsigned, c00, c16);
+            var d17 = A2($truqu$elm_md5$MD5$addUnsigned, d00, d16);
+            var a17 = A2($truqu$elm_md5$MD5$addUnsigned, a00, a16);
+            return {
+                a: a17,
+                b: b17,
+                c: c17,
+                d: d17
+            };
+        } else return acc;
+    });
+    var $truqu$elm_md5$MD5$iget = F2(function(index, array) {
+        return A2($elm$core$Maybe$withDefault, 0, A2($elm$core$Array$get, index, array));
+    });
+    var $truqu$elm_md5$MD5$consume = F2(function(_char, _v0) {
+        var hashState = _v0.a;
+        var _v1 = _v0.b;
+        var byteCount = _v1.a;
+        var words = _v1.b;
+        var totalByteCount = _v0.c;
+        var wordCount = byteCount / 4 | 0;
+        var oldWord = A2($truqu$elm_md5$MD5$iget, wordCount, words);
+        var bytePosition = 8 * (byteCount % 4);
+        var code = _char << bytePosition;
+        var newWord = oldWord | code;
+        var newWords = A3($elm$core$Array$set, wordCount, newWord, words);
+        return byteCount === 63 ? _Utils_Tuple3(A2($truqu$elm_md5$MD5$hex_, $elm$core$Array$toList(newWords), hashState), _Utils_Tuple2(0, $truqu$elm_md5$MD5$emptyWords), totalByteCount + 1) : _Utils_Tuple3(hashState, _Utils_Tuple2(byteCount + 1, newWords), totalByteCount + 1);
+    });
+    var $truqu$elm_md5$MD5$finishUp = function(_v0) {
+        var hashState = _v0.a;
+        var _v1 = _v0.b;
+        var byteCount = _v1.a;
+        var words = _v1.b;
+        var totalByteCount = _v0.c;
+        var wordCount = byteCount / 4 | 0;
+        var oldWord = A2($truqu$elm_md5$MD5$iget, wordCount, words);
+        var bytePosition = 8 * (byteCount % 4);
+        var code = 128 << bytePosition;
+        var newWord = oldWord | code;
+        var newWords = A3($elm$core$Array$set, wordCount, newWord, words);
+        return wordCount < 14 ? (function(x) {
+            return A2($truqu$elm_md5$MD5$hex_, x, hashState);
+        })($elm$core$Array$toList(A3($elm$core$Array$set, 15, totalByteCount >>> 29, A3($elm$core$Array$set, 14, totalByteCount << 3, newWords)))) : (function(x) {
+            return A2($truqu$elm_md5$MD5$hex_, x, A2($truqu$elm_md5$MD5$hex_, $elm$core$Array$toList(newWords), hashState));
+        })($elm$core$Array$toList(A3($elm$core$Array$set, 15, totalByteCount >>> 29, A3($elm$core$Array$set, 14, totalByteCount << 3, $truqu$elm_md5$MD5$emptyWords))));
+    };
+    var $elm$core$String$foldl = _String_foldl;
+    var $zwilias$elm_utf_tools$String$UTF8$utf32ToUtf8 = F3(function(add, _char, acc) {
+        return _char < 128 ? A2(add, _char, acc) : _char < 2048 ? A2(add, 128 | 63 & _char, A2(add, 192 | _char >>> 6, acc)) : _char < 65536 ? A2(add, 128 | 63 & _char, A2(add, 128 | 63 & _char >>> 6, A2(add, 224 | _char >>> 12, acc))) : A2(add, 128 | 63 & _char, A2(add, 128 | 63 & _char >>> 6, A2(add, 128 | 63 & _char >>> 12, A2(add, 240 | _char >>> 18, acc))));
+    });
+    var $zwilias$elm_utf_tools$String$UTF8$foldl = F3(function(op, initialAcc, input) {
+        return A3($elm$core$String$foldl, F2(function(_char, acc) {
+            return A3($zwilias$elm_utf_tools$String$UTF8$utf32ToUtf8, op, $elm$core$Char$toCode(_char), acc);
+        }), initialAcc, input);
+    });
+    var $truqu$elm_md5$MD5$State = F4(function(a, b, c, d) {
+        return {
+            a: a,
+            b: b,
+            c: c,
+            d: d
+        };
+    });
+    var $truqu$elm_md5$MD5$initialHashState = A4($truqu$elm_md5$MD5$State, 1732584193, 4023233417, 2562383102, 271733878);
+    var $truqu$elm_md5$MD5$hash = function(input) {
+        return $truqu$elm_md5$MD5$finishUp(A3($zwilias$elm_utf_tools$String$UTF8$foldl, $truqu$elm_md5$MD5$consume, _Utils_Tuple3($truqu$elm_md5$MD5$initialHashState, _Utils_Tuple2(0, $truqu$elm_md5$MD5$emptyWords), 0), input));
+    };
+    var $truqu$elm_md5$MD5$bytes = function(string) {
+        var _v0 = $truqu$elm_md5$MD5$hash(string);
+        var a = _v0.a;
+        var b = _v0.b;
+        var c = _v0.c;
+        var d = _v0.d;
+        return _List_fromArray([
+            a & 255,
+            a >>> 8 & 255,
+            a >>> 16 & 255,
+            a >>> 24 & 255,
+            b & 255,
+            b >>> 8 & 255,
+            b >>> 16 & 255,
+            b >>> 24 & 255,
+            c & 255,
+            c >>> 8 & 255,
+            c >>> 16 & 255,
+            c >>> 24 & 255,
+            d & 255,
+            d >>> 8 & 255,
+            d >>> 16 & 255,
+            d >>> 24 & 255
+        ]);
+    };
+    var $truqu$elm_md5$MD5$toHex = function(_byte) {
+        switch(_byte){
+            case 0:
+                return '0';
+            case 1:
+                return '1';
+            case 2:
+                return '2';
+            case 3:
+                return '3';
+            case 4:
+                return '4';
+            case 5:
+                return '5';
+            case 6:
+                return '6';
+            case 7:
+                return '7';
+            case 8:
+                return '8';
+            case 9:
+                return '9';
+            case 10:
+                return 'a';
+            case 11:
+                return 'b';
+            case 12:
+                return 'c';
+            case 13:
+                return 'd';
+            case 14:
+                return 'e';
+            case 15:
+                return 'f';
+            default:
+                return _Utils_ap($truqu$elm_md5$MD5$toHex(_byte / 16 | 0), $truqu$elm_md5$MD5$toHex(_byte % 16));
+        }
+    };
+    var $truqu$elm_md5$MD5$hex = function(s) {
+        return A3($elm$core$List$foldl, F2(function(b, acc) {
+            return _Utils_ap(acc, A3($elm$core$String$padLeft, 2, _Utils_chr('0'), $truqu$elm_md5$MD5$toHex(b)));
+        }), '', $truqu$elm_md5$MD5$bytes(s));
+    };
+    var $author$project$Lia$Markdown$Code$Types$hash = function(file) {
+        return _Utils_Tuple2($truqu$elm_md5$MD5$hex(file.code), file.code);
+    };
+    var $author$project$Lia$Markdown$Code$Types$File = F5(function(lang, name, code, visible, fullscreen) {
+        return {
+            code: code,
+            fullscreen: fullscreen,
+            lang: lang,
+            name: name,
+            visible: visible
+        };
+    });
+    var $author$project$Lia$Markdown$Code$Types$toFile = F2(function(fullscreen, _v0) {
+        var attr = _v0.a.attr;
+        var lang = _v0.a.lang;
+        var name = _v0.a.name;
+        var code = _v0.a.code;
+        var visible = _v0.b;
+        return _Utils_Tuple2(attr, A5($author$project$Lia$Markdown$Code$Types$File, lang, name, code, visible, fullscreen));
+    });
+    var $author$project$Lia$Markdown$Code$Types$initProject = F4(function(fullscreen, array, comment, output) {
+        var _v0 = A3($elm$core$Array$foldl, F2(function(s, _v1) {
+            var a = _v1.a;
+            var f = _v1.b;
+            var _v2 = A2($author$project$Lia$Markdown$Code$Types$toFile, fullscreen, s);
+            var a_ = _v2.a;
+            var f_ = _v2.b;
+            return _Utils_Tuple2(A2($elm$core$List$append, a, _List_fromArray([
+                a_
+            ])), A2($elm$core$Array$push, f_, f));
+        }), _Utils_Tuple2(_List_Nil, $elm$core$Array$empty), array);
+        var attr = _v0.a;
+        var files = _v0.b;
+        var repository = $elm$core$Array$toList(A2($elm$core$Array$map, $author$project$Lia$Markdown$Code$Types$hash, files));
+        return {
+            attr: attr,
+            evaluation: comment,
+            file: files,
+            focus: -1,
+            log: output,
+            logSize: $elm$core$Maybe$Nothing,
+            repository: $elm$core$Dict$fromList(repository),
+            running: false,
+            terminal: $elm$core$Maybe$Nothing,
+            version: $elm$core$Array$fromList(_List_fromArray([
+                _Utils_Tuple2(A2($elm$core$List$map, $elm$core$Tuple$first, repository), $author$project$Lia$Markdown$Code$Log$empty)
+            ])),
+            version_active: 0
+        };
+    });
+    var $author$project$Lia$Markdown$Code$Parser$evaluate = F2(function(lang_title_code, comment) {
+        var ar = $elm$core$Array$fromList(lang_title_code);
+        var _v0 = function() {
+            var _v1 = A2($elm$core$Array$get, $elm$core$Array$length(ar) - 1, ar);
+            if (_v1.$ === 'Just') {
+                var _v2 = _v1.a;
+                var snippet = _v2.a;
+                var vis = _v2.b;
+                return $elm$core$String$toLower(snippet.name) === '@output' ? _Utils_Tuple2(A2($author$project$Lia$Markdown$Code$Log$add_Eval, A3($author$project$Service$Script$Eval, vis, snippet.code, _List_Nil), $author$project$Lia$Markdown$Code$Log$empty), A3($elm$core$Array$slice, 0, -1, ar)) : _Utils_Tuple2($author$project$Lia$Markdown$Code$Log$empty, ar);
+            } else return _Utils_Tuple2($author$project$Lia$Markdown$Code$Log$empty, ar);
+        }();
+        var output = _v0.a;
+        var array = _v0.b;
+        var add_state = function(s) {
+            var model = s.code_model;
+            return _Utils_update(s, {
+                code_model: _Utils_update(model, {
+                    evaluate: A2($elm$core$Array$push, A4($author$project$Lia$Markdown$Code$Types$initProject, false, array, comment, output), model.evaluate)
+                })
+            });
+        };
+        return A2($andre_dietrich$parser_combinators$Combine$ignore, $andre_dietrich$parser_combinators$Combine$modifyState(add_state), $andre_dietrich$parser_combinators$Combine$withState(A2($elm$core$Basics$composeR, function($) {
+            return $.code_model;
+        }, A2($elm$core$Basics$composeR, function($) {
+            return $.evaluate;
+        }, A2($elm$core$Basics$composeR, $elm$core$Array$length, A2($elm$core$Basics$composeR, $author$project$Lia$Markdown$Code$Types$Evaluate, $andre_dietrich$parser_combinators$Combine$succeed))))));
+    });
+    var $author$project$Lia$Markdown$Code$Types$Highlight = function(a) {
+        return {
+            $: 'Highlight',
+            a: a
+        };
+    };
+    var $author$project$Lia$Markdown$Code$Parser$highlight = function(lang_title_code) {
+        var ar = $elm$core$Array$fromList(lang_title_code);
+        var _v0 = function() {
+            var _v1 = A2($elm$core$Array$get, $elm$core$Array$length(ar) - 1, ar);
+            if (_v1.$ === 'Just') {
+                var _v2 = _v1.a;
+                var snippet = _v2.a;
+                var vis = _v2.b;
+                return $elm$core$String$toLower(snippet.name) === '@output' ? _Utils_Tuple2(A2($author$project$Lia$Markdown$Code$Log$add_Eval, A3($author$project$Service$Script$Eval, vis, snippet.code, _List_Nil), $author$project$Lia$Markdown$Code$Log$empty), A3($elm$core$Array$slice, 0, -1, ar)) : _Utils_Tuple2($author$project$Lia$Markdown$Code$Log$empty, ar);
+            } else return _Utils_Tuple2($author$project$Lia$Markdown$Code$Log$empty, ar);
+        }();
+        var output = _v0.a;
+        var array = _v0.b;
+        var add_state = function(s) {
+            var model = s.code_model;
+            return _Utils_update(s, {
+                code_model: _Utils_update(model, {
+                    highlight: A2($elm$core$Array$push, A4($author$project$Lia$Markdown$Code$Types$initProject, true, array, '', output), model.highlight)
+                })
+            });
+        };
+        return A2($andre_dietrich$parser_combinators$Combine$ignore, $andre_dietrich$parser_combinators$Combine$modifyState(add_state), $andre_dietrich$parser_combinators$Combine$withState(A2($elm$core$Basics$composeR, function($) {
+            return $.code_model;
+        }, A2($elm$core$Basics$composeR, function($) {
+            return $.highlight;
+        }, A2($elm$core$Basics$composeR, $elm$core$Array$length, A2($elm$core$Basics$composeR, $author$project$Lia$Markdown$Code$Types$Highlight, $andre_dietrich$parser_combinators$Combine$succeed))))));
+    };
+    var $author$project$Lia$Markdown$Code$Parser$result = function(_v0) {
+        var lst = _v0.a;
+        var script = _v0.b;
+        if (script.$ === 'Just') {
+            var str = script.a;
+            return A2($author$project$Lia$Markdown$Code$Parser$evaluate, lst, str);
+        } else return $author$project$Lia$Markdown$Code$Parser$highlight(lst);
+    };
+    var $author$project$Lia$Markdown$Code$Parser$parse = function(attr) {
+        return A2($andre_dietrich$parser_combinators$Combine$andThen, $author$project$Lia$Markdown$Code$Parser$result, A2($andre_dietrich$parser_combinators$Combine$andMap, $andre_dietrich$parser_combinators$Combine$maybe(A2($andre_dietrich$parser_combinators$Combine$keep, $author$project$Lia$Markdown$Inline$Parser$javascript, A2($andre_dietrich$parser_combinators$Combine$keep, $author$project$Lia$Markdown$Macro$Parser$macro, $andre_dietrich$parser_combinators$Combine$maybe($author$project$Lia$Parser$Indentation$check)))), A2($andre_dietrich$parser_combinators$Combine$map, $elm$core$Tuple$pair, A2($andre_dietrich$parser_combinators$Combine$sepBy1, $author$project$Lia$Parser$Indentation$check, A2($andre_dietrich$parser_combinators$Combine$andThen, $author$project$Lia$Markdown$Code$Parser$listing, attr)))));
+    };
+    var $author$project$Lia$Markdown$Gallery$Types$Gallery = F2(function(media, id) {
+        return {
+            id: id,
+            media: media
+        };
+    });
+    var $author$project$Lia$Markdown$Inline$Parser$mediaReference = A2($andre_dietrich$parser_combinators$Combine$andMap, A2($andre_dietrich$parser_combinators$Combine$keep, $author$project$Lia$Markdown$Inline$Parser$annotations, $author$project$Lia$Markdown$Macro$Parser$macro), A2($andre_dietrich$parser_combinators$Combine$map, $author$project$Lia$Markdown$Inline$Types$Ref, $andre_dietrich$parser_combinators$Combine$choice(_List_fromArray([
+        $author$project$Lia$Markdown$Inline$Parser$refImage,
+        $author$project$Lia$Markdown$Inline$Parser$refMovie,
+        $author$project$Lia$Markdown$Inline$Parser$refAudio,
+        $author$project$Lia$Markdown$Inline$Parser$refQr,
+        $author$project$Lia$Markdown$Inline$Parser$refEmbed
+    ]))));
+    var $author$project$Lia$Markdown$Gallery$Parser$add_state = function(s) {
+        return _Utils_update(s, {
+            gallery_vector: A2($elm$core$Array$push, -1, s.gallery_vector)
+        });
+    };
+    var $author$project$Lia$Markdown$Gallery$Parser$modify_State = function(media) {
+        return A2($andre_dietrich$parser_combinators$Combine$ignore, $andre_dietrich$parser_combinators$Combine$modifyState($author$project$Lia$Markdown$Gallery$Parser$add_state), A2($andre_dietrich$parser_combinators$Combine$map, media, $andre_dietrich$parser_combinators$Combine$withState(A2($elm$core$Basics$composeR, function($) {
+            return $.gallery_vector;
+        }, A2($elm$core$Basics$composeR, $elm$core$Array$length, $andre_dietrich$parser_combinators$Combine$succeed)))));
+    };
+    var $andre_dietrich$parser_combinators$Combine$Char$newline = A2($andre_dietrich$parser_combinators$Combine$onerror, 'expected a newline', $andre_dietrich$parser_combinators$Combine$Char$satisfy($elm$core$Basics$eq(_Utils_chr('\n'))));
+    var $author$project$Lia$Markdown$Gallery$Parser$parse = A2($andre_dietrich$parser_combinators$Combine$andThen, function(list) {
+        return $elm$core$List$length(list) > 1 ? $author$project$Lia$Markdown$Gallery$Parser$modify_State($author$project$Lia$Markdown$Gallery$Types$Gallery(list)) : $andre_dietrich$parser_combinators$Combine$fail('not a gallery');
+    }, A2($andre_dietrich$parser_combinators$Combine$map, $elm$core$List$concat, $andre_dietrich$parser_combinators$Combine$many1(A2($andre_dietrich$parser_combinators$Combine$ignore, $andre_dietrich$parser_combinators$Combine$Char$newline, $andre_dietrich$parser_combinators$Combine$many1(A2($andre_dietrich$parser_combinators$Combine$keep, $author$project$Lia$Markdown$Inline$Parser$mediaReference, $andre_dietrich$parser_combinators$Combine$regex('[ \t]*')))))));
+    var $author$project$Lia$Markdown$Quiz$Types$Block_Type = function(a) {
+        return {
+            $: 'Block_Type',
+            a: a
+        };
+    };
+    var $author$project$Lia$Markdown$Quiz$Types$Generic_Type = {
+        $: 'Generic_Type'
+    };
+    var $author$project$Lia$Markdown$Quiz$Types$Matrix_Type = function(a) {
+        return {
+            $: 'Matrix_Type',
+            a: a
+        };
+    };
+    var $author$project$Lia$Markdown$Quiz$Types$Vector_Type = function(a) {
+        return {
+            $: 'Vector_Type',
+            a: a
+        };
+    };
+    var $author$project$Lia$Markdown$Quiz$Types$Quiz = F3(function(quiz, id, hints) {
+        return {
+            hints: hints,
+            id: id,
+            quiz: quiz
+        };
+    });
+    var $author$project$Lia$Markdown$Quiz$Parser$get_counter = $andre_dietrich$parser_combinators$Combine$withState(A2($elm$core$Basics$composeR, function($) {
+        return $.quiz_vector;
+    }, A2($elm$core$Basics$composeR, $elm$core$Array$length, $andre_dietrich$parser_combinators$Combine$succeed)));
+    var $author$project$Lia$Markdown$Quiz$Vector$Parser$groupBy = F3(function(begin, end, parser) {
+        return $andre_dietrich$parser_combinators$Combine$many1(A2($andre_dietrich$parser_combinators$Combine$ignore, $author$project$Lia$Parser$Helper$newline, A2($andre_dietrich$parser_combinators$Combine$andMap, $author$project$Lia$Markdown$Inline$Parser$line, A2($andre_dietrich$parser_combinators$Combine$ignore, $author$project$Lia$Parser$Helper$spaces, A2($andre_dietrich$parser_combinators$Combine$ignore, end, A2($andre_dietrich$parser_combinators$Combine$map, $elm$core$Tuple$pair, A2($andre_dietrich$parser_combinators$Combine$keep, parser, A2($andre_dietrich$parser_combinators$Combine$ignore, begin, A2($andre_dietrich$parser_combinators$Combine$ignore, $author$project$Lia$Parser$Helper$spaces, $andre_dietrich$parser_combinators$Combine$maybe($author$project$Lia$Parser$Indentation$check))))))))));
+    });
+    var $author$project$Lia$Markdown$Quiz$Vector$Parser$group = A2($elm$core$Basics$composeR, A2($author$project$Lia$Markdown$Quiz$Vector$Parser$groupBy, $andre_dietrich$parser_combinators$Combine$regex('(?:- )?\\['), $andre_dietrich$parser_combinators$Combine$string(']')), $andre_dietrich$parser_combinators$Combine$map($elm$core$List$unzip));
+    var $author$project$Lia$Markdown$Quiz$Parser$hints = A2($andre_dietrich$parser_combinators$Combine$optional, _List_Nil, A2($andre_dietrich$parser_combinators$Combine$map, $elm$core$Tuple$second, $author$project$Lia$Markdown$Quiz$Vector$Parser$group($andre_dietrich$parser_combinators$Combine$string('[?]'))));
+    var $author$project$Lia$Markdown$Quiz$Parser$adds = function(type_) {
+        return A2($andre_dietrich$parser_combinators$Combine$andMap, $author$project$Lia$Markdown$Quiz$Parser$hints, A2($andre_dietrich$parser_combinators$Combine$map, $author$project$Lia$Markdown$Quiz$Types$Quiz(type_), $author$project$Lia$Markdown$Quiz$Parser$get_counter));
+    };
+    var $author$project$Lia$Markdown$Quiz$Parser$generic = $andre_dietrich$parser_combinators$Combine$skip(A2($andre_dietrich$parser_combinators$Combine$ignore, $author$project$Lia$Parser$Helper$newline, A2($andre_dietrich$parser_combinators$Combine$ignore, $andre_dietrich$parser_combinators$Combine$regex('(?:- )?\\[\\[!\\]\\]'), A2($andre_dietrich$parser_combinators$Combine$ignore, $author$project$Lia$Parser$Helper$spaces, $andre_dietrich$parser_combinators$Combine$maybe($author$project$Lia$Parser$Indentation$check)))));
+    var $author$project$Lia$Markdown$Quiz$Types$Element = F6(function(solved, state, trial, hint, error_msg, scriptID) {
+        return {
+            error_msg: error_msg,
+            hint: hint,
+            scriptID: scriptID,
+            solved: solved,
+            state: state,
+            trial: trial
+        };
+    });
+    var $author$project$Lia$Markdown$Quiz$Solution$Open = {
+        $: 'Open'
+    };
+    var $author$project$Lia$Markdown$Quiz$Types$Block_State = function(a) {
+        return {
+            $: 'Block_State',
+            a: a
+        };
+    };
+    var $author$project$Lia$Markdown$Quiz$Types$Generic_State = {
+        $: 'Generic_State'
+    };
+    var $author$project$Lia$Markdown$Quiz$Types$Matrix_State = function(a) {
+        return {
+            $: 'Matrix_State',
+            a: a
+        };
+    };
+    var $author$project$Lia$Markdown$Quiz$Types$Vector_State = function(a) {
+        return {
+            $: 'Vector_State',
+            a: a
+        };
+    };
+    var $author$project$Lia$Markdown$Quiz$Block$Types$Select = F2(function(a, b) {
+        return {
+            $: 'Select',
+            a: a,
+            b: b
+        };
+    });
+    var $author$project$Lia$Markdown$Quiz$Block$Types$Text = function(a) {
+        return {
+            $: 'Text',
+            a: a
+        };
+    };
+    var $author$project$Lia$Markdown$Quiz$Block$Types$initState = function(state) {
+        if (state.$ === 'Text') return $author$project$Lia$Markdown$Quiz$Block$Types$Text('');
+        else return A2($author$project$Lia$Markdown$Quiz$Block$Types$Select, false, _List_fromArray([
+            -1
+        ]));
+    };
+    var $author$project$Lia$Markdown$Quiz$Vector$Types$MultipleChoice = function(a) {
+        return {
+            $: 'MultipleChoice',
+            a: a
+        };
+    };
+    var $author$project$Lia$Markdown$Quiz$Vector$Types$SingleChoice = function(a) {
+        return {
+            $: 'SingleChoice',
+            a: a
+        };
+    };
+    var $author$project$Lia$Markdown$Quiz$Vector$Types$initState = function(state) {
+        if (state.$ === 'SingleChoice') {
+            var list = state.a;
+            return $author$project$Lia$Markdown$Quiz$Vector$Types$SingleChoice(A2($elm$core$List$map, function(_v1) {
+                return false;
+            }, list));
+        } else {
+            var list = state.a;
+            return $author$project$Lia$Markdown$Quiz$Vector$Types$MultipleChoice(A2($elm$core$List$map, function(_v2) {
+                return false;
+            }, list));
+        }
+    };
+    var $author$project$Lia$Markdown$Quiz$Matrix$Types$initState = $elm$core$Array$map($author$project$Lia$Markdown$Quiz$Vector$Types$initState);
+    var $author$project$Lia$Markdown$Quiz$Types$initState = function(quiz) {
+        switch(quiz.$){
+            case 'Generic_Type':
+                return $author$project$Lia$Markdown$Quiz$Types$Generic_State;
+            case 'Block_Type':
+                var q = quiz.a;
+                return $author$project$Lia$Markdown$Quiz$Types$Block_State($author$project$Lia$Markdown$Quiz$Block$Types$initState(q.solution));
+            case 'Vector_Type':
+                var q = quiz.a;
+                return $author$project$Lia$Markdown$Quiz$Types$Vector_State($author$project$Lia$Markdown$Quiz$Vector$Types$initState(q.solution));
+            default:
+                var q = quiz.a;
+                return $author$project$Lia$Markdown$Quiz$Types$Matrix_State($author$project$Lia$Markdown$Quiz$Matrix$Types$initState(q.solution));
+        }
+    };
+    var $author$project$Lia$Markdown$Quiz$Parser$maybeJS = A2($andre_dietrich$parser_combinators$Combine$keep, $andre_dietrich$parser_combinators$Combine$maybe(A2($andre_dietrich$parser_combinators$Combine$ignore, $author$project$Lia$Parser$Helper$newline, A2($andre_dietrich$parser_combinators$Combine$map, $elm$core$Tuple$second, A2($andre_dietrich$parser_combinators$Combine$keep, $author$project$Lia$Markdown$Inline$Parser$eScript(_List_fromArray([
+        _Utils_Tuple2('input', 'hidden'),
+        _Utils_Tuple2('block', 'true'),
+        _Utils_Tuple2('default', 'undefined')
+    ])), $author$project$Lia$Parser$Helper$spaces)))), A2($andre_dietrich$parser_combinators$Combine$ignore, $andre_dietrich$parser_combinators$Combine$maybe($author$project$Lia$Parser$Indentation$check), $author$project$Lia$Markdown$Macro$Parser$macro));
+    var $author$project$Lia$Markdown$Quiz$Parser$modify_State = function(q) {
+        var add_state = F2(function(id, s) {
+            return _Utils_update(s, {
+                quiz_vector: A2($elm$core$Array$push, A6($author$project$Lia$Markdown$Quiz$Types$Element, $author$project$Lia$Markdown$Quiz$Solution$Open, $author$project$Lia$Markdown$Quiz$Types$initState(q.quiz), 0, 0, '', id), s.quiz_vector)
+            });
+        });
+        return A2($andre_dietrich$parser_combinators$Combine$keep, $andre_dietrich$parser_combinators$Combine$succeed(q), A2($andre_dietrich$parser_combinators$Combine$andThen, $andre_dietrich$parser_combinators$Combine$modifyState, A2($andre_dietrich$parser_combinators$Combine$map, add_state, $author$project$Lia$Markdown$Quiz$Parser$maybeJS)));
+    };
+    var $author$project$Lia$Markdown$Quiz$Block$Types$Quiz = F2(function(options, solution) {
+        return {
+            options: options,
+            solution: solution
+        };
+    });
+    var $elm$core$String$endsWith = _String_endsWith;
+    var $author$project$Lia$Markdown$Quiz$Block$Parser$check = F3(function(state, id, str) {
+        var option = $elm$core$String$trim(str);
+        var inlines = $author$project$Lia$Markdown$Inline$Parser$parse_inlines(state);
+        return A2($elm$core$String$startsWith, '(', option) && A2($elm$core$String$endsWith, ')', option) ? _Utils_Tuple2(id, inlines($elm$core$String$trim(A3($elm$core$String$slice, 1, -1, option)))) : _Utils_Tuple2(-1, inlines(option));
+    });
+    var $author$project$Lia$Markdown$Quiz$Block$Parser$toSelect = function(list) {
+        return $andre_dietrich$parser_combinators$Combine$succeed(A2($author$project$Lia$Markdown$Quiz$Block$Types$Quiz, A2($elm$core$List$map, $elm$core$Tuple$second, list), A2($author$project$Lia$Markdown$Quiz$Block$Types$Select, false, A2($elm$core$List$map, $elm$core$Tuple$first, A2($elm$core$List$filter, A2($elm$core$Basics$composeR, $elm$core$Tuple$first, $elm$core$Basics$le(0)), list)))));
+    };
+    var $author$project$Lia$Markdown$Quiz$Block$Parser$split = F2(function(str, state) {
+        var _v0 = A2($elm$core$String$split, '|', str);
+        if (_v0.b && !_v0.b.b) {
+            var solution = _v0.a;
+            var str_ = $elm$core$String$trim(A3($elm$core$String$replace, '_', ' ', solution));
+            return str_ === '?' || str_ === '!' || str_ === '' ? $andre_dietrich$parser_combinators$Combine$fail('') : $andre_dietrich$parser_combinators$Combine$succeed(A2($author$project$Lia$Markdown$Quiz$Block$Types$Quiz, _List_Nil, $author$project$Lia$Markdown$Quiz$Block$Types$Text(solution)));
+        } else {
+            var options = _v0;
+            return $author$project$Lia$Markdown$Quiz$Block$Parser$toSelect(A2($elm$core$List$indexedMap, $author$project$Lia$Markdown$Quiz$Block$Parser$check(state), options));
+        }
+    });
+    var $author$project$Lia$Markdown$Quiz$Block$Parser$parse = A2($andre_dietrich$parser_combinators$Combine$andThen, $andre_dietrich$parser_combinators$Combine$withState, A2($andre_dietrich$parser_combinators$Combine$map, $author$project$Lia$Markdown$Quiz$Block$Parser$split, A2($andre_dietrich$parser_combinators$Combine$ignore, $author$project$Lia$Parser$Helper$newline, A2($andre_dietrich$parser_combinators$Combine$keep, $author$project$Lia$Parser$Helper$stringTill($andre_dietrich$parser_combinators$Combine$string(']]')), $andre_dietrich$parser_combinators$Combine$regex('[\t ]*\\[\\[')))));
+    var $author$project$Lia$Markdown$Quiz$Matrix$Parser$inBrackets = A2($andre_dietrich$parser_combinators$Combine$keep, A2($andre_dietrich$parser_combinators$Combine$manyTill, $author$project$Lia$Markdown$Inline$Parser$inlines, $andre_dietrich$parser_combinators$Combine$regex('[ \\t]*\\][ \\t]*')), $andre_dietrich$parser_combinators$Combine$regex('[ \\t]*\\[[ \\t]*'));
+    var $author$project$Lia$Markdown$Quiz$Matrix$Parser$inParenthesis = A2($andre_dietrich$parser_combinators$Combine$keep, A2($andre_dietrich$parser_combinators$Combine$manyTill, $author$project$Lia$Markdown$Inline$Parser$inlines, $andre_dietrich$parser_combinators$Combine$regex('[ \\t]*\\)[ \\t]*')), $andre_dietrich$parser_combinators$Combine$regex('[ \\t]*\\([ \\t]*'));
+    var $author$project$Lia$Markdown$Quiz$Matrix$Parser$options = A2($andre_dietrich$parser_combinators$Combine$or, $author$project$Lia$Markdown$Quiz$Matrix$Parser$inParenthesis, $author$project$Lia$Markdown$Quiz$Matrix$Parser$inBrackets);
+    var $author$project$Lia$Markdown$Quiz$Matrix$Parser$header = A2($andre_dietrich$parser_combinators$Combine$ignore, $author$project$Lia$Parser$Helper$newline, A2($andre_dietrich$parser_combinators$Combine$ignore, $andre_dietrich$parser_combinators$Combine$string(']'), A2($andre_dietrich$parser_combinators$Combine$keep, $andre_dietrich$parser_combinators$Combine$many1($author$project$Lia$Markdown$Quiz$Matrix$Parser$options), A2($andre_dietrich$parser_combinators$Combine$ignore, $andre_dietrich$parser_combinators$Combine$regex('(?:- )?\\['), A2($andre_dietrich$parser_combinators$Combine$ignore, $author$project$Lia$Parser$Helper$spaces, $andre_dietrich$parser_combinators$Combine$maybe($author$project$Lia$Parser$Indentation$check))))));
+    var $author$project$Lia$Markdown$Quiz$Matrix$Types$Quiz = F3(function(headers, options, solution) {
+        return {
+            headers: headers,
+            options: options,
+            solution: solution
+        };
+    });
+    var $author$project$Lia$Markdown$Quiz$Matrix$Parser$quiz = F2(function(main, _v0) {
+        var vector = _v0.a;
+        var inline = _v0.b;
+        return A3($author$project$Lia$Markdown$Quiz$Matrix$Types$Quiz, main, inline, $elm$core$Array$fromList(vector));
+    });
+    var $author$project$Lia$Markdown$Quiz$Vector$Parser$either = F2(function(_true, _false) {
+        return A2($andre_dietrich$parser_combinators$Combine$or, A2($andre_dietrich$parser_combinators$Combine$onsuccess, false, $andre_dietrich$parser_combinators$Combine$string(_false)), A2($andre_dietrich$parser_combinators$Combine$onsuccess, true, $andre_dietrich$parser_combinators$Combine$regex(_true)));
+    });
+    var $author$project$Lia$Markdown$Quiz$Vector$Parser$checkButton = A2($author$project$Lia$Markdown$Quiz$Vector$Parser$either, '\\[[xX]\\]', '[ ]');
+    var $author$project$Lia$Markdown$Quiz$Matrix$Parser$multiple = A2($andre_dietrich$parser_combinators$Combine$map, $author$project$Lia$Markdown$Quiz$Vector$Types$MultipleChoice, $andre_dietrich$parser_combinators$Combine$many1(A2($andre_dietrich$parser_combinators$Combine$ignore, $author$project$Lia$Parser$Helper$spaces, A2($andre_dietrich$parser_combinators$Combine$keep, $author$project$Lia$Markdown$Quiz$Vector$Parser$checkButton, $author$project$Lia$Parser$Helper$spaces))));
+    var $author$project$Lia$Markdown$Quiz$Vector$Parser$radioButton = A2($author$project$Lia$Markdown$Quiz$Vector$Parser$either, '\\([xX]\\)', '( )');
+    var $author$project$Lia$Markdown$Quiz$Matrix$Parser$single = A2($andre_dietrich$parser_combinators$Combine$map, $author$project$Lia$Markdown$Quiz$Vector$Types$SingleChoice, $andre_dietrich$parser_combinators$Combine$many1(A2($andre_dietrich$parser_combinators$Combine$ignore, $author$project$Lia$Parser$Helper$spaces, A2($andre_dietrich$parser_combinators$Combine$keep, $author$project$Lia$Markdown$Quiz$Vector$Parser$radioButton, $author$project$Lia$Parser$Helper$spaces))));
+    var $author$project$Lia$Markdown$Quiz$Matrix$Parser$rows = $author$project$Lia$Markdown$Quiz$Vector$Parser$group(A2($andre_dietrich$parser_combinators$Combine$or, $author$project$Lia$Markdown$Quiz$Matrix$Parser$single, $author$project$Lia$Markdown$Quiz$Matrix$Parser$multiple));
+    var $author$project$Lia$Markdown$Quiz$Matrix$Parser$parse = A2($andre_dietrich$parser_combinators$Combine$andMap, $author$project$Lia$Markdown$Quiz$Matrix$Parser$rows, A2($andre_dietrich$parser_combinators$Combine$map, $author$project$Lia$Markdown$Quiz$Matrix$Parser$quiz, $author$project$Lia$Markdown$Quiz$Matrix$Parser$header));
+    var $author$project$Lia$Markdown$Quiz$Vector$Types$Quiz = F2(function(options, solution) {
+        return {
+            options: options,
+            solution: solution
+        };
+    });
+    var $author$project$Lia$Markdown$Quiz$Vector$Parser$toQuiz = F2(function(fn, _v0) {
+        var booleans = _v0.a;
+        var inlines = _v0.b;
+        return A2($author$project$Lia$Markdown$Quiz$Vector$Types$Quiz, inlines, fn(booleans));
+    });
+    var $author$project$Lia$Markdown$Quiz$Vector$Parser$parse = A2($andre_dietrich$parser_combinators$Combine$or, A2($andre_dietrich$parser_combinators$Combine$map, $author$project$Lia$Markdown$Quiz$Vector$Parser$toQuiz($author$project$Lia$Markdown$Quiz$Vector$Types$SingleChoice), $author$project$Lia$Markdown$Quiz$Vector$Parser$group($author$project$Lia$Markdown$Quiz$Vector$Parser$radioButton)), A2($andre_dietrich$parser_combinators$Combine$map, $author$project$Lia$Markdown$Quiz$Vector$Parser$toQuiz($author$project$Lia$Markdown$Quiz$Vector$Types$MultipleChoice), $author$project$Lia$Markdown$Quiz$Vector$Parser$group($author$project$Lia$Markdown$Quiz$Vector$Parser$checkButton)));
+    var $author$project$Lia$Markdown$Quiz$Parser$parse = A2($andre_dietrich$parser_combinators$Combine$andThen, $author$project$Lia$Markdown$Quiz$Parser$modify_State, A2($andre_dietrich$parser_combinators$Combine$andThen, $author$project$Lia$Markdown$Quiz$Parser$adds, $andre_dietrich$parser_combinators$Combine$choice(_List_fromArray([
+        A2($andre_dietrich$parser_combinators$Combine$map, $author$project$Lia$Markdown$Quiz$Types$Matrix_Type, $author$project$Lia$Markdown$Quiz$Matrix$Parser$parse),
+        A2($andre_dietrich$parser_combinators$Combine$map, $author$project$Lia$Markdown$Quiz$Types$Vector_Type, $author$project$Lia$Markdown$Quiz$Vector$Parser$parse),
+        A2($andre_dietrich$parser_combinators$Combine$onsuccess, $author$project$Lia$Markdown$Quiz$Types$Generic_Type, $author$project$Lia$Markdown$Quiz$Parser$generic),
+        A2($andre_dietrich$parser_combinators$Combine$map, $author$project$Lia$Markdown$Quiz$Types$Block_Type, $author$project$Lia$Markdown$Quiz$Block$Parser$parse)
+    ]))));
+    var $author$project$Lia$Markdown$Survey$Types$Matrix_State = F2(function(a, b) {
+        return {
+            $: 'Matrix_State',
+            a: a,
+            b: b
+        };
+    });
+    var $author$project$Lia$Markdown$Survey$Types$Select_State = F2(function(a, b) {
+        return {
+            $: 'Select_State',
+            a: a,
+            b: b
+        };
+    });
+    var $author$project$Lia$Markdown$Survey$Types$Text_State = function(a) {
+        return {
+            $: 'Text_State',
+            a: a
+        };
+    };
+    var $author$project$Lia$Markdown$Survey$Types$Vector_State = F2(function(a, b) {
+        return {
+            $: 'Vector_State',
+            a: a,
+            b: b
+        };
+    });
+    var $author$project$Lia$Markdown$Survey$Parser$add_state = F3(function(state, id, c) {
+        return _Utils_update(c, {
+            survey_vector: A2($elm$core$Array$push, {
+                errorMsg: $elm$core$Maybe$Nothing,
+                scriptID: id,
+                state: state,
+                submitted: false
+            }, c.survey_vector)
+        });
+    });
+    var $author$project$Lia$Markdown$Survey$Parser$modify_State = function(survey_) {
+        var state = function() {
+            var extractor = F2(function(fn, v) {
+                return $elm$core$Dict$fromList(A2($elm$core$List$map, fn, v));
+            });
+            var _v0 = survey_.survey;
+            switch(_v0.$){
+                case 'Text':
+                    return $author$project$Lia$Markdown$Survey$Types$Text_State('');
+                case 'Select':
+                    return A2($author$project$Lia$Markdown$Survey$Types$Select_State, false, -1);
+                case 'Vector':
+                    var bool = _v0.a;
+                    var vars = _v0.b;
+                    return A2($author$project$Lia$Markdown$Survey$Types$Vector_State, bool, A2(extractor, function(_v1) {
+                        var v = _v1.a;
+                        return _Utils_Tuple2(v, false);
+                    }, vars));
+                default:
+                    var bool = _v0.a;
+                    var vars = _v0.c;
+                    var qs = _v0.d;
+                    return A2($author$project$Lia$Markdown$Survey$Types$Matrix_State, bool, A2($elm$core$Array$repeat, $elm$core$List$length(qs), A2(extractor, function(v) {
+                        return _Utils_Tuple2(v, false);
+                    }, vars)));
+            }
+        }();
+        return A2($andre_dietrich$parser_combinators$Combine$ignore, A2($andre_dietrich$parser_combinators$Combine$andThen, $andre_dietrich$parser_combinators$Combine$modifyState, A2($andre_dietrich$parser_combinators$Combine$map, $author$project$Lia$Markdown$Survey$Parser$add_state(state), $author$project$Lia$Markdown$Quiz$Parser$maybeJS)), $andre_dietrich$parser_combinators$Combine$succeed(survey_));
+    };
+    var $author$project$Lia$Markdown$Survey$Types$Survey = F2(function(survey, id) {
+        return {
+            id: id,
+            survey: survey
+        };
+    });
+    var $author$project$Lia$Markdown$Survey$Types$Text = function(a) {
+        return {
+            $: 'Text',
+            a: a
+        };
+    };
+    var $andre_dietrich$parser_combinators$Combine$brackets = A2($andre_dietrich$parser_combinators$Combine$between, $andre_dietrich$parser_combinators$Combine$string('['), $andre_dietrich$parser_combinators$Combine$string(']'));
+    var $author$project$Lia$Markdown$Survey$Parser$pattern = function(p) {
+        return A2($andre_dietrich$parser_combinators$Combine$ignore, $andre_dietrich$parser_combinators$Combine$regex('\\][\t ]*'), A2($andre_dietrich$parser_combinators$Combine$keep, p, A2($andre_dietrich$parser_combinators$Combine$ignore, $andre_dietrich$parser_combinators$Combine$regex('\\-?[\t ]*\\['), $andre_dietrich$parser_combinators$Combine$maybe($author$project$Lia$Parser$Indentation$check))));
+    };
+    var $author$project$Lia$Markdown$Survey$Parser$header = F2(function(begin, end) {
+        return A2($andre_dietrich$parser_combinators$Combine$ignore, $author$project$Lia$Parser$Helper$newline, $author$project$Lia$Markdown$Survey$Parser$pattern($andre_dietrich$parser_combinators$Combine$many1(A2($andre_dietrich$parser_combinators$Combine$keep, A2($andre_dietrich$parser_combinators$Combine$manyTill, $author$project$Lia$Markdown$Inline$Parser$inlines, $andre_dietrich$parser_combinators$Combine$string(end)), $andre_dietrich$parser_combinators$Combine$string(begin)))));
+    });
+    var $author$project$Lia$Markdown$Survey$Parser$questions = $andre_dietrich$parser_combinators$Combine$many1(A2($andre_dietrich$parser_combinators$Combine$ignore, $author$project$Lia$Parser$Helper$newline, A2($andre_dietrich$parser_combinators$Combine$keep, $author$project$Lia$Markdown$Inline$Parser$line, A2($andre_dietrich$parser_combinators$Combine$ignore, $andre_dietrich$parser_combinators$Combine$regex('\\-?[\t ]*\\[[\t ]+\\]'), $andre_dietrich$parser_combinators$Combine$maybe($author$project$Lia$Parser$Indentation$check)))));
+    var $author$project$Lia$Markdown$Survey$Parser$text_lines = A2($andre_dietrich$parser_combinators$Combine$ignore, $author$project$Lia$Parser$Helper$newline, A2($andre_dietrich$parser_combinators$Combine$map, $elm$core$List$length, $author$project$Lia$Markdown$Survey$Parser$pattern(A2($andre_dietrich$parser_combinators$Combine$ignore, $andre_dietrich$parser_combinators$Combine$string(']'), A2($andre_dietrich$parser_combinators$Combine$keep, $andre_dietrich$parser_combinators$Combine$many1($andre_dietrich$parser_combinators$Combine$regex('_{3,}[\t ]*')), A2($andre_dietrich$parser_combinators$Combine$ignore, $andre_dietrich$parser_combinators$Combine$string('['), A2($andre_dietrich$parser_combinators$Combine$ignore, $author$project$Lia$Parser$Helper$spaces, $andre_dietrich$parser_combinators$Combine$maybe($author$project$Lia$Parser$Indentation$check))))))));
+    var $author$project$Lia$Markdown$Survey$Types$Matrix = F4(function(a, b, c, d) {
+        return {
+            $: 'Matrix',
+            a: a,
+            b: b,
+            c: c,
+            d: d
+        };
+    });
+    var $author$project$Lia$Markdown$Survey$Parser$toMatrix = F2(function(bool, ids) {
+        return A3($author$project$Lia$Markdown$Survey$Types$Matrix, bool, ids, A2($elm$core$List$map, $author$project$Lia$Markdown$Inline$Stringify$stringify, ids));
+    });
+    var $author$project$Lia$Markdown$Survey$Types$Select = function(a) {
+        return {
+            $: 'Select',
+            a: a
+        };
+    };
+    var $author$project$Lia$Markdown$Survey$Parser$toSelect = function(quiz) {
+        var _v0 = quiz.solution;
+        if (_v0.$ === 'Select' && !_v0.b.b) return $andre_dietrich$parser_combinators$Combine$succeed($author$project$Lia$Markdown$Survey$Types$Select(quiz.options));
+        else return $andre_dietrich$parser_combinators$Combine$fail('');
+    };
+    var $author$project$Lia$Markdown$Survey$Types$Vector = F3(function(a, b, c) {
+        return {
+            $: 'Vector',
+            a: a,
+            b: b,
+            c: c
+        };
+    });
+    var $author$project$Lia$Markdown$Survey$Types$Categorical = {
+        $: 'Categorical'
+    };
+    var $author$project$Lia$Markdown$Survey$Types$Quantitative = {
+        $: 'Quantitative'
+    };
+    var $author$project$Lia$Markdown$Survey$Types$isNumber = A2($elm$core$Basics$composeR, $elm$core$String$split(' '), A2($elm$core$Basics$composeR, $elm$core$List$head, A2($elm$core$Basics$composeR, $elm$core$Maybe$andThen($elm$core$String$toInt), $elm$core$Basics$neq($elm$core$Maybe$Nothing))));
+    var $author$project$Lia$Markdown$Survey$Types$allNumbers = A2($elm$core$Basics$composeR, $elm$core$List$map($author$project$Lia$Markdown$Survey$Types$isNumber), $elm$core$List$all($elm$core$Basics$identity));
+    var $author$project$Lia$Markdown$Survey$Types$analyseType = function(ids) {
+        return $author$project$Lia$Markdown$Survey$Types$allNumbers(ids) ? $author$project$Lia$Markdown$Survey$Types$Quantitative : $author$project$Lia$Markdown$Survey$Types$Categorical;
+    };
+    var $author$project$Lia$Markdown$Survey$Parser$toVector = F2(function(bool, definition) {
+        return A3($author$project$Lia$Markdown$Survey$Types$Vector, bool, definition, $author$project$Lia$Markdown$Survey$Types$analyseType(A2($elm$core$List$map, $elm$core$Tuple$first, definition)));
+    });
+    var $author$project$Lia$Markdown$Survey$Parser$id_str = A2($andre_dietrich$parser_combinators$Combine$andThen, function(s) {
+        return s === 'X' ? $andre_dietrich$parser_combinators$Combine$fail('') : $andre_dietrich$parser_combinators$Combine$succeed(s);
+    }, $andre_dietrich$parser_combinators$Combine$regex('\\w(\\w+| )*'));
+    var $author$project$Lia$Markdown$Survey$Parser$question = function(p) {
+        return A2($andre_dietrich$parser_combinators$Combine$ignore, $author$project$Lia$Parser$Helper$newline, A2($andre_dietrich$parser_combinators$Combine$andMap, $author$project$Lia$Markdown$Inline$Parser$line, A2($andre_dietrich$parser_combinators$Combine$map, $elm$core$Tuple$pair, p)));
+    };
+    var $author$project$Lia$Markdown$Survey$Parser$vector = function(p) {
+        return $andre_dietrich$parser_combinators$Combine$many1($author$project$Lia$Markdown$Survey$Parser$question($author$project$Lia$Markdown$Survey$Parser$pattern(p($author$project$Lia$Markdown$Survey$Parser$id_str))));
+    };
+    var $author$project$Lia$Markdown$Survey$Parser$survey = A2($andre_dietrich$parser_combinators$Combine$andMap, $andre_dietrich$parser_combinators$Combine$withState(A2($elm$core$Basics$composeR, function($) {
+        return $.survey_vector;
+    }, A2($elm$core$Basics$composeR, $elm$core$Array$length, $andre_dietrich$parser_combinators$Combine$succeed))), A2($andre_dietrich$parser_combinators$Combine$map, $author$project$Lia$Markdown$Survey$Types$Survey, $andre_dietrich$parser_combinators$Combine$choice(_List_fromArray([
+        A2($andre_dietrich$parser_combinators$Combine$map, $author$project$Lia$Markdown$Survey$Types$Text, $author$project$Lia$Markdown$Survey$Parser$text_lines),
+        A2($andre_dietrich$parser_combinators$Combine$andThen, $author$project$Lia$Markdown$Survey$Parser$toSelect, $author$project$Lia$Markdown$Quiz$Block$Parser$parse),
+        A2($andre_dietrich$parser_combinators$Combine$map, $author$project$Lia$Markdown$Survey$Parser$toVector(false), $author$project$Lia$Markdown$Survey$Parser$vector($andre_dietrich$parser_combinators$Combine$parens)),
+        A2($andre_dietrich$parser_combinators$Combine$map, $author$project$Lia$Markdown$Survey$Parser$toVector(true), $author$project$Lia$Markdown$Survey$Parser$vector($andre_dietrich$parser_combinators$Combine$brackets)),
+        A2($andre_dietrich$parser_combinators$Combine$andMap, $author$project$Lia$Markdown$Survey$Parser$questions, A2($andre_dietrich$parser_combinators$Combine$map, $author$project$Lia$Markdown$Survey$Parser$toMatrix(false), A2($author$project$Lia$Markdown$Survey$Parser$header, '(', ')'))),
+        A2($andre_dietrich$parser_combinators$Combine$andMap, $author$project$Lia$Markdown$Survey$Parser$questions, A2($andre_dietrich$parser_combinators$Combine$map, $author$project$Lia$Markdown$Survey$Parser$toMatrix(true), A2($author$project$Lia$Markdown$Survey$Parser$header, '[', ']')))
+    ]))));
+    var $author$project$Lia$Markdown$Survey$Parser$parse = A2($andre_dietrich$parser_combinators$Combine$andThen, $author$project$Lia$Markdown$Survey$Parser$modify_State, $author$project$Lia$Markdown$Survey$Parser$survey);
+    var $author$project$Lia$Markdown$Table$Types$Table = F5(function(_class, head, format, body, id) {
+        return {
+            body: body,
+            _class: _class,
+            format: format,
+            head: head,
+            id: id
+        };
+    });
+    var $author$project$Const$align = {
+        center: 'text-center',
+        _default: 'text-left',
+        left: 'text-left',
+        right: 'text-right'
+    };
+    var $andre_dietrich$parser_combinators$Combine$sepEndBy1 = F2(function(sep, p) {
+        return A2($andre_dietrich$parser_combinators$Combine$ignore, $andre_dietrich$parser_combinators$Combine$maybe(sep), A2($andre_dietrich$parser_combinators$Combine$sepBy1, sep, p));
+    });
+    var $andre_dietrich$parser_combinators$Combine$sepEndBy = F2(function(sep, p) {
+        return A2($andre_dietrich$parser_combinators$Combine$or, A2($andre_dietrich$parser_combinators$Combine$sepEndBy1, sep, p), $andre_dietrich$parser_combinators$Combine$succeed(_List_Nil));
+    });
+    var $author$project$Lia$Markdown$Table$Parser$format = A2($andre_dietrich$parser_combinators$Combine$ignore, $andre_dietrich$parser_combinators$Combine$regex('[\t ]*\\n'), A2($andre_dietrich$parser_combinators$Combine$keep, A2($andre_dietrich$parser_combinators$Combine$sepEndBy, $andre_dietrich$parser_combinators$Combine$string('|'), $andre_dietrich$parser_combinators$Combine$choice(_List_fromArray([
+        A2($andre_dietrich$parser_combinators$Combine$onsuccess, $author$project$Const$align.center, $andre_dietrich$parser_combinators$Combine$regex('[\t ]*:-+:[\t ]*')),
+        A2($andre_dietrich$parser_combinators$Combine$onsuccess, $author$project$Const$align.left, $andre_dietrich$parser_combinators$Combine$regex('[\t ]*:-+[\t ]*')),
+        A2($andre_dietrich$parser_combinators$Combine$onsuccess, $author$project$Const$align.right, $andre_dietrich$parser_combinators$Combine$regex('[\t ]*-+:[\t ]*')),
+        A2($andre_dietrich$parser_combinators$Combine$onsuccess, $author$project$Const$align._default, $andre_dietrich$parser_combinators$Combine$regex('[\t ]*-+[\t ]*'))
+    ]))), A2($andre_dietrich$parser_combinators$Combine$ignore, $andre_dietrich$parser_combinators$Combine$string('|'), $author$project$Lia$Parser$Indentation$check)));
+    var $author$project$Lia$Markdown$Table$Parser$row = A2($andre_dietrich$parser_combinators$Combine$keep, A2($andre_dietrich$parser_combinators$Combine$manyTill, A2($andre_dietrich$parser_combinators$Combine$andMap, A2($andre_dietrich$parser_combinators$Combine$optional, _List_Nil, $author$project$Lia$Markdown$Inline$Parser$line), A2($andre_dietrich$parser_combinators$Combine$map, $elm$core$Tuple$pair, A2($andre_dietrich$parser_combinators$Combine$keep, $author$project$Lia$Markdown$Inline$Parser$annotations, A2($andre_dietrich$parser_combinators$Combine$ignore, $author$project$Lia$Markdown$Macro$Parser$macro, A2($andre_dietrich$parser_combinators$Combine$ignore, $author$project$Lia$Parser$Helper$spaces, $andre_dietrich$parser_combinators$Combine$string('|')))))), $andre_dietrich$parser_combinators$Combine$regex('\\|[\t ]*\\n')), $author$project$Lia$Parser$Indentation$check);
+    var $author$project$Lia$Markdown$Table$Parser$formatted = A2($andre_dietrich$parser_combinators$Combine$andMap, $andre_dietrich$parser_combinators$Combine$many($author$project$Lia$Markdown$Table$Parser$row), A2($andre_dietrich$parser_combinators$Combine$andMap, $author$project$Lia$Markdown$Table$Parser$format, A2($andre_dietrich$parser_combinators$Combine$map, $author$project$Lia$Markdown$Table$Types$Table($author$project$Lia$Markdown$Table$Types$None), $author$project$Lia$Markdown$Table$Parser$row)));
+    var $author$project$Lia$Markdown$Table$Types$State = F3(function(column, dir, diagram) {
+        return {
+            column: column,
+            diagram: diagram,
+            dir: dir
+        };
+    });
+    var $author$project$Lia$Markdown$Table$Parser$modify_State = A2($elm$core$Basics$composeR, $andre_dietrich$parser_combinators$Combine$andMap($andre_dietrich$parser_combinators$Combine$withState(A2($elm$core$Basics$composeR, function($) {
+        return $.table_vector;
+    }, A2($elm$core$Basics$composeR, $elm$core$Array$length, $andre_dietrich$parser_combinators$Combine$succeed)))), $andre_dietrich$parser_combinators$Combine$ignore($andre_dietrich$parser_combinators$Combine$modifyState(function(s) {
+        return _Utils_update(s, {
+            table_vector: A2($elm$core$Array$push, A3($author$project$Lia$Markdown$Table$Types$State, -1, false, false), s.table_vector)
+        });
+    })));
+    var $author$project$Lia$Markdown$Table$Parser$simple = A2($andre_dietrich$parser_combinators$Combine$map, A3($author$project$Lia$Markdown$Table$Types$Table, $author$project$Lia$Markdown$Table$Types$None, _List_Nil, _List_Nil), $andre_dietrich$parser_combinators$Combine$many1($author$project$Lia$Markdown$Table$Parser$row));
+    var $author$project$Lia$Markdown$Table$Parser$parse = $author$project$Lia$Markdown$Table$Parser$modify_State(A2($andre_dietrich$parser_combinators$Combine$keep, A2($andre_dietrich$parser_combinators$Combine$or, $author$project$Lia$Markdown$Table$Parser$formatted, $author$project$Lia$Markdown$Table$Parser$simple), $author$project$Lia$Parser$Indentation$skip));
+    var $author$project$Lia$Markdown$Task$Types$Task = F2(function(task, id) {
+        return {
+            id: id,
+            task: task
+        };
+    });
+    var $author$project$Lia$Markdown$Task$Types$toString = A2($elm$core$Basics$composeR, function($) {
+        return $.state;
+    }, A2($elm$core$Basics$composeR, $elm$json$Json$Encode$array($elm$json$Json$Encode$bool), $elm$json$Json$Encode$encode(0)));
+    var $author$project$Lia$Markdown$Task$Parser$modify_State = function(_v0) {
+        var states = _v0.a;
+        var tasks = _v0.b;
+        var addTask = F2(function(m, s) {
+            return _Utils_update(s, {
+                effect_model: function() {
+                    if (m.$ === 'Nothing') return s.effect_model;
+                    else {
+                        var scriptID = m.a;
+                        var effect_model = s.effect_model;
+                        return _Utils_update(effect_model, {
+                            javascript: function() {
+                                var _v2 = A2($elm$core$Array$get, scriptID, effect_model.javascript);
+                                if (_v2.$ === 'Just') {
+                                    var script = _v2.a;
+                                    return A3($elm$core$Array$set, scriptID, _Utils_update(script, {
+                                        result: $elm$core$Maybe$Just($author$project$Lia$Markdown$Effect$Script$Types$Text($author$project$Lia$Markdown$Task$Types$toString({
+                                            scriptID: $elm$core$Maybe$Nothing,
+                                            state: $elm$core$Array$fromList(states)
+                                        })))
+                                    }), effect_model.javascript);
+                                } else return effect_model.javascript;
+                            }()
+                        });
+                    }
+                }(),
+                task_vector: A2($elm$core$Array$push, {
+                    scriptID: m,
+                    state: $elm$core$Array$fromList(states)
+                }, s.task_vector)
+            });
+        });
+        return A2($andre_dietrich$parser_combinators$Combine$ignore, A2($andre_dietrich$parser_combinators$Combine$andThen, $andre_dietrich$parser_combinators$Combine$modifyState, A2($andre_dietrich$parser_combinators$Combine$map, addTask, $author$project$Lia$Markdown$Quiz$Parser$maybeJS)), A2($andre_dietrich$parser_combinators$Combine$map, $author$project$Lia$Markdown$Task$Types$Task(tasks), $andre_dietrich$parser_combinators$Combine$withState(A2($elm$core$Basics$composeR, function($) {
+            return $.task_vector;
+        }, A2($elm$core$Basics$composeR, $elm$core$Array$length, $andre_dietrich$parser_combinators$Combine$succeed)))));
+    };
+    var $author$project$Lia$Markdown$Task$Parser$parse = A2($andre_dietrich$parser_combinators$Combine$andThen, $author$project$Lia$Markdown$Task$Parser$modify_State, A2($andre_dietrich$parser_combinators$Combine$map, $elm$core$List$unzip, A3($author$project$Lia$Markdown$Quiz$Vector$Parser$groupBy, $andre_dietrich$parser_combinators$Combine$string('- ['), $andre_dietrich$parser_combinators$Combine$string(']'), A2($author$project$Lia$Markdown$Quiz$Vector$Parser$either, '[xX]', ' '))));
+    var $author$project$Lia$Parser$Indentation$pop = $andre_dietrich$parser_combinators$Combine$modifyState(function(state) {
+        return _Utils_update(state, {
+            indentation: $elm$core$List$reverse(A2($elm$core$List$drop, 1, $elm$core$List$reverse(state.indentation))),
+            indentation_skip: false
+        });
+    });
+    var $author$project$Lia$Markdown$Types$Problem = function(a) {
+        return {
+            $: 'Problem',
+            a: a
+        };
+    };
+    var $author$project$Lia$Markdown$Inline$Parser$lineWithProblems = A2($andre_dietrich$parser_combinators$Combine$map, $author$project$Lia$Markdown$Inline$Types$combine, $andre_dietrich$parser_combinators$Combine$many1(A2($andre_dietrich$parser_combinators$Combine$or, $author$project$Lia$Markdown$Inline$Parser$inlines, A2($andre_dietrich$parser_combinators$Combine$map, function(x) {
+        return A2($author$project$Lia$Markdown$Inline$Types$Chars, x, _List_Nil);
+    }, $andre_dietrich$parser_combinators$Combine$regex('.')))));
+    var $author$project$Lia$Markdown$Parser$problem = A2($andre_dietrich$parser_combinators$Combine$map, $author$project$Lia$Markdown$Types$Problem, A2($andre_dietrich$parser_combinators$Combine$ignore, $author$project$Lia$Parser$Helper$newline, A2($andre_dietrich$parser_combinators$Combine$keep, $author$project$Lia$Markdown$Inline$Parser$lineWithProblems, A2($andre_dietrich$parser_combinators$Combine$ignore, $author$project$Lia$Parser$Indentation$check, $author$project$Lia$Parser$Indentation$skip))));
+    var $author$project$Lia$Markdown$Parser$subHeaderType1 = A2($andre_dietrich$parser_combinators$Combine$andMap, $author$project$Lia$Markdown$Inline$Parser$line, A2($andre_dietrich$parser_combinators$Combine$map, $elm$core$Tuple$pair, $author$project$Lia$Parser$Preprocessor$title_tag));
+    var $author$project$Lia$Markdown$Parser$underline = A2($andre_dietrich$parser_combinators$Combine$or, A2($andre_dietrich$parser_combinators$Combine$keep, $andre_dietrich$parser_combinators$Combine$succeed(1), $andre_dietrich$parser_combinators$Combine$regex('={3,}[ \t]*')), A2($andre_dietrich$parser_combinators$Combine$keep, $andre_dietrich$parser_combinators$Combine$succeed(2), $andre_dietrich$parser_combinators$Combine$regex('-{3,}[ \t]*')));
+    var $author$project$Lia$Markdown$Parser$subHeaderType2 = A2($andre_dietrich$parser_combinators$Combine$andMap, $author$project$Lia$Markdown$Parser$underline, A2($andre_dietrich$parser_combinators$Combine$map, F2(function(i, title) {
+        return _Utils_Tuple2(title, i);
+    }), A2($andre_dietrich$parser_combinators$Combine$ignore, $andre_dietrich$parser_combinators$Combine$regex('[ \t]*\n'), $author$project$Lia$Markdown$Inline$Parser$line)));
+    var $author$project$Lia$Markdown$Parser$subHeader = A2($andre_dietrich$parser_combinators$Combine$ignore, $andre_dietrich$parser_combinators$Combine$regex('[ \t]*\n?'), A2($andre_dietrich$parser_combinators$Combine$or, $author$project$Lia$Markdown$Parser$subHeaderType1, $author$project$Lia$Markdown$Parser$subHeaderType2));
+    var $author$project$Lia$Markdown$Parser$svgbody = function(len) {
+        var control_frame = '(`){' + ($elm$core$String$fromInt(len) + (len <= 8 ? '}' : ',}'));
+        var ascii = A3($andre_dietrich$parser_combinators$Combine$regexWith, true, false, len <= 8 ? '[\t ]*(ascii|art)[\t ]*' : '([\t ]*(ascii|art))?[\t ]*');
+        return A2($andre_dietrich$parser_combinators$Combine$andMap, A2($andre_dietrich$parser_combinators$Combine$map, A2($elm$core$Basics$composeR, $elm$core$String$concat, $elm$core$String$dropRight(1)), A2($andre_dietrich$parser_combinators$Combine$manyTill, A2($andre_dietrich$parser_combinators$Combine$keep, $andre_dietrich$parser_combinators$Combine$regex('(?:.(?!' + (control_frame + '))*\\n')), $andre_dietrich$parser_combinators$Combine$maybe($author$project$Lia$Parser$Indentation$check)), A2($andre_dietrich$parser_combinators$Combine$keep, $andre_dietrich$parser_combinators$Combine$regex(control_frame), $author$project$Lia$Parser$Indentation$check))), A2($andre_dietrich$parser_combinators$Combine$ignore, $author$project$Lia$Parser$Helper$newline, A2($andre_dietrich$parser_combinators$Combine$map, $elm$core$Tuple$pair, A2($andre_dietrich$parser_combinators$Combine$keep, $andre_dietrich$parser_combinators$Combine$maybe($author$project$Lia$Markdown$Inline$Parser$line), ascii))));
+    };
+    var $author$project$Lia$Markdown$Types$Comment = function(a) {
+        return {
+            $: 'Comment',
+            a: a
+        };
+    };
+    var $author$project$Lia$Markdown$Effect$Model$set_annotation = F4(function(id1, id2, m, attr) {
+        var _v0 = A2($elm$core$Dict$get, id1, m);
+        if (_v0.$ === 'Just') {
+            var e = _v0.a;
+            var _v1 = A2($elm$core$Array$get, id2, e.content);
+            if (_v1.$ === 'Just') {
+                var par = _v1.a;
+                return A3($elm$core$Dict$insert, id1, _Utils_update(e, {
+                    content: A3($elm$core$Array$set, id2, _Utils_update(par, {
+                        attr: attr
+                    }), e.content)
+                }), m);
+            } else return m;
+        } else return m;
+    });
+    var $author$project$Lia$Markdown$Parser$to_comment = function(_v0) {
+        var attr = _v0.a;
+        var _v1 = _v0.b;
+        var id1 = _v1.a;
+        var id2 = _v1.b;
+        return A2($andre_dietrich$parser_combinators$Combine$onsuccess, $author$project$Lia$Markdown$Types$Comment(_Utils_Tuple2(id1, id2)), function() {
+            if (!attr.b) return $andre_dietrich$parser_combinators$Combine$succeed(_Utils_Tuple0);
+            else return $andre_dietrich$parser_combinators$Combine$modifyState(function(s) {
+                var e = s.effect_model;
+                return _Utils_update(s, {
+                    effect_model: _Utils_update(e, {
+                        comments: A4($author$project$Lia$Markdown$Effect$Model$set_annotation, id1, id2, e.comments, attr)
+                    })
+                });
+            });
+        }());
+    };
+    var $author$project$Lia$Markdown$Parser$svgbobSub = function(_v0) {
+        var caption = _v0.a;
+        var str = _v0.b;
+        var svg = A2($andre_dietrich$elm_svgbob$SvgBob$getElements, {
+            arcRadius: 4,
+            backgroundColor: 'white',
+            fontSize: 14,
+            heightVerbatim: $elm$core$Maybe$Just('100%'),
+            lineWidth: 1,
+            multilineVerbatim: true,
+            strokeColor: 'black',
+            textColor: 'black',
+            textHeight: 16,
+            textWidth: 8,
+            verbatim: _Utils_chr('\"'),
+            widthVerbatim: $elm$core$Maybe$Nothing
+        }, str);
+        var fn = function(context) {
+            var _v1 = A3($elm$core$List$foldl, F2(function(_v2, _v3) {
+                var code = _v2.a;
+                var pos = _v2.b;
+                var c = _v3.a;
+                var list = _v3.b;
+                var _v4 = A3($andre_dietrich$parser_combinators$Combine$runParser, $author$project$Lia$Markdown$Parser$cyclic$run(), c, code + '\n');
+                if (_v4.$ === 'Ok') {
+                    var _v5 = _v4.a;
+                    var state = _v5.a;
+                    var md = _v5.c;
+                    return _Utils_Tuple2(state, A2($elm$core$List$cons, _Utils_Tuple2(md, pos), list));
+                } else return _Utils_Tuple2(c, list);
+            }), _Utils_Tuple2(context, _List_Nil), svg.foreign);
+            var newContext = _v1.a;
+            var foreign = _v1.b;
+            return A2($andre_dietrich$parser_combinators$Combine$keep, $andre_dietrich$parser_combinators$Combine$succeed(_Utils_Tuple2(caption, {
+                columns: svg.columns,
+                foreign: foreign,
+                rows: svg.rows,
+                settings: svg.settings,
+                svg: svg.svg
+            })), $andre_dietrich$parser_combinators$Combine$putState(newContext));
+        };
+        return $andre_dietrich$parser_combinators$Combine$withState(fn);
+    };
+    function $author$project$Lia$Markdown$Parser$cyclic$elements() {
+        return $andre_dietrich$parser_combinators$Combine$choice(_List_fromArray([
+            A2($andre_dietrich$parser_combinators$Combine$andMap, $author$project$Lia$Markdown$Effect$Parser$markdown($author$project$Lia$Markdown$Parser$cyclic$blocks()), A2($andre_dietrich$parser_combinators$Combine$map, $author$project$Lia$Markdown$Types$Effect, $author$project$Lia$Markdown$Parser$md_annotations)),
+            A2($andre_dietrich$parser_combinators$Combine$andThen, $author$project$Lia$Markdown$Parser$to_comment, A2($andre_dietrich$parser_combinators$Combine$andMap, $author$project$Lia$Markdown$Effect$Parser$comment($author$project$Lia$Markdown$Parser$paragraph), A2($andre_dietrich$parser_combinators$Combine$map, $elm$core$Tuple$pair, $author$project$Lia$Markdown$Parser$md_annotations))),
+            A2($andre_dietrich$parser_combinators$Combine$andMap, $author$project$Lia$Markdown$Chart$Parser$parse, A2($andre_dietrich$parser_combinators$Combine$map, $author$project$Lia$Markdown$Types$Chart, $author$project$Lia$Markdown$Parser$md_annotations)),
+            A2($andre_dietrich$parser_combinators$Combine$andMap, $andre_dietrich$parser_combinators$Combine$withState(A2($elm$core$Basics$composeR, function($) {
+                return $.effect_model;
+            }, A2($elm$core$Basics$composeR, function($) {
+                return $.javascript;
+            }, $andre_dietrich$parser_combinators$Combine$succeed))), A2($andre_dietrich$parser_combinators$Combine$andMap, $author$project$Lia$Markdown$Table$Parser$parse, A2($andre_dietrich$parser_combinators$Combine$map, F2(function(attr, tab) {
+                return A2($elm$core$Basics$composeR, A2($author$project$Lia$Markdown$Table$Parser$classify, attr, tab), $author$project$Lia$Markdown$Types$Table(attr));
+            }), $author$project$Lia$Markdown$Parser$md_annotations))),
+            $author$project$Lia$Markdown$Parser$cyclic$svgbob(),
+            A2($andre_dietrich$parser_combinators$Combine$map, $author$project$Lia$Markdown$Types$Code, $author$project$Lia$Markdown$Code$Parser$parse($author$project$Lia$Markdown$Parser$md_annotations)),
+            A2($andre_dietrich$parser_combinators$Combine$andMap, $author$project$Lia$Markdown$Parser$subHeader, A2($andre_dietrich$parser_combinators$Combine$map, $author$project$Lia$Markdown$Types$Header, $author$project$Lia$Markdown$Parser$md_annotations)),
+            $author$project$Lia$Markdown$Parser$horizontal_line,
+            A2($andre_dietrich$parser_combinators$Combine$andMap, $author$project$Lia$Markdown$Survey$Parser$parse, A2($andre_dietrich$parser_combinators$Combine$map, $author$project$Lia$Markdown$Types$Survey, $author$project$Lia$Markdown$Parser$md_annotations)),
+            A2($andre_dietrich$parser_combinators$Combine$andMap, $author$project$Lia$Markdown$Parser$cyclic$solution(), A2($andre_dietrich$parser_combinators$Combine$andMap, $author$project$Lia$Markdown$Quiz$Parser$parse, A2($andre_dietrich$parser_combinators$Combine$map, $author$project$Lia$Markdown$Types$Quiz, $author$project$Lia$Markdown$Parser$md_annotations))),
+            A2($andre_dietrich$parser_combinators$Combine$andMap, $author$project$Lia$Markdown$Task$Parser$parse, A2($andre_dietrich$parser_combinators$Combine$map, $author$project$Lia$Markdown$Types$Task, $author$project$Lia$Markdown$Parser$md_annotations)),
+            $author$project$Lia$Markdown$Parser$cyclic$quote(),
+            A2($andre_dietrich$parser_combinators$Combine$andMap, $author$project$Lia$Markdown$Parser$cyclic$ordered_list(), A2($andre_dietrich$parser_combinators$Combine$map, $author$project$Lia$Markdown$Types$OrderedList, $author$project$Lia$Markdown$Parser$md_annotations)),
+            A2($andre_dietrich$parser_combinators$Combine$andMap, $author$project$Lia$Markdown$Parser$cyclic$unordered_list(), A2($andre_dietrich$parser_combinators$Combine$map, $author$project$Lia$Markdown$Types$BulletList, $author$project$Lia$Markdown$Parser$md_annotations)),
+            A2($andre_dietrich$parser_combinators$Combine$ignore, $andre_dietrich$parser_combinators$Combine$regex('[ \t]*\n'), A2($andre_dietrich$parser_combinators$Combine$andMap, $author$project$Lia$Markdown$HTML$Parser$parse($author$project$Lia$Markdown$Parser$cyclic$blocks()), A2($andre_dietrich$parser_combinators$Combine$map, $author$project$Lia$Markdown$Types$HTML, $author$project$Lia$Markdown$Parser$md_annotations))),
+            A2($andre_dietrich$parser_combinators$Combine$andMap, $author$project$Lia$Markdown$Gallery$Parser$parse, A2($andre_dietrich$parser_combinators$Combine$map, $author$project$Lia$Markdown$Types$Gallery, $author$project$Lia$Markdown$Parser$md_annotations)),
+            A2($andre_dietrich$parser_combinators$Combine$andMap, $author$project$Lia$Markdown$Parser$paragraph, A2($andre_dietrich$parser_combinators$Combine$map, $author$project$Lia$Markdown$Parser$checkForCitation, $author$project$Lia$Markdown$Parser$md_annotations))
+        ]));
+    }
+    function $author$project$Lia$Markdown$Parser$cyclic$unordered_list() {
+        return A2($andre_dietrich$parser_combinators$Combine$sepBy1, A2($andre_dietrich$parser_combinators$Combine$ignore, $author$project$Lia$Parser$Indentation$check, $andre_dietrich$parser_combinators$Combine$many($author$project$Lia$Markdown$Parser$newlineWithIndentation)), A2($andre_dietrich$parser_combinators$Combine$ignore, $author$project$Lia$Parser$Indentation$pop, A2($andre_dietrich$parser_combinators$Combine$keep, A2($andre_dietrich$parser_combinators$Combine$keep, A2($andre_dietrich$parser_combinators$Combine$sepBy, $andre_dietrich$parser_combinators$Combine$many($author$project$Lia$Markdown$Parser$newlineWithIndentation), $author$project$Lia$Markdown$Parser$cyclic$blocks()), $andre_dietrich$parser_combinators$Combine$regex('[ \t]*[*+-][ \t]+')), $author$project$Lia$Parser$Indentation$push('  '))));
+    }
+    function $author$project$Lia$Markdown$Parser$cyclic$solution() {
+        var rslt = F3(function(e1, blocks_, e2) {
+            return _Utils_Tuple2(blocks_, e2 - e1);
+        });
+        return $andre_dietrich$parser_combinators$Combine$maybe(A2($andre_dietrich$parser_combinators$Combine$andMap, $andre_dietrich$parser_combinators$Combine$withState(function(s) {
+            return $andre_dietrich$parser_combinators$Combine$succeed(s.effect_model.effects);
+        }), A2($andre_dietrich$parser_combinators$Combine$andMap, A2($andre_dietrich$parser_combinators$Combine$manyTill, A2($andre_dietrich$parser_combinators$Combine$ignore, $author$project$Lia$Parser$Helper$newlines, $author$project$Lia$Markdown$Parser$cyclic$blocks()), $andre_dietrich$parser_combinators$Combine$regex('[\t ]*\\*{3,}[\t ]*')), A2($andre_dietrich$parser_combinators$Combine$map, rslt, A2($andre_dietrich$parser_combinators$Combine$keep, $andre_dietrich$parser_combinators$Combine$withState(function(s) {
+            return $andre_dietrich$parser_combinators$Combine$succeed(s.effect_model.effects);
+        }), $andre_dietrich$parser_combinators$Combine$regex('[\t ]*\\*{3,}[\t ]*\\n+'))))));
+    }
+    function $author$project$Lia$Markdown$Parser$cyclic$run() {
+        return A2($andre_dietrich$parser_combinators$Combine$ignore, $author$project$Lia$Markdown$Parser$cyclic$footnotes(), $andre_dietrich$parser_combinators$Combine$many(A2($andre_dietrich$parser_combinators$Combine$ignore, $author$project$Lia$Parser$Helper$newlines, A2($andre_dietrich$parser_combinators$Combine$keep, A2($andre_dietrich$parser_combinators$Combine$or, $author$project$Lia$Markdown$Parser$cyclic$blocks(), $author$project$Lia$Markdown$Parser$problem), $author$project$Lia$Markdown$Parser$cyclic$footnotes()))));
+    }
+    function $author$project$Lia$Markdown$Parser$cyclic$quote() {
+        return A2($andre_dietrich$parser_combinators$Combine$ignore, $author$project$Lia$Parser$Indentation$pop, A2($andre_dietrich$parser_combinators$Combine$andMap, A2($andre_dietrich$parser_combinators$Combine$sepBy, $author$project$Lia$Markdown$Parser$newlineWithIndentation, $author$project$Lia$Markdown$Parser$cyclic$blocks()), A2($andre_dietrich$parser_combinators$Combine$ignore, $author$project$Lia$Parser$Indentation$skip, A2($andre_dietrich$parser_combinators$Combine$ignore, $author$project$Lia$Parser$Indentation$push('> ?'), A2($andre_dietrich$parser_combinators$Combine$ignore, $andre_dietrich$parser_combinators$Combine$regex('> ?'), A2($andre_dietrich$parser_combinators$Combine$map, $author$project$Lia$Markdown$Types$Quote, $author$project$Lia$Markdown$Parser$md_annotations))))));
+    }
+    function $author$project$Lia$Markdown$Parser$cyclic$ordered_list() {
+        return A2($andre_dietrich$parser_combinators$Combine$sepBy1, A2($andre_dietrich$parser_combinators$Combine$ignore, $author$project$Lia$Parser$Indentation$check, $andre_dietrich$parser_combinators$Combine$many($author$project$Lia$Markdown$Parser$newlineWithIndentation)), A2($andre_dietrich$parser_combinators$Combine$ignore, $author$project$Lia$Parser$Indentation$pop, A2($andre_dietrich$parser_combinators$Combine$keep, A2($andre_dietrich$parser_combinators$Combine$andMap, A2($andre_dietrich$parser_combinators$Combine$sepBy, $andre_dietrich$parser_combinators$Combine$many($author$project$Lia$Markdown$Parser$newlineWithIndentation), $author$project$Lia$Markdown$Parser$cyclic$blocks()), A2($andre_dietrich$parser_combinators$Combine$ignore, $andre_dietrich$parser_combinators$Combine$regex('\\.[ \t]*'), A2($andre_dietrich$parser_combinators$Combine$map, $elm$core$Tuple$pair, $andre_dietrich$parser_combinators$Combine$regex('[ \t]*-?\\d+')))), $author$project$Lia$Parser$Indentation$push('   '))));
+    }
+    function $author$project$Lia$Markdown$Parser$cyclic$footnotes() {
+        return $andre_dietrich$parser_combinators$Combine$skip($andre_dietrich$parser_combinators$Combine$many(A2($andre_dietrich$parser_combinators$Combine$ignore, $author$project$Lia$Parser$Helper$newlines, $author$project$Lia$Markdown$Footnote$Parser$block($author$project$Lia$Markdown$Parser$cyclic$ident_blocks()))));
+    }
+    function $author$project$Lia$Markdown$Parser$cyclic$ident_blocks() {
+        return A2($andre_dietrich$parser_combinators$Combine$ignore, $author$project$Lia$Parser$Indentation$pop, $andre_dietrich$parser_combinators$Combine$many1(A2($andre_dietrich$parser_combinators$Combine$ignore, $andre_dietrich$parser_combinators$Combine$regex('\n?'), $author$project$Lia$Markdown$Parser$cyclic$blocks())));
+    }
+    function $author$project$Lia$Markdown$Parser$cyclic$blocks() {
+        return $andre_dietrich$parser_combinators$Combine$lazy(function(_v6) {
+            return A2($andre_dietrich$parser_combinators$Combine$ignore, $andre_dietrich$parser_combinators$Combine$maybe(A2($andre_dietrich$parser_combinators$Combine$keep, $author$project$Lia$Markdown$Effect$Parser$hidden_comment, $andre_dietrich$parser_combinators$Combine$whitespace)), A2($andre_dietrich$parser_combinators$Combine$keep, $author$project$Lia$Markdown$Parser$cyclic$elements(), A2($andre_dietrich$parser_combinators$Combine$keep, $author$project$Lia$Markdown$Macro$Parser$macro, $author$project$Lia$Parser$Indentation$check)));
+        });
+    }
+    function $author$project$Lia$Markdown$Parser$cyclic$svgbob() {
+        return A2($andre_dietrich$parser_combinators$Combine$andMap, A2($andre_dietrich$parser_combinators$Combine$andThen, $author$project$Lia$Markdown$Parser$svgbobSub, A2($andre_dietrich$parser_combinators$Combine$andThen, $author$project$Lia$Markdown$Parser$svgbody, $author$project$Lia$Parser$Helper$c_frame)), A2($andre_dietrich$parser_combinators$Combine$map, $author$project$Lia$Markdown$Types$ASCII, $author$project$Lia$Markdown$Parser$md_annotations));
+    }
+    try {
+        var $author$project$Lia$Markdown$Parser$elements = $author$project$Lia$Markdown$Parser$cyclic$elements();
+        $author$project$Lia$Markdown$Parser$cyclic$elements = function() {
+            return $author$project$Lia$Markdown$Parser$elements;
+        };
+        var $author$project$Lia$Markdown$Parser$unordered_list = $author$project$Lia$Markdown$Parser$cyclic$unordered_list();
+        $author$project$Lia$Markdown$Parser$cyclic$unordered_list = function() {
+            return $author$project$Lia$Markdown$Parser$unordered_list;
+        };
+        var $author$project$Lia$Markdown$Parser$solution = $author$project$Lia$Markdown$Parser$cyclic$solution();
+        $author$project$Lia$Markdown$Parser$cyclic$solution = function() {
+            return $author$project$Lia$Markdown$Parser$solution;
+        };
+        var $author$project$Lia$Markdown$Parser$run = $author$project$Lia$Markdown$Parser$cyclic$run();
+        $author$project$Lia$Markdown$Parser$cyclic$run = function() {
+            return $author$project$Lia$Markdown$Parser$run;
+        };
+        var $author$project$Lia$Markdown$Parser$quote = $author$project$Lia$Markdown$Parser$cyclic$quote();
+        $author$project$Lia$Markdown$Parser$cyclic$quote = function() {
+            return $author$project$Lia$Markdown$Parser$quote;
+        };
+        var $author$project$Lia$Markdown$Parser$ordered_list = $author$project$Lia$Markdown$Parser$cyclic$ordered_list();
+        $author$project$Lia$Markdown$Parser$cyclic$ordered_list = function() {
+            return $author$project$Lia$Markdown$Parser$ordered_list;
+        };
+        var $author$project$Lia$Markdown$Parser$footnotes = $author$project$Lia$Markdown$Parser$cyclic$footnotes();
+        $author$project$Lia$Markdown$Parser$cyclic$footnotes = function() {
+            return $author$project$Lia$Markdown$Parser$footnotes;
+        };
+        var $author$project$Lia$Markdown$Parser$ident_blocks = $author$project$Lia$Markdown$Parser$cyclic$ident_blocks();
+        $author$project$Lia$Markdown$Parser$cyclic$ident_blocks = function() {
+            return $author$project$Lia$Markdown$Parser$ident_blocks;
+        };
+        var $author$project$Lia$Markdown$Parser$blocks = $author$project$Lia$Markdown$Parser$cyclic$blocks();
+        $author$project$Lia$Markdown$Parser$cyclic$blocks = function() {
+            return $author$project$Lia$Markdown$Parser$blocks;
+        };
+        var $author$project$Lia$Markdown$Parser$svgbob = $author$project$Lia$Markdown$Parser$cyclic$svgbob();
+        $author$project$Lia$Markdown$Parser$cyclic$svgbob = function() {
+            return $author$project$Lia$Markdown$Parser$svgbob;
+        };
+    } catch ($4) {
+        throw 'Some top-level definitions from `Lia.Markdown.Parser` are causing infinite recursion:\n\n  ┌─────┐\n  │    elements\n  │     ↓\n  │    unordered_list\n  │     ↓\n  │    solution\n  │     ↓\n  │    run\n  │     ↓\n  │    quote\n  │     ↓\n  │    ordered_list\n  │     ↓\n  │    footnotes\n  │     ↓\n  │    ident_blocks\n  │     ↓\n  │    blocks\n  │     ↓\n  │    svgbob\n  │     ↓\n  │    svgbobSub\n  └─────┘\n\nThese errors are very tricky, so read https://elm-lang.org/0.19.1/bad-recursion to learn how to fix it!';
+    }
+    var $author$project$Lia$Parser$Parser$parse_section = F3(function(search_index, global, sec) {
+        var _v0 = A3($andre_dietrich$parser_combinators$Combine$runParser, A2($andre_dietrich$parser_combinators$Combine$keep, $author$project$Lia$Markdown$Parser$run, $author$project$Lia$Definition$Parser$parse), A2($author$project$Lia$Parser$Context$init, $elm$core$Maybe$Just(search_index), _Utils_update(global, {
+            section: sec.id
+        })), sec.code);
+        if (_v0.$ === 'Ok') {
+            var _v1 = _v0.a;
+            var state = _v1.a;
+            var es = _v1.c;
+            return A3($author$project$Lia$Parser$Parser$return, sec, state, es);
+        } else {
+            var _v2 = _v0.a;
+            var stream = _v2.b;
+            var ms = _v2.c;
+            return $elm$core$Result$Err(A2($author$project$Lia$Parser$Parser$formatError, ms, stream));
+        }
+    });
+    var $author$project$Lia$Update$set_active_section = F2(function(model, section) {
+        return _Utils_update(model, {
+            sections: A3($elm$core$Array$set, model.section_active, section, model.sections)
+        });
+    });
+    var $author$project$Lia$Update$generate = function(model) {
+        var _v0 = $author$project$Lia$Update$get_active_section(model);
+        if (_v0.$ === 'Just') {
+            var sec = _v0.a;
+            var section = function() {
+                if (sec.parsed) {
+                    var effects = sec.effect_model;
+                    return _Utils_update(sec, {
+                        effect_model: _Utils_update(effects, {
+                            visible: 0
+                        })
+                    });
+                } else {
+                    var _v2 = A3($author$project$Lia$Parser$Parser$parse_section, model.search_index, model.definition, sec);
+                    if (_v2.$ === 'Ok') {
+                        var new_sec = _v2.a;
+                        return _Utils_update(new_sec, {
+                            sync: sec.sync
+                        });
+                    } else {
+                        var msg = _v2.a;
+                        return _Utils_update(sec, {
+                            body: _List_Nil,
+                            error: $elm$core$Maybe$Just(msg)
+                        });
+                    }
+                }
+            }();
+            var _v1 = A2($author$project$Lia$Model$loadResource, model.resource, A2($elm$core$Maybe$withDefault, _List_Nil, A2($elm$core$Maybe$map, function($) {
+                return $.resources;
+            }, section.definition)));
+            var resource = _v1.a;
+            var logs = _v1.b;
+            return A2($author$project$Lia$Update$set_active_section, _Utils_update(model, {
+                resource: resource,
+                to_do: A4($author$project$Lia$Update$add_load, section.task_vector, model.section_active, 'task', A4($author$project$Lia$Update$add_load, section.survey_vector, model.section_active, 'survey', A4($author$project$Lia$Update$add_load, section.code_model.evaluate, model.section_active, 'code', A4($author$project$Lia$Update$add_load, section.quiz_vector, model.section_active, 'quiz', A2($elm$core$List$append, logs, model.to_do)))))
+            }), section);
+        } else return model;
+    };
+    var $author$project$Worker$parseSection = F2(function(active, lia) {
+        parseSection: while(true){
+            if (_Utils_eq($elm$core$Array$length(lia.sections), active)) return lia;
+            else {
+                var $temp$active = active + 1, $temp$lia = $author$project$Lia$Update$generate(_Utils_update(lia, {
+                    section_active: active
+                }));
+                active = $temp$active;
+                lia = $temp$lia;
+                continue parseSection;
+            }
+        }
+    });
+    var $author$project$Worker$respond = function(model) {
+        return _Utils_Tuple2(_Utils_update(model, {
+            state: $author$project$Model$Idle
+        }), function() {
+            var _v0 = model.cmd;
+            switch(_v0){
+                case 'json':
+                    return $author$project$Worker$output(A2($elm$core$Tuple$pair, true, A2($elm$json$Json$Encode$encode, 2, $author$project$Lia$Json$Encode$encode(model.lia))));
+                case 'fullJson':
+                    var lia = A2($author$project$Worker$parseSection, 0, model.lia);
+                    return $author$project$Worker$output(A2($elm$core$Tuple$pair, true, A2($elm$json$Json$Encode$encode, 2, $elm$json$Json$Encode$object(_List_fromArray([
+                        _Utils_Tuple2('lia', $author$project$Lia$Json$Encode$encode(lia)),
+                        _Utils_Tuple2('quiz', A2($elm$json$Json$Encode$array, $author$project$Lia$Markdown$Quiz$Json$fromVector, A2($elm$core$Array$map, function($) {
+                            return $.quiz_vector;
+                        }, lia.sections))),
+                        _Utils_Tuple2('survey', A2($elm$json$Json$Encode$array, $author$project$Lia$Markdown$Survey$Json$fromVector, A2($elm$core$Array$map, function($) {
+                            return $.survey_vector;
+                        }, lia.sections)))
+                    ])))));
+                case 'fullJson2':
+                    var lia = A2($author$project$Worker$parseSection, 0, model.lia);
+                    return $author$project$Worker$output(A2($elm$core$Tuple$pair, true, A2($elm$json$Json$Encode$encode, 2, $elm$json$Json$Encode$object(_List_fromArray([
+                        _Utils_Tuple2('lia', $author$project$Lia$Json$Encode$encodeFull(lia)),
+                        _Utils_Tuple2('quiz', A2($elm$json$Json$Encode$array, $author$project$Lia$Markdown$Quiz$Json$fromVector, A2($elm$core$Array$map, function($) {
+                            return $.quiz_vector;
+                        }, lia.sections))),
+                        _Utils_Tuple2('survey', A2($elm$json$Json$Encode$array, $author$project$Lia$Markdown$Survey$Json$fromVector, A2($elm$core$Array$map, function($) {
+                            return $.survey_vector;
+                        }, lia.sections))),
+                        _Utils_Tuple2('task', A2($elm$json$Json$Encode$array, $author$project$Lia$Markdown$Task$Json$fromVector, A2($elm$core$Array$map, function($) {
+                            return $.task_vector;
+                        }, lia.sections)))
+                    ])))));
+                default:
+                    return A2($author$project$Worker$error, 'unknown cmd', model.cmd);
+            }
+        }());
+    };
+    var $author$project$Worker$parsing = function(model) {
+        parsing: while(true){
+            var _v0 = model.state;
+            _v0$2: while(true){
+                if (_v0.$ === 'Parsing') {
+                    if (!_v0.a) {
+                        if (!_v0.b) return $author$project$Worker$respond(model);
+                        else break _v0$2;
+                    } else {
+                        var templates_to_load = _v0.b;
+                        var _v1 = model.code;
+                        if (_v1.$ === 'Nothing') {
+                            var $temp$model = _Utils_update(model, {
+                                state: A2($author$project$Model$Parsing, false, templates_to_load)
+                            });
+                            model = $temp$model;
+                            continue parsing;
+                        } else {
+                            var code = _v1.a;
+                            var _v2 = A2($author$project$Lia$Script$parse_section, model.lia, code);
+                            var lia = _v2.a;
+                            var remaining_code = _v2.b;
+                            var new_model = _Utils_update(model, {
+                                code: remaining_code,
+                                lia: lia
+                            });
+                            if (!A2($elm$core$Basics$modBy, 4, $author$project$Lia$Script$pages(lia))) return _Utils_Tuple2(new_model, $author$project$Worker$message($author$project$Worker$LiaParse));
+                            else {
+                                var $temp$model = new_model;
+                                model = $temp$model;
+                                continue parsing;
+                            }
+                        }
+                    }
+                } else break _v0$2;
+            }
+            return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
+        }
+    };
+    var $author$project$Worker$update = F2(function(msg, model) {
+        switch(msg.$){
+            case 'Handle':
+                if (msg.a.b && msg.a.b.b && !msg.a.b.b.b) {
+                    if (msg.a.a === 'defines') {
+                        var _v1 = msg.a;
+                        var _v2 = _v1.b;
+                        var readme = _v2.a;
+                        return _Utils_Tuple2(model, $author$project$Worker$respond($author$project$Worker$parsing(A2($author$project$Worker$load_readme, readme, _Utils_update(model, {
+                            cmd: 'json'
+                        })).a).a).b);
+                    } else {
+                        var _v3 = msg.a;
+                        var cmd = _v3.a;
+                        var _v4 = _v3.b;
+                        var readme = _v4.a;
+                        return A2($author$project$Worker$load_readme, readme, _Utils_update(model, {
+                            cmd: cmd
+                        }));
+                    }
+                } else {
+                    var cmd = msg.a;
+                    return _Utils_Tuple2(model, A2($author$project$Worker$error, 'Handle', $elm$core$String$concat(A2($elm$core$List$intersperse, ',', cmd))));
+                }
+            case 'LiaParse':
+                return $author$project$Worker$parsing(model);
+            case 'Load_ReadMe_Result':
+                if (msg.b.$ === 'Ok') {
+                    var readme = msg.b.a;
+                    return A2($author$project$Worker$load_readme, readme, model);
+                } else {
+                    var url = msg.a;
+                    var info = msg.b.a;
+                    return _Utils_Tuple2(_Utils_update(model, {
+                        state: A2($author$project$Error$Report$add, model.state, $author$project$Worker$parse_error(info))
+                    }), A2($author$project$Worker$error, url + ' Load_ReadMe_Result', $author$project$Worker$parse_error(info)));
+                }
+            default:
+                if (msg.a.$ === 'Ok') {
+                    var template = msg.a.a;
+                    return $author$project$Worker$parsing(_Utils_update(model, {
+                        lia: A2($author$project$Lia$Script$add_imports, model.lia, A3($elm$core$String$replace, '\u000D', '', template)),
+                        state: function() {
+                            var _v5 = model.state;
+                            if (_v5.$ === 'Parsing') {
+                                var b = _v5.a;
+                                var templates = _v5.b;
+                                return A2($author$project$Model$Parsing, b, templates - 1);
+                            } else return model.state;
+                        }()
+                    }));
+                } else {
+                    var info = msg.a.a;
+                    return _Utils_Tuple2(_Utils_update(model, {
+                        state: A2($author$project$Error$Report$add, model.state, $author$project$Worker$parse_error(info))
+                    }), A2($author$project$Worker$error, 'Load_ReadMe_Result', $author$project$Worker$parse_error(info)));
+                }
+        }
+    });
+    var $elm$core$Platform$worker = _Platform_worker;
+    var $author$project$Worker$main = $elm$core$Platform$worker({
+        init: $author$project$Worker$init,
+        subscriptions: function(_v0) {
+            return $author$project$Worker$input($author$project$Worker$Handle);
+        },
+        update: $author$project$Worker$update
+    });
+    _Platform_export({
+        'Worker': {
+            'init': $author$project$Worker$main(A2($elm$json$Json$Decode$andThen, function(cmd) {
+                return $elm$json$Json$Decode$succeed({
+                    cmd: cmd
+                });
+            }, A2($elm$json$Json$Decode$field, 'cmd', $elm$json$Json$Decode$string)))(0)
+        }
+    });
+})($eb828a374fec450c$exports);
+
+
+
+
+function $320134ce32dd9048$export$6b76988456c0292f() {
+    return new Promise((resolve, reject)=>{
+        $9Afec$temp.mkdir('lia', function(err, tmpPath) {
+            console.warn(err, tmpPath);
+            if (err) reject(err);
+            else resolve(tmpPath);
+        });
+    });
+}
+function $320134ce32dd9048$export$552bfb764b5cd2b4(filename, content) {
+    return new Promise((resolve, reject)=>{
+        $9Afec$fsextra.writeFile(filename, content, function(err) {
+            if (err) reject(err);
+            else resolve('ok');
+        });
+    });
+}
+function $320134ce32dd9048$export$3032dc2899b8ea9b(src, dest) {
+    const pattern = src.match(/\/\.[^/]+/g);
+    console.warn(src);
+    if (pattern === null) return true;
+    else if (pattern.length == 0) return true;
+    return false;
+}
+
+
+
+
+async function $1e521125b288b3fc$export$6fe8eed8ccd585ce(argv, json) {
+    // input
+    let readme = argv.i || argv.input;
+    let output = argv.o || argv.output || 'output';
+    let path_ = argv.p || argv.path;
+    if (!path_) {
+        path_ = $9Afec$path.dirname(readme);
+        readme = $9Afec$path.basename(readme);
+    }
+    // make temp folder
+    let tmp = await $320134ce32dd9048$export$6b76988456c0292f();
+    let tmpPath = $9Afec$path.join(tmp, 'pro');
+    // copy assets to temp
+    await $9Afec$fsextra.copy($9Afec$path.join(__dirname, './assets/web'), tmpPath);
+    let index = $9Afec$fsextra.readFileSync($9Afec$path.join(tmpPath, 'index.html'), 'utf8');
+    // change responsive key
+    let key = argv.k || argv.key;
+    if (key) index = index.replace('</head>', `<script src="https://code.responsivevoice.org/responsivevoice.js?key=${key}"></script></head>`);
+    // add default course
+    index = index.replace('<head>', '<head><script>window.liaDefaultCourse="' + $9Afec$path.basename(readme) + '"</script>');
+    try {
+        index = index.replace('<title>Lia</title>', `<title>${json.lia.str_title}</title><meta property="og:title" content="${json.lia.str_title}"> <meta name="twitter:title" content="${json.lia.str_title}">`);
+        console.log('updating title ...');
+    } catch (e) {
+        console.warn('could not add title');
+    }
+    // add description
+    try {
+        let description = json.lia.definition.macro.comment;
+        index = index.replace('<meta name="description" content="LiaScript is a service for running free and interactive online courses, build with its own Markup-language. So check out the following course ;-)">', `<meta name="description" content="${description}"><meta property="og:description" content="${description}"><meta name="twitter:description" content="${description}">`);
+        console.log('updating description ...');
+    } catch (e1) {
+        console.warn('could not add description');
+    }
+    try {
+        let logo = json.lia.definition.logo;
+        index = index.replace('<head>', `<head><meta property="og:image" content="${logo}"><meta name="twitter:image" content="${logo}">`);
+        console.log('updating logo ...');
+    } catch (e2) {
+        console.warn('could not add image');
+    }
+    try {
+        await $320134ce32dd9048$export$552bfb764b5cd2b4($9Afec$path.join(tmpPath, 'index.html'), index);
+    } catch (e3) {
+        console.warn(e3);
+        return;
+    }
+    // copy base path or readme-directory into temp
+    await $9Afec$fsextra.copy(path_, tmpPath);
+    await $9Afec$fsextra.move(tmpPath, output);
+}
+
+
+
+
+
+
+async function $699da5868da0be18$export$898f980c79cf0ae3(argv, json) {
+    // input
+    let readme = argv.i || argv.input;
+    let output = argv.o || argv.output || 'output';
+    let path_ = argv.p || argv.path;
+    if (!path_) {
+        path_ = $9Afec$path.dirname(readme);
+        readme = $9Afec$path.basename(readme);
+    }
+    console.warn('WWWWWWWWWWWWWWWWWWWWWWWWW', readme, path_);
+    // make temp folder
+    let tmp = await $320134ce32dd9048$export$6b76988456c0292f();
+    let tmpPath = $9Afec$path.join(tmp, 'pro');
+    // copy assets to temp
+    await $9Afec$fsextra.copy($9Afec$path.join(__dirname, './assets/scorm1.2'), tmpPath);
+    await $320134ce32dd9048$export$552bfb764b5cd2b4($9Afec$path.join(tmpPath, 'config.js'), 'window.config_ = ' + JSON.stringify(json) + ';');
+    let index = $9Afec$fsextra.readFileSync($9Afec$path.join(tmpPath, 'index.html'), 'utf8');
+    // change responsive key
+    /*let key = argv.k || argv.key
+  if (key) {
+    index = index.replace(
+      'https://code.responsivevoice.org/responsivevoice.js',
+      'https://code.responsivevoice.org/responsivevoice.js?key=' + key
+    )
+  }*/ index = index.replace('</head>', '<script src="config.js"></script></head>');
+    try {
+        await $320134ce32dd9048$export$552bfb764b5cd2b4($9Afec$path.join(tmpPath, 'index.html'), index);
+    } catch (e) {
+        console.warn(e);
+        return;
+    }
+    // copy base path or readme-directory into temp
+    await $9Afec$fsextra.copy(path_, tmpPath, {
+        filter: $320134ce32dd9048$export$3032dc2899b8ea9b
+    });
+    let config = {
+        version: '1.2',
+        organization: argv.organization || 'LiaScript',
+        title: json.lia.str_title,
+        language: json.lia.definition.language,
+        masteryScore: argv.masteryScore || 0,
+        startingPage: 'index.html/?' + readme,
+        startingParameters: '?./' + readme,
+        source: $9Afec$path.join(tmp, 'pro'),
+        package: {
+            version: json.lia.definition.version,
+            zip: true,
+            name: $9Afec$path.basename(output),
+            author: json.lia.definition.author,
+            outputFolder: $9Afec$path.dirname(output),
+            description: json.lia.comment,
+            //keywords: ['scorm', 'test', 'course'],
+            typicalDuration: argv.typicalDuration || 'PT0H5M0S',
+            //rights: `©${new Date().getFullYear()} My Amazing Company. All right reserved.`,
+            vcard: {
+                author: json.lia.definition.author,
+                org: argv.organization || 'LiaScript',
+                //tel: '(000) 000-0000',
+                //address: 'my address',
+                mail: json.lia.definition.email
+            }
+        }
+    };
+    $9Afec$liascriptsimplescormpackager(config, function(msg) {
+        console.log(msg);
+        process.exit(0);
+    });
+}
+
+
+
+$parcel$global.XMLHttpRequest = $9Afec$xhr2;
+
+
+const $ccdb061a5468de1f$var$argv = $9Afec$minimist(process.argv.slice(2));
+//console.warn(argv);
+function $ccdb061a5468de1f$var$help() {
+    console.log('LiaScript-Exporter');
+    console.log('');
+    console.log('-h', '--help', '           show this help');
+    console.log('-i', '--input', '          file to be used as input');
+    console.log('-p', '--path', '           path to be packed, if not set, the path of the input file is used');
+    console.log('-o', '--output', '         output file name (default is output), the ending is define by the format');
+    console.log('-f', '--format', '         scorm1.2, json, fullJson, fullJson2, web (default is json)');
+    console.log('-v', '--version', '        output the current version');
+    console.log('\n-k', '--key', '            responsive voice key ');
+    console.log('\nSCORM 1.2 settings:');
+    console.log('');
+    console.log('--organization', '         set the organization title');
+    console.log('--masteryScore', '         set the scorm masteryScore (a value between 0 -- 100), default is 0');
+    console.log('--typicalDuration', '      set the scorm duration, default is PT0H5M0S');
+}
+if ($ccdb061a5468de1f$var$argv.v || $ccdb061a5468de1f$var$argv.version) console.log('version: 1.0.51--0.9.51');
+else if ($ccdb061a5468de1f$var$argv.h || $ccdb061a5468de1f$var$argv.help) $ccdb061a5468de1f$var$help();
+else if ($ccdb061a5468de1f$var$argv.i || $ccdb061a5468de1f$var$argv.input) {
+    var $ccdb061a5468de1f$var$app = $eb828a374fec450c$exports.Elm.Worker.init({
+        flags: {
+            cmd: ''
+        }
+    });
+    $ccdb061a5468de1f$var$app.ports.output.subscribe(function(event) {
+        let [ok, string] = event;
+        let output = $ccdb061a5468de1f$var$argv.o || $ccdb061a5468de1f$var$argv.output || 'output';
+        let format = $ccdb061a5468de1f$var$argv.f || $ccdb061a5468de1f$var$argv.format || 'json';
+        format = format.toLowerCase();
+        if (!ok) {
+            console.warn(string);
+            return;
+        }
+        switch(format){
+            case 'json':
+                $9Afec$fsextra.writeFile(output + '.json', string, function(err) {
+                    if (err) console.error(err);
+                });
+                break;
+            case 'fulljson':
+                $9Afec$fsextra.writeFile(output + '.json', string, function(err) {
+                    if (err) console.error(err);
+                });
+                break;
+            case 'fulljson2':
+                $9Afec$fsextra.writeFile(output + '.json', string, function(err) {
+                    if (err) console.error(err);
+                });
+                break;
+            case 'scorm1.2':
+                $699da5868da0be18$export$898f980c79cf0ae3($ccdb061a5468de1f$var$argv, JSON.parse(string));
+                break;
+            case 'web':
+                $1e521125b288b3fc$export$6fe8eed8ccd585ce($ccdb061a5468de1f$var$argv, JSON.parse(string));
+                break;
+            default:
+                console.warn('unknown output format', format);
+        }
+    });
+    try {
+        const data = $9Afec$fsextra.readFileSync($ccdb061a5468de1f$var$argv.i || $ccdb061a5468de1f$var$argv.input, 'utf8');
+        let format = $ccdb061a5468de1f$var$argv.f || $ccdb061a5468de1f$var$argv.format || 'json';
+        if (format == 'scorm1.2' || format == 'web') format = 'fullJson2';
+        $ccdb061a5468de1f$var$app.ports.input.send([
+            format,
+            data
+        ]);
+    } catch (err) {
+        console.error(err);
+    }
+} else {
+    console.warn('No input defined');
+    $ccdb061a5468de1f$var$help();
+}
+
+
