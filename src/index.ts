@@ -3,6 +3,7 @@ import { Elm } from '../LiaScript/src/elm/Worker.elm'
 
 import { web } from './export/web'
 import { scorm1_2 } from './export/scorm12'
+import { scorm2004 } from './export/scorm2004'
 
 global.XMLHttpRequest = require('xhr2')
 
@@ -36,8 +37,7 @@ function run(argument) {
 
     switch (argument.format) {
       case 'json':
-      case 'fulljson':
-      case 'fulljson2': {
+      case 'fulljson': {
         fs.writeFile(argument.output + '.json', string, function (err) {
           if (err) console.error(err)
         })
@@ -47,6 +47,11 @@ function run(argument) {
         scorm1_2(argument, JSON.parse(string))
         break
       }
+      case 'scorm2004': {
+        scorm2004(argument, JSON.parse(string))
+        break
+      }
+
       case 'web': {
         web(argument, JSON.parse(string))
         break
@@ -61,8 +66,10 @@ function run(argument) {
     // the format is changed only locally, the SCORM and web exporters simply
     // require some meta data from the parsed json output
     const format =
-      argument.format == 'scorm1.2' || argument.format == 'web'
-        ? 'fullJson2'
+      argument.format == 'scorm1.2' ||
+      argument.format == 'scorm2004' ||
+      argument.format == 'web'
+        ? 'fulljson'
         : argument.format
 
     const data = fs.readFileSync(argument.input, 'utf8')
@@ -91,7 +98,7 @@ function help() {
   console.log(
     '-f',
     '--format',
-    '         scorm1.2, json, fullJson, fullJson2, web (default is json)'
+    '         scorm1.2, scorm2004, json, fullJson, web (default is json)'
   )
   console.log('-v', '--version', '        output the current version')
 

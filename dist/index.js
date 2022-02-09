@@ -12436,6 +12436,12 @@ function $320134ce32dd9048$export$3032dc2899b8ea9b(src, dest) {
     else if (pattern.length == 0) return true;
     return false;
 }
+function $320134ce32dd9048$export$31a09876afc8115c(key, into) {
+    return $320134ce32dd9048$export$a976684a0efeb93f(`<script src="https://code.responsivevoice.org/responsivevoice.js?key=${key}"></script>`, into);
+}
+function $320134ce32dd9048$export$a976684a0efeb93f(element, into) {
+    return into.replace('</head>', element + '</head>');
+}
 
 
 
@@ -12497,16 +12503,7 @@ async function $1e521125b288b3fc$export$6fe8eed8ccd585ce(argv, json) {
 
 
 
-async function $699da5868da0be18$export$898f980c79cf0ae3(argv, json) {
-    // input
-    let readme = argv.i || argv.input;
-    let output = argv.o || argv.output || 'output';
-    let path_ = argv.p || argv.path;
-    if (!path_) {
-        path_ = $9Afec$path.dirname(readme);
-        readme = $9Afec$path.basename(readme);
-    }
-    console.warn('WWWWWWWWWWWWWWWWWWWWWWWWW', readme, path_);
+async function $699da5868da0be18$export$898f980c79cf0ae3(argument, json) {
     // make temp folder
     let tmp = await $320134ce32dd9048$export$6b76988456c0292f();
     let tmpPath = $9Afec$path.join(tmp, 'pro');
@@ -12515,45 +12512,41 @@ async function $699da5868da0be18$export$898f980c79cf0ae3(argv, json) {
     await $320134ce32dd9048$export$552bfb764b5cd2b4($9Afec$path.join(tmpPath, 'config.js'), 'window.config_ = ' + JSON.stringify(json) + ';');
     let index = $9Afec$fsextra.readFileSync($9Afec$path.join(tmpPath, 'index.html'), 'utf8');
     // change responsive key
-    /*let key = argv.k || argv.key
-  if (key) {
-    index = index.replace(
-      'https://code.responsivevoice.org/responsivevoice.js',
-      'https://code.responsivevoice.org/responsivevoice.js?key=' + key
-    )
-  }*/ index = index.replace('</head>', '<script src="config.js"></script></head>');
+    if (argument.key) index = $320134ce32dd9048$export$31a09876afc8115c(argument.key, index);
+    index = $320134ce32dd9048$export$a976684a0efeb93f('<script src="config.js"></script>', index);
     try {
         await $320134ce32dd9048$export$552bfb764b5cd2b4($9Afec$path.join(tmpPath, 'index.html'), index);
     } catch (e) {
         console.warn(e);
         return;
     }
+    console.warn('SSSSSSSSSSSSSSSSSSSSSSSss', argument);
     // copy base path or readme-directory into temp
-    await $9Afec$fsextra.copy(path_, tmpPath, {
+    await $9Afec$fsextra.copy(argument.path, tmpPath, {
         filter: $320134ce32dd9048$export$3032dc2899b8ea9b
     });
     let config = {
         version: '1.2',
-        organization: argv.organization || 'LiaScript',
+        organization: argument.organization || 'LiaScript',
         title: json.lia.str_title,
         language: json.lia.definition.language,
-        masteryScore: argv.masteryScore || 0,
-        startingPage: 'index.html/?' + readme,
-        startingParameters: '?./' + readme,
+        masteryScore: argument.masteryScore || 0,
+        startingPage: 'index.html',
+        startingParameters: argument.readme,
         source: $9Afec$path.join(tmp, 'pro'),
         package: {
             version: json.lia.definition.version,
             zip: true,
-            name: $9Afec$path.basename(output),
+            name: $9Afec$path.basename(argument.output),
             author: json.lia.definition.author,
-            outputFolder: $9Afec$path.dirname(output),
+            outputFolder: $9Afec$path.dirname(argument.output),
             description: json.lia.comment,
             //keywords: ['scorm', 'test', 'course'],
-            typicalDuration: argv.typicalDuration || 'PT0H5M0S',
+            typicalDuration: argument.typicalDuration || 'PT0H5M0S',
             //rights: `©${new Date().getFullYear()} My Amazing Company. All right reserved.`,
             vcard: {
                 author: json.lia.definition.author,
-                org: argv.organization || 'LiaScript',
+                org: argument.organization || 'LiaScript',
                 //tel: '(000) 000-0000',
                 //address: 'my address',
                 mail: json.lia.definition.email
@@ -12571,8 +12564,50 @@ async function $699da5868da0be18$export$898f980c79cf0ae3(argv, json) {
 $parcel$global.XMLHttpRequest = $9Afec$xhr2;
 
 
+
 const $ccdb061a5468de1f$var$argv = $9Afec$minimist(process.argv.slice(2));
 //console.warn(argv);
+function $ccdb061a5468de1f$var$run(argument) {
+    var app = $eb828a374fec450c$exports.Elm.Worker.init({
+        flags: {
+            cmd: ''
+        }
+    });
+    app.ports.output.subscribe(function(event) {
+        let [ok, string] = event;
+        if (!ok) {
+            console.warn(string);
+            return;
+        }
+        switch(argument.format){
+            case 'json':
+            case 'fulljson':
+            case 'fulljson2':
+                $9Afec$fsextra.writeFile(argument.output + '.json', string, function(err) {
+                    if (err) console.error(err);
+                });
+                break;
+            case 'scorm1.2':
+                $699da5868da0be18$export$898f980c79cf0ae3(argument, JSON.parse(string));
+                break;
+            case 'web':
+                $1e521125b288b3fc$export$6fe8eed8ccd585ce(argument, JSON.parse(string));
+                break;
+            default:
+                console.warn('unknown output format', argument.format);
+        }
+    });
+    try {
+        const format = argument.format == 'scorm1.2' || argument.format == 'web' ? 'fullJson2' : argument.format;
+        const data = $9Afec$fsextra.readFileSync(argument.input, 'utf8');
+        app.ports.input.send([
+            format,
+            data
+        ]);
+    } catch (err) {
+        console.error(err);
+    }
+}
 function $ccdb061a5468de1f$var$help() {
     console.log('LiaScript-Exporter');
     console.log('');
@@ -12592,57 +12627,26 @@ function $ccdb061a5468de1f$var$help() {
 if ($ccdb061a5468de1f$var$argv.v || $ccdb061a5468de1f$var$argv.version) console.log('version: 1.0.51--0.9.51');
 else if ($ccdb061a5468de1f$var$argv.h || $ccdb061a5468de1f$var$argv.help) $ccdb061a5468de1f$var$help();
 else if ($ccdb061a5468de1f$var$argv.i || $ccdb061a5468de1f$var$argv.input) {
-    var $ccdb061a5468de1f$var$app = $eb828a374fec450c$exports.Elm.Worker.init({
-        flags: {
-            cmd: ''
-        }
-    });
-    $ccdb061a5468de1f$var$app.ports.output.subscribe(function(event) {
-        let [ok, string] = event;
-        let output = $ccdb061a5468de1f$var$argv.o || $ccdb061a5468de1f$var$argv.output || 'output';
-        let format = $ccdb061a5468de1f$var$argv.f || $ccdb061a5468de1f$var$argv.format || 'json';
-        format = format.toLowerCase();
-        if (!ok) {
-            console.warn(string);
-            return;
-        }
-        switch(format){
-            case 'json':
-                $9Afec$fsextra.writeFile(output + '.json', string, function(err) {
-                    if (err) console.error(err);
-                });
-                break;
-            case 'fulljson':
-                $9Afec$fsextra.writeFile(output + '.json', string, function(err) {
-                    if (err) console.error(err);
-                });
-                break;
-            case 'fulljson2':
-                $9Afec$fsextra.writeFile(output + '.json', string, function(err) {
-                    if (err) console.error(err);
-                });
-                break;
-            case 'scorm1.2':
-                $699da5868da0be18$export$898f980c79cf0ae3($ccdb061a5468de1f$var$argv, JSON.parse(string));
-                break;
-            case 'web':
-                $1e521125b288b3fc$export$6fe8eed8ccd585ce($ccdb061a5468de1f$var$argv, JSON.parse(string));
-                break;
-            default:
-                console.warn('unknown output format', format);
-        }
-    });
-    try {
-        const data = $9Afec$fsextra.readFileSync($ccdb061a5468de1f$var$argv.i || $ccdb061a5468de1f$var$argv.input, 'utf8');
-        let format = $ccdb061a5468de1f$var$argv.f || $ccdb061a5468de1f$var$argv.format || 'json';
-        if (format == 'scorm1.2' || format == 'web') format = 'fullJson2';
-        $ccdb061a5468de1f$var$app.ports.input.send([
-            format,
-            data
-        ]);
-    } catch (err) {
-        console.error(err);
+    const argument = {
+        input: $ccdb061a5468de1f$var$argv.i || $ccdb061a5468de1f$var$argv.input,
+        readme: $ccdb061a5468de1f$var$argv.i || $ccdb061a5468de1f$var$argv.input,
+        output: $ccdb061a5468de1f$var$argv.o || $ccdb061a5468de1f$var$argv.output || 'output',
+        format: $ccdb061a5468de1f$var$argv.f || $ccdb061a5468de1f$var$argv.format || 'json',
+        path: $ccdb061a5468de1f$var$argv.p || $ccdb061a5468de1f$var$argv.path,
+        key: $ccdb061a5468de1f$var$argv.k || $ccdb061a5468de1f$var$argv.key,
+        // special cases for SCORM
+        organization: $ccdb061a5468de1f$var$argv.organization,
+        masteryScore: $ccdb061a5468de1f$var$argv.masteryScore,
+        typicalDuration: $ccdb061a5468de1f$var$argv.typicalDuration
+    };
+    argument.format = argument.format.toLowerCase();
+    console.warn(argument);
+    if (!argument.path) {
+        argument.path = $9Afec$path.dirname(argument.input);
+        argument.readme = $9Afec$path.basename(argument.input);
     }
+    console.warn(argument);
+    $ccdb061a5468de1f$var$run(argument);
 } else {
     console.warn('No input defined');
     $ccdb061a5468de1f$var$help();

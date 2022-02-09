@@ -10,7 +10,7 @@ const scormPackager = require('@liascript/simple-scorm-packager')
 const path = require('path')
 const fs = require('fs-extra')
 
-export async function scorm1_2(
+export async function scorm2004(
   argument: {
     input: string
     readme: string
@@ -32,7 +32,7 @@ export async function scorm1_2(
   let tmpPath = path.join(tmp, 'pro')
 
   // copy assets to temp
-  await fs.copy(path.join(__dirname, './assets/scorm1.2'), tmpPath)
+  await fs.copy(path.join(__dirname, './assets/scorm2004'), tmpPath)
 
   let index = fs.readFileSync(path.join(tmpPath, 'index.html'), 'utf8')
 
@@ -58,7 +58,7 @@ export async function scorm1_2(
   await fs.copy(argument.path, tmpPath, { filter: filterHidden })
 
   let config = {
-    version: '1.2',
+    version: '2004 4th Edition',
     organization: argument.organization || 'LiaScript',
     title: json.lia.str_title,
     language: json.lia.definition.language,
@@ -68,8 +68,9 @@ export async function scorm1_2(
     source: path.join(tmp, 'pro'),
     package: {
       version: json.lia.definition.version,
-      zip: true,
       appendTimeToOutput: false,
+      date: '',
+      zip: true,
       name: path.basename(argument.output),
       author: json.lia.definition.author,
       outputFolder: path.dirname(argument.output),
