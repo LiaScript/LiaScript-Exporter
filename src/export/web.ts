@@ -1,19 +1,30 @@
-import { writeFile, tmpDir } from './helper'
+import {
+  writeFile,
+  tmpDir,
+  injectResponsivevoice,
+  inject,
+  filterHidden,
+} from './helper'
 
 const path = require('path')
 const fs = require('fs-extra')
 
-export async function web(argv, json) {
-  // input
-  let readme = argv.i || argv.input
-  let output = argv.o || argv.output || 'output'
-  let path_ = argv.p || argv.path
+export async function web(
+  argument: {
+    input: string
+    readme: string
+    output: string
+    format: string
+    path: string
+    key?: string
 
-  if (!path_) {
-    path_ = path.dirname(readme)
-    readme = path.basename(readme)
-  }
-
+    // special cases for SCORM
+    organization?: string
+    masteryScore?: string
+    typicalDuration?: string
+  },
+  json: any
+) {
   // make temp folder
   let tmp = await tmpDir()
 
@@ -25,20 +36,19 @@ export async function web(argv, json) {
   let index = fs.readFileSync(path.join(tmpPath, 'index.html'), 'utf8')
 
   // change responsive key
-  let key = argv.k || argv.key
-  if (key) {
-    index = index.replace(
-      '</head>',
-      `<script src="https://code.responsivevoice.org/responsivevoice.js?key=${key}"></script></head>`
-    )
+  if (argument.key) {
+    index = injectResponsivevoice(argument.key, index)
   }
 
   // add default course
-  index = index.replace(
-    '<head>',
-    '<head><script>window.liaDefaultCourse="' +
-      path.basename(readme) +
-      '"</script>'
+  index = inject(
+    `<script>
+  if (!window.LIA) {
+    window.LIA = {}
+  }
+  window.LIA.defaultCourse="${path.basename(argument.readme)}"
+  </script>`,
+    index
   )
 
   try {
@@ -67,9 +77,9 @@ export async function web(argv, json) {
 
   try {
     let logo = json.lia.definition.logo
-    index = index.replace(
-      '<head>',
-      `<head><meta property="og:image" content="${logo}"><meta name="twitter:image" content="${logo}">`
+    index = inject(
+      `<meta property="og:image" content="${logo}"><meta name="twitter:image" content="${logo}">`,
+      index
     )
 
     console.log('updating logo ...')
@@ -85,6 +95,6 @@ export async function web(argv, json) {
   }
 
   // copy base path or readme-directory into temp
-  await fs.copy(path_, tmpPath)
-  await fs.move(tmpPath, output)
+  await fs.copy(argument.path, tmpPath)
+  await fs.move(tmpPath, argument.output, { filter: filterHidden })
 }

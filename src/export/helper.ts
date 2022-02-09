@@ -30,3 +30,14 @@ export function filterHidden(src: string, dest: string) {
 
   return false
 }
+
+export function injectResponsivevoice(key: string, into: string): string {
+  return inject(
+    `<script src="https://code.responsivevoice.org/responsivevoice.js?key=${key}"></script>`,
+    into
+  )
+}
+
+export function inject(element: string, into: string): string {
+  return into.replace('</head>', element + '</head>')
+}

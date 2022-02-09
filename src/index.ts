@@ -6,10 +6,72 @@ import { scorm1_2 } from './export/scorm12'
 
 global.XMLHttpRequest = require('xhr2')
 
+const path = require('path')
 const fs = require('fs-extra')
 const argv = require('minimist')(process.argv.slice(2))
 
-//console.warn(argv);
+// -------------------------------Main Execution-------------------------------
+if (argv.v || argv.version) {
+  console.log('version: 1.0.51--0.9.51')
+} else if (argv.h || argv.help) {
+  help()
+} else if (argv.i || argv.input) {
+  run(parseArguments())
+} else {
+  console.warn('No input defined')
+  help()
+}
+// ----------------------------------------------------------------------------
+
+function run(argument) {
+  var app = Elm.Worker.init({ flags: { cmd: '' } })
+  app.ports.output.subscribe(function (event) {
+    let [ok, string] = event
+
+    // the worker did not succeed
+    if (!ok) {
+      console.warn(string)
+      return
+    }
+
+    switch (argument.format) {
+      case 'json':
+      case 'fulljson':
+      case 'fulljson2': {
+        fs.writeFile(argument.output + '.json', string, function (err) {
+          if (err) console.error(err)
+        })
+        break
+      }
+      case 'scorm1.2': {
+        scorm1_2(argument, JSON.parse(string))
+        break
+      }
+      case 'web': {
+        web(argument, JSON.parse(string))
+        break
+      }
+      default: {
+        console.warn('unknown output format', argument.format)
+      }
+    }
+  })
+
+  try {
+    // the format is changed only locally, the SCORM and web exporters simply
+    // require some meta data from the parsed json output
+    const format =
+      argument.format == 'scorm1.2' || argument.format == 'web'
+        ? 'fullJson2'
+        : argument.format
+
+    const data = fs.readFileSync(argument.input, 'utf8')
+
+    app.ports.input.send([format, data])
+  } catch (err) {
+    console.error(err)
+  }
+}
 
 function help() {
   console.log('LiaScript-Exporter')
@@ -48,73 +110,27 @@ function help() {
   )
 }
 
-if (argv.v || argv.version) {
-  console.log('version: 1.0.51--0.9.51')
-} else if (argv.h || argv.help) {
-  help()
-} else if (argv.i || argv.input) {
-  var app = Elm.Worker.init({ flags: { cmd: '' } })
+function parseArguments() {
+  const argument = {
+    input: argv.i || argv.input,
+    readme: argv.i || argv.input,
+    output: argv.o || argv.output || 'output',
+    format: argv.f || argv.format || 'json',
+    path: argv.p || argv.path,
+    key: argv.k || argv.key,
 
-  app.ports.output.subscribe(function (event) {
-    let [ok, string] = event
-    let output = argv.o || argv.output || 'output'
-    let format = argv.f || argv.format || 'json'
-
-    format = format.toLowerCase()
-
-    if (!ok) {
-      console.warn(string)
-      return
-    }
-
-    switch (format) {
-      case 'json': {
-        fs.writeFile(output + '.json', string, function (err) {
-          if (err) console.error(err)
-        })
-        break
-      }
-      case 'fulljson': {
-        fs.writeFile(output + '.json', string, function (err) {
-          if (err) console.error(err)
-        })
-        break
-      }
-      case 'fulljson2': {
-        fs.writeFile(output + '.json', string, function (err) {
-          if (err) console.error(err)
-        })
-        break
-      }
-      case 'scorm1.2': {
-        scorm1_2(argv, JSON.parse(string))
-        break
-      }
-      case 'web': {
-        web(argv, JSON.parse(string))
-        break
-      }
-
-      default: {
-        console.warn('unknown output format', format)
-      }
-    }
-  })
-
-  try {
-    const data = fs.readFileSync(argv.i || argv.input, 'utf8')
-
-    let format = argv.f || argv.format || 'json'
-
-    if (format == 'scorm1.2' || format == 'web') {
-      format = 'fullJson2'
-    }
-
-    app.ports.input.send([format, data])
-  } catch (err) {
-    console.error(err)
+    // special cases for SCORM
+    organization: argv.organization,
+    masteryScore: argv.masteryScore,
+    typicalDuration: argv.typicalDuration,
   }
-} else {
-  console.warn('No input defined')
-  help()
+
+  argument.format = argument.format.toLowerCase()
+
+  if (!argument.path) {
+    argument.path = path.dirname(argument.input)
+    argument.readme = path.basename(argument.input)
+  }
+
+  return argument
 }

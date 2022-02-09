@@ -1,22 +1,31 @@
-import { writeFile, tmpDir, filterHidden } from './helper'
+import {
+  writeFile,
+  tmpDir,
+  filterHidden,
+  inject,
+  injectResponsivevoice,
+} from './helper'
 
 const scormPackager = require('@liascript/simple-scorm-packager')
 const path = require('path')
 const fs = require('fs-extra')
 
-export async function scorm1_2(argv, json) {
-  // input
-  let readme = argv.i || argv.input
-  let output = argv.o || argv.output || 'output'
-  let path_ = argv.p || argv.path
+export async function scorm1_2(
+  argument: {
+    input: string
+    readme: string
+    output: string
+    format: string
+    path: string
+    key?: string
 
-  if (!path_) {
-    path_ = path.dirname(readme)
-    readme = path.basename(readme)
-  }
-
-  console.warn('WWWWWWWWWWWWWWWWWWWWWWWWW', readme, path_)
-
+    // special cases for SCORM
+    organization?: string
+    masteryScore?: string
+    typicalDuration?: string
+  },
+  json
+) {
   // make temp folder
   let tmp = await tmpDir()
 
@@ -33,15 +42,11 @@ export async function scorm1_2(argv, json) {
   let index = fs.readFileSync(path.join(tmpPath, 'index.html'), 'utf8')
 
   // change responsive key
-  /*let key = argv.k || argv.key
-  if (key) {
-    index = index.replace(
-      'https://code.responsivevoice.org/responsivevoice.js',
-      'https://code.responsivevoice.org/responsivevoice.js?key=' + key
-    )
-  }*/
+  if (argument.key) {
+    index = injectResponsivevoice(argument.key, index)
+  }
 
-  index = index.replace('</head>', '<script src="config.js"></script></head>')
+  index = inject('<script src="config.js"></script>', index)
 
   try {
     await writeFile(path.join(tmpPath, 'index.html'), index)
@@ -51,30 +56,30 @@ export async function scorm1_2(argv, json) {
   }
 
   // copy base path or readme-directory into temp
-  await fs.copy(path_, tmpPath, { filter: filterHidden })
+  await fs.copy(argument.path, tmpPath, { filter: filterHidden })
 
   let config = {
     version: '1.2',
-    organization: argv.organization || 'LiaScript',
+    organization: argument.organization || 'LiaScript',
     title: json.lia.str_title,
     language: json.lia.definition.language,
-    masteryScore: argv.masteryScore || 0,
+    masteryScore: argument.masteryScore || 0,
     startingPage: 'index.html',
-    startingParameters: readme,
+    startingParameters: argument.readme,
     source: path.join(tmp, 'pro'),
     package: {
       version: json.lia.definition.version,
       zip: true,
-      name: path.basename(output),
+      name: path.basename(argument.output),
       author: json.lia.definition.author,
-      outputFolder: path.dirname(output),
+      outputFolder: path.dirname(argument.output),
       description: json.lia.comment,
       //keywords: ['scorm', 'test', 'course'],
-      typicalDuration: argv.typicalDuration || 'PT0H5M0S',
+      typicalDuration: argument.typicalDuration || 'PT0H5M0S',
       //rights: `©${new Date().getFullYear()} My Amazing Company. All right reserved.`,
       vcard: {
         author: json.lia.definition.author,
-        org: argv.organization || 'LiaScript',
+        org: argument.organization || 'LiaScript',
         //tel: '(000) 000-0000',
         //address: 'my address',
         mail: json.lia.definition.email,
