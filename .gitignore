@@ -1,4 +1,5 @@
-.cache
+.parcel-cache
+.vscode
 dist/index.js.map
 node_modules
 build
