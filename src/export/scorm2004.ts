@@ -64,7 +64,7 @@ export async function scorm2004(
     language: json.lia.definition.language,
     masteryScore: argument.masteryScore || 0,
     startingPage: 'index.html',
-    startingParameters: argument.readme,
+    startingParameters: './' + argument.readme,
     source: path.join(tmp, 'pro'),
     package: {
       version: json.lia.definition.version,
