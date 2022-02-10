@@ -19,14 +19,15 @@
   "preferGlobal": true,
   "scripts": {
     "__preinstall": "cd LiaScript && npm i && npm run build:scorm1.2 && cp -r dist ../assets/scorm1.2",
-    "build:assets": "npm run clean &&npm run asset:scorm1.2 && npm run asset:web",
+    "build:assets": "npm run clean && npm run asset:scorm1.2 && npm run asset:scorm2004 && npm run asset:web",
     "clean": "rm -rf dist/assets/*",
     "asset:web": "cd LiaScript && npm i && npm run build:base && cp -r dist ../dist/assets/web",
     "asset:scorm1.2": "cd LiaScript && npm i && npm run build:scorm1.2 && cp -r dist ../dist/assets/scorm1.2",
+    "asset:scorm2004": "cd LiaScript && npm i && npm run build:scorm2004 && cp -r dist ../dist/assets/scorm2004",
     "build": "npx parcel build --no-source-maps src/index.ts",
     "build:debug": "npx parcel build --target node --no-minify --log-level 5 src/index.ts",
-
-    "run:moodle": "cd docker/moodle && docker-compose up"
+    "run:moodle": "cd docker/moodle && docker-compose up",
+    "run:ilias": "cd docker/ilias && docker-compose up"
   },
   "keywords": [
     "LiaScript",
