@@ -44,7 +44,13 @@ export async function scorm2004(
   index = inject('<script src="config.js"></script>', index)
   await writeFile(
     path.join(tmpPath, 'config.js'),
-    'window.config_ = ' + JSON.stringify(json) + ';'
+    'window.config_ = ' +
+      JSON.stringify({
+        task: json.task,
+        quiz: json.quiz,
+        survey: json.survey,
+      }) +
+      ';'
   )
 
   try {
@@ -70,6 +76,7 @@ export async function scorm2004(
       version: json.lia.definition.version,
       appendTimeToOutput: false,
       date: '',
+      filename: path.basename(argument.output),
       zip: true,
       name: path.basename(argument.output),
       author: json.lia.definition.author,

@@ -4,6 +4,7 @@ var $9Afec$minimist = require("minimist");
 var $9Afec$path = require("path");
 var $9Afec$temp = require("temp");
 var $9Afec$liascriptsimplescormpackager = require("@liascript/simple-scorm-packager");
+var $9Afec$puppeteer = require("puppeteer");
 
 var $parcel$global =
 typeof globalThis !== 'undefined'
@@ -8816,21 +8817,6 @@ type alias Process =
         ]));
     });
     var $author$project$Lia$Json$Encode$encode = $author$project$Lia$Json$Encode$encodeWith($author$project$Lia$Json$Encode$encSection);
-    var $author$project$Lia$Markdown$HTML$Json$encode = F2(function(encoder, node) {
-        if (node.$ === 'Node') {
-            var tag = node.a;
-            var a = node.b;
-            var content = node.c;
-            return _Utils_Tuple2('Node', $elm$json$Json$Encode$object(_List_fromArray([
-                _Utils_Tuple2('tag', $elm$json$Json$Encode$string(tag)),
-                _Utils_Tuple2('a', $author$project$Lia$Markdown$HTML$Json$encParameters(a)),
-                _Utils_Tuple2('content', A2($elm$json$Json$Encode$list, encoder, content))
-            ])));
-        } else {
-            var code = node.a;
-            return _Utils_Tuple2('InnerHtml', $elm$json$Json$Encode$string(code));
-        }
-    });
     var $author$project$Lia$Markdown$Quiz$Block$Json$fromState = function(state) {
         return $elm$json$Json$Encode$object(function() {
             if (state.$ === 'Text') {
@@ -8850,16 +8836,6 @@ type alias Process =
                 ]);
             }
         }());
-    };
-    var $author$project$Lia$Markdown$Quiz$Block$Json$encode = function(quiz) {
-        return _Utils_Tuple2(function() {
-            var _v0 = quiz.solution;
-            if (_v0.$ === 'Text') return 'Text';
-            else return 'Select';
-        }(), $elm$json$Json$Encode$object(_List_fromArray([
-            _Utils_Tuple2('options', A2($elm$json$Json$Encode$list, $author$project$Lia$Markdown$Inline$Json$Encode$encode, quiz.options)),
-            _Utils_Tuple2('solution', $author$project$Lia$Markdown$Quiz$Block$Json$fromState(quiz.solution))
-        ])));
     };
     var $author$project$Lia$Markdown$Quiz$Vector$Json$fromState = function(state) {
         return $elm$json$Json$Encode$object(function() {
@@ -8882,312 +8858,6 @@ type alias Process =
             _Utils_Tuple2($author$project$Lia$Markdown$Quiz$Matrix$Json$uid, A2($elm$json$Json$Encode$array, $author$project$Lia$Markdown$Quiz$Vector$Json$fromState, state))
         ]));
     };
-    var $author$project$Lia$Markdown$Quiz$Matrix$Json$encode = function(quiz) {
-        return _Utils_Tuple2($author$project$Lia$Markdown$Quiz$Matrix$Json$uid, $elm$json$Json$Encode$object(_List_fromArray([
-            _Utils_Tuple2('headers', A2($elm$json$Json$Encode$list, $author$project$Lia$Markdown$Inline$Json$Encode$encode, quiz.headers)),
-            _Utils_Tuple2('options', A2($elm$json$Json$Encode$list, $author$project$Lia$Markdown$Inline$Json$Encode$encode, quiz.options)),
-            _Utils_Tuple2('solution', $author$project$Lia$Markdown$Quiz$Matrix$Json$fromState(quiz.solution))
-        ])));
-    };
-    var $author$project$Lia$Markdown$Quiz$Vector$Json$encode = function(quiz) {
-        return _Utils_Tuple2(function() {
-            var _v0 = quiz.solution;
-            if (_v0.$ === 'SingleChoice') return 'SingleChoice';
-            else return 'MultipleChoice';
-        }(), $elm$json$Json$Encode$object(_List_fromArray([
-            _Utils_Tuple2('options', A2($elm$json$Json$Encode$list, $author$project$Lia$Markdown$Inline$Json$Encode$encode, quiz.options)),
-            _Utils_Tuple2('solution', $author$project$Lia$Markdown$Quiz$Vector$Json$fromState(quiz.solution))
-        ])));
-    };
-    var $author$project$Lia$Markdown$Quiz$Json$encode = function(quiz) {
-        return $elm$json$Json$Encode$object(_List_fromArray([
-            function() {
-                var _v0 = quiz.quiz;
-                switch(_v0.$){
-                    case 'Generic_Type':
-                        return _Utils_Tuple2('Generic', $elm$json$Json$Encode$null);
-                    case 'Block_Type':
-                        var block = _v0.a;
-                        return $author$project$Lia$Markdown$Quiz$Block$Json$encode(block);
-                    case 'Vector_Type':
-                        var vector = _v0.a;
-                        return $author$project$Lia$Markdown$Quiz$Vector$Json$encode(vector);
-                    default:
-                        var matrix = _v0.a;
-                        return $author$project$Lia$Markdown$Quiz$Matrix$Json$encode(matrix);
-                }
-            }(),
-            _Utils_Tuple2('id', $elm$json$Json$Encode$int(quiz.id)),
-            _Utils_Tuple2('hints', A2($elm$json$Json$Encode$list, $author$project$Lia$Markdown$Inline$Json$Encode$encode, quiz.hints))
-        ]));
-    };
-    var $elm$core$Tuple$mapSecond = F2(function(func, _v0) {
-        var x = _v0.a;
-        var y = _v0.b;
-        return _Utils_Tuple2(x, func(y));
-    });
-    var $author$project$Lia$Markdown$Survey$Json$encode = function(survey) {
-        return $elm$json$Json$Encode$object(_List_fromArray([
-            _Utils_Tuple2('id', $elm$json$Json$Encode$int(survey.id)),
-            function() {
-                var _v0 = survey.survey;
-                switch(_v0.$){
-                    case 'Text':
-                        var i = _v0.a;
-                        return _Utils_Tuple2('Text', $elm$json$Json$Encode$int(i));
-                    case 'Select':
-                        var elements = _v0.a;
-                        return _Utils_Tuple2('Select', A2($elm$json$Json$Encode$list, $author$project$Lia$Markdown$Inline$Json$Encode$encode, elements));
-                    case 'Vector':
-                        var bool = _v0.a;
-                        var options = _v0.b;
-                        return _Utils_Tuple2('Vector', $elm$json$Json$Encode$object(_List_fromArray([
-                            _Utils_Tuple2('bool', $elm$json$Json$Encode$bool(bool)),
-                            _Utils_Tuple2('options', $elm$json$Json$Encode$object(A2($elm$core$List$map, $elm$core$Tuple$mapSecond($author$project$Lia$Markdown$Inline$Json$Encode$encode), options)))
-                        ])));
-                    default:
-                        var bool = _v0.a;
-                        var cols = _v0.b;
-                        var ids = _v0.c;
-                        var rows = _v0.d;
-                        return _Utils_Tuple2('Matrix', $elm$json$Json$Encode$object(_List_fromArray([
-                            _Utils_Tuple2('bool', $elm$json$Json$Encode$bool(bool)),
-                            _Utils_Tuple2('cols', A2($elm$json$Json$Encode$list, $author$project$Lia$Markdown$Inline$Json$Encode$encode, cols)),
-                            _Utils_Tuple2('ids', A2($elm$json$Json$Encode$list, $elm$json$Json$Encode$string, ids)),
-                            _Utils_Tuple2('rows', A2($elm$json$Json$Encode$list, $author$project$Lia$Markdown$Inline$Json$Encode$encode, rows))
-                        ])));
-                }
-            }()
-        ]));
-    };
-    var $author$project$Lia$Markdown$Table$Json$cell = function(_v0) {
-        var p = _v0.a;
-        var inlines = _v0.b;
-        return $elm$json$Json$Encode$object(_List_fromArray([
-            _Utils_Tuple2('cell', $author$project$Lia$Markdown$Inline$Json$Encode$encode(inlines)),
-            _Utils_Tuple2('a', $elm$json$Json$Encode$null)
-        ]));
-    };
-    var $author$project$Lia$Markdown$Table$Json$encode = function(table) {
-        return $elm$json$Json$Encode$object(_List_fromArray([
-            _Utils_Tuple2('class', $elm$json$Json$Encode$string(function() {
-                var _v0 = table._class;
-                switch(_v0.$){
-                    case 'None':
-                        return 'none';
-                    case 'LinePlot':
-                        return 'lineplot';
-                    case 'ScatterPlot':
-                        return 'scatterplot';
-                    case 'BarChart':
-                        return 'barchart';
-                    case 'PieChart':
-                        return 'piechart';
-                    case 'HeatMap':
-                        return 'heatmap';
-                    case 'Radar':
-                        return 'radar';
-                    case 'Parallel':
-                        return 'parallel';
-                    case 'Sankey':
-                        return 'sankey';
-                    case 'BoxPlot':
-                        return 'boxplot';
-                    case 'Graph':
-                        return 'graph';
-                    case 'Map':
-                        return 'map';
-                    default:
-                        return 'funnel';
-                }
-            }())),
-            _Utils_Tuple2('head', A2($elm$json$Json$Encode$list, $author$project$Lia$Markdown$Table$Json$cell, table.head)),
-            _Utils_Tuple2('format', A2($elm$json$Json$Encode$list, $elm$json$Json$Encode$string, table.format)),
-            _Utils_Tuple2('body', A2($elm$json$Json$Encode$list, $elm$json$Json$Encode$list($author$project$Lia$Markdown$Table$Json$cell), table.body)),
-            _Utils_Tuple2('id', $elm$json$Json$Encode$int(table.id))
-        ]));
-    };
-    var $author$project$Lia$Markdown$Task$Json$encode = function(task) {
-        return $elm$json$Json$Encode$object(_List_fromArray([
-            _Utils_Tuple2('id', $elm$json$Json$Encode$int(task.id)),
-            _Utils_Tuple2('tasks', A2($elm$json$Json$Encode$list, $author$project$Lia$Markdown$Inline$Json$Encode$encode, task.task))
-        ]));
-    };
-    var $elm$core$List$isEmpty = function(xs) {
-        if (!xs.b) return true;
-        else return false;
-    };
-    var $author$project$Lia$Markdown$HTML$Json$maybeEncParameters = function(a) {
-        return $elm$core$List$isEmpty(a) ? $elm$core$Basics$identity : $elm$core$List$cons(_Utils_Tuple2('a', $author$project$Lia$Markdown$HTML$Json$encParameters(a)));
-    };
-    var $author$project$Lia$Markdown$Json$Encode$encBlock = function(b) {
-        return $elm$json$Json$Encode$object(function() {
-            switch(b.$){
-                case 'Paragraph':
-                    var a = b.a;
-                    var elements = b.b;
-                    return A2($author$project$Lia$Markdown$HTML$Json$maybeEncParameters, a, _List_fromArray([
-                        _Utils_Tuple2('Paragraph', $author$project$Lia$Markdown$Inline$Json$Encode$encode(elements))
-                    ]));
-                case 'HLine':
-                    var a = b.a;
-                    return A2($author$project$Lia$Markdown$HTML$Json$maybeEncParameters, a, _List_fromArray([
-                        _Utils_Tuple2('HLine', $elm$json$Json$Encode$null)
-                    ]));
-                case 'Quote':
-                    var a = b.a;
-                    var blocks1 = b.b;
-                    return A2($author$project$Lia$Markdown$HTML$Json$maybeEncParameters, a, _List_fromArray([
-                        _Utils_Tuple2('Quote', $author$project$Lia$Markdown$Json$Encode$cyclic$encode()(blocks1))
-                    ]));
-                case 'BulletList':
-                    var a = b.a;
-                    var blocksList = b.b;
-                    return A2($author$project$Lia$Markdown$HTML$Json$maybeEncParameters, a, _List_fromArray([
-                        _Utils_Tuple2('BulletList', A2($elm$json$Json$Encode$list, $author$project$Lia$Markdown$Json$Encode$cyclic$encode(), blocksList))
-                    ]));
-                case 'OrderedList':
-                    var a = b.a;
-                    var list = b.b;
-                    return A2($author$project$Lia$Markdown$HTML$Json$maybeEncParameters, a, _List_fromArray([
-                        _Utils_Tuple2('OrderedList', A2($elm$json$Json$Encode$list, $author$project$Lia$Markdown$Json$Encode$ol, list))
-                    ]));
-                case 'Header':
-                    var a = b.a;
-                    var _v2 = b.b;
-                    var level = _v2.a;
-                    var elements = _v2.b;
-                    return A2($author$project$Lia$Markdown$HTML$Json$maybeEncParameters, a, _List_fromArray([
-                        _Utils_Tuple2('Header', $author$project$Lia$Markdown$Inline$Json$Encode$encode(elements)),
-                        _Utils_Tuple2('level', $elm$json$Json$Encode$int(level))
-                    ]));
-                case 'Citation':
-                    var a = b.a;
-                    var elements = b.b;
-                    return A2($author$project$Lia$Markdown$HTML$Json$maybeEncParameters, a, _List_fromArray([
-                        _Utils_Tuple2('Citation', $author$project$Lia$Markdown$Inline$Json$Encode$encode(elements))
-                    ]));
-                case 'Problem':
-                    var elements = b.a;
-                    return _List_fromArray([
-                        _Utils_Tuple2('Problem', $author$project$Lia$Markdown$Inline$Json$Encode$encode(elements))
-                    ]);
-                case 'Quiz':
-                    var a = b.a;
-                    var quiz = b.b;
-                    var solution = b.c;
-                    return A2($author$project$Lia$Markdown$HTML$Json$maybeEncParameters, a, _List_fromArray([
-                        _Utils_Tuple2('Quiz', $author$project$Lia$Markdown$Quiz$Json$encode(quiz)),
-                        _Utils_Tuple2('solution', function() {
-                            if (solution.$ === 'Nothing') return $elm$json$Json$Encode$null;
-                            else {
-                                var _v4 = solution.a;
-                                var blocks = _v4.a;
-                                var hidden_effects = _v4.b;
-                                return $elm$json$Json$Encode$object(_List_fromArray([
-                                    _Utils_Tuple2('hidden_effects', $elm$json$Json$Encode$int(hidden_effects)),
-                                    _Utils_Tuple2('blocks', $author$project$Lia$Markdown$Json$Encode$cyclic$encode()(blocks))
-                                ]));
-                            }
-                        }())
-                    ]));
-                case 'Survey':
-                    var a = b.a;
-                    var survey = b.b;
-                    return A2($author$project$Lia$Markdown$HTML$Json$maybeEncParameters, a, _List_fromArray([
-                        _Utils_Tuple2('Survey', $author$project$Lia$Markdown$Survey$Json$encode(survey))
-                    ]));
-                case 'Task':
-                    var a = b.a;
-                    var tasks = b.b;
-                    return A2($author$project$Lia$Markdown$HTML$Json$maybeEncParameters, a, _List_fromArray([
-                        _Utils_Tuple2('Task', $author$project$Lia$Markdown$Task$Json$encode(tasks))
-                    ]));
-                case 'Gallery':
-                    var a = b.a;
-                    var media = b.b.media;
-                    var id = b.b.id;
-                    return A2($author$project$Lia$Markdown$HTML$Json$maybeEncParameters, a, _List_fromArray([
-                        _Utils_Tuple2('Gallery', $elm$json$Json$Encode$object(_List_fromArray([
-                            _Utils_Tuple2('media', $author$project$Lia$Markdown$Inline$Json$Encode$encode(media)),
-                            _Utils_Tuple2('id', $elm$json$Json$Encode$int(id))
-                        ])))
-                    ]));
-                case 'Effect':
-                    var a = b.a;
-                    var eBlock = b.b;
-                    return A2($author$project$Lia$Markdown$HTML$Json$maybeEncParameters, a, _List_fromArray([
-                        _Utils_Tuple2('Effect', $elm$json$Json$Encode$object(_List_fromArray([
-                            _Utils_Tuple2('id', $elm$json$Json$Encode$int(eBlock.id)),
-                            _Utils_Tuple2('begin', $elm$json$Json$Encode$int(eBlock.begin)),
-                            _Utils_Tuple2('end', A2($elm$core$Maybe$withDefault, $elm$json$Json$Encode$null, A2($elm$core$Maybe$map, $elm$json$Json$Encode$int, eBlock.end))),
-                            _Utils_Tuple2('content', $author$project$Lia$Markdown$Json$Encode$cyclic$encode()(eBlock.content)),
-                            _Utils_Tuple2('playback', $elm$json$Json$Encode$bool(eBlock.playback)),
-                            _Utils_Tuple2('voice', $elm$json$Json$Encode$string(eBlock.voice))
-                        ])))
-                    ]));
-                case 'Table':
-                    var a = b.a;
-                    var table = b.b;
-                    return A2($author$project$Lia$Markdown$HTML$Json$maybeEncParameters, a, _List_fromArray([
-                        _Utils_Tuple2('Table', $author$project$Lia$Markdown$Table$Json$encode(table))
-                    ]));
-                case 'Chart':
-                    var a = b.a;
-                    return A2($author$project$Lia$Markdown$HTML$Json$maybeEncParameters, a, _List_fromArray([
-                        _Utils_Tuple2('Chart', $elm$json$Json$Encode$null)
-                    ]));
-                case 'Code':
-                    return _List_fromArray([
-                        _Utils_Tuple2('Code', $elm$json$Json$Encode$null)
-                    ]);
-                case 'Comment':
-                    return _List_fromArray([
-                        _Utils_Tuple2('Comment', $elm$json$Json$Encode$null)
-                    ]);
-                case 'ASCII':
-                    var a = b.a;
-                    return A2($author$project$Lia$Markdown$HTML$Json$maybeEncParameters, a, _List_fromArray([
-                        _Utils_Tuple2('ASCII', $elm$json$Json$Encode$null)
-                    ]));
-                default:
-                    var a = b.a;
-                    var node = b.b;
-                    return A2($author$project$Lia$Markdown$HTML$Json$maybeEncParameters, a, _List_fromArray([
-                        _Utils_Tuple2('HTML', $elm$json$Json$Encode$object(_List_fromArray([
-                            A2($author$project$Lia$Markdown$HTML$Json$encode, $author$project$Lia$Markdown$Json$Encode$encBlock, node)
-                        ])))
-                    ]));
-            }
-        }());
-    };
-    var $author$project$Lia$Markdown$Json$Encode$ol = function(_v0) {
-        var id = _v0.a;
-        var blocks = _v0.b;
-        return $elm$json$Json$Encode$object(_List_fromArray([
-            _Utils_Tuple2(id, $author$project$Lia$Markdown$Json$Encode$cyclic$encode()(blocks))
-        ]));
-    };
-    function $author$project$Lia$Markdown$Json$Encode$cyclic$encode() {
-        return $elm$json$Json$Encode$list($author$project$Lia$Markdown$Json$Encode$encBlock);
-    }
-    try {
-        var $author$project$Lia$Markdown$Json$Encode$encode = $author$project$Lia$Markdown$Json$Encode$cyclic$encode();
-        $author$project$Lia$Markdown$Json$Encode$cyclic$encode = function() {
-            return $author$project$Lia$Markdown$Json$Encode$encode;
-        };
-    } catch ($3) {
-        throw 'Some top-level definitions from `Lia.Markdown.Json.Encode` are causing infinite recursion:\n\n  ┌─────┐\n  │    encode\n  │     ↓\n  │    encBlock\n  │     ↓\n  │    ol\n  └─────┘\n\nThese errors are very tricky, so read https://elm-lang.org/0.19.1/bad-recursion to learn how to fix it!';
-    }
-    var $author$project$Lia$Json$Encode$encSectionFull = function(sec) {
-        return $elm$json$Json$Encode$object(_List_fromArray([
-            _Utils_Tuple2('title', $author$project$Lia$Markdown$Inline$Json$Encode$encode(sec.title)),
-            _Utils_Tuple2('code', $elm$json$Json$Encode$string(sec.code)),
-            _Utils_Tuple2('indentation', $elm$json$Json$Encode$int(sec.indentation)),
-            _Utils_Tuple2('body', $author$project$Lia$Markdown$Json$Encode$encode(sec.body))
-        ]));
-    };
-    var $author$project$Lia$Json$Encode$encodeFull = $author$project$Lia$Json$Encode$encodeWith($author$project$Lia$Json$Encode$encSectionFull);
     var $author$project$Lia$Markdown$Quiz$Json$fromState = function(state) {
         switch(state.$){
             case 'Generic_State':
@@ -12178,7 +11848,7 @@ type alias Process =
         $author$project$Lia$Markdown$Parser$cyclic$svgbob = function() {
             return $author$project$Lia$Markdown$Parser$svgbob;
         };
-    } catch ($4) {
+    } catch ($3) {
         throw 'Some top-level definitions from `Lia.Markdown.Parser` are causing infinite recursion:\n\n  ┌─────┐\n  │    elements\n  │     ↓\n  │    unordered_list\n  │     ↓\n  │    solution\n  │     ↓\n  │    run\n  │     ↓\n  │    quote\n  │     ↓\n  │    ordered_list\n  │     ↓\n  │    footnotes\n  │     ↓\n  │    ident_blocks\n  │     ↓\n  │    blocks\n  │     ↓\n  │    svgbob\n  │     ↓\n  │    svgbobSub\n  └─────┘\n\nThese errors are very tricky, so read https://elm-lang.org/0.19.1/bad-recursion to learn how to fix it!';
     }
     var $author$project$Lia$Parser$Parser$parse_section = F3(function(search_index, global, sec) {
@@ -12262,21 +11932,10 @@ type alias Process =
             switch(_v0){
                 case 'json':
                     return $author$project$Worker$output(A2($elm$core$Tuple$pair, true, A2($elm$json$Json$Encode$encode, 2, $author$project$Lia$Json$Encode$encode(model.lia))));
-                case 'fullJson':
+                case 'fulljson':
                     var lia = A2($author$project$Worker$parseSection, 0, model.lia);
                     return $author$project$Worker$output(A2($elm$core$Tuple$pair, true, A2($elm$json$Json$Encode$encode, 2, $elm$json$Json$Encode$object(_List_fromArray([
                         _Utils_Tuple2('lia', $author$project$Lia$Json$Encode$encode(lia)),
-                        _Utils_Tuple2('quiz', A2($elm$json$Json$Encode$array, $author$project$Lia$Markdown$Quiz$Json$fromVector, A2($elm$core$Array$map, function($) {
-                            return $.quiz_vector;
-                        }, lia.sections))),
-                        _Utils_Tuple2('survey', A2($elm$json$Json$Encode$array, $author$project$Lia$Markdown$Survey$Json$fromVector, A2($elm$core$Array$map, function($) {
-                            return $.survey_vector;
-                        }, lia.sections)))
-                    ])))));
-                case 'fullJson2':
-                    var lia = A2($author$project$Worker$parseSection, 0, model.lia);
-                    return $author$project$Worker$output(A2($elm$core$Tuple$pair, true, A2($elm$json$Json$Encode$encode, 2, $elm$json$Json$Encode$object(_List_fromArray([
-                        _Utils_Tuple2('lia', $author$project$Lia$Json$Encode$encodeFull(lia)),
                         _Utils_Tuple2('quiz', A2($elm$json$Json$Encode$array, $author$project$Lia$Markdown$Quiz$Json$fromVector, A2($elm$core$Array$map, function($) {
                             return $.quiz_vector;
                         }, lia.sections))),
@@ -12442,19 +12101,14 @@ function $320134ce32dd9048$export$31a09876afc8115c(key, into) {
 function $320134ce32dd9048$export$a976684a0efeb93f(element, into) {
     return into.replace('</head>', element + '</head>');
 }
+function $320134ce32dd9048$export$bab98af026af71ac(uri) {
+    return uri.startsWith('http://') || uri.startsWith('https://') || uri.startsWith('file://');
+}
 
 
 
 
-async function $1e521125b288b3fc$export$6fe8eed8ccd585ce(argv, json) {
-    // input
-    let readme = argv.i || argv.input;
-    let output = argv.o || argv.output || 'output';
-    let path_ = argv.p || argv.path;
-    if (!path_) {
-        path_ = $9Afec$path.dirname(readme);
-        readme = $9Afec$path.basename(readme);
-    }
+async function $1e521125b288b3fc$export$6fe8eed8ccd585ce(argument, json) {
     // make temp folder
     let tmp = await $320134ce32dd9048$export$6b76988456c0292f();
     let tmpPath = $9Afec$path.join(tmp, 'pro');
@@ -12462,10 +12116,14 @@ async function $1e521125b288b3fc$export$6fe8eed8ccd585ce(argv, json) {
     await $9Afec$fsextra.copy($9Afec$path.join(__dirname, './assets/web'), tmpPath);
     let index = $9Afec$fsextra.readFileSync($9Afec$path.join(tmpPath, 'index.html'), 'utf8');
     // change responsive key
-    let key = argv.k || argv.key;
-    if (key) index = index.replace('</head>', `<script src="https://code.responsivevoice.org/responsivevoice.js?key=${key}"></script></head>`);
+    if (argument.key) index = $320134ce32dd9048$export$31a09876afc8115c(argument.key, index);
     // add default course
-    index = index.replace('<head>', '<head><script>window.liaDefaultCourse="' + $9Afec$path.basename(readme) + '"</script>');
+    index = $320134ce32dd9048$export$a976684a0efeb93f(`<script>
+  if (!window.LIA) {
+    window.LIA = {}
+  }
+  window.LIA.defaultCourse="${$9Afec$path.basename(argument.readme)}"
+  </script>`, index);
     try {
         index = index.replace('<title>Lia</title>', `<title>${json.lia.str_title}</title><meta property="og:title" content="${json.lia.str_title}"> <meta name="twitter:title" content="${json.lia.str_title}">`);
         console.log('updating title ...');
@@ -12482,7 +12140,7 @@ async function $1e521125b288b3fc$export$6fe8eed8ccd585ce(argv, json) {
     }
     try {
         let logo = json.lia.definition.logo;
-        index = index.replace('<head>', `<head><meta property="og:image" content="${logo}"><meta name="twitter:image" content="${logo}">`);
+        index = $320134ce32dd9048$export$a976684a0efeb93f(`<meta property="og:image" content="${logo}"><meta name="twitter:image" content="${logo}">`, index);
         console.log('updating logo ...');
     } catch (e2) {
         console.warn('could not add image');
@@ -12494,8 +12152,10 @@ async function $1e521125b288b3fc$export$6fe8eed8ccd585ce(argv, json) {
         return;
     }
     // copy base path or readme-directory into temp
-    await $9Afec$fsextra.copy(path_, tmpPath);
-    await $9Afec$fsextra.move(tmpPath, output);
+    await $9Afec$fsextra.copy(argument.path, tmpPath);
+    await $9Afec$fsextra.move(tmpPath, argument.output, {
+        filter: $320134ce32dd9048$export$3032dc2899b8ea9b
+    });
 }
 
 
@@ -12509,18 +12169,21 @@ async function $699da5868da0be18$export$898f980c79cf0ae3(argument, json) {
     let tmpPath = $9Afec$path.join(tmp, 'pro');
     // copy assets to temp
     await $9Afec$fsextra.copy($9Afec$path.join(__dirname, './assets/scorm1.2'), tmpPath);
-    await $320134ce32dd9048$export$552bfb764b5cd2b4($9Afec$path.join(tmpPath, 'config.js'), 'window.config_ = ' + JSON.stringify(json) + ';');
     let index = $9Afec$fsextra.readFileSync($9Afec$path.join(tmpPath, 'index.html'), 'utf8');
     // change responsive key
     if (argument.key) index = $320134ce32dd9048$export$31a09876afc8115c(argument.key, index);
     index = $320134ce32dd9048$export$a976684a0efeb93f('<script src="config.js"></script>', index);
+    await $320134ce32dd9048$export$552bfb764b5cd2b4($9Afec$path.join(tmpPath, 'config.js'), 'window.config_ = ' + JSON.stringify({
+        task: json.task,
+        quiz: json.quiz,
+        survey: json.survey
+    }) + ';');
     try {
         await $320134ce32dd9048$export$552bfb764b5cd2b4($9Afec$path.join(tmpPath, 'index.html'), index);
     } catch (e) {
         console.warn(e);
         return;
     }
-    console.warn('SSSSSSSSSSSSSSSSSSSSSSSss', argument);
     // copy base path or readme-directory into temp
     await $9Afec$fsextra.copy(argument.path, tmpPath, {
         filter: $320134ce32dd9048$export$3032dc2899b8ea9b
@@ -12532,10 +12195,78 @@ async function $699da5868da0be18$export$898f980c79cf0ae3(argument, json) {
         language: json.lia.definition.language,
         masteryScore: argument.masteryScore || 0,
         startingPage: 'index.html',
-        startingParameters: argument.readme,
+        startingParameters: './' + argument.readme,
         source: $9Afec$path.join(tmp, 'pro'),
         package: {
             version: json.lia.definition.version,
+            zip: true,
+            appendTimeToOutput: false,
+            name: $9Afec$path.basename(argument.output),
+            author: json.lia.definition.author,
+            outputFolder: $9Afec$path.dirname(argument.output),
+            description: json.lia.comment,
+            //keywords: ['scorm', 'test', 'course'],
+            typicalDuration: argument.typicalDuration || 'PT0H5M0S',
+            //rights: `©${new Date().getFullYear()} My Amazing Company. All right reserved.`,
+            vcard: {
+                author: json.lia.definition.author,
+                org: argument.organization || 'LiaScript',
+                //tel: '(000) 000-0000',
+                //address: 'my address',
+                mail: json.lia.definition.email
+            }
+        }
+    };
+    $9Afec$liascriptsimplescormpackager(config, function(msg) {
+        console.log(msg);
+        process.exit(0);
+    });
+}
+
+
+
+
+
+
+async function $c4fe6e5c8950c8b3$export$959c20543bc18709(argument, json) {
+    // make temp folder
+    let tmp = await $320134ce32dd9048$export$6b76988456c0292f();
+    let tmpPath = $9Afec$path.join(tmp, 'pro');
+    // copy assets to temp
+    await $9Afec$fsextra.copy($9Afec$path.join(__dirname, './assets/scorm2004'), tmpPath);
+    let index = $9Afec$fsextra.readFileSync($9Afec$path.join(tmpPath, 'index.html'), 'utf8');
+    // change responsive key
+    if (argument.key) index = $320134ce32dd9048$export$31a09876afc8115c(argument.key, index);
+    index = $320134ce32dd9048$export$a976684a0efeb93f('<script src="config.js"></script>', index);
+    await $320134ce32dd9048$export$552bfb764b5cd2b4($9Afec$path.join(tmpPath, 'config.js'), 'window.config_ = ' + JSON.stringify({
+        task: json.task,
+        quiz: json.quiz,
+        survey: json.survey
+    }) + ';');
+    try {
+        await $320134ce32dd9048$export$552bfb764b5cd2b4($9Afec$path.join(tmpPath, 'index.html'), index);
+    } catch (e) {
+        console.warn(e);
+        return;
+    }
+    // copy base path or readme-directory into temp
+    await $9Afec$fsextra.copy(argument.path, tmpPath, {
+        filter: $320134ce32dd9048$export$3032dc2899b8ea9b
+    });
+    let config = {
+        version: '2004 4th Edition',
+        organization: argument.organization || 'LiaScript',
+        title: json.lia.str_title,
+        language: json.lia.definition.language,
+        masteryScore: argument.masteryScore || 0,
+        startingPage: 'index.html',
+        startingParameters: './' + argument.readme,
+        source: $9Afec$path.join(tmp, 'pro'),
+        package: {
+            version: json.lia.definition.version,
+            appendTimeToOutput: false,
+            date: '',
+            filename: $9Afec$path.basename(argument.output),
             zip: true,
             name: $9Afec$path.basename(argument.output),
             author: json.lia.definition.author,
@@ -12561,12 +12292,104 @@ async function $699da5868da0be18$export$898f980c79cf0ae3(argument, json) {
 
 
 
+
+
+async function $fe4c9e5866fc6c52$export$278e8ca9e1fa9094(argument, json) {
+    let url = `file://${__dirname}/assets/pdf/index.html?`;
+    if ($320134ce32dd9048$export$bab98af026af71ac(argument.input)) url += argument.input;
+    else url += 'file:///' + $9Afec$path.resolve(__dirname + '/../', argument.input);
+    const browser = await $9Afec$puppeteer.launch({
+        args: [
+            '--disable-web-security',
+            '--disable-features=IsolateOrigins',
+            '--disable-site-isolation-trials',
+            '--unhandled-rejections=strict',
+            '--disable-features=BlockInsecurePrivateNetworkRequests', 
+        ],
+        headless: argument.pdfPreview ? false : true
+    });
+    const page = await browser.newPage();
+    console.warn('depending on the size of the course, this can take a while, please be patient...');
+    // this handle the alert - boxes, so that these are not blocking
+    page.on('dialog', async (dialog)=>{
+        console.log(dialog.type());
+        console.log(dialog.message());
+        await dialog.accept();
+    });
+    await page.goto(url, {
+        waitUntil: 'networkidle2',
+        // remove timeout
+        timeout: 0
+    });
+    await page.evaluate(async ()=>{
+        const style = document.createElement('style');
+        style.type = 'text/css';
+        const content = `
+      .lia-quiz__control {
+        display: none;
+      }
+
+      .lia-table__sort {
+        display: none !important;
+      }
+
+      .lia-accordion__toggle {
+        visibility: hidden;
+        width: 5px !important;
+      }
+
+      .lia-code-terminal__output {
+        height: fit-content !important;
+        max-height: 800px !important;
+      }
+
+      .lia-table-responsive {
+        max-height: fit-content !important;
+      }
+    `;
+        style.appendChild(document.createTextNode(content));
+        const promise = new Promise((resolve, reject)=>{
+            style.onload = resolve;
+            style.onerror = reject;
+        });
+        document.head.appendChild(style);
+        await promise;
+    });
+    if (!argument.pdfPreview) setTimeout(async function() {
+        await page.emulateMediaType('screen');
+        await page.pdf({
+            path: argument.output + '.pdf',
+            format: argument.pdfFormat || 'a4',
+            printBackground: argument.pdfPrintBackground || true,
+            displayHeaderFooter: argument.pdfDisplayHeaderFooter || false,
+            margin: {
+                top: 80,
+                bottom: 80,
+                left: 30,
+                right: 30
+            }
+        });
+        await browser.close();
+    }, argument.pdfTimeout || 30000);
+}
+
+
+
+
 $parcel$global.XMLHttpRequest = $9Afec$xhr2;
 
 
 
 const $ccdb061a5468de1f$var$argv = $9Afec$minimist(process.argv.slice(2));
-//console.warn(argv);
+// -------------------------------Main Execution-------------------------------
+if ($ccdb061a5468de1f$var$argv.v || $ccdb061a5468de1f$var$argv.version) console.log('version: 1.0.51--0.9.51');
+else if ($ccdb061a5468de1f$var$argv.h || $ccdb061a5468de1f$var$argv.help) $ccdb061a5468de1f$var$help();
+else if ($ccdb061a5468de1f$var$argv.i || $ccdb061a5468de1f$var$argv.input) $ccdb061a5468de1f$var$run($ccdb061a5468de1f$var$parseArguments());
+else {
+    console.warn('No input defined');
+    $ccdb061a5468de1f$var$help();
+}
+// ----------------------------------------------------------------------------
 function $ccdb061a5468de1f$var$run(argument) {
     var app = $eb828a374fec450c$exports.Elm.Worker.init({
         flags: {
@@ -12575,6 +12398,7 @@ function $ccdb061a5468de1f$var$run(argument) {
     });
     app.ports.output.subscribe(function(event) {
         let [ok, string] = event;
+        // the worker did not succeed
         if (!ok) {
             console.warn(string);
             return;
@@ -12582,7 +12406,6 @@ function $ccdb061a5468de1f$var$run(argument) {
         switch(argument.format){
             case 'json':
             case 'fulljson':
-            case 'fulljson2':
                 $9Afec$fsextra.writeFile(argument.output + '.json', string, function(err) {
                     if (err) console.error(err);
                 });
@@ -12590,20 +12413,32 @@ function $ccdb061a5468de1f$var$run(argument) {
             case 'scorm1.2':
                 $699da5868da0be18$export$898f980c79cf0ae3(argument, JSON.parse(string));
                 break;
+            case 'scorm2004':
+                $c4fe6e5c8950c8b3$export$959c20543bc18709(argument, JSON.parse(string));
+                break;
             case 'web':
                 $1e521125b288b3fc$export$6fe8eed8ccd585ce(argument, JSON.parse(string));
+                break;
+            case 'pdf':
+                $fe4c9e5866fc6c52$export$278e8ca9e1fa9094(argument, JSON.parse(string));
                 break;
             default:
                 console.warn('unknown output format', argument.format);
         }
     });
     try {
-        const format = argument.format == 'scorm1.2' || argument.format == 'web' ? 'fullJson2' : argument.format;
-        const data = $9Afec$fsextra.readFileSync(argument.input, 'utf8');
-        app.ports.input.send([
-            format,
-            data
-        ]);
+        // the format is changed only locally, the SCORM and web exporters simply
+        // require some meta data from the parsed json output
+        const format = argument.format == 'scorm1.2' || argument.format == 'scorm2004' || argument.format == 'pdf' || argument.format == 'web' ? 'fulljson' : argument.format;
+        if (!$320134ce32dd9048$export$bab98af026af71ac(argument.input)) {
+            const data = $9Afec$fsextra.readFileSync(argument.input, 'utf8');
+            app.ports.input.send([
+                format,
+                data
+            ]);
+        } else if (argument.format === 'pdf') $fe4c9e5866fc6c52$export$278e8ca9e1fa9094(argument, {
+        });
+        else console.warn('URLs are not allowed as input');
     } catch (err) {
         console.error(err);
     }
@@ -12615,7 +12450,7 @@ function $ccdb061a5468de1f$var$help() {
     console.log('-i', '--input', '          file to be used as input');
     console.log('-p', '--path', '           path to be packed, if not set, the path of the input file is used');
     console.log('-o', '--output', '         output file name (default is output), the ending is define by the format');
-    console.log('-f', '--format', '         scorm1.2, json, fullJson, fullJson2, web (default is json)');
+    console.log('-f', '--format', '         scorm1.2, scorm2004, json, fullJson, web, pdf (default is json)');
     console.log('-v', '--version', '        output the current version');
     console.log('\n-k', '--key', '            responsive voice key ');
     console.log('\nSCORM 1.2 settings:');
@@ -12623,10 +12458,15 @@ function $ccdb061a5468de1f$var$help() {
     console.log('--organization', '         set the organization title');
     console.log('--masteryScore', '         set the scorm masteryScore (a value between 0 -- 100), default is 0');
     console.log('--typicalDuration', '      set the scorm duration, default is PT0H5M0S');
+    console.log('\nPDF settings:');
+    console.log('');
+    console.log('--pdfPreview', '             open preview-browser (default false)');
+    console.log('--pdfTimeout', '             set an additional time horizon to wait until finished');
+    console.log('--pdfFormat', '              paper format (default a4)');
+    console.log('--pdfPrintBackground', '     allow backgroung-color (default true)');
+    console.log('--pdfDisplayHeaderFooter', ' print header and footer (default false)');
 }
-if ($ccdb061a5468de1f$var$argv.v || $ccdb061a5468de1f$var$argv.version) console.log('version: 1.0.51--0.9.51');
-else if ($ccdb061a5468de1f$var$argv.h || $ccdb061a5468de1f$var$argv.help) $ccdb061a5468de1f$var$help();
-else if ($ccdb061a5468de1f$var$argv.i || $ccdb061a5468de1f$var$argv.input) {
+function $ccdb061a5468de1f$var$parseArguments() {
     const argument = {
         input: $ccdb061a5468de1f$var$argv.i || $ccdb061a5468de1f$var$argv.input,
         readme: $ccdb061a5468de1f$var$argv.i || $ccdb061a5468de1f$var$argv.input,
@@ -12637,19 +12477,20 @@ else if ($ccdb061a5468de1f$var$argv.i || $ccdb061a5468de1f$var$argv.input) {
         // special cases for SCORM
         organization: $ccdb061a5468de1f$var$argv.organization,
         masteryScore: $ccdb061a5468de1f$var$argv.masteryScore,
-        typicalDuration: $ccdb061a5468de1f$var$argv.typicalDuration
+        typicalDuration: $ccdb061a5468de1f$var$argv.typicalDuration,
+        // pdf cases
+        pdfPreview: $ccdb061a5468de1f$var$argv.pdfPreview,
+        pdfTimeout: $ccdb061a5468de1f$var$argv.pdfTimeout,
+        pdfFormat: $ccdb061a5468de1f$var$argv.pdfFormat,
+        pdfPrintBackground: $ccdb061a5468de1f$var$argv.pdfPrintBackground,
+        pdfDisplayHeaderFooter: $ccdb061a5468de1f$var$argv.pdfDisplayHeaderFooter
     };
     argument.format = argument.format.toLowerCase();
-    console.warn(argument);
-    if (!argument.path) {
+    if (!argument.path && !$320134ce32dd9048$export$bab98af026af71ac(argument.input)) {
         argument.path = $9Afec$path.dirname(argument.input);
         argument.readme = $9Afec$path.basename(argument.input);
     }
-    console.warn(argument);
-    $ccdb061a5468de1f$var$run(argument);
-} else {
-    console.warn('No input defined');
-    $ccdb061a5468de1f$var$help();
+    return argument;
 }
 
 

@@ -44,7 +44,13 @@ export async function scorm1_2(
   index = inject('<script src="config.js"></script>', index)
   await writeFile(
     path.join(tmpPath, 'config.js'),
-    'window.config_ = ' + JSON.stringify(json) + ';'
+    'window.config_ = ' +
+      JSON.stringify({
+        task: json.task,
+        quiz: json.quiz,
+        survey: json.survey,
+      }) +
+      ';'
   )
 
   try {

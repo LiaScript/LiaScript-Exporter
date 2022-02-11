@@ -41,3 +41,11 @@ export function injectResponsivevoice(key: string, into: string): string {
 export function inject(element: string, into: string): string {
   return into.replace('</head>', element + '</head>')
 }
+
+export function isURL(uri: string) {
+  return (
+    uri.startsWith('http://') ||
+    uri.startsWith('https://') ||
+    uri.startsWith('file://')
+  )
+}

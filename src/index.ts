@@ -4,6 +4,8 @@ import { Elm } from '../LiaScript/src/elm/Worker.elm'
 import { web } from './export/web'
 import { scorm1_2 } from './export/scorm12'
 import { scorm2004 } from './export/scorm2004'
+import { pdf } from './export/pdf'
+import { isURL } from './export/helper'
 
 global.XMLHttpRequest = require('xhr2')
 
@@ -51,9 +53,12 @@ function run(argument) {
         scorm2004(argument, JSON.parse(string))
         break
       }
-
       case 'web': {
         web(argument, JSON.parse(string))
+        break
+      }
+      case 'pdf': {
+        pdf(argument, JSON.parse(string))
         break
       }
       default: {
@@ -68,13 +73,19 @@ function run(argument) {
     const format =
       argument.format == 'scorm1.2' ||
       argument.format == 'scorm2004' ||
+      argument.format == 'pdf' ||
       argument.format == 'web'
         ? 'fulljson'
         : argument.format
 
-    const data = fs.readFileSync(argument.input, 'utf8')
-
-    app.ports.input.send([format, data])
+    if (!isURL(argument.input)) {
+      const data = fs.readFileSync(argument.input, 'utf8')
+      app.ports.input.send([format, data])
+    } else if (argument.format === 'pdf') {
+      pdf(argument, {})
+    } else {
+      console.warn('URLs are not allowed as input')
+    }
   } catch (err) {
     console.error(err)
   }
@@ -98,7 +109,7 @@ function help() {
   console.log(
     '-f',
     '--format',
-    '         scorm1.2, scorm2004, json, fullJson, web (default is json)'
+    '         scorm1.2, scorm2004, json, fullJson, web, pdf (default is json)'
   )
   console.log('-v', '--version', '        output the current version')
 
@@ -115,6 +126,26 @@ function help() {
     '--typicalDuration',
     '      set the scorm duration, default is PT0H5M0S'
   )
+
+  console.log('\nPDF settings:')
+  console.log('')
+  console.log(
+    '--pdfPreview',
+    '             open preview-browser (default false)'
+  )
+  console.log(
+    '--pdfTimeout',
+    '             set an additional time horizon to wait until finished'
+  )
+  console.log('--pdfFormat', '              paper format (default a4)')
+  console.log(
+    '--pdfPrintBackground',
+    '     allow backgroung-color (default true)'
+  )
+  console.log(
+    '--pdfDisplayHeaderFooter',
+    ' print header and footer (default false)'
+  )
 }
 
 function parseArguments() {
@@ -130,11 +161,18 @@ function parseArguments() {
     organization: argv.organization,
     masteryScore: argv.masteryScore,
     typicalDuration: argv.typicalDuration,
+
+    // pdf cases
+    pdfPreview: argv.pdfPreview,
+    pdfTimeout: argv.pdfTimeout,
+    pdfFormat: argv.pdfFormat,
+    pdfPrintBackground: argv.pdfPrintBackground,
+    pdfDisplayHeaderFooter: argv.pdfDisplayHeaderFooter,
   }
 
   argument.format = argument.format.toLowerCase()
 
-  if (!argument.path) {
+  if (!argument.path && !isURL(argument.input)) {
     argument.path = path.dirname(argument.input)
     argument.readme = path.basename(argument.input)
   }
