@@ -12316,45 +12316,14 @@ async function $fe4c9e5866fc6c52$export$278e8ca9e1fa9094(argument, json) {
         console.log(dialog.message());
         await dialog.accept();
     });
-    await page.goto(url, {
-        waitUntil: 'networkidle2',
-        // remove timeout
-        timeout: 0
-    });
-    await page.evaluate(async ()=>{
-        const style = document.createElement('style');
-        style.type = 'text/css';
-        const content = `
-      .lia-quiz__control {
-        display: none;
-      }
-
-      .lia-table__sort {
-        display: none !important;
-      }
-
-      .lia-accordion__toggle {
-        visibility: hidden;
-        width: 5px !important;
-      }
-
-      .lia-code-terminal__output {
-        height: fit-content !important;
-        max-height: 800px !important;
-      }
-
-      .lia-table-responsive {
-        max-height: fit-content !important;
-      }
-    `;
-        style.appendChild(document.createTextNode(content));
-        const promise = new Promise((resolve, reject)=>{
-            style.onload = resolve;
-            style.onerror = reject;
+    try {
+        await page.goto(url, {
+            waitUntil: 'networkidle2',
+            // remove timeout
+            timeout: 0
         });
-        document.head.appendChild(style);
-        await promise;
-    });
+    } catch (e) {
+    }
     if (!argument.pdfPreview) setTimeout(async function() {
         await page.emulateMediaType('screen');
         await page.pdf({
