@@ -12324,6 +12324,20 @@ async function $fe4c9e5866fc6c52$export$278e8ca9e1fa9094(argument, json) {
         });
     } catch (e) {
     }
+    if (argument['pdf-stylesheet']) {
+        const href1 = $9Afec$path.resolve(__dirname + '/../', argument['pdf-stylesheet']);
+        await page.evaluate(async (href)=>{
+            const link = document.createElement('link');
+            link.rel = 'stylesheet';
+            link.href = href;
+            const promise = new Promise((resolve, reject)=>{
+                link.onload = resolve;
+                link.onerror = reject;
+            });
+            document.head.appendChild(link);
+            await promise;
+        }, href1);
+    }
     /*
   await page.evaluate(async () => {
     const style = document.createElement('style')
@@ -12492,6 +12506,7 @@ function $ccdb061a5468de1f$var$help() {
     console.log('--pdf-preferCSSPageSize     Give any CSS @page size declared in the page priority over what is declared in width and height or format options. Defaults to false, which will scale the content to fit the paper size. ');
     console.log('--pdf-omitBackground       Hides default white background and allows capturing screenshots with transparency. Defaults to true. ');
     console.log('--pdf-timeout               Set an additional time horizon to wait until finished.');
+    console.log('--pdf-stylesheet            Inject an local CSS for changing the appearance.');
 }
 function $ccdb061a5468de1f$var$parseArguments() {
     const argument = {
@@ -12526,7 +12541,8 @@ function $ccdb061a5468de1f$var$parseArguments() {
         'pdf-margin-left': $ccdb061a5468de1f$var$argv['pdf-margin-left'],
         'pdf-preferCSSPageSize': $ccdb061a5468de1f$var$argv['pdf-preferCSSPageSize'],
         'pdf-omitBackground': $ccdb061a5468de1f$var$argv['pdf-omitBackground'],
-        'pdf-timeout': $ccdb061a5468de1f$var$argv['pdf-timeout']
+        'pdf-timeout': $ccdb061a5468de1f$var$argv['pdf-timeout'],
+        'pdf-stylesheet': $ccdb061a5468de1f$var$argv['pdf-stylesheet']
     };
     argument.format = argument.format.toLowerCase();
     if (!argument.path && !$320134ce32dd9048$export$bab98af026af71ac(argument.input)) {

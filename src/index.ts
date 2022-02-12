@@ -198,6 +198,10 @@ function help() {
   console.log(
     '--pdf-timeout               Set an additional time horizon to wait until finished.'
   )
+
+  console.log(
+    '--pdf-stylesheet            Inject an local CSS for changing the appearance.'
+  )
 }
 
 function parseArguments() {
@@ -236,6 +240,8 @@ function parseArguments() {
     'pdf-preferCSSPageSize': argv['pdf-preferCSSPageSize'],
     'pdf-omitBackground': argv['pdf-omitBackground'],
     'pdf-timeout': argv['pdf-timeout'],
+
+    'pdf-stylesheet': argv['pdf-stylesheet'],
   }
 
   argument.format = argument.format.toLowerCase()

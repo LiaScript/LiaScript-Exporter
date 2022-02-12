@@ -39,6 +39,8 @@ export async function pdf(
     'pdf-preferCSSPageSize'?: boolean
     'pdf-omitBackground'?: boolean
     'pdf-timeout'?: number
+
+    'pdf-stylesheet'?: string
   },
   json
 ) {
@@ -80,6 +82,23 @@ export async function pdf(
       timeout: 0,
     })
   } catch (e) {}
+
+  if (argument['pdf-stylesheet']) {
+    const href = path.resolve(__dirname + '/../', argument['pdf-stylesheet'])
+
+    await page.evaluate(async (href) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = href
+
+      const promise = new Promise((resolve, reject) => {
+        link.onload = resolve
+        link.onerror = reject
+      })
+      document.head.appendChild(link)
+      await promise
+    }, href)
+  }
 
   /*
   await page.evaluate(async () => {
