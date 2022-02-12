@@ -12306,7 +12306,7 @@ async function $fe4c9e5866fc6c52$export$278e8ca9e1fa9094(argument, json) {
             '--unhandled-rejections=strict',
             '--disable-features=BlockInsecurePrivateNetworkRequests', 
         ],
-        headless: argument.pdfPreview ? false : true
+        headless: argument['pdf-preview'] ? false : true
     });
     const page = await browser.newPage();
     console.warn('depending on the size of the course, this can take a while, please be patient...');
@@ -12324,22 +12324,63 @@ async function $fe4c9e5866fc6c52$export$278e8ca9e1fa9094(argument, json) {
         });
     } catch (e) {
     }
-    if (!argument.pdfPreview) setTimeout(async function() {
+    /*
+  await page.evaluate(async () => {
+    const style = document.createElement('style')
+    style.type = 'text/css'
+    const content = `
+    :root {
+  
+      --color-highlight: 2,255,0;
+  --color-background: 122,122,122;
+  --color-border: 0,0,0;
+  --color-highlight-dark: 0,0,0;
+  --color-highlight-menu: 0,0,0;
+  --color-text: 0,0,255;
+  --global-font-size: 1rem;
+  --font-size-multiplier: 2;
+    }
+    `
+    style.appendChild(document.createTextNode(content))
+    const promise = new Promise((resolve, reject) => {
+      style.onload = resolve
+      style.onerror = reject
+    })
+    document.head.appendChild(style)
+    await promise
+  })
+
+  console.warn(argument)
+  */ if (!argument['pdf-preview']) setTimeout(async function() {
         await page.emulateMediaType('screen');
         await page.pdf({
             path: argument.output + '.pdf',
-            format: argument.pdfFormat || 'a4',
-            printBackground: argument.pdfPrintBackground || true,
-            displayHeaderFooter: argument.pdfDisplayHeaderFooter || false,
+            format: argument['pdf-format'] || 'a4',
+            printBackground: argument['pdf-printBackground'] || true,
+            displayHeaderFooter: argument['pdf-displayHeaderFooter'] || false,
             margin: {
-                top: 80,
-                bottom: 80,
-                left: 30,
-                right: 30
-            }
+                top: argument['pdf-margin-top'] || 80,
+                bottom: argument['pdf-margin-bottom'] || 80,
+                left: argument['pdf-margin-left'] || 30,
+                right: argument['pdf-margin-right'] || 30
+            },
+            scale: argument['pdf-scale'] || 1,
+            /*headerTemplate: {
+          data: argument['pdf-headerTemplate-date'] || '',
+          title: argument['pdf-headerTemplate-title'] || '',
+          url: argument['pdf-headerTemplate-url'] || '',
+          pageNumber: argument['pdf-headerTemplate-pageNumber'] || '',
+          totalPages: argument['pdf-headerTemplate-totalPages'] || '',
+        },
+        */ footerTemplate: argument['pdf-footerTemplate'] || '',
+            landscape: argument['pdf-landscape'] || false,
+            width: argument['pdf-width'] || '',
+            height: argument['pdf-height'] || '',
+            //preferCSSPageSize: argument['pdf-preferCSSPageSize'] || '',
+            omitBackground: argument['pdf-omitBackground'] || false
         });
         await browser.close();
-    }, argument.pdfTimeout || 30000);
+    }, argument['pdf-timeout'] || 30000);
 }
 
 
@@ -12427,13 +12468,30 @@ function $ccdb061a5468de1f$var$help() {
     console.log('--organization', '         set the organization title');
     console.log('--masteryScore', '         set the scorm masteryScore (a value between 0 -- 100), default is 0');
     console.log('--typicalDuration', '      set the scorm duration, default is PT0H5M0S');
-    console.log('\nPDF settings:');
-    console.log('');
-    console.log('--pdfPreview', '             open preview-browser (default false)');
-    console.log('--pdfTimeout', '             set an additional time horizon to wait until finished');
-    console.log('--pdfFormat', '              paper format (default a4)');
-    console.log('--pdfPrintBackground', '     allow backgroung-color (default true)');
-    console.log('--pdfDisplayHeaderFooter', ' print header and footer (default false)');
+    console.log('\nPDF settings:\n');
+    console.log('https://github.com/puppeteer/puppeteer/blob/main/docs/api.md#pagepdfoptions\n');
+    console.log('--pdf-preview               Open preview-browser (default false), print not possible');
+    console.log('--pdf-scale                 Scale of the webpage rendering. Defaults to 1. Scale amount must be between 0.1 and 2.');
+    console.log('--pdf-displayHeaderFooter   Display header and footer. Defaults to false.');
+    console.log('--pdf-headerTemplate-date   HTML template for the print header - formatted print date');
+    console.log('--pdf-headerTemplate-title  HTML template for the print header - document title');
+    console.log('--pdf-headerTemplate-url    HTML template for the print header - document location');
+    console.log('--pdf-headerTemplate-pageNumber   HTML template for the print header - current page number');
+    console.log('--pdf-headerTemplate-totalPages   HTML template for the print header - total pages in the document');
+    console.log('--pdf-footerTemplate        HTML template for the print footer. Should use the same format as the headerTemplate');
+    console.log('--pdf-printBackground       Print background graphics. Defaults to false');
+    console.log('--pdf-landscape             Paper orientation. Defaults to false.');
+    console.log('--pdf-pageRanges            Paper ranges to print, e.g., "1-5, 8, 11-13"');
+    console.log('--pdf-format                Paper format. If set, takes priority over width or height options. Defaults to a4.');
+    console.log('--pdf-width                 Paper width, accepts values labeled with units.');
+    console.log('--pdf-height                Paper height, accepts values labeled with units.');
+    console.log('--pdf-margin-top            Top margin, accepts values labeled with units.');
+    console.log('--pdf-margin-right          Right margin, accepts values labeled with units.');
+    console.log('--pdf-margin-bottom         Bottom margin, accepts values labeled with units.');
+    console.log('--pdf-margin-left           Left margin, accepts values labeled with units. ');
+    console.log('--pdf-preferCSSPageSize     Give any CSS @page size declared in the page priority over what is declared in width and height or format options. Defaults to false, which will scale the content to fit the paper size. ');
+    console.log('--pdf-omitBackground       Hides default white background and allows capturing screenshots with transparency. Defaults to true. ');
+    console.log('--pdf-timeout               Set an additional time horizon to wait until finished.');
 }
 function $ccdb061a5468de1f$var$parseArguments() {
     const argument = {
@@ -12448,11 +12506,27 @@ function $ccdb061a5468de1f$var$parseArguments() {
         masteryScore: $ccdb061a5468de1f$var$argv.masteryScore,
         typicalDuration: $ccdb061a5468de1f$var$argv.typicalDuration,
         // pdf cases
-        pdfPreview: $ccdb061a5468de1f$var$argv.pdfPreview,
-        pdfTimeout: $ccdb061a5468de1f$var$argv.pdfTimeout,
-        pdfFormat: $ccdb061a5468de1f$var$argv.pdfFormat,
-        pdfPrintBackground: $ccdb061a5468de1f$var$argv.pdfPrintBackground,
-        pdfDisplayHeaderFooter: $ccdb061a5468de1f$var$argv.pdfDisplayHeaderFooter
+        'pdf-preview': $ccdb061a5468de1f$var$argv['pdf-preview'],
+        'pdf-scale': $ccdb061a5468de1f$var$argv['pdf-scale'],
+        'pdf-displayHeaderFooter': $ccdb061a5468de1f$var$argv['pdf-displayHeaderFooter'],
+        'pdf-headerTemplate-date': $ccdb061a5468de1f$var$argv['pdf-headerTemplate-date'],
+        'pdf-headerTemplate-title': $ccdb061a5468de1f$var$argv['pdf-headerTemplate-title'],
+        'pdf-headerTemplate-url': $ccdb061a5468de1f$var$argv['pdf-headerTemplate-url'],
+        'pdf-headerTemplate-pageNumber': $ccdb061a5468de1f$var$argv['pdf-headerTemplate-pageNumber'],
+        'pdf-headerTemplate-totalPages': $ccdb061a5468de1f$var$argv['pdf-headerTemplate-totalPages'],
+        'pdf-footerTemplate': $ccdb061a5468de1f$var$argv['pdf-footerTemplate'],
+        'pdf-printBackground': $ccdb061a5468de1f$var$argv['pdf-printBackground'],
+        'pdf-landscape': $ccdb061a5468de1f$var$argv['pdf-landscape'],
+        'pdf-format': $ccdb061a5468de1f$var$argv['pdf-format'],
+        'pdf-width': $ccdb061a5468de1f$var$argv['pdf-width'],
+        'pdf-height': $ccdb061a5468de1f$var$argv['pdf-height'],
+        'pdf-margin-top': $ccdb061a5468de1f$var$argv['pdf-margin-top'],
+        'pdf-margin-bottom': $ccdb061a5468de1f$var$argv['pdf-margin-bottom'],
+        'pdf-margin-right': $ccdb061a5468de1f$var$argv['pdf-margin-right'],
+        'pdf-margin-left': $ccdb061a5468de1f$var$argv['pdf-margin-left'],
+        'pdf-preferCSSPageSize': $ccdb061a5468de1f$var$argv['pdf-preferCSSPageSize'],
+        'pdf-omitBackground': $ccdb061a5468de1f$var$argv['pdf-omitBackground'],
+        'pdf-timeout': $ccdb061a5468de1f$var$argv['pdf-timeout']
     };
     argument.format = argument.format.toLowerCase();
     if (!argument.path && !$320134ce32dd9048$export$bab98af026af71ac(argument.input)) {

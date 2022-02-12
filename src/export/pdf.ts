@@ -18,11 +18,27 @@ export async function pdf(
     typicalDuration?: string
 
     // special cases for PDF
-    pdfPreview?: boolean
-    pdfTimeout?: number
-    pdfFormat?: string
-    pdfPrintBackground?: boolean
-    pdfDisplayHeaderFooter?: boolean
+    'pdf-preview'?: boolean
+    'pdf-scale'?: number
+    'pdf-displayHeaderFooter'?: string
+    'pdf-headerTemplate-date'?: string
+    'pdf-headerTemplate-title'?: string
+    'pdf-headerTemplate-url'?: string
+    'pdf-headerTemplate-pageNumber'?: string
+    'pdf-headerTemplate-totalPages'?: string
+    'pdf-footerTemplate'?: string
+    'pdf-printBackground'?: boolean
+    'pdf-landscape'?: boolean
+    'pdf-format'?: string
+    'pdf-width'?: string | number
+    'pdf-height'?: string | number
+    'pdf-margin-top'?: string | number
+    'pdf-margin-bottom'?: string | number
+    'pdf-margin-right'?: string | number
+    'pdf-margin-left'?: string | number
+    'pdf-preferCSSPageSize'?: boolean
+    'pdf-omitBackground'?: boolean
+    'pdf-timeout'?: number
   },
   json
 ) {
@@ -42,7 +58,7 @@ export async function pdf(
       '--unhandled-rejections=strict',
       '--disable-features=BlockInsecurePrivateNetworkRequests',
     ],
-    headless: argument.pdfPreview ? false : true,
+    headless: argument['pdf-preview'] ? false : true,
   })
   const page = await browser.newPage()
 
@@ -65,21 +81,64 @@ export async function pdf(
     })
   } catch (e) {}
 
-  if (!argument.pdfPreview)
+  /*
+  await page.evaluate(async () => {
+    const style = document.createElement('style')
+    style.type = 'text/css'
+    const content = `
+    :root {
+  
+      --color-highlight: 2,255,0;
+  --color-background: 122,122,122;
+  --color-border: 0,0,0;
+  --color-highlight-dark: 0,0,0;
+  --color-highlight-menu: 0,0,0;
+  --color-text: 0,0,255;
+  --global-font-size: 1rem;
+  --font-size-multiplier: 2;
+    }
+    `
+    style.appendChild(document.createTextNode(content))
+    const promise = new Promise((resolve, reject) => {
+      style.onload = resolve
+      style.onerror = reject
+    })
+    document.head.appendChild(style)
+    await promise
+  })
+
+  console.warn(argument)
+  */
+  if (!argument['pdf-preview'])
     setTimeout(async function () {
       await page.emulateMediaType('screen')
       await page.pdf({
         path: argument.output + '.pdf',
-        format: argument.pdfFormat || 'a4',
-        printBackground: argument.pdfPrintBackground || true,
-        displayHeaderFooter: argument.pdfDisplayHeaderFooter || false,
+        format: argument['pdf-format'] || 'a4',
+        printBackground: argument['pdf-printBackground'] || true,
+        displayHeaderFooter: argument['pdf-displayHeaderFooter'] || false,
         margin: {
-          top: 80,
-          bottom: 80,
-          left: 30,
-          right: 30,
+          top: argument['pdf-margin-top'] || 80,
+          bottom: argument['pdf-margin-bottom'] || 80,
+          left: argument['pdf-margin-left'] || 30,
+          right: argument['pdf-margin-right'] || 30,
         },
+        scale: argument['pdf-scale'] || 1,
+        /*headerTemplate: {
+          data: argument['pdf-headerTemplate-date'] || '',
+          title: argument['pdf-headerTemplate-title'] || '',
+          url: argument['pdf-headerTemplate-url'] || '',
+          pageNumber: argument['pdf-headerTemplate-pageNumber'] || '',
+          totalPages: argument['pdf-headerTemplate-totalPages'] || '',
+        },
+        */
+        footerTemplate: argument['pdf-footerTemplate'] || '',
+        landscape: argument['pdf-landscape'] || false,
+        width: argument['pdf-width'] || '',
+        height: argument['pdf-height'] || '',
+        //preferCSSPageSize: argument['pdf-preferCSSPageSize'] || '',
+        omitBackground: argument['pdf-omitBackground'] || false,
       })
       await browser.close()
-    }, argument.pdfTimeout || 30000)
+    }, argument['pdf-timeout'] || 30000)
 }
