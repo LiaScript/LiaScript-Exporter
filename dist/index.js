@@ -12301,7 +12301,7 @@ async function $c4fe6e5c8950c8b3$export$372e2d09604f52f0(argument, json) {
 async function $fe4c9e5866fc6c52$export$372e2d09604f52f0(argument, json) {
     let url = `file://${__dirname}/assets/pdf/index.html?`;
     if ($320134ce32dd9048$export$bab98af026af71ac(argument.input)) url += argument.input;
-    else url += 'file:///' + $9Afec$path.resolve(__dirname + '/../', argument.input);
+    else url += 'file://' + $9Afec$path.resolve(argument.input);
     const browser = await $9Afec$puppeteer.launch({
         args: [
             '--disable-web-security',

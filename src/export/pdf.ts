@@ -41,7 +41,7 @@ export async function exporter(
   if (helper.isURL(argument.input)) {
     url += argument.input
   } else {
-    url += 'file:///' + path.resolve(__dirname + '/../', argument.input)
+    url += 'file://' + path.resolve(argument.input)
   }
 
   const browser = await puppeteer.launch({
