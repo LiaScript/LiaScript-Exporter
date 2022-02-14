@@ -25,10 +25,11 @@
     "asset:pdf": "cd LiaScript && git checkout feat/fullPage && npm i && npm run build:pdf && cp -r dist ../dist/assets/pdf && git checkout development",
     "asset:scorm1.2": "cd LiaScript && npm i && npm run build:scorm1.2 && cp -r dist ../dist/assets/scorm1.2",
     "asset:scorm2004": "cd LiaScript && npm i && npm run build:scorm2004 && cp -r dist ../dist/assets/scorm2004",
-    "build": "npx parcel build --no-scope-hoist --log-level verbose src/index.ts",
+    "build": "npx parcel build --no-cache --no-source-maps --no-scope-hoist src/index.ts && npm run shebang",
     "build:debug": "npx parcel build --target node --no-minify --log-level 5 src/index.ts",
     "run:moodle": "cd docker/moodle && docker-compose up",
-    "run:ilias": "cd docker/ilias && docker-compose up"
+    "run:ilias": "cd docker/ilias && docker-compose up",
+    "shebang": "sed  -i '1i #!/usr/bin/env node\\n' dist/index.js && chmod +x dist/index.js"
   },
   "keywords": [
     "LiaScript",

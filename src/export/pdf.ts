@@ -41,6 +41,7 @@ export async function exporter(
     'pdf-timeout'?: number
 
     'pdf-stylesheet'?: string
+    'pdf-theme'?: string
   },
   json
 ) {
@@ -98,6 +99,13 @@ export async function exporter(
       document.head.appendChild(link)
       await promise
     }, href)
+  }
+
+  if (argument['pdf-theme']) {
+    await page.evaluate(async (theme) => {
+      document.documentElement.classList.remove('lia-theme-default')
+      document.documentElement.classList.add('lia-theme-' + theme)
+    }, argument['pdf-theme'])
   }
 
   /*

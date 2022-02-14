@@ -129,6 +129,12 @@ function help() {
 
   console.log('\nPDF settings:\n')
   console.log(
+    '--pdf-stylesheet            Inject an local CSS for changing the appearance.'
+  )
+  console.log(
+    '--pdf-theme                 LiaScript themes: default, turquoise, blue, yellow'
+  )
+  console.log(
     'https://github.com/puppeteer/puppeteer/blob/main/docs/api.md#pagepdfoptions\n'
   )
   console.log(
@@ -198,10 +204,6 @@ function help() {
   console.log(
     '--pdf-timeout               Set an additional time horizon to wait until finished.'
   )
-
-  console.log(
-    '--pdf-stylesheet            Inject an local CSS for changing the appearance.'
-  )
 }
 
 function parseArguments() {
@@ -242,6 +244,7 @@ function parseArguments() {
     'pdf-timeout': argv['pdf-timeout'],
 
     'pdf-stylesheet': argv['pdf-stylesheet'],
+    'pdf-theme': argv['pdf-theme'],
   }
 
   argument.format = argument.format.toLowerCase()

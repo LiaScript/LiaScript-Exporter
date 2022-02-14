@@ -1,10 +1,12 @@
-var $1cMJR$xhr2 = require("xhr2");
-var $1cMJR$path = require("path");
-var $1cMJR$fsextra = require("fs-extra");
-var $1cMJR$minimist = require("minimist");
-var $1cMJR$temp = require("temp");
-var $1cMJR$liascriptsimplescormpackager = require("@liascript/simple-scorm-packager");
-var $1cMJR$puppeteer = require("puppeteer");
+#!/usr/bin/env node
+
+var $9Afec$xhr2 = require("xhr2");
+var $9Afec$path = require("path");
+var $9Afec$fsextra = require("fs-extra");
+var $9Afec$minimist = require("minimist");
+var $9Afec$temp = require("temp");
+var $9Afec$liascriptsimplescormpackager = require("@liascript/simple-scorm-packager");
+var $9Afec$puppeteer = require("puppeteer");
 
 var $parcel$global =
 typeof globalThis !== 'undefined'
@@ -16,7 +18,7 @@ typeof globalThis !== 'undefined'
   : typeof global !== 'undefined'
   ? global
   : {};
-var $6dfbad0dbd15a2d9$exports = {};
+var $eb828a374fec450c$exports = {};
 (function(scope) {
     function F(arity, fun, wrapper) {
         wrapper.a = arity;
@@ -12066,64 +12068,64 @@ type alias Process =
             }, A2($elm$json$Json$Decode$field, 'cmd', $elm$json$Json$Decode$string)))(0)
         }
     });
-})($6dfbad0dbd15a2d9$exports);
+})($eb828a374fec450c$exports);
 
 
 'use strict';
 
 
-function $cd9b4ea5a93bb666$export$6b76988456c0292f() {
+function $320134ce32dd9048$export$6b76988456c0292f() {
     return new Promise((resolve, reject)=>{
-        $1cMJR$temp.mkdir('lia', function(err, tmpPath) {
+        $9Afec$temp.mkdir('lia', function(err, tmpPath) {
             console.warn(err, tmpPath);
             if (err) reject(err);
             else resolve(tmpPath);
         });
     });
 }
-function $cd9b4ea5a93bb666$export$552bfb764b5cd2b4(filename, content) {
+function $320134ce32dd9048$export$552bfb764b5cd2b4(filename, content) {
     return new Promise((resolve, reject)=>{
-        $1cMJR$fsextra.writeFile(filename, content, function(err) {
+        $9Afec$fsextra.writeFile(filename, content, function(err) {
             if (err) reject(err);
             else resolve('ok');
         });
     });
 }
-function $cd9b4ea5a93bb666$export$3032dc2899b8ea9b(src, dest) {
+function $320134ce32dd9048$export$3032dc2899b8ea9b(src, dest) {
     const pattern = src.match(/(\/|\\)\.[^\\\/]+/g);
     console.warn(src);
     if (pattern === null) return true;
     else if (pattern.length == 0) return true;
     return false;
 }
-function $cd9b4ea5a93bb666$export$31a09876afc8115c(key, into) {
-    return $cd9b4ea5a93bb666$export$a976684a0efeb93f(`<script src="https://code.responsivevoice.org/responsivevoice.js?key=${key}"></script>`, into);
+function $320134ce32dd9048$export$31a09876afc8115c(key, into) {
+    return $320134ce32dd9048$export$a976684a0efeb93f(`<script src="https://code.responsivevoice.org/responsivevoice.js?key=${key}"></script>`, into);
 }
-function $cd9b4ea5a93bb666$export$a976684a0efeb93f(element, into) {
+function $320134ce32dd9048$export$a976684a0efeb93f(element, into) {
     return into.replace('</head>', element + '</head>');
 }
-function $cd9b4ea5a93bb666$export$bab98af026af71ac(uri) {
+function $320134ce32dd9048$export$bab98af026af71ac(uri) {
     return uri.startsWith('http://') || uri.startsWith('https://') || uri.startsWith('file://');
 }
 
 
 
 
-async function $4044c471004eafd2$export$372e2d09604f52f0(argument, json) {
+async function $1e521125b288b3fc$export$372e2d09604f52f0(argument, json) {
     // make temp folder
-    let tmp = await $cd9b4ea5a93bb666$export$6b76988456c0292f();
-    let tmpPath = $1cMJR$path.join(tmp, 'pro');
+    let tmp = await $320134ce32dd9048$export$6b76988456c0292f();
+    let tmpPath = $9Afec$path.join(tmp, 'pro');
     // copy assets to temp
-    await $1cMJR$fsextra.copy($1cMJR$path.join(__dirname, './assets/web'), tmpPath);
-    let index = $1cMJR$fsextra.readFileSync($1cMJR$path.join(tmpPath, 'index.html'), 'utf8');
+    await $9Afec$fsextra.copy($9Afec$path.join(__dirname, './assets/web'), tmpPath);
+    let index = $9Afec$fsextra.readFileSync($9Afec$path.join(tmpPath, 'index.html'), 'utf8');
     // change responsive key
-    if (argument.key) index = $cd9b4ea5a93bb666$export$31a09876afc8115c(argument.key, index);
+    if (argument.key) index = $320134ce32dd9048$export$31a09876afc8115c(argument.key, index);
     // add default course
-    index = $cd9b4ea5a93bb666$export$a976684a0efeb93f(`<script>
+    index = $320134ce32dd9048$export$a976684a0efeb93f(`<script>
   if (!window.LIA) {
     window.LIA = {}
   }
-  window.LIA.defaultCourse="${$1cMJR$path.basename(argument.readme)}"
+  window.LIA.defaultCourse="${$9Afec$path.basename(argument.readme)}"
   </script>`, index);
     try {
         index = index.replace('<title>Lia</title>', `<title>${json.lia.str_title}</title><meta property="og:title" content="${json.lia.str_title}"> <meta name="twitter:title" content="${json.lia.str_title}">`);
@@ -12141,21 +12143,21 @@ async function $4044c471004eafd2$export$372e2d09604f52f0(argument, json) {
     }
     try {
         let logo = json.lia.definition.logo;
-        index = $cd9b4ea5a93bb666$export$a976684a0efeb93f(`<meta property="og:image" content="${logo}"><meta name="twitter:image" content="${logo}">`, index);
+        index = $320134ce32dd9048$export$a976684a0efeb93f(`<meta property="og:image" content="${logo}"><meta name="twitter:image" content="${logo}">`, index);
         console.log('updating logo ...');
     } catch (e2) {
         console.warn('could not add image');
     }
     try {
-        await $cd9b4ea5a93bb666$export$552bfb764b5cd2b4($1cMJR$path.join(tmpPath, 'index.html'), index);
+        await $320134ce32dd9048$export$552bfb764b5cd2b4($9Afec$path.join(tmpPath, 'index.html'), index);
     } catch (e3) {
         console.warn(e3);
         return;
     }
     // copy base path or readme-directory into temp
-    await $1cMJR$fsextra.copy(argument.path, tmpPath);
-    await $1cMJR$fsextra.move(tmpPath, argument.output, {
-        filter: $cd9b4ea5a93bb666$export$3032dc2899b8ea9b
+    await $9Afec$fsextra.copy(argument.path, tmpPath);
+    await $9Afec$fsextra.move(tmpPath, argument.output, {
+        filter: $320134ce32dd9048$export$3032dc2899b8ea9b
     });
 }
 
@@ -12164,30 +12166,30 @@ async function $4044c471004eafd2$export$372e2d09604f52f0(argument, json) {
 
 
 
-async function $e66cfe93f93dd228$export$372e2d09604f52f0(argument, json) {
+async function $699da5868da0be18$export$372e2d09604f52f0(argument, json) {
     // make temp folder
-    let tmp = await $cd9b4ea5a93bb666$export$6b76988456c0292f();
-    let tmpPath = $1cMJR$path.join(tmp, 'pro');
+    let tmp = await $320134ce32dd9048$export$6b76988456c0292f();
+    let tmpPath = $9Afec$path.join(tmp, 'pro');
     // copy assets to temp
-    await $1cMJR$fsextra.copy($1cMJR$path.join(__dirname, './assets/scorm1.2'), tmpPath);
-    let index = $1cMJR$fsextra.readFileSync($1cMJR$path.join(tmpPath, 'index.html'), 'utf8');
+    await $9Afec$fsextra.copy($9Afec$path.join(__dirname, './assets/scorm1.2'), tmpPath);
+    let index = $9Afec$fsextra.readFileSync($9Afec$path.join(tmpPath, 'index.html'), 'utf8');
     // change responsive key
-    if (argument.key) index = $cd9b4ea5a93bb666$export$31a09876afc8115c(argument.key, index);
-    index = $cd9b4ea5a93bb666$export$a976684a0efeb93f('<script src="config.js"></script>', index);
-    await $cd9b4ea5a93bb666$export$552bfb764b5cd2b4($1cMJR$path.join(tmpPath, 'config.js'), 'window.config_ = ' + JSON.stringify({
+    if (argument.key) index = $320134ce32dd9048$export$31a09876afc8115c(argument.key, index);
+    index = $320134ce32dd9048$export$a976684a0efeb93f('<script src="config.js"></script>', index);
+    await $320134ce32dd9048$export$552bfb764b5cd2b4($9Afec$path.join(tmpPath, 'config.js'), 'window.config_ = ' + JSON.stringify({
         task: json.task,
         quiz: json.quiz,
         survey: json.survey
     }) + ';');
     try {
-        await $cd9b4ea5a93bb666$export$552bfb764b5cd2b4($1cMJR$path.join(tmpPath, 'index.html'), index);
+        await $320134ce32dd9048$export$552bfb764b5cd2b4($9Afec$path.join(tmpPath, 'index.html'), index);
     } catch (e) {
         console.warn(e);
         return;
     }
     // copy base path or readme-directory into temp
-    await $1cMJR$fsextra.copy(argument.path, tmpPath, {
-        filter: $cd9b4ea5a93bb666$export$3032dc2899b8ea9b
+    await $9Afec$fsextra.copy(argument.path, tmpPath, {
+        filter: $320134ce32dd9048$export$3032dc2899b8ea9b
     });
     let config = {
         version: '1.2',
@@ -12197,15 +12199,15 @@ async function $e66cfe93f93dd228$export$372e2d09604f52f0(argument, json) {
         masteryScore: argument.masteryScore || 0,
         startingPage: 'index.html',
         startingParameters: './' + argument.readme,
-        source: $1cMJR$path.join(tmp, 'pro'),
+        source: $9Afec$path.join(tmp, 'pro'),
         package: {
             version: json.lia.definition.version,
             zip: true,
             appendTimeToOutput: false,
-            name: $1cMJR$path.basename(argument.output),
+            name: $9Afec$path.basename(argument.output),
             author: json.lia.definition.author,
-            outputFolder: $1cMJR$path.dirname(argument.output),
-            filename: $1cMJR$path.basename(argument.output + '.zip'),
+            outputFolder: $9Afec$path.dirname(argument.output),
+            filename: $9Afec$path.basename(argument.output + '.zip'),
             description: json.lia.comment,
             //keywords: ['scorm', 'test', 'course'],
             typicalDuration: argument.typicalDuration || 'PT0H5M0S',
@@ -12219,7 +12221,7 @@ async function $e66cfe93f93dd228$export$372e2d09604f52f0(argument, json) {
             }
         }
     };
-    $1cMJR$liascriptsimplescormpackager(config, function(msg) {
+    $9Afec$liascriptsimplescormpackager(config, function(msg) {
         console.log(msg);
         process.exit(0);
     });
@@ -12230,30 +12232,30 @@ async function $e66cfe93f93dd228$export$372e2d09604f52f0(argument, json) {
 
 
 
-async function $61c57cb861b9cecd$export$372e2d09604f52f0(argument, json) {
+async function $c4fe6e5c8950c8b3$export$372e2d09604f52f0(argument, json) {
     // make temp folder
-    let tmp = await $cd9b4ea5a93bb666$export$6b76988456c0292f();
-    let tmpPath = $1cMJR$path.join(tmp, 'pro');
+    let tmp = await $320134ce32dd9048$export$6b76988456c0292f();
+    let tmpPath = $9Afec$path.join(tmp, 'pro');
     // copy assets to temp
-    await $1cMJR$fsextra.copy($1cMJR$path.join(__dirname, './assets/scorm2004'), tmpPath);
-    let index = $1cMJR$fsextra.readFileSync($1cMJR$path.join(tmpPath, 'index.html'), 'utf8');
+    await $9Afec$fsextra.copy($9Afec$path.join(__dirname, './assets/scorm2004'), tmpPath);
+    let index = $9Afec$fsextra.readFileSync($9Afec$path.join(tmpPath, 'index.html'), 'utf8');
     // change responsive key
-    if (argument.key) index = $cd9b4ea5a93bb666$export$31a09876afc8115c(argument.key, index);
-    index = $cd9b4ea5a93bb666$export$a976684a0efeb93f('<script src="config.js"></script>', index);
-    await $cd9b4ea5a93bb666$export$552bfb764b5cd2b4($1cMJR$path.join(tmpPath, 'config.js'), 'window.config_ = ' + JSON.stringify({
+    if (argument.key) index = $320134ce32dd9048$export$31a09876afc8115c(argument.key, index);
+    index = $320134ce32dd9048$export$a976684a0efeb93f('<script src="config.js"></script>', index);
+    await $320134ce32dd9048$export$552bfb764b5cd2b4($9Afec$path.join(tmpPath, 'config.js'), 'window.config_ = ' + JSON.stringify({
         task: json.task,
         quiz: json.quiz,
         survey: json.survey
     }) + ';');
     try {
-        await $cd9b4ea5a93bb666$export$552bfb764b5cd2b4($1cMJR$path.join(tmpPath, 'index.html'), index);
+        await $320134ce32dd9048$export$552bfb764b5cd2b4($9Afec$path.join(tmpPath, 'index.html'), index);
     } catch (e) {
         console.warn(e);
         return;
     }
     // copy base path or readme-directory into temp
-    await $1cMJR$fsextra.copy(argument.path, tmpPath, {
-        filter: $cd9b4ea5a93bb666$export$3032dc2899b8ea9b
+    await $9Afec$fsextra.copy(argument.path, tmpPath, {
+        filter: $320134ce32dd9048$export$3032dc2899b8ea9b
     });
     let config = {
         version: '2004 4th Edition',
@@ -12263,16 +12265,16 @@ async function $61c57cb861b9cecd$export$372e2d09604f52f0(argument, json) {
         masteryScore: argument.masteryScore || 0,
         startingPage: 'index.html',
         startingParameters: './' + argument.readme,
-        source: $1cMJR$path.join(tmp, 'pro'),
+        source: $9Afec$path.join(tmp, 'pro'),
         package: {
             version: json.lia.definition.version,
             appendTimeToOutput: false,
             date: '',
-            filename: $1cMJR$path.basename(argument.output + '.zip'),
+            filename: $9Afec$path.basename(argument.output + '.zip'),
             zip: true,
-            name: $1cMJR$path.basename(argument.output),
+            name: $9Afec$path.basename(argument.output),
             author: json.lia.definition.author,
-            outputFolder: $1cMJR$path.dirname(argument.output),
+            outputFolder: $9Afec$path.dirname(argument.output),
             description: json.lia.comment,
             //keywords: ['scorm', 'test', 'course'],
             typicalDuration: argument.typicalDuration || 'PT0H5M0S',
@@ -12286,7 +12288,7 @@ async function $61c57cb861b9cecd$export$372e2d09604f52f0(argument, json) {
             }
         }
     };
-    $1cMJR$liascriptsimplescormpackager(config, function(msg) {
+    $9Afec$liascriptsimplescormpackager(config, function(msg) {
         console.log(msg);
         process.exit(0);
     });
@@ -12296,11 +12298,11 @@ async function $61c57cb861b9cecd$export$372e2d09604f52f0(argument, json) {
 
 
 
-async function $1b958fb009a5413a$export$372e2d09604f52f0(argument, json) {
+async function $fe4c9e5866fc6c52$export$372e2d09604f52f0(argument, json) {
     let url = `file://${__dirname}/assets/pdf/index.html?`;
-    if ($cd9b4ea5a93bb666$export$bab98af026af71ac(argument.input)) url += argument.input;
-    else url += 'file:///' + $1cMJR$path.resolve(__dirname + '/../', argument.input);
-    const browser = await $1cMJR$puppeteer.launch({
+    if ($320134ce32dd9048$export$bab98af026af71ac(argument.input)) url += argument.input;
+    else url += 'file:///' + $9Afec$path.resolve(__dirname + '/../', argument.input);
+    const browser = await $9Afec$puppeteer.launch({
         args: [
             '--disable-web-security',
             '--disable-features=IsolateOrigins',
@@ -12327,7 +12329,7 @@ async function $1b958fb009a5413a$export$372e2d09604f52f0(argument, json) {
     } catch (e) {
     }
     if (argument['pdf-stylesheet']) {
-        const href1 = $1cMJR$path.resolve(__dirname + '/../', argument['pdf-stylesheet']);
+        const href1 = $9Afec$path.resolve(__dirname + '/../', argument['pdf-stylesheet']);
         await page.evaluate(async (href)=>{
             const link = document.createElement('link');
             link.rel = 'stylesheet';
@@ -12340,6 +12342,10 @@ async function $1b958fb009a5413a$export$372e2d09604f52f0(argument, json) {
             await promise;
         }, href1);
     }
+    if (argument['pdf-theme']) await page.evaluate(async (theme)=>{
+        document.documentElement.classList.remove('lia-theme-default');
+        document.documentElement.classList.add('lia-theme-' + theme);
+    }, argument['pdf-theme']);
     /*
   await page.evaluate(async () => {
     const style = document.createElement('style')
@@ -12402,22 +12408,22 @@ async function $1b958fb009a5413a$export$372e2d09604f52f0(argument, json) {
 
 
 
-$parcel$global.XMLHttpRequest = $1cMJR$xhr2;
+$parcel$global.XMLHttpRequest = $9Afec$xhr2;
 
 
 
-const $3390e11c3e52170f$var$argv = $1cMJR$minimist(process.argv.slice(2));
+const $ccdb061a5468de1f$var$argv = $9Afec$minimist(process.argv.slice(2));
 // -------------------------------Main Execution-------------------------------
-if ($3390e11c3e52170f$var$argv.v || $3390e11c3e52170f$var$argv.version) console.log('version: 1.0.51--0.9.51');
-else if ($3390e11c3e52170f$var$argv.h || $3390e11c3e52170f$var$argv.help) $3390e11c3e52170f$var$help();
-else if ($3390e11c3e52170f$var$argv.i || $3390e11c3e52170f$var$argv.input) $3390e11c3e52170f$var$run($3390e11c3e52170f$var$parseArguments());
+if ($ccdb061a5468de1f$var$argv.v || $ccdb061a5468de1f$var$argv.version) console.log('version: 1.0.51--0.9.51');
+else if ($ccdb061a5468de1f$var$argv.h || $ccdb061a5468de1f$var$argv.help) $ccdb061a5468de1f$var$help();
+else if ($ccdb061a5468de1f$var$argv.i || $ccdb061a5468de1f$var$argv.input) $ccdb061a5468de1f$var$run($ccdb061a5468de1f$var$parseArguments());
 else {
     console.warn('No input defined');
-    $3390e11c3e52170f$var$help();
+    $ccdb061a5468de1f$var$help();
 }
 // ----------------------------------------------------------------------------
-function $3390e11c3e52170f$var$run(argument) {
-    var app = $6dfbad0dbd15a2d9$exports.Elm.Worker.init({
+function $ccdb061a5468de1f$var$run(argument) {
+    var app = $eb828a374fec450c$exports.Elm.Worker.init({
         flags: {
             cmd: ''
         }
@@ -12432,21 +12438,21 @@ function $3390e11c3e52170f$var$run(argument) {
         switch(argument.format){
             case 'json':
             case 'fulljson':
-                $1cMJR$fsextra.writeFile(argument.output + '.json', string, function(err) {
+                $9Afec$fsextra.writeFile(argument.output + '.json', string, function(err) {
                     if (err) console.error(err);
                 });
                 break;
             case 'scorm1.2':
-                $e66cfe93f93dd228$export$372e2d09604f52f0(argument, JSON.parse(string));
+                $699da5868da0be18$export$372e2d09604f52f0(argument, JSON.parse(string));
                 break;
             case 'scorm2004':
-                $61c57cb861b9cecd$export$372e2d09604f52f0(argument, JSON.parse(string));
+                $c4fe6e5c8950c8b3$export$372e2d09604f52f0(argument, JSON.parse(string));
                 break;
             case 'web':
-                $4044c471004eafd2$export$372e2d09604f52f0(argument, JSON.parse(string));
+                $1e521125b288b3fc$export$372e2d09604f52f0(argument, JSON.parse(string));
                 break;
             case 'pdf':
-                $1b958fb009a5413a$export$372e2d09604f52f0(argument, JSON.parse(string));
+                $fe4c9e5866fc6c52$export$372e2d09604f52f0(argument, JSON.parse(string));
                 break;
             default:
                 console.warn('unknown output format', argument.format);
@@ -12456,20 +12462,20 @@ function $3390e11c3e52170f$var$run(argument) {
         // the format is changed only locally, the SCORM and web exporters simply
         // require some meta data from the parsed json output
         const format = argument.format == 'scorm1.2' || argument.format == 'scorm2004' || argument.format == 'pdf' || argument.format == 'web' ? 'fulljson' : argument.format;
-        if (!$cd9b4ea5a93bb666$export$bab98af026af71ac(argument.input)) {
-            const data = $1cMJR$fsextra.readFileSync(argument.input, 'utf8');
+        if (!$320134ce32dd9048$export$bab98af026af71ac(argument.input)) {
+            const data = $9Afec$fsextra.readFileSync(argument.input, 'utf8');
             app.ports.input.send([
                 format,
                 data
             ]);
-        } else if (argument.format === 'pdf') $1b958fb009a5413a$export$372e2d09604f52f0(argument, {
+        } else if (argument.format === 'pdf') $fe4c9e5866fc6c52$export$372e2d09604f52f0(argument, {
         });
         else console.warn('URLs are not allowed as input');
     } catch (err) {
         console.error(err);
     }
 }
-function $3390e11c3e52170f$var$help() {
+function $ccdb061a5468de1f$var$help() {
     console.log('LiaScript-Exporter');
     console.log('');
     console.log('-h', '--help', '           show this help');
@@ -12485,6 +12491,8 @@ function $3390e11c3e52170f$var$help() {
     console.log('--masteryScore', '         set the scorm masteryScore (a value between 0 -- 100), default is 0');
     console.log('--typicalDuration', '      set the scorm duration, default is PT0H5M0S');
     console.log('\nPDF settings:\n');
+    console.log('--pdf-stylesheet            Inject an local CSS for changing the appearance.');
+    console.log('--pdf-theme                 LiaScript themes: default, turquoise, blue, yellow');
     console.log('https://github.com/puppeteer/puppeteer/blob/main/docs/api.md#pagepdfoptions\n');
     console.log('--pdf-preview               Open preview-browser (default false), print not possible');
     console.log('--pdf-scale                 Scale of the webpage rendering. Defaults to 1. Scale amount must be between 0.1 and 2.');
@@ -12508,51 +12516,50 @@ function $3390e11c3e52170f$var$help() {
     console.log('--pdf-preferCSSPageSize     Give any CSS @page size declared in the page priority over what is declared in width and height or format options. Defaults to false, which will scale the content to fit the paper size. ');
     console.log('--pdf-omitBackground       Hides default white background and allows capturing screenshots with transparency. Defaults to true. ');
     console.log('--pdf-timeout               Set an additional time horizon to wait until finished.');
-    console.log('--pdf-stylesheet            Inject an local CSS for changing the appearance.');
 }
-function $3390e11c3e52170f$var$parseArguments() {
+function $ccdb061a5468de1f$var$parseArguments() {
     const argument = {
-        input: $3390e11c3e52170f$var$argv.i || $3390e11c3e52170f$var$argv.input,
-        readme: $3390e11c3e52170f$var$argv.i || $3390e11c3e52170f$var$argv.input,
-        output: $3390e11c3e52170f$var$argv.o || $3390e11c3e52170f$var$argv.output || 'output',
-        format: $3390e11c3e52170f$var$argv.f || $3390e11c3e52170f$var$argv.format || 'json',
-        path: $3390e11c3e52170f$var$argv.p || $3390e11c3e52170f$var$argv.path,
-        key: $3390e11c3e52170f$var$argv.k || $3390e11c3e52170f$var$argv.key,
+        input: $ccdb061a5468de1f$var$argv.i || $ccdb061a5468de1f$var$argv.input,
+        readme: $ccdb061a5468de1f$var$argv.i || $ccdb061a5468de1f$var$argv.input,
+        output: $ccdb061a5468de1f$var$argv.o || $ccdb061a5468de1f$var$argv.output || 'output',
+        format: $ccdb061a5468de1f$var$argv.f || $ccdb061a5468de1f$var$argv.format || 'json',
+        path: $ccdb061a5468de1f$var$argv.p || $ccdb061a5468de1f$var$argv.path,
+        key: $ccdb061a5468de1f$var$argv.k || $ccdb061a5468de1f$var$argv.key,
         // special cases for SCORM
-        organization: $3390e11c3e52170f$var$argv.organization,
-        masteryScore: $3390e11c3e52170f$var$argv.masteryScore,
-        typicalDuration: $3390e11c3e52170f$var$argv.typicalDuration,
+        organization: $ccdb061a5468de1f$var$argv.organization,
+        masteryScore: $ccdb061a5468de1f$var$argv.masteryScore,
+        typicalDuration: $ccdb061a5468de1f$var$argv.typicalDuration,
         // pdf cases
-        'pdf-preview': $3390e11c3e52170f$var$argv['pdf-preview'],
-        'pdf-scale': $3390e11c3e52170f$var$argv['pdf-scale'],
-        'pdf-displayHeaderFooter': $3390e11c3e52170f$var$argv['pdf-displayHeaderFooter'],
-        'pdf-headerTemplate-date': $3390e11c3e52170f$var$argv['pdf-headerTemplate-date'],
-        'pdf-headerTemplate-title': $3390e11c3e52170f$var$argv['pdf-headerTemplate-title'],
-        'pdf-headerTemplate-url': $3390e11c3e52170f$var$argv['pdf-headerTemplate-url'],
-        'pdf-headerTemplate-pageNumber': $3390e11c3e52170f$var$argv['pdf-headerTemplate-pageNumber'],
-        'pdf-headerTemplate-totalPages': $3390e11c3e52170f$var$argv['pdf-headerTemplate-totalPages'],
-        'pdf-footerTemplate': $3390e11c3e52170f$var$argv['pdf-footerTemplate'],
-        'pdf-printBackground': $3390e11c3e52170f$var$argv['pdf-printBackground'],
-        'pdf-landscape': $3390e11c3e52170f$var$argv['pdf-landscape'],
-        'pdf-format': $3390e11c3e52170f$var$argv['pdf-format'],
-        'pdf-width': $3390e11c3e52170f$var$argv['pdf-width'],
-        'pdf-height': $3390e11c3e52170f$var$argv['pdf-height'],
-        'pdf-margin-top': $3390e11c3e52170f$var$argv['pdf-margin-top'],
-        'pdf-margin-bottom': $3390e11c3e52170f$var$argv['pdf-margin-bottom'],
-        'pdf-margin-right': $3390e11c3e52170f$var$argv['pdf-margin-right'],
-        'pdf-margin-left': $3390e11c3e52170f$var$argv['pdf-margin-left'],
-        'pdf-preferCSSPageSize': $3390e11c3e52170f$var$argv['pdf-preferCSSPageSize'],
-        'pdf-omitBackground': $3390e11c3e52170f$var$argv['pdf-omitBackground'],
-        'pdf-timeout': $3390e11c3e52170f$var$argv['pdf-timeout'],
-        'pdf-stylesheet': $3390e11c3e52170f$var$argv['pdf-stylesheet']
+        'pdf-preview': $ccdb061a5468de1f$var$argv['pdf-preview'],
+        'pdf-scale': $ccdb061a5468de1f$var$argv['pdf-scale'],
+        'pdf-displayHeaderFooter': $ccdb061a5468de1f$var$argv['pdf-displayHeaderFooter'],
+        'pdf-headerTemplate-date': $ccdb061a5468de1f$var$argv['pdf-headerTemplate-date'],
+        'pdf-headerTemplate-title': $ccdb061a5468de1f$var$argv['pdf-headerTemplate-title'],
+        'pdf-headerTemplate-url': $ccdb061a5468de1f$var$argv['pdf-headerTemplate-url'],
+        'pdf-headerTemplate-pageNumber': $ccdb061a5468de1f$var$argv['pdf-headerTemplate-pageNumber'],
+        'pdf-headerTemplate-totalPages': $ccdb061a5468de1f$var$argv['pdf-headerTemplate-totalPages'],
+        'pdf-footerTemplate': $ccdb061a5468de1f$var$argv['pdf-footerTemplate'],
+        'pdf-printBackground': $ccdb061a5468de1f$var$argv['pdf-printBackground'],
+        'pdf-landscape': $ccdb061a5468de1f$var$argv['pdf-landscape'],
+        'pdf-format': $ccdb061a5468de1f$var$argv['pdf-format'],
+        'pdf-width': $ccdb061a5468de1f$var$argv['pdf-width'],
+        'pdf-height': $ccdb061a5468de1f$var$argv['pdf-height'],
+        'pdf-margin-top': $ccdb061a5468de1f$var$argv['pdf-margin-top'],
+        'pdf-margin-bottom': $ccdb061a5468de1f$var$argv['pdf-margin-bottom'],
+        'pdf-margin-right': $ccdb061a5468de1f$var$argv['pdf-margin-right'],
+        'pdf-margin-left': $ccdb061a5468de1f$var$argv['pdf-margin-left'],
+        'pdf-preferCSSPageSize': $ccdb061a5468de1f$var$argv['pdf-preferCSSPageSize'],
+        'pdf-omitBackground': $ccdb061a5468de1f$var$argv['pdf-omitBackground'],
+        'pdf-timeout': $ccdb061a5468de1f$var$argv['pdf-timeout'],
+        'pdf-stylesheet': $ccdb061a5468de1f$var$argv['pdf-stylesheet'],
+        'pdf-theme': $ccdb061a5468de1f$var$argv['pdf-theme']
     };
     argument.format = argument.format.toLowerCase();
-    if (!argument.path && !$cd9b4ea5a93bb666$export$bab98af026af71ac(argument.input)) {
-        argument.path = $1cMJR$path.dirname(argument.input);
-        argument.readme = $1cMJR$path.basename(argument.input);
+    if (!argument.path && !$320134ce32dd9048$export$bab98af026af71ac(argument.input)) {
+        argument.path = $9Afec$path.dirname(argument.input);
+        argument.readme = $9Afec$path.basename(argument.input);
     }
     return argument;
 }
 
 
-//# sourceMappingURL=index.js.map
