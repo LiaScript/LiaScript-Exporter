@@ -79,6 +79,7 @@ export async function scorm1_2(
       name: path.basename(argument.output),
       author: json.lia.definition.author,
       outputFolder: path.dirname(argument.output),
+      filename: path.basename(argument.output + '.zip'),
       description: json.lia.comment,
       //keywords: ['scorm', 'test', 'course'],
       typicalDuration: argument.typicalDuration || 'PT0H5M0S',

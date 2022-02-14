@@ -76,7 +76,7 @@ export async function scorm2004(
       version: json.lia.definition.version,
       appendTimeToOutput: false,
       date: '',
-      filename: path.basename(argument.output),
+      filename: path.basename(argument.output + '.zip'),
       zip: true,
       name: path.basename(argument.output),
       author: json.lia.definition.author,

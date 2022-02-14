@@ -40,7 +40,7 @@
   "author": "André Dietrich",
   "license": "ISC",
   "dependencies": {
-    "@liascript/simple-scorm-packager": "^0.2.5",
+    "@liascript/simple-scorm-packager": "^0.2.6",
     "fs-extra": "^9.1.0",
     "minimist": "^1.2.5",
     "path": "^0.12.7",

@@ -12089,7 +12089,7 @@ function $320134ce32dd9048$export$552bfb764b5cd2b4(filename, content) {
     });
 }
 function $320134ce32dd9048$export$3032dc2899b8ea9b(src, dest) {
-    const pattern = src.match(/\/\.[^/]+/g);
+    const pattern = src.match(/(\/|\\)\.[^\\\/]+/g);
     console.warn(src);
     if (pattern === null) return true;
     else if (pattern.length == 0) return true;
@@ -12204,6 +12204,7 @@ async function $699da5868da0be18$export$898f980c79cf0ae3(argument, json) {
             name: $9Afec$path.basename(argument.output),
             author: json.lia.definition.author,
             outputFolder: $9Afec$path.dirname(argument.output),
+            filename: $9Afec$path.basename(argument.output + '.zip'),
             description: json.lia.comment,
             //keywords: ['scorm', 'test', 'course'],
             typicalDuration: argument.typicalDuration || 'PT0H5M0S',
@@ -12266,7 +12267,7 @@ async function $c4fe6e5c8950c8b3$export$959c20543bc18709(argument, json) {
             version: json.lia.definition.version,
             appendTimeToOutput: false,
             date: '',
-            filename: $9Afec$path.basename(argument.output),
+            filename: $9Afec$path.basename(argument.output + '.zip'),
             zip: true,
             name: $9Afec$path.basename(argument.output),
             author: json.lia.definition.author,
