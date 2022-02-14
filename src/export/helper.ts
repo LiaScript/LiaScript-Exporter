@@ -21,7 +21,7 @@ export function writeFile(filename: string, content: string) {
 }
 
 export function filterHidden(src: string, dest: string) {
-  const pattern = src.match(/\/\.[^/]+/g)
+  const pattern = src.match(/(\/|\\)\.[^\\\/]+/g)
 
   console.warn(src)
 
