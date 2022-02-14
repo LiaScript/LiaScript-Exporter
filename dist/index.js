@@ -12484,6 +12484,7 @@ function $ccdb061a5468de1f$var$help() {
     console.log('--scorm-organization', '      set the organization title');
     console.log('--scorm-masteryScore', '      set the scorm masteryScore (a value between 0 -- 100), default is 0');
     console.log('--scorm-typicalDuration', '   set the scorm duration, default is PT0H5M0S');
+    console.log('--scorm-iframe', '   use an iframe instead of SCORM starting parameter');
     console.log('\nPDF settings:\n');
     console.log('--pdf-stylesheet           Inject an local CSS for changing the appearance.');
     console.log('--pdf-theme                LiaScript themes: default, turquoise, blue, red, yellow');
@@ -12541,10 +12542,8 @@ function $ccdb061a5468de1f$var$parseArguments() {
         'pdf-theme': $ccdb061a5468de1f$var$argv['pdf-theme']
     };
     argument.format = argument.format.toLowerCase();
-    if (!argument.path && !$320134ce32dd9048$export$bab98af026af71ac(argument.input)) {
-        argument.path = $9Afec$path.dirname(argument.input);
-        argument.readme = $9Afec$path.basename(argument.input);
-    }
+    if (!argument.path && !$320134ce32dd9048$export$bab98af026af71ac(argument.input)) argument.path = $9Afec$path.dirname(argument.input);
+    argument.readme = argument.input.replace(argument.path, '.');
     return argument;
 }
 

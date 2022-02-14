@@ -127,6 +127,11 @@ function help() {
     '   set the scorm duration, default is PT0H5M0S'
   )
 
+  console.log(
+    '--scorm-iframe',
+    '   use an iframe instead of SCORM starting parameter'
+  )
+
   console.log('\nPDF settings:\n')
   console.log(
     '--pdf-stylesheet           Inject an local CSS for changing the appearance.'
@@ -235,8 +240,9 @@ function parseArguments() {
 
   if (!argument.path && !helper.isURL(argument.input)) {
     argument.path = path.dirname(argument.input)
-    argument.readme = path.basename(argument.input)
   }
+
+  argument.readme = argument.input.replace(argument.path, '.')
 
   return argument
 }
