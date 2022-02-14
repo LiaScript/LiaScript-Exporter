@@ -1,3 +1,5 @@
 LiaScript
 .cache
 .gitmodules
+.parcel-cache
+.custom.css
