@@ -84,29 +84,29 @@ SCORM 1.2 settings:
 
 PDF settings:
 
---pdf-stylesheet     Inject an local CSS for changing the appearance.
---pdf-theme          LiaScript themes: default, turquoise, blue, yellow
---pdf-timeout                     Set an additional time horizon to wait until finished.
+--pdf-stylesheet           Inject a local CSS for changing the appearance.
+--pdf-theme                LiaScript themes: default, turquoise, blue, red, yellow
+--pdf-timeout              Set an additional time horizon to wait until finished.
 
 https://github.com/puppeteer/puppeteer/blob/main/docs/api.md#pagepdfoptions
 
---pdf-preview                     Open preview-browser (default false), print not possible
---pdf-scale                       Scale of the webpage rendering. Defaults to 1. Scale amount must be between 0.1 and 2.
---pdf-displayHeaderFooter         Display header and footer. Defaults to false.
---pdf-headerTemplate              HTML template for the print header, inject classes date, title, url, pageNumber, totalPages
---pdf-footerTemplate              HTML template for the print footer. Should use the same format as the headerTemplate
---pdf-printBackground             Print background graphics. Defaults to false
---pdf-landscape                   Paper orientation. Defaults to false.
---pdf-pageRanges                  Paper ranges to print, e.g., "1-5, 8, 11-13"
---pdf-format                      Paper format. If set, takes priority over width or height options. Defaults to a4.
---pdf-width                       Paper width, accepts values labeled with units.
---pdf-height                      Paper height, accepts values labeled with units.
---pdf-margin-top                  Top margin, accepts values labeled with units.
---pdf-margin-right                Right margin, accepts values labeled with units.
---pdf-margin-bottom               Bottom margin, accepts values labeled with units.
---pdf-margin-left                 Left margin, accepts values labeled with units. 
---pdf-preferCSSPageSize           Give any CSS @page size declared in the page priority over what is declared in width and height or format options.
---pdf-omitBackground              Hides default white background and allows capturing screenshots with transparency. Defaults to true. 
+--pdf-preview              Open preview-browser (default false), print not possible
+--pdf-scale                Scale of the webpage rendering. Defaults to 1. Scale amount must be between 0.1 and 2.
+--pdf-displayHeaderFooter  Display header and footer. Defaults to false.
+--pdf-headerTemplate       HTML template for the print header, inject classes date, title, url, pageNumber, totalPages
+--pdf-footerTemplate       HTML template for the print footer. Should use the same format as the headerTemplate
+--pdf-printBackground      Print background graphics. Defaults to false
+--pdf-landscape            Paper orientation. Defaults to false.
+--pdf-pageRanges           Paper ranges to print, e.g., "1-5, 8, 11-13"
+--pdf-format               Paper format. If set, takes priority over width or height options. Defaults to a4.
+--pdf-width                Paper width, accepts values labeled with units.
+--pdf-height               Paper height, accepts values labeled with units.
+--pdf-margin-top           Top margin, accepts values labeled with units.
+--pdf-margin-right         Right margin, accepts values labeled with units.
+--pdf-margin-bottom        Bottom margin, accepts values labeled with units.
+--pdf-margin-left          Left margin, accepts values labeled with units. 
+--pdf-preferCSSPageSize    Give any CSS @page size declared in the page priority over what is declared in width and height or format options.
+--pdf-omitBackground       Hides default white background and allows capturing screenshots with transparency. Defaults to true. 
 ```
 
 ### SCORM1.2
