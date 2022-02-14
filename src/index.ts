@@ -129,13 +129,13 @@ function help() {
 
   console.log('\nPDF settings:\n')
   console.log(
-    '--pdf-stylesheet     Inject an local CSS for changing the appearance.'
+    '--pdf-stylesheet           Inject an local CSS for changing the appearance.'
   )
   console.log(
-    '--pdf-theme          LiaScript themes: default, turquoise, blue, yellow'
+    '--pdf-theme                LiaScript themes: default, turquoise, blue, red, yellow'
   )
   console.log(
-    '--pdf-timeout                     Set an additional time horizon to wait until finished.'
+    '--pdf-timeout              Set an additional time horizon to wait until finished.'
   )
   console.log(
     '\nhttps://github.com/puppeteer/puppeteer/blob/main/docs/api.md#pagepdfoptions\n'

@@ -109,9 +109,7 @@ https://github.com/puppeteer/puppeteer/blob/main/docs/api.md#pagepdfoptions
 --pdf-omitBackground              Hides default white background and allows capturing screenshots with transparency. Defaults to true. 
 ```
 
-
 ### SCORM1.2
-
 
 If you want to generate a SCORM1.2 conformant package of you LiaScript-course,
 use the following command:
@@ -119,6 +117,10 @@ use the following command:
 ``` shell
 $ liaex -i project/README.md --format scorm1.2 --output rockOn
 
+..
+project/README.md
+project/Lizenz.md
+..
 [17:8:33] SCORM 'Init'
 [17:8:33] SCORM 'create /tmp/lia202037-30349-o6yx80.zb0eo/pro/imsmanifest.xml'
 [17:8:33] SCORM 'create /tmp/lia202037-30349-o6yx80.zb0eo/pro/metadata.xml'
@@ -126,18 +128,24 @@ $ liaex -i project/README.md --format scorm1.2 --output rockOn
 [17:8:33] SCORM 'create /tmp/lia202037-30349-o6yx80.zb0eo/pro/ims_xml.xsd'
 [17:8:33] SCORM 'create /tmp/lia202037-30349-o6yx80.zb0eo/pro/imscp_rootv1p1p2.xsd'
 [17:8:33] SCORM 'create /tmp/lia202037-30349-o6yx80.zb0eo/pro/imsmd_rootv1p2p1.xsd'
-[17:8:33] SCORM 'Archiving /tmp/lia202037-30349-o6yx80.zb0eo/pro to rockOn_v1.0.0_2020-04-07.zip'
-[17:8:34] SCORM 'rockOn_v1.0.0_2020-04-07.zip 4977779 total bytes'
+[17:8:33] SCORM 'Archiving /tmp/lia202037-30349-o6yx80.zb0eo/pro to rockOn.zip'
+[17:8:34] SCORM 'rockOn.zip 4977779 total bytes'
 Done
 
 $ ls
-.. rockOn_v1.0.0_2020-04-07.zip ..
+.. rockOn.zip ..
 ```
 
 The format is `scorm1.2` and the input folder is `project/README.md`. All the
 content and sub-folders of this folder is then coppied into your SCORM.zip. The
 name is defined by your output definition and contains the current version
 number of you course as well as the current date.
+
+> Note: SCORM 1.2 is too restrictive for storing data, that is why we currently
+> only support to store location information, all states of quizzes, surveys, etc.
+> will be lost after reload.
+>
+> Better use **SCORM2004** as output
 
 __Text 2 Speech `--key`__
 
@@ -152,33 +160,81 @@ $ liaex -i project/README.md --format scorm1.2 --key KluQksUs --output rockOn
 ...
 ```
 
-__Mastery Score `--masteryScore`__
+__Mastery Score `--scorm-masteryScore`__
 
 You can define the percentage of quizzes and surveys a student had to fullfill
-in order to accomplish or pass the course by adding the `--masteryScore`
+in order to accomplish or pass the course by adding the `--scorm-masteryScore`
 parameter. Just set it to 0 to allow all to pass the course, otherwise choose a
 value between 0 and 100. All quizzes and surveys are treated equally, thus if
 your course contains 10 quizzes, every quiz counts as 10%. If you do not set
 this paramter, a default value of 80 percent is used.
 
 ``` shell
-$ liaex -i project/README.md --format scorm1.2 --masteryScore 0 --output rockOn
+$ liaex -i project/README.md --format scorm1.2 --scorm-masteryScore 0 --output rockOn
 ...
 ```
 
 __Other Root `--path`__
 
 If your README is not in the root of your project, you can also use the `--path`
-paramter to the directory to be coppied into your scorm project. You will still
+parameter to the directory to be copied into your scorm project. You will still
 have to use `--input` to define the main course document, but his has to be
-relative to path paramter.
+relative to path parameter.
 
-__`--organization`__
+__`--scrom-organization`__
 
-This paramter simply sets the organization paramter in your SCORM imsmanifest file. All other parameters are taken from the course
+This parameter simply sets the organization parameter in your SCORM
+`imsmanifest` file. All other parameters are taken from the course
 
 
-### web
+### SCORM2004
+
+This output format provides the same settings as `scorm1.2`, but it allows to
+store state information within the backend LMS. Currently supported are the
+states for:
+
+* quizzes
+* surveys
+* tasks
+
+coding elements currently exceed the max storage capacity, that is why these
+are not stored at the moment.
+
+``` shell
+$ liaex -i project/README.md --format scorm2004 --output rockOn
+..
+project/README.md
+project/Lizenz.md
+..
+[12:38:31] SCORM 'Init'
+[12:38:31] SCORM 'create /tmp/lia2022114-556265-d2jh0k.odg7e/pro/imsmanifest.xml'
+[12:38:31] SCORM 'create /tmp/lia2022114-556265-d2jh0k.odg7e/pro/metadata.xml'
+[12:38:31] SCORM 'create /tmp/lia2022114-556265-d2jh0k.odg7e/pro/XMLSchema.dtd'
+[12:38:31] SCORM 'create /tmp/lia2022114-556265-d2jh0k.odg7e/pro/adlcp_v1p3.xsd'
+[12:38:31] SCORM 'create /tmp/lia2022114-556265-d2jh0k.odg7e/pro/adlnav_v1p3.xsd'
+[12:38:31] SCORM 'create /tmp/lia2022114-556265-d2jh0k.odg7e/pro/adlseq_v1p3.xsd'
+[12:38:31] SCORM 'create /tmp/lia2022114-556265-d2jh0k.odg7e/pro/datatypes.dtd'
+[12:38:31] SCORM 'create /tmp/lia2022114-556265-d2jh0k.odg7e/pro/imscp_v1p1.xsd'
+[12:38:31] SCORM 'create /tmp/lia2022114-556265-d2jh0k.odg7e/pro/imsss_v1p0.xsd'
+[12:38:31] SCORM 'create /tmp/lia2022114-556265-d2jh0k.odg7e/pro/imsss_v1p0auxresource.xsd'
+[12:38:31] SCORM 'create /tmp/lia2022114-556265-d2jh0k.odg7e/pro/imsss_v1p0control.xsd'
+[12:38:31] SCORM 'create /tmp/lia2022114-556265-d2jh0k.odg7e/pro/imsss_v1p0delivery.xsd'
+[12:38:31] SCORM 'create /tmp/lia2022114-556265-d2jh0k.odg7e/pro/imsss_v1p0limit.xsd'
+[12:38:31] SCORM 'create /tmp/lia2022114-556265-d2jh0k.odg7e/pro/imsss_v1p0objective.xsd'
+[12:38:31] SCORM 'create /tmp/lia2022114-556265-d2jh0k.odg7e/pro/imsss_v1p0random.xsd'
+[12:38:31] SCORM 'create /tmp/lia2022114-556265-d2jh0k.odg7e/pro/imsss_v1p0rollup.xsd'
+[12:38:31] SCORM 'create /tmp/lia2022114-556265-d2jh0k.odg7e/pro/imsss_v1p0seqrule.xsd'
+[12:38:31] SCORM 'create /tmp/lia2022114-556265-d2jh0k.odg7e/pro/imsss_v1p0util.xsd'
+[12:38:31] SCORM 'create /tmp/lia2022114-556265-d2jh0k.odg7e/pro/xml.xsd'
+[12:38:31] SCORM 'Archiving /tmp/lia2022114-556265-d2jh0k.odg7e/pro to rockOn.zip'
+[12:38:32] SCORM 'rockOn.zip 19588706 total bytes'
+Done
+
+$ ls
+.. rockOn.zip ..
+```
+
+### WEB
 
 This format will generate an autonomous & standalone web-project that can be uploaded
 to any webserver.
@@ -199,15 +255,95 @@ information is used to generate preview cards properly.
 If you want your site to speak the text out loud, then you will have to add your
 responsivevoice-key via `--key`.
 
+### PDF
+
+For printing out courses to PDF this package uses
+[puppeteer](https://github.com/puppeteer/puppeteer/blob/main/docs/api.md#pagepdfoptions),
+which is an entire browser. This blows up the project a bit, but it allows to
+store also the results of iframes, and to run coding examples. What this export
+does is basically load the entire course within a single page and run all
+scripts included, code examples, etc. Videos, iframes, audio, etc. are preserved
+as screenshots, which provide a link to the original resource.
+
+This format has a `--pdf-preview` mode, which allows you to inspect your course,
+which works also with https inputs.
+
+
+``` shell
+$ liaex --format pdf --pdf-preview -i https://raw.githubusercontent.com/TUBAF-IfI-LiaScript/VL_ProzeduraleProgrammierung/master/08_Objekte.md
+
+```
+
+There are a couple of tweaks, that you can use, have a look at the following
+resource:
+
+[Puppeteer pdf settings](https://github.com/puppeteer/puppeteer/blob/main/docs/api.md#pagepdfoptions)
+
+__`--pdf-stylesheet`__
+
+Next to these settings, you can also change the appearance of fonts, colors, etc.
+with you custom CSS. This can define anything, and you can also overwrite all CSS
+variables LiaScript is based on.
+
+``` bash
+$ cat custom.css \
+:root {
+    --color-highlight: 2, 255, 0;
+    --color-background: 122, 122, 122;
+    --color-border: 0, 0, 0;
+    --color-highlight-dark: 0, 0, 0;
+    --color-highlight-menu: 0, 0, 0;
+    --color-text: 0, 0, 255;
+    --global-font-size: 1rem;
+    --font-size-multiplier: 2;
+}% 
+$
+$ liaex --format pdf \
+  -o example \
+  --pdf-stylesheet custom.css \
+  -i https://github.com/TUBAF-IfI-LiaScript/VL_ProzeduraleProgrammierung/blob/master/08_Objekte.md
+
+depending on the size of the course, this can take a while, please be patient...
+```
+
+__`--pdf-theme`__
+
+If you want to change only the appearance by defining the LiaScript theme,
+which can be either: default, turquoise, blue, red, yellow.
+
+``` bash
+$ liaex --format pdf \
+  -o example \
+  --pdf-theme red \
+  -i https://github.com/TUBAF-IfI-LiaScript/VL_ProzeduraleProgrammierung/blob/master/08_Objekte.md
+
+depending on the size of the course, this can take a while, please be patient...
+```
+
+
+__`--pdf-timeout`__
+
+You have to be aware, that the PDF generation can be quite time consuming
+especially for large courses with a lot of scripts and code-snippets to be
+executed and multimedia to be loaded. `puppeteer` thus sometimes does not know
+when the course is ready. If the generation fails, you should try to increase
+this value, the default is 30000, which means 30 seconds.
+
+``` bash
+$ liaex --format pdf \
+  -o example \
+  --pdf-timeout 50000 \
+  -i https://github.com/TUBAF-IfI-LiaScript/VL_ProzeduraleProgrammierung/blob/master/08_Objekte.md
+
+depending on the size of the course, this can take a while, please be patient...
+```
 ## TODOs & Contributions
 
 * Further exporter
 
-  - SCORM 2004
   - AICC
   - xAPI
   - IMS Cartridge
-  - PDF
   - ePub
 
 * Integration into the Atom IDE
