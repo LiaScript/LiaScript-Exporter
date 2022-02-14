@@ -1,11 +1,11 @@
 // @ts-ignore
 import { Elm } from '../LiaScript/src/elm/Worker.elm'
 
-import { web } from './export/web'
-import { scorm1_2 } from './export/scorm12'
-import { scorm2004 } from './export/scorm2004'
-import { pdf } from './export/pdf'
-import { isURL } from './export/helper'
+import * as WEB from './export/web'
+import * as SCORM12 from './export/scorm12'
+import * as SCORM2004 from './export/scorm2004'
+import * as PDF from './export/pdf'
+import * as helper from './export/helper'
 
 global.XMLHttpRequest = require('xhr2')
 
@@ -46,19 +46,19 @@ function run(argument) {
         break
       }
       case 'scorm1.2': {
-        scorm1_2(argument, JSON.parse(string))
+        SCORM12.exporter(argument, JSON.parse(string))
         break
       }
       case 'scorm2004': {
-        scorm2004(argument, JSON.parse(string))
+        SCORM2004.exporter(argument, JSON.parse(string))
         break
       }
       case 'web': {
-        web(argument, JSON.parse(string))
+        WEB.exporter(argument, JSON.parse(string))
         break
       }
       case 'pdf': {
-        pdf(argument, JSON.parse(string))
+        PDF.exporter(argument, JSON.parse(string))
         break
       }
       default: {
@@ -78,11 +78,11 @@ function run(argument) {
         ? 'fulljson'
         : argument.format
 
-    if (!isURL(argument.input)) {
+    if (!helper.isURL(argument.input)) {
       const data = fs.readFileSync(argument.input, 'utf8')
       app.ports.input.send([format, data])
     } else if (argument.format === 'pdf') {
-      pdf(argument, {})
+      PDF.exporter(argument, {})
     } else {
       console.warn('URLs are not allowed as input')
     }
@@ -246,7 +246,7 @@ function parseArguments() {
 
   argument.format = argument.format.toLowerCase()
 
-  if (!argument.path && !isURL(argument.input)) {
+  if (!argument.path && !helper.isURL(argument.input)) {
     argument.path = path.dirname(argument.input)
     argument.readme = path.basename(argument.input)
   }

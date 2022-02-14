@@ -1,16 +1,10 @@
-import {
-  writeFile,
-  tmpDir,
-  filterHidden,
-  inject,
-  injectResponsivevoice,
-} from './helper'
+import * as helper from './helper'
 
 const scormPackager = require('@liascript/simple-scorm-packager')
 const path = require('path')
 const fs = require('fs-extra')
 
-export async function scorm2004(
+export async function exporter(
   argument: {
     input: string
     readme: string
@@ -27,7 +21,7 @@ export async function scorm2004(
   json
 ) {
   // make temp folder
-  let tmp = await tmpDir()
+  let tmp = await helper.tmpDir()
 
   let tmpPath = path.join(tmp, 'pro')
 
@@ -38,11 +32,11 @@ export async function scorm2004(
 
   // change responsive key
   if (argument.key) {
-    index = injectResponsivevoice(argument.key, index)
+    index = helper.injectResponsivevoice(argument.key, index)
   }
 
-  index = inject('<script src="config.js"></script>', index)
-  await writeFile(
+  index = helper.inject('<script src="config.js"></script>', index)
+  await helper.writeFile(
     path.join(tmpPath, 'config.js'),
     'window.config_ = ' +
       JSON.stringify({
@@ -54,14 +48,14 @@ export async function scorm2004(
   )
 
   try {
-    await writeFile(path.join(tmpPath, 'index.html'), index)
+    await helper.writeFile(path.join(tmpPath, 'index.html'), index)
   } catch (e) {
     console.warn(e)
     return
   }
 
   // copy base path or readme-directory into temp
-  await fs.copy(argument.path, tmpPath, { filter: filterHidden })
+  await fs.copy(argument.path, tmpPath, { filter: helper.filterHidden })
 
   let config = {
     version: '2004 4th Edition',

@@ -1,15 +1,9 @@
-import {
-  writeFile,
-  tmpDir,
-  injectResponsivevoice,
-  inject,
-  filterHidden,
-} from './helper'
+import * as helper from './helper'
 
 const path = require('path')
 const fs = require('fs-extra')
 
-export async function web(
+export async function exporter(
   argument: {
     input: string
     readme: string
@@ -26,7 +20,7 @@ export async function web(
   json: any
 ) {
   // make temp folder
-  let tmp = await tmpDir()
+  let tmp = await helper.tmpDir()
 
   let tmpPath = path.join(tmp, 'pro')
 
@@ -37,11 +31,11 @@ export async function web(
 
   // change responsive key
   if (argument.key) {
-    index = injectResponsivevoice(argument.key, index)
+    index = helper.injectResponsivevoice(argument.key, index)
   }
 
   // add default course
-  index = inject(
+  index = helper.inject(
     `<script>
   if (!window.LIA) {
     window.LIA = {}
@@ -77,7 +71,7 @@ export async function web(
 
   try {
     let logo = json.lia.definition.logo
-    index = inject(
+    index = helper.inject(
       `<meta property="og:image" content="${logo}"><meta name="twitter:image" content="${logo}">`,
       index
     )
@@ -88,7 +82,7 @@ export async function web(
   }
 
   try {
-    await writeFile(path.join(tmpPath, 'index.html'), index)
+    await helper.writeFile(path.join(tmpPath, 'index.html'), index)
   } catch (e) {
     console.warn(e)
     return
@@ -96,5 +90,5 @@ export async function web(
 
   // copy base path or readme-directory into temp
   await fs.copy(argument.path, tmpPath)
-  await fs.move(tmpPath, argument.output, { filter: filterHidden })
+  await fs.move(tmpPath, argument.output, { filter: helper.filterHidden })
 }

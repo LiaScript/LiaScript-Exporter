@@ -1,9 +1,9 @@
-import { isURL } from './helper'
+import * as helper from './helper'
 
 const path = require('path')
 const puppeteer = require('puppeteer')
 
-export async function pdf(
+export async function exporter(
   argument: {
     input: string
     readme: string
@@ -46,7 +46,7 @@ export async function pdf(
 ) {
   let url = `file://${__dirname}/assets/pdf/index.html?`
 
-  if (isURL(argument.input)) {
+  if (helper.isURL(argument.input)) {
     url += argument.input
   } else {
     url += 'file:///' + path.resolve(__dirname + '/../', argument.input)

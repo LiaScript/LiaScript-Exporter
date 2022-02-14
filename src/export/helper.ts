@@ -1,3 +1,5 @@
+'use strict'
+
 const temp = require('temp')
 const fs = require('fs-extra')
 
