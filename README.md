@@ -1,6 +1,5 @@
 # LiaScript-Exporter
 
-
 This shall be a generic LiaScript-Exporter that can export educational content
 into different formats, so that LiaScript courses can also be utilized in
 different Learning Management Systems (LMS) or Readers for static content (PDF,
@@ -15,7 +14,6 @@ wide-spread exchange format. See the last section
 > you are comming from Android, you can also directly install the website as an
 > app on your device. Actually, there is now need for a BackEnd-system anymore,
 > but if you need to track the progress of you students, you can use this tool...
-
 
 ## Install
 
@@ -73,14 +71,42 @@ LiaScript-Exporter
 -i --input           file to be used as input
 -p --path            path to be packed, if not set, the path of the input file is used
 -o --output          output file name (default is output), the ending is define by the format
--f --format          scorm1.2, web, json, fullJson, fullJson2 (default is json)
+-f --format          scorm1.2, scorm2004, json, fullJson, web, pdf (default is json)
+-v --version         output the current version
 
--k --key             responsive voice key
+-k --key             responsive voice key 
 
 SCORM 1.2 settings:
 
---organization          set the organization title
---masteryScore          set the scorm masteryScore (a value between 0 -- 100), default is 80
+--scorm-organization       set the organization title
+--scorm-masteryScore       set the scorm masteryScore (a value between 0 -- 100), default is 0
+--scorm-typicalDuration    set the scorm duration, default is PT0H5M0S
+
+PDF settings:
+
+--pdf-stylesheet     Inject an local CSS for changing the appearance.
+--pdf-theme          LiaScript themes: default, turquoise, blue, yellow
+--pdf-timeout                     Set an additional time horizon to wait until finished.
+
+https://github.com/puppeteer/puppeteer/blob/main/docs/api.md#pagepdfoptions
+
+--pdf-preview                     Open preview-browser (default false), print not possible
+--pdf-scale                       Scale of the webpage rendering. Defaults to 1. Scale amount must be between 0.1 and 2.
+--pdf-displayHeaderFooter         Display header and footer. Defaults to false.
+--pdf-headerTemplate              HTML template for the print header, inject classes date, title, url, pageNumber, totalPages
+--pdf-footerTemplate              HTML template for the print footer. Should use the same format as the headerTemplate
+--pdf-printBackground             Print background graphics. Defaults to false
+--pdf-landscape                   Paper orientation. Defaults to false.
+--pdf-pageRanges                  Paper ranges to print, e.g., "1-5, 8, 11-13"
+--pdf-format                      Paper format. If set, takes priority over width or height options. Defaults to a4.
+--pdf-width                       Paper width, accepts values labeled with units.
+--pdf-height                      Paper height, accepts values labeled with units.
+--pdf-margin-top                  Top margin, accepts values labeled with units.
+--pdf-margin-right                Right margin, accepts values labeled with units.
+--pdf-margin-bottom               Bottom margin, accepts values labeled with units.
+--pdf-margin-left                 Left margin, accepts values labeled with units. 
+--pdf-preferCSSPageSize           Give any CSS @page size declared in the page priority over what is declared in width and height or format options.
+--pdf-omitBackground              Hides default white background and allows capturing screenshots with transparency. Defaults to true. 
 ```
 
 

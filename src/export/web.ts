@@ -11,11 +11,6 @@ export async function exporter(
     format: string
     path: string
     key?: string
-
-    // special cases for SCORM
-    organization?: string
-    masteryScore?: string
-    typicalDuration?: string
   },
   json: any
 ) {

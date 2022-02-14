@@ -14,9 +14,9 @@ export async function exporter(
     key?: string
 
     // special cases for SCORM
-    organization?: string
-    masteryScore?: string
-    typicalDuration?: string
+    'scorm-organization'?: string
+    'scorm-masteryScore'?: string
+    'scorm-typicalDuration'?: string
   },
   json
 ) {
@@ -59,10 +59,10 @@ export async function exporter(
 
   let config = {
     version: '1.2',
-    organization: argument.organization || 'LiaScript',
+    organization: argument['scorm-organization'] || 'LiaScript',
     title: json.lia.str_title,
     language: json.lia.definition.language,
-    masteryScore: argument.masteryScore || 0,
+    masteryScore: argument['scorm-masteryScore'] || 0,
     startingPage: 'index.html',
     startingParameters: './' + argument.readme,
     source: path.join(tmp, 'pro'),
@@ -76,11 +76,11 @@ export async function exporter(
       filename: path.basename(argument.output + '.zip'),
       description: json.lia.comment,
       //keywords: ['scorm', 'test', 'course'],
-      typicalDuration: argument.typicalDuration || 'PT0H5M0S',
+      typicalDuration: argument['scorm-typicalDuration'] || 'PT0H5M0S',
       //rights: `©${new Date().getFullYear()} My Amazing Company. All right reserved.`,
       vcard: {
         author: json.lia.definition.author,
-        org: argument.organization || 'LiaScript',
+        org: argument['scorm-organization'] || 'LiaScript',
         //tel: '(000) 000-0000',
         //address: 'my address',
         mail: json.lia.definition.email,

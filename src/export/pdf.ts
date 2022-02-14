@@ -12,20 +12,11 @@ export async function exporter(
     path: string
     key?: string
 
-    // special cases for SCORM
-    organization?: string
-    masteryScore?: string
-    typicalDuration?: string
-
     // special cases for PDF
     'pdf-preview'?: boolean
     'pdf-scale'?: number
     'pdf-displayHeaderFooter'?: string
-    'pdf-headerTemplate-date'?: string
-    'pdf-headerTemplate-title'?: string
-    'pdf-headerTemplate-url'?: string
-    'pdf-headerTemplate-pageNumber'?: string
-    'pdf-headerTemplate-totalPages'?: string
+    'pdf-headerTemplate'?: string
     'pdf-footerTemplate'?: string
     'pdf-printBackground'?: boolean
     'pdf-landscape'?: boolean
@@ -151,14 +142,7 @@ export async function exporter(
           right: argument['pdf-margin-right'] || 30,
         },
         scale: argument['pdf-scale'] || 1,
-        /*headerTemplate: {
-          data: argument['pdf-headerTemplate-date'] || '',
-          title: argument['pdf-headerTemplate-title'] || '',
-          url: argument['pdf-headerTemplate-url'] || '',
-          pageNumber: argument['pdf-headerTemplate-pageNumber'] || '',
-          totalPages: argument['pdf-headerTemplate-totalPages'] || '',
-        },
-        */
+        headerTemplate: argument['pdf-headerTemplate'],
         footerTemplate: argument['pdf-footerTemplate'] || '',
         landscape: argument['pdf-landscape'] || false,
         width: argument['pdf-width'] || '',

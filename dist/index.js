@@ -12193,10 +12193,10 @@ async function $699da5868da0be18$export$372e2d09604f52f0(argument, json) {
     });
     let config = {
         version: '1.2',
-        organization: argument.organization || 'LiaScript',
+        organization: argument['scorm-organization'] || 'LiaScript',
         title: json.lia.str_title,
         language: json.lia.definition.language,
-        masteryScore: argument.masteryScore || 0,
+        masteryScore: argument['scorm-masteryScore'] || 0,
         startingPage: 'index.html',
         startingParameters: './' + argument.readme,
         source: $9Afec$path.join(tmp, 'pro'),
@@ -12210,11 +12210,11 @@ async function $699da5868da0be18$export$372e2d09604f52f0(argument, json) {
             filename: $9Afec$path.basename(argument.output + '.zip'),
             description: json.lia.comment,
             //keywords: ['scorm', 'test', 'course'],
-            typicalDuration: argument.typicalDuration || 'PT0H5M0S',
+            typicalDuration: argument['scorm-typicalDuration'] || 'PT0H5M0S',
             //rights: `©${new Date().getFullYear()} My Amazing Company. All right reserved.`,
             vcard: {
                 author: json.lia.definition.author,
-                org: argument.organization || 'LiaScript',
+                org: argument['scorm-organization'] || 'LiaScript',
                 //tel: '(000) 000-0000',
                 //address: 'my address',
                 mail: json.lia.definition.email
@@ -12259,10 +12259,10 @@ async function $c4fe6e5c8950c8b3$export$372e2d09604f52f0(argument, json) {
     });
     let config = {
         version: '2004 4th Edition',
-        organization: argument.organization || 'LiaScript',
+        organization: argument['scorm-organization'] || 'LiaScript',
         title: json.lia.str_title,
         language: json.lia.definition.language,
-        masteryScore: argument.masteryScore || 0,
+        masteryScore: argument['scorm-masteryScore'] || 0,
         startingPage: 'index.html',
         startingParameters: './' + argument.readme,
         source: $9Afec$path.join(tmp, 'pro'),
@@ -12277,11 +12277,11 @@ async function $c4fe6e5c8950c8b3$export$372e2d09604f52f0(argument, json) {
             outputFolder: $9Afec$path.dirname(argument.output),
             description: json.lia.comment,
             //keywords: ['scorm', 'test', 'course'],
-            typicalDuration: argument.typicalDuration || 'PT0H5M0S',
+            typicalDuration: argument['scorm-typicalDuration'] || 'PT0H5M0S',
             //rights: `©${new Date().getFullYear()} My Amazing Company. All right reserved.`,
             vcard: {
                 author: json.lia.definition.author,
-                org: argument.organization || 'LiaScript',
+                org: argument['scorm-organization'] || 'LiaScript',
                 //tel: '(000) 000-0000',
                 //address: 'my address',
                 mail: json.lia.definition.email
@@ -12387,14 +12387,8 @@ async function $fe4c9e5866fc6c52$export$372e2d09604f52f0(argument, json) {
                 right: argument['pdf-margin-right'] || 30
             },
             scale: argument['pdf-scale'] || 1,
-            /*headerTemplate: {
-          data: argument['pdf-headerTemplate-date'] || '',
-          title: argument['pdf-headerTemplate-title'] || '',
-          url: argument['pdf-headerTemplate-url'] || '',
-          pageNumber: argument['pdf-headerTemplate-pageNumber'] || '',
-          totalPages: argument['pdf-headerTemplate-totalPages'] || '',
-        },
-        */ footerTemplate: argument['pdf-footerTemplate'] || '',
+            headerTemplate: argument['pdf-headerTemplate'],
+            footerTemplate: argument['pdf-footerTemplate'] || '',
             landscape: argument['pdf-landscape'] || false,
             width: argument['pdf-width'] || '',
             height: argument['pdf-height'] || '',
@@ -12487,35 +12481,31 @@ function $ccdb061a5468de1f$var$help() {
     console.log('\n-k', '--key', '            responsive voice key ');
     console.log('\nSCORM 1.2 settings:');
     console.log('');
-    console.log('--organization', '         set the organization title');
-    console.log('--masteryScore', '         set the scorm masteryScore (a value between 0 -- 100), default is 0');
-    console.log('--typicalDuration', '      set the scorm duration, default is PT0H5M0S');
+    console.log('--scorm-organization', '      set the organization title');
+    console.log('--scorm-masteryScore', '      set the scorm masteryScore (a value between 0 -- 100), default is 0');
+    console.log('--scorm-typicalDuration', '   set the scorm duration, default is PT0H5M0S');
     console.log('\nPDF settings:\n');
-    console.log('--pdf-stylesheet            Inject an local CSS for changing the appearance.');
-    console.log('--pdf-theme                 LiaScript themes: default, turquoise, blue, yellow');
-    console.log('https://github.com/puppeteer/puppeteer/blob/main/docs/api.md#pagepdfoptions\n');
-    console.log('--pdf-preview               Open preview-browser (default false), print not possible');
-    console.log('--pdf-scale                 Scale of the webpage rendering. Defaults to 1. Scale amount must be between 0.1 and 2.');
-    console.log('--pdf-displayHeaderFooter   Display header and footer. Defaults to false.');
-    console.log('--pdf-headerTemplate-date   HTML template for the print header - formatted print date');
-    console.log('--pdf-headerTemplate-title  HTML template for the print header - document title');
-    console.log('--pdf-headerTemplate-url    HTML template for the print header - document location');
-    console.log('--pdf-headerTemplate-pageNumber   HTML template for the print header - current page number');
-    console.log('--pdf-headerTemplate-totalPages   HTML template for the print header - total pages in the document');
-    console.log('--pdf-footerTemplate        HTML template for the print footer. Should use the same format as the headerTemplate');
-    console.log('--pdf-printBackground       Print background graphics. Defaults to false');
-    console.log('--pdf-landscape             Paper orientation. Defaults to false.');
-    console.log('--pdf-pageRanges            Paper ranges to print, e.g., "1-5, 8, 11-13"');
-    console.log('--pdf-format                Paper format. If set, takes priority over width or height options. Defaults to a4.');
-    console.log('--pdf-width                 Paper width, accepts values labeled with units.');
-    console.log('--pdf-height                Paper height, accepts values labeled with units.');
-    console.log('--pdf-margin-top            Top margin, accepts values labeled with units.');
-    console.log('--pdf-margin-right          Right margin, accepts values labeled with units.');
-    console.log('--pdf-margin-bottom         Bottom margin, accepts values labeled with units.');
-    console.log('--pdf-margin-left           Left margin, accepts values labeled with units. ');
-    console.log('--pdf-preferCSSPageSize     Give any CSS @page size declared in the page priority over what is declared in width and height or format options. Defaults to false, which will scale the content to fit the paper size. ');
-    console.log('--pdf-omitBackground       Hides default white background and allows capturing screenshots with transparency. Defaults to true. ');
-    console.log('--pdf-timeout               Set an additional time horizon to wait until finished.');
+    console.log('--pdf-stylesheet     Inject an local CSS for changing the appearance.');
+    console.log('--pdf-theme          LiaScript themes: default, turquoise, blue, yellow');
+    console.log('--pdf-timeout                     Set an additional time horizon to wait until finished.');
+    console.log('\nhttps://github.com/puppeteer/puppeteer/blob/main/docs/api.md#pagepdfoptions\n');
+    console.log('--pdf-preview                     Open preview-browser (default false), print not possible');
+    console.log('--pdf-scale                       Scale of the webpage rendering. Defaults to 1. Scale amount must be between 0.1 and 2.');
+    console.log('--pdf-displayHeaderFooter         Display header and footer. Defaults to false.');
+    console.log('--pdf-headerTemplate              HTML template for the print header, inject classes date, title, url, pageNumber, totalPages');
+    console.log('--pdf-footerTemplate              HTML template for the print footer. Should use the same format as the headerTemplate');
+    console.log('--pdf-printBackground             Print background graphics. Defaults to false');
+    console.log('--pdf-landscape                   Paper orientation. Defaults to false.');
+    console.log('--pdf-pageRanges                  Paper ranges to print, e.g., "1-5, 8, 11-13"');
+    console.log('--pdf-format                      Paper format. If set, takes priority over width or height options. Defaults to a4.');
+    console.log('--pdf-width                       Paper width, accepts values labeled with units.');
+    console.log('--pdf-height                      Paper height, accepts values labeled with units.');
+    console.log('--pdf-margin-top                  Top margin, accepts values labeled with units.');
+    console.log('--pdf-margin-right                Right margin, accepts values labeled with units.');
+    console.log('--pdf-margin-bottom               Bottom margin, accepts values labeled with units.');
+    console.log('--pdf-margin-left                 Left margin, accepts values labeled with units. ');
+    console.log('--pdf-preferCSSPageSize           Give any CSS @page size declared in the page priority over what is declared in width and height or format options.');
+    console.log('--pdf-omitBackground              Hides default white background and allows capturing screenshots with transparency. Defaults to true. ');
 }
 function $ccdb061a5468de1f$var$parseArguments() {
     const argument = {
@@ -12526,18 +12516,14 @@ function $ccdb061a5468de1f$var$parseArguments() {
         path: $ccdb061a5468de1f$var$argv.p || $ccdb061a5468de1f$var$argv.path,
         key: $ccdb061a5468de1f$var$argv.k || $ccdb061a5468de1f$var$argv.key,
         // special cases for SCORM
-        organization: $ccdb061a5468de1f$var$argv.organization,
-        masteryScore: $ccdb061a5468de1f$var$argv.masteryScore,
-        typicalDuration: $ccdb061a5468de1f$var$argv.typicalDuration,
+        'scorm-organization': $ccdb061a5468de1f$var$argv['scorm-organization'],
+        'scorm-masteryScore': $ccdb061a5468de1f$var$argv['scorm-masteryScore'],
+        'scorm-typicalDuration': $ccdb061a5468de1f$var$argv['scorm-typicalDuration'],
         // pdf cases
         'pdf-preview': $ccdb061a5468de1f$var$argv['pdf-preview'],
         'pdf-scale': $ccdb061a5468de1f$var$argv['pdf-scale'],
         'pdf-displayHeaderFooter': $ccdb061a5468de1f$var$argv['pdf-displayHeaderFooter'],
-        'pdf-headerTemplate-date': $ccdb061a5468de1f$var$argv['pdf-headerTemplate-date'],
-        'pdf-headerTemplate-title': $ccdb061a5468de1f$var$argv['pdf-headerTemplate-title'],
-        'pdf-headerTemplate-url': $ccdb061a5468de1f$var$argv['pdf-headerTemplate-url'],
-        'pdf-headerTemplate-pageNumber': $ccdb061a5468de1f$var$argv['pdf-headerTemplate-pageNumber'],
-        'pdf-headerTemplate-totalPages': $ccdb061a5468de1f$var$argv['pdf-headerTemplate-totalPages'],
+        'pdf-headerTemplate': $ccdb061a5468de1f$var$argv['pdf-headerTemplate'],
         'pdf-footerTemplate': $ccdb061a5468de1f$var$argv['pdf-footerTemplate'],
         'pdf-printBackground': $ccdb061a5468de1f$var$argv['pdf-printBackground'],
         'pdf-landscape': $ccdb061a5468de1f$var$argv['pdf-landscape'],
