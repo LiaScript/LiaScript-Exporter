@@ -1,0 +1,10 @@
+:root {
+    --color-highlight: 2, 255, 0;
+    --color-background: 122, 122, 122;
+    --color-border: 0, 0, 0;
+    --color-highlight-dark: 0, 0, 0;
+    --color-highlight-menu: 0, 0, 0;
+    --color-text: 0, 0, 255;
+    --global-font-size: 1rem;
+    --font-size-multiplier: 2;
+}
