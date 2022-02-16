@@ -12166,6 +12166,30 @@ async function $1e521125b288b3fc$export$372e2d09604f52f0(argument, json) {
 
 
 
+async function $699da5868da0be18$export$8cde213409fd6377(tmpPath, readme) {
+    await $320134ce32dd9048$export$552bfb764b5cd2b4($9Afec$path.join(tmpPath, 'start.html'), `<!DOCTYPE html>
+    <html style="height:100%; overflow: hidden">
+    <head>
+    
+    </head>
+    <body style="height:100%">
+    
+    <iframe id="lia-container" src="" style="border: 0px; width: 100%; height: 100%"></iframe>
+    
+    <script>
+      let path = window.location.pathname.replace("start.html", "")
+      let iframe = document.getElementById("lia-container")
+
+      if (iframe) {          
+        const src = path + "index.html?" + path + "${readme.replace('./', '')}"
+        iframe.src = src 
+      }
+    </script>
+
+    </body>
+    </html> 
+    `);
+}
 async function $699da5868da0be18$export$372e2d09604f52f0(argument, json) {
     // make temp folder
     let tmp = await $320134ce32dd9048$export$6b76988456c0292f();
@@ -12181,6 +12205,7 @@ async function $699da5868da0be18$export$372e2d09604f52f0(argument, json) {
         quiz: json.quiz,
         survey: json.survey
     }) + ';');
+    if (argument['scorm-iframe']) await $699da5868da0be18$export$8cde213409fd6377(tmpPath, argument.readme);
     try {
         await $320134ce32dd9048$export$552bfb764b5cd2b4($9Afec$path.join(tmpPath, 'index.html'), index);
     } catch (e) {
@@ -12197,8 +12222,8 @@ async function $699da5868da0be18$export$372e2d09604f52f0(argument, json) {
         title: json.lia.str_title,
         language: json.lia.definition.language,
         masteryScore: argument['scorm-masteryScore'] || 0,
-        startingPage: 'index.html',
-        startingParameters: './' + argument.readme,
+        startingPage: argument['scorm-iframe'] ? 'start.html' : 'index.html',
+        startingParameters: argument['scorm-iframe'] ? undefined : argument.readme,
         source: $9Afec$path.join(tmp, 'pro'),
         package: {
             version: json.lia.definition.version,
@@ -12232,6 +12257,7 @@ async function $699da5868da0be18$export$372e2d09604f52f0(argument, json) {
 
 
 
+
 async function $c4fe6e5c8950c8b3$export$372e2d09604f52f0(argument, json) {
     // make temp folder
     let tmp = await $320134ce32dd9048$export$6b76988456c0292f();
@@ -12247,6 +12273,7 @@ async function $c4fe6e5c8950c8b3$export$372e2d09604f52f0(argument, json) {
         quiz: json.quiz,
         survey: json.survey
     }) + ';');
+    if (argument['scorm-iframe']) await $699da5868da0be18$export$8cde213409fd6377(tmpPath, argument.readme);
     try {
         await $320134ce32dd9048$export$552bfb764b5cd2b4($9Afec$path.join(tmpPath, 'index.html'), index);
     } catch (e) {
@@ -12263,8 +12290,8 @@ async function $c4fe6e5c8950c8b3$export$372e2d09604f52f0(argument, json) {
         title: json.lia.str_title,
         language: json.lia.definition.language,
         masteryScore: argument['scorm-masteryScore'] || 0,
-        startingPage: 'index.html',
-        startingParameters: './' + argument.readme,
+        startingPage: argument['scorm-iframe'] ? 'start.html' : 'index.html',
+        startingParameters: argument['scorm-iframe'] ? undefined : argument.readme,
         source: $9Afec$path.join(tmp, 'pro'),
         package: {
             version: json.lia.definition.version,
@@ -12484,7 +12511,7 @@ function $ccdb061a5468de1f$var$help() {
     console.log('--scorm-organization', '      set the organization title');
     console.log('--scorm-masteryScore', '      set the scorm masteryScore (a value between 0 -- 100), default is 0');
     console.log('--scorm-typicalDuration', '   set the scorm duration, default is PT0H5M0S');
-    console.log('--scorm-iframe', '   use an iframe instead of SCORM starting parameter');
+    console.log('--scorm-iframe', '            use an iframe, when a SCORM starting parameter is not working');
     console.log('\nPDF settings:\n');
     console.log('--pdf-stylesheet           Inject an local CSS for changing the appearance.');
     console.log('--pdf-theme                LiaScript themes: default, turquoise, blue, red, yellow');
@@ -12520,6 +12547,7 @@ function $ccdb061a5468de1f$var$parseArguments() {
         'scorm-organization': $ccdb061a5468de1f$var$argv['scorm-organization'],
         'scorm-masteryScore': $ccdb061a5468de1f$var$argv['scorm-masteryScore'],
         'scorm-typicalDuration': $ccdb061a5468de1f$var$argv['scorm-typicalDuration'],
+        'scorm-iframe': $ccdb061a5468de1f$var$argv['scorm-iframe'],
         // pdf cases
         'pdf-preview': $ccdb061a5468de1f$var$argv['pdf-preview'],
         'pdf-scale': $ccdb061a5468de1f$var$argv['pdf-scale'],

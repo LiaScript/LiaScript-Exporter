@@ -129,7 +129,7 @@ function help() {
 
   console.log(
     '--scorm-iframe',
-    '   use an iframe instead of SCORM starting parameter'
+    '            use an iframe, when a SCORM starting parameter is not working'
   )
 
   console.log('\nPDF settings:\n')
@@ -212,6 +212,7 @@ function parseArguments() {
     'scorm-organization': argv['scorm-organization'],
     'scorm-masteryScore': argv['scorm-masteryScore'],
     'scorm-typicalDuration': argv['scorm-typicalDuration'],
+    'scorm-iframe': argv['scorm-iframe'],
 
     // pdf cases
     'pdf-preview': argv['pdf-preview'],

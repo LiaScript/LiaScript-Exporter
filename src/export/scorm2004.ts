@@ -1,4 +1,5 @@
 import * as helper from './helper'
+import * as SCORM from './scorm12'
 
 const scormPackager = require('@liascript/simple-scorm-packager')
 const path = require('path')
@@ -17,6 +18,7 @@ export async function exporter(
     'scorm-organization'?: string
     'scorm-masteryScore'?: string
     'scorm-typicalDuration'?: string
+    'scorm-iframe'?: boolean
   },
   json
 ) {
@@ -47,6 +49,10 @@ export async function exporter(
       ';'
   )
 
+  if (argument['scorm-iframe']) {
+    await SCORM.iframe(tmpPath, argument.readme)
+  }
+
   try {
     await helper.writeFile(path.join(tmpPath, 'index.html'), index)
   } catch (e) {
@@ -63,8 +69,8 @@ export async function exporter(
     title: json.lia.str_title,
     language: json.lia.definition.language,
     masteryScore: argument['scorm-masteryScore'] || 0,
-    startingPage: 'index.html',
-    startingParameters: './' + argument.readme,
+    startingPage: argument['scorm-iframe'] ? 'start.html' : 'index.html',
+    startingParameters: argument['scorm-iframe'] ? undefined : argument.readme,
     source: path.join(tmp, 'pro'),
     package: {
       version: json.lia.definition.version,

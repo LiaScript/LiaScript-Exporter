@@ -4,6 +4,34 @@ const scormPackager = require('@liascript/simple-scorm-packager')
 const path = require('path')
 const fs = require('fs-extra')
 
+export async function iframe(tmpPath, readme: string) {
+  await helper.writeFile(
+    path.join(tmpPath, 'start.html'),
+    `<!DOCTYPE html>
+    <html style="height:100%; overflow: hidden">
+    <head>
+    
+    </head>
+    <body style="height:100%">
+    
+    <iframe id="lia-container" src="" style="border: 0px; width: 100%; height: 100%"></iframe>
+    
+    <script>
+      let path = window.location.pathname.replace("start.html", "")
+      let iframe = document.getElementById("lia-container")
+
+      if (iframe) {          
+        const src = path + "index.html?" + path + "${readme.replace('./', '')}"
+        iframe.src = src 
+      }
+    </script>
+
+    </body>
+    </html> 
+    `
+  )
+}
+
 export async function exporter(
   argument: {
     input: string
@@ -17,6 +45,7 @@ export async function exporter(
     'scorm-organization'?: string
     'scorm-masteryScore'?: string
     'scorm-typicalDuration'?: string
+    'scorm-iframe'?: boolean
   },
   json
 ) {
@@ -47,6 +76,10 @@ export async function exporter(
       ';'
   )
 
+  if (argument['scorm-iframe']) {
+    await iframe(tmpPath, argument.readme)
+  }
+
   try {
     await helper.writeFile(path.join(tmpPath, 'index.html'), index)
   } catch (e) {
@@ -63,8 +96,8 @@ export async function exporter(
     title: json.lia.str_title,
     language: json.lia.definition.language,
     masteryScore: argument['scorm-masteryScore'] || 0,
-    startingPage: 'index.html',
-    startingParameters: './' + argument.readme,
+    startingPage: argument['scorm-iframe'] ? 'start.html' : 'index.html',
+    startingParameters: argument['scorm-iframe'] ? undefined : argument.readme,
     source: path.join(tmp, 'pro'),
     package: {
       version: json.lia.definition.version,

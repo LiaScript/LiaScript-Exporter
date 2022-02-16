@@ -81,6 +81,7 @@ SCORM 1.2 settings:
 --scorm-organization       set the organization title
 --scorm-masteryScore       set the scorm masteryScore (a value between 0 -- 100), default is 0
 --scorm-typicalDuration    set the scorm duration, default is PT0H5M0S
+--scorm-iframe             use an iframe, when a SCORM starting parameter is not working
 
 PDF settings:
 
@@ -186,6 +187,13 @@ __`--scrom-organization`__
 This parameter simply sets the organization parameter in your SCORM
 `imsmanifest` file. All other parameters are taken from the course
 
+
+__`--scorm-iframe`__
+
+Some LMS like ILIAS or OpenOlat seem to have problems with the required
+`startingParameter` and will not load SCORM1.2 courses properly. To fix this,
+this parameter can be used. It tries to run the course within an additional
+`<iframe>`.
 
 ### SCORM2004
 
