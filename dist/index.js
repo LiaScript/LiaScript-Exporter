@@ -7512,7 +7512,7 @@ type alias Process =
             customTheme: $elm$core$Maybe$Nothing,
             editor: 'dreamweaver',
             font_size: 100,
-            hasShareApi: hasShareApi,
+            hasShareApi: $elm$core$Maybe$Just(hasShareApi),
             initialized: false,
             lang: 'default',
             light: true,
@@ -7520,28 +7520,24 @@ type alias Process =
             sound: true,
             speaking: false,
             support_menu: false,
-            sync: false,
+            sync: $elm$core$Maybe$Just(false),
             table_of_contents: true,
             theme: 'default',
             tooltips: false,
-            translateWithGoogle: false
+            translateWithGoogle: $elm$core$Maybe$Just(false)
         };
     });
-    var $author$project$Lia$Sync$Types$Disconnected = {
-        $: 'Disconnected'
-    };
-    var $elm$core$Set$Set_elm_builtin = function(a) {
-        return {
-            $: 'Set_elm_builtin',
-            a: a
-        };
-    };
-    var $elm$core$Set$empty = $elm$core$Set$Set_elm_builtin($elm$core$Dict$empty);
     var $author$project$Lia$Sync$Via$Beaker = {
         $: 'Beaker'
     };
-    var $author$project$Lia$Sync$Via$GUN = {
-        $: 'GUN'
+    var $author$project$Lia$Sync$Types$Disconnected = {
+        $: 'Disconnected'
+    };
+    var $author$project$Lia$Sync$Via$GUN = function(a) {
+        return {
+            $: 'GUN',
+            a: a
+        };
     };
     var $author$project$Lia$Sync$Via$Jitsi = {
         $: 'Jitsi'
@@ -7549,27 +7545,101 @@ type alias Process =
     var $author$project$Lia$Sync$Via$Matrix = {
         $: 'Matrix'
     };
-    var $author$project$Lia$Sync$Via$PubNub = {
-        $: 'PubNub'
+    var $author$project$Lia$Sync$Via$PubNub = F2(function(a, b) {
+        return {
+            $: 'PubNub',
+            a: a,
+            b: b
+        };
+    });
+    var $elm$core$Set$Set_elm_builtin = function(a) {
+        return {
+            $: 'Set_elm_builtin',
+            a: a
+        };
     };
+    var $elm$core$Set$empty = $elm$core$Set$Set_elm_builtin($elm$core$Dict$empty);
+    var $author$project$Lia$Sync$Via$mapHead = F2(function(fn, list) {
+        if (list.b) {
+            var x = list.a;
+            var xs = list.b;
+            return A2($elm$core$List$cons, fn(x), xs);
+        } else return list;
+    });
     var $author$project$Lia$Sync$Via$fromString = function(via) {
-        var _v0 = $elm$core$String$toLower(via);
-        switch(_v0){
-            case 'beaker':
-                return $elm$core$Maybe$Just($author$project$Lia$Sync$Via$Beaker);
-            case 'gun':
-                return $elm$core$Maybe$Just($author$project$Lia$Sync$Via$GUN);
-            case 'jitsi':
-                return $elm$core$Maybe$Just($author$project$Lia$Sync$Via$Jitsi);
-            case 'matrix':
-                return $elm$core$Maybe$Just($author$project$Lia$Sync$Via$Matrix);
-            case 'pubnub':
-                return $elm$core$Maybe$Just($author$project$Lia$Sync$Via$PubNub);
-            default:
-                return $elm$core$Maybe$Nothing;
+        var _v0 = A2($author$project$Lia$Sync$Via$mapHead, $elm$core$String$toLower, A2($elm$core$String$split, '|', via));
+        _v0$7: while(true){
+            if (_v0.b) {
+                if (!_v0.b.b) switch(_v0.a){
+                    case 'beaker':
+                        return $elm$core$Maybe$Just($author$project$Lia$Sync$Via$Beaker);
+                    case 'gun':
+                        return $elm$core$Maybe$Just($author$project$Lia$Sync$Via$GUN(''));
+                    case 'jitsi':
+                        return $elm$core$Maybe$Just($author$project$Lia$Sync$Via$Jitsi);
+                    case 'matrix':
+                        return $elm$core$Maybe$Just($author$project$Lia$Sync$Via$Matrix);
+                    case 'pubnub':
+                        return $elm$core$Maybe$Just(A2($author$project$Lia$Sync$Via$PubNub, '', ''));
+                    default:
+                        break _v0$7;
+                }
+                else if (!_v0.b.b.b) {
+                    if (_v0.a === 'gun') {
+                        var _v1 = _v0.b;
+                        var urls = _v1.a;
+                        return $elm$core$Maybe$Just($author$project$Lia$Sync$Via$GUN(urls));
+                    } else break _v0$7;
+                } else {
+                    if (_v0.a === 'pubnub' && !_v0.b.b.b.b) {
+                        var _v2 = _v0.b;
+                        var pub = _v2.a;
+                        var _v3 = _v2.b;
+                        var sub = _v3.a;
+                        return $elm$core$Maybe$Just(A2($author$project$Lia$Sync$Via$PubNub, pub, sub));
+                    } else break _v0$7;
+                }
+            } else break _v0$7;
         }
+        return $elm$core$Maybe$Nothing;
     };
+    var $author$project$Const$gunDB_ServerURL = 'https://lia-gun.herokuapp.com/gun';
+    var $author$project$Lia$Sync$Types$isMember = F2(function(list, element) {
+        isMember: while(true){
+            var _v0 = _Utils_Tuple2(list, element);
+            _v0$3: while(true){
+                if (!_v0.a.b) return _Utils_Tuple2(false, element);
+                else switch(_v0.a.a.$){
+                    case 'GUN':
+                        if (_v0.b.$ === 'GUN') {
+                            var _v1 = _v0.a;
+                            return _Utils_Tuple2(true, element);
+                        } else break _v0$3;
+                    case 'PubNub':
+                        if (_v0.b.$ === 'PubNub') {
+                            var _v2 = _v0.a;
+                            var _v3 = _v2.a;
+                            var _v4 = _v0.b;
+                            return _Utils_Tuple2(true, element);
+                        } else break _v0$3;
+                    default:
+                        break _v0$3;
+                }
+            }
+            var _v5 = _v0.a;
+            var e = _v5.a;
+            var es = _v5.b;
+            if (_Utils_eq(e, element)) return _Utils_Tuple2(true, element);
+            else {
+                var $temp$list = es, $temp$element = element;
+                list = $temp$list;
+                element = $temp$element;
+                continue isMember;
+            }
+        }
+    });
     var $author$project$Lia$Sync$Types$init = function(supportedBackends) {
+        var supported = A2($elm$core$List$filterMap, $author$project$Lia$Sync$Via$fromString, supportedBackends);
         return {
             error: $elm$core$Maybe$Nothing,
             password: '',
@@ -7579,9 +7649,19 @@ type alias Process =
             sync: {
                 open: false,
                 select: $elm$core$Maybe$Nothing,
-                support: A2($elm$core$List$filterMap, $author$project$Lia$Sync$Via$fromString, supportedBackends)
+                support: A2($elm$core$List$map, $author$project$Lia$Sync$Types$isMember(supported), _List_fromArray([
+                    $author$project$Lia$Sync$Via$Beaker,
+                    $author$project$Lia$Sync$Via$GUN($author$project$Const$gunDB_ServerURL),
+                    $author$project$Lia$Sync$Via$Jitsi,
+                    $author$project$Lia$Sync$Via$Matrix,
+                    A2($author$project$Lia$Sync$Via$PubNub, '', '')
+                ]))
             }
         };
+    };
+    var $elm$core$List$isEmpty = function(xs) {
+        if (!xs.b) return true;
+        else return false;
     };
     var $author$project$Const$urlProxy = 'https://api.allorigins.win/raw?url=';
     var $author$project$Lia$Parser$PatReplace$urlProxy = A3($elm$core$String$replace, '?', '\\?', A3($elm$core$String$replace, '.', '\\.', $author$project$Const$urlProxy));
@@ -7727,6 +7807,7 @@ type alias Process =
             sections: $elm$core$Array$empty,
             settings: (function(set) {
                 return _Utils_update(set, {
+                    sync: $elm$core$List$isEmpty(allowedBackends) ? $elm$core$Maybe$Nothing : set.sync,
                     table_of_contents: openTOC
                 });
             })(A2($elm$core$Result$withDefault, _default, A2($author$project$Lia$Settings$Json$toModel, _default, settings))),
@@ -7849,6 +7930,48 @@ type alias Process =
     var $author$project$Worker$error = function(title) {
         return A2($elm$core$Basics$composeR, $elm$core$Basics$append('Error (' + (title + ') -> ')), A2($elm$core$Basics$composeR, $elm$core$Tuple$pair(false), $author$project$Worker$output));
     };
+    var $author$project$Lia$Script$checkFalse = function(string) {
+        var _v0 = $elm$core$String$toList($elm$core$String$toLower($elm$core$String$trim(string)));
+        _v0$4: while(true){
+            if (_v0.b) {
+                if (!_v0.b.b) {
+                    if ('0' === _v0.a.valueOf()) return false;
+                    else break _v0$4;
+                } else {
+                    if (_v0.b.b.b) switch(_v0.a.valueOf()){
+                        case 'f':
+                            if ('a' === _v0.b.a.valueOf() && 'l' === _v0.b.b.a.valueOf() && _v0.b.b.b.b && 's' === _v0.b.b.b.a.valueOf() && _v0.b.b.b.b.b && 'e' === _v0.b.b.b.b.a.valueOf()) {
+                                var _v1 = _v0.b;
+                                var _v2 = _v1.b;
+                                var _v3 = _v2.b;
+                                var _v4 = _v3.b;
+                                return false;
+                            } else break _v0$4;
+                        case 'o':
+                            if ('f' === _v0.b.a.valueOf() && 'f' === _v0.b.b.a.valueOf()) {
+                                var _v5 = _v0.b;
+                                var _v6 = _v5.b;
+                                return false;
+                            } else break _v0$4;
+                        case 'd':
+                            if ('i' === _v0.b.a.valueOf() && 's' === _v0.b.b.a.valueOf() && _v0.b.b.b.b && 'a' === _v0.b.b.b.a.valueOf() && _v0.b.b.b.b.b && 'b' === _v0.b.b.b.b.a.valueOf() && _v0.b.b.b.b.b.b && 'l' === _v0.b.b.b.b.b.a.valueOf() && _v0.b.b.b.b.b.b.b && 'e' === _v0.b.b.b.b.b.b.a.valueOf()) {
+                                var _v7 = _v0.b;
+                                var _v8 = _v7.b;
+                                var _v9 = _v8.b;
+                                var _v10 = _v9.b;
+                                var _v11 = _v10.b;
+                                var _v12 = _v11.b;
+                                return false;
+                            } else break _v0$4;
+                        default:
+                            break _v0$4;
+                    }
+                    else break _v0$4;
+                }
+            } else break _v0$4;
+        }
+        return true;
+    };
     var $author$project$Translations$Ar = {
         $: 'Ar'
     };
@@ -7933,8 +8056,23 @@ type alias Process =
                 langCodeOriginal: definition.language,
                 settings: _Utils_update(settings, {
                     customTheme: A2($elm$core$Dict$get, 'custom', definition.macro),
+                    hasShareApi: function() {
+                        var _v2 = A2($elm$core$Maybe$map, $author$project$Lia$Script$checkFalse, A2($elm$core$Dict$get, 'sharing', definition.macro));
+                        if (_v2.$ === 'Just' && !_v2.a) return $elm$core$Maybe$Nothing;
+                        else return settings.hasShareApi;
+                    }(),
                     light: A2($elm$core$Maybe$withDefault, settings.light, definition.lightMode),
-                    mode: A2($elm$core$Maybe$withDefault, settings.mode, definition.mode)
+                    mode: A2($elm$core$Maybe$withDefault, settings.mode, definition.mode),
+                    sync: function() {
+                        var _v3 = A2($elm$core$Maybe$map, $author$project$Lia$Script$checkFalse, A2($elm$core$Dict$get, 'classroom', definition.macro));
+                        if (_v3.$ === 'Just' && !_v3.a) return $elm$core$Maybe$Nothing;
+                        else return settings.sync;
+                    }(),
+                    translateWithGoogle: function() {
+                        var _v4 = A2($elm$core$Maybe$map, $author$project$Lia$Script$checkFalse, A2($elm$core$Dict$get, 'translateWithGoogle', definition.macro));
+                        if (_v4.$ === 'Just' && !_v4.a) return $elm$core$Maybe$Nothing;
+                        else return settings.translateWithGoogle;
+                    }()
                 }),
                 translation: A2($elm$core$Maybe$withDefault, $author$project$Translations$En, $author$project$Translations$getLnFromCode(definition.language))
             })), $elm$core$Maybe$Just(code), definition.imports);
@@ -11516,13 +11654,10 @@ type alias Process =
     var $author$project$Lia$Markdown$Survey$Types$Categorical = {
         $: 'Categorical'
     };
-    var $author$project$Lia$Markdown$Survey$Types$Quantitative = {
-        $: 'Quantitative'
-    };
     var $author$project$Lia$Markdown$Survey$Types$isNumber = A2($elm$core$Basics$composeR, $elm$core$String$split(' '), A2($elm$core$Basics$composeR, $elm$core$List$head, A2($elm$core$Basics$composeR, $elm$core$Maybe$andThen($elm$core$String$toInt), $elm$core$Basics$neq($elm$core$Maybe$Nothing))));
     var $author$project$Lia$Markdown$Survey$Types$allNumbers = A2($elm$core$Basics$composeR, $elm$core$List$map($author$project$Lia$Markdown$Survey$Types$isNumber), $elm$core$List$all($elm$core$Basics$identity));
     var $author$project$Lia$Markdown$Survey$Types$analyseType = function(ids) {
-        return $author$project$Lia$Markdown$Survey$Types$allNumbers(ids) ? $author$project$Lia$Markdown$Survey$Types$Quantitative : $author$project$Lia$Markdown$Survey$Types$Categorical;
+        return $author$project$Lia$Markdown$Survey$Types$allNumbers(ids) ? $author$project$Lia$Markdown$Survey$Types$Categorical : $author$project$Lia$Markdown$Survey$Types$Categorical;
     };
     var $author$project$Lia$Markdown$Survey$Parser$toVector = F2(function(bool, definition) {
         return A3($author$project$Lia$Markdown$Survey$Types$Vector, bool, definition, $author$project$Lia$Markdown$Survey$Types$analyseType(A2($elm$core$List$map, $elm$core$Tuple$first, definition)));
@@ -12435,7 +12570,7 @@ $parcel$global.XMLHttpRequest = $9Afec$xhr2;
 
 const $ccdb061a5468de1f$var$argv = $9Afec$minimist(process.argv.slice(2));
 // -------------------------------Main Execution-------------------------------
-if ($ccdb061a5468de1f$var$argv.v || $ccdb061a5468de1f$var$argv.version) console.log('version: 1.0.51--0.9.51');
+if ($ccdb061a5468de1f$var$argv.v || $ccdb061a5468de1f$var$argv.version) console.log('version: 2.0.0--0.10.0');
 else if ($ccdb061a5468de1f$var$argv.h || $ccdb061a5468de1f$var$argv.help) $ccdb061a5468de1f$var$help();
 else if ($ccdb061a5468de1f$var$argv.i || $ccdb061a5468de1f$var$argv.input) $ccdb061a5468de1f$var$run($ccdb061a5468de1f$var$parseArguments());
 else {
