@@ -26,7 +26,7 @@ export async function exporter(
   await fs.copy(
     path.join(
       __dirname,
-      argument['ims-indexeddb'] ? './assets/app' : './assets/web'
+      argument['ims-indexeddb'] ? './assets/indexeddb' : './assets/web'
     ),
     tmpPath
   )

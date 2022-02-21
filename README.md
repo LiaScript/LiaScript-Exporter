@@ -554,7 +554,7 @@ Most of the data is taken from:
 | Nimble LMS                         | full      |            |         |         |       |      |             |
 | Ninth Brain LMS                    | full      | full       | full    |         |       |      |             |
 | OLAT LMS                           | full      | full       |         |         |       | full |             |
-| OPAL                               | full      | no         |         |         |       |      |             |
+| OPAL                               | full      | no         |         |         |       | full |             |
 | Open edx                           | full      |            |         |         |       |      | open source |
 | OpenOLAT                           | full      |            |         |         |       | full | open source |
 | Opigno LMS                         | full      | full       |         |         |       |      |             |
