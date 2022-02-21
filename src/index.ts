@@ -6,6 +6,7 @@ import * as SCORM12 from './export/scorm12'
 import * as SCORM2004 from './export/scorm2004'
 import * as PDF from './export/pdf'
 import * as helper from './export/helper'
+import * as IMS from './export/ims'
 
 global.XMLHttpRequest = require('xhr2')
 
@@ -53,6 +54,10 @@ function run(argument) {
         SCORM2004.exporter(argument, JSON.parse(string))
         break
       }
+      case 'ims': {
+        IMS.exporter(argument, JSON.parse(string))
+        break
+      }
       case 'web': {
         WEB.exporter(argument, JSON.parse(string))
         break
@@ -74,7 +79,8 @@ function run(argument) {
       argument.format == 'scorm1.2' ||
       argument.format == 'scorm2004' ||
       argument.format == 'pdf' ||
-      argument.format == 'web'
+      argument.format == 'web' ||
+      argument.format == 'ims'
         ? 'fulljson'
         : argument.format
 
@@ -109,13 +115,13 @@ function help() {
   console.log(
     '-f',
     '--format',
-    '         scorm1.2, scorm2004, json, fullJson, web, pdf (default is json)'
+    '         scorm1.2, scorm2004, json, fullJson, web, ims, pdf (default is json)'
   )
   console.log('-v', '--version', '        output the current version')
 
   console.log('\n-k', '--key', '            responsive voice key ')
 
-  console.log('\nSCORM 1.2 settings:')
+  console.log('\nSCORM settings:')
   console.log('')
   console.log('--scorm-organization', '      set the organization title')
   console.log(
@@ -130,6 +136,13 @@ function help() {
   console.log(
     '--scorm-iframe',
     '            use an iframe, when a SCORM starting parameter is not working'
+  )
+
+  console.log('\nIMS settings:')
+  console.log('')
+  console.log(
+    '--ims-indexeddb',
+    '           Use IndexedDB to store data persistently'
   )
 
   console.log('\nPDF settings:\n')
@@ -213,6 +226,9 @@ function parseArguments() {
     'scorm-masteryScore': argv['scorm-masteryScore'],
     'scorm-typicalDuration': argv['scorm-typicalDuration'],
     'scorm-iframe': argv['scorm-iframe'],
+
+    // special IMS casaes
+    'ims-indexeddb': argv['ims-indexeddb'],
 
     // pdf cases
     'pdf-preview': argv['pdf-preview'],
