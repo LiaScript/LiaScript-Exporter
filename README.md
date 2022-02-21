@@ -71,21 +71,29 @@ LiaScript-Exporter
 -i --input           file to be used as input
 -p --path            path to be packed, if not set, the path of the input file is used
 -o --output          output file name (default is output), the ending is define by the format
--f --format          scorm1.2, scorm2004, json, fullJson, web, pdf (default is json)
+-f --format          scorm1.2, scorm2004, json, fullJson, web, ims, pdf (default is json)
 -v --version         output the current version
 
 -k --key             responsive voice key 
 
-SCORM 1.2 settings:
+SCORM settings:
 
 --scorm-organization       set the organization title
 --scorm-masteryScore       set the scorm masteryScore (a value between 0 -- 100), default is 0
 --scorm-typicalDuration    set the scorm duration, default is PT0H5M0S
 --scorm-iframe             use an iframe, when a SCORM starting parameter is not working
 
+IMS settings:
+
+--ims-indexeddb            Use IndexedDB to store data persistently
+
+WEB settings:
+
+--web-zip                  By default the result is not zipped, you can change this with this parameter.
+
 PDF settings:
 
---pdf-stylesheet           Inject a local CSS for changing the appearance.
+--pdf-stylesheet           Inject an local CSS for changing the appearance.
 --pdf-theme                LiaScript themes: default, turquoise, blue, red, yellow
 --pdf-timeout              Set an additional time horizon to wait until finished.
 
@@ -107,7 +115,7 @@ https://github.com/puppeteer/puppeteer/blob/main/docs/api.md#pagepdfoptions
 --pdf-margin-bottom        Bottom margin, accepts values labeled with units.
 --pdf-margin-left          Left margin, accepts values labeled with units. 
 --pdf-preferCSSPageSize    Give any CSS @page size declared in the page priority over what is declared in width and height or format options.
---pdf-omitBackground       Hides default white background and allows capturing screenshots with transparency. Defaults to true. 
+--pdf-omitBackground       Hides default white background and allows capturing screenshots with transparency. Defaults to true.
 ```
 
 ### SCORM1.2
@@ -242,6 +250,44 @@ $ ls
 .. rockOn.zip ..
 ```
 
+### IMS Content
+
+IMS Content is a very simplistic packaging format. Which allows you to embed
+your course different LMS. The standard for the packaging format is defined
+[here](https://www.imsglobal.org/content/packaging/index.html).
+
+We currently support the latest v1.1.4 standard.
+
+``` shell
+$ liaex -i project/README.md --format ims --output course
+..
+project/README.md
+project/Lizenz.md
+..
+6041733 total bytes
+archiver has been finalized and the output file descriptor has closed.
+
+$ ls
+.. course.zip ..
+```
+
+__`--ims-indexeddb`:__ By default no states are preserved, which means, if you
+reload the course, all quiz and coding states are destroyed. By using this
+option a course is generated, which stores the content within the browsers local
+`indexeddb`.
+
+``` shell
+$ liaex -i project/README.md --format ims --output course --ims-indexeddb
+..
+project/README.md
+project/Lizenz.md
+..
+6041733 total bytes
+archiver has been finalized and the output file descriptor has closed.
+
+$ ls
+.. course.zip ..
+```
 ### WEB
 
 This format will generate an autonomous & standalone web-project that can be uploaded
@@ -262,6 +308,9 @@ information is used to generate preview cards properly.
 
 If you want your site to speak the text out loud, then you will have to add your
 responsivevoice-key via `--key`.
+
+__`--web-zip`:__ Use this parameter to directly bundle all input into a zip
+file instead of a folder.
 
 ### PDF
 
@@ -351,7 +400,6 @@ depending on the size of the course, this can take a while, please be patient...
 
   - AICC
   - xAPI
-  - IMS Cartridge
   - ePub
 
 * Integration into the Atom IDE
@@ -379,188 +427,189 @@ Most of the data is taken from:
 * https://en.wikipedia.org/wiki/List_of_learning_management_systems
 
 
-| LMS                                | SCORM 1.2 | SCORM 2004 | xAPI    | AICC    | CMI-5 | IMS | License     |
-| ---------------------------------- | --------- | ---------- | ------- | ------- | ----- | --- | ----------- |
-| Abara LMS                          | full      | full       |         |         |       |     |             |
-| Absorb LMS                         | full      | full       | full    | full    |       |     |             |
-| Academy LMS                        | full      | full       |         |         |       |     |             |
-| Academy Of Mine                    | full      | full       | full    |         |       |     |             |
-| Accessplanit LMS                   | full      | full       |         |         |       |     |             |
-| Accord LMS                         | full      | full       |         |         |       |     |             |
-| Activate LMS                       |           | full       |         |         |       |     |             |
-| Administrate LMS                   | full      | full       |         |         |       |     |             |
-| Adobe Captivate Prime LMS          | full      |            |         |         |       |     |             |
-| Agylia LMS                         | full      |            | full    |         |       |     |             |
-| Alchemy LMS                        |           | full       |         |         |       |     |             |
-| Alumn-e LMS                        | full      |            |         |         |       |     |             |
-| aNewSpring LMS                     | full      |            |         |         |       |     |             |
-| Asentia LMS                        | full      | full       | full    |         |       |     |             |
-| aTutor                             | full      |            |         |         |       |     | open source |
-| Axis LMS                           | partial   |            |         |         |       |     |             |
-| BIStrainer LMS                     | full      | full       |         |         |       |     |             |
-| BizLibrary LMS                     | full      |            |         |         |       |     |             |
-| Blackboard LMS                     | full      | full       | partial | full    |       |     |             |
-| BlueVolt LMS                       | full      | full       |         | full    |       |     |             |
-| BrainCert LMS                      | full      | full       |         |         |       |     |             |
-| Bridge LMS                         | full      | full       |         | full    |       |     |             |
-| Brightspace LMS                    | full      | full       |         |         |       |     |             |
-| Business Training TV (by Vocam)    | full      | full       | full    |         |       |     |             |
-| Buzz LMS (by Agilix)               | full      | full       |         | partial |       |     |             |
-| Canvas LMS                         | full      | full       |         |         |       |     | open source |
-| CERTPOINT Systems Inc.             | full      | full       |         |         |       |     | proprietary |
-| Chamilo LMS                        | full      |            |         |         |       |     | open source |
-| Claroline                          | full      |            |         |         |       |     | open source |
-| Claromentis LMS                    | full      |            |         |         |       |     |             |
-| chocolateLMS                       | full      |            |         |         |       |     |             |
-| Coggno LMS                         | full      | full       |         |         |       |     |             |
-| Cognology LMS                      | full      |            |         |         |       |     |             |
-| Collaborator LMS                   | full      | full       |         |         |       |     |             |
-| ComplianceWire LMS                 | full      | full       |         |         |       |     |             |
-| Cornerstone LMS                    | partial   | full       |         |         |       |     |             |
-| CourseMill LMS                     | full      | full       |         |         |       |     |             |
-| CoursePark LMS                     | full      | full       |         |         |       |     |             |
-| Coursepath LMS                     | full      | full       | full    |         |       |     |             |
-| Courseplay LMS                     | full      | full       |         |         |       |     |             |
-| CourseSites LMS                    | full      | full       |         |         |       |     |             |
-| CrossKnowledge Learning Suite      | full      | full       |         | full    |       |     |             |
-| Curatr LMS                         | partial   | partial    | full    |         |       |     |             |
-| DigitalChalk LMS                   | full      | no         | full    |         |       |     |             |
-| Desire2Learn                       |           | full       |         |         | full  |     | proprietary |
-| Docebo LMS                         | full      | full       |         | full    |       |     |             |
-| EasyCampus LMS                     | full      |            |         |         |       |     |             |
-| eCollege                           |           |            |         |         |       |     | proprietary |
-| Edmodo                             |           |            |         |         |       |     | proprietary |
-| EduBrite LMS                       | full      | full       |         | full    |       |     |             |
-| EducationFolder LMS                |           |            | full    |         |       |     |             |
-| EduNxt                             | full      | full       |         |         |       |     | proprietary |
-| Eduson LMS                         | partial   |            |         |         |       |     |             |
-| Edvance360 LMS                     | full      |            |         |         |       |     |             |
-| Effectus LMS                       | full      | full       | full    |         |       |     |             |
-| eFront LMS                         | full      |            |         |         |       |     | open source |
-| eLeap LMS                          | full      |            |         |         |       |     |             |
-| ELMO                               | full      |            |         |         |       |     |             |
-| Elsevier Performance Manager LMS   | full      |            |         |         |       |     |             |
-| Emtrain LMS                        | full      | full       |         | full    |       |     |             |
-| Engrade                            |           |            |         |         |       |     | proprietary |
-| eSSential LMS                      | full      |            | full    |         |       |     |             |
-| eTraining TV (by Vocam)            | full      | full       | full    |         |       |     |             |
-| Evolve LMS                         | full      |            |         |         |       |     |             |
-| Exceed LMS                         | full      |            |         |         |       |     |             |
-| ExpertusONE LMS                    | full      | full       |         |         |       |     |             |
-| EZ LCMS                            | full      | full       |         |         |       |     |             |
-| Firmwater LMS                      | full      | full       |         |         |       |     |             |
-| Flora                              | full      | full       |         |         |       |     |             |
-| Forma LMS                          | full      | full       |         |         |       |     |             |
-| Geenio LMS                         | partial   | partial    |         |         |       |     |             |
-| GlobalScholar                      |           |            |         |         |       |     | proprietary |
-| Glow                               |           |            |         |         |       |     | proprietary |
-| GnosisConnect LMS                  | full      | full       |         |         |       |     |             |
-| Google Classroom                   | no        | no         | no      |         |       |     |             |
-| GoSkills LMS                       | full      | full       | full    |         |       |     |             |
-| GO1 LMS                            | full      | full       |         |         |       |     |             |
-| GrassBlade LRS                     | full      | full       | full    |         |       |     |             |
-| Grovo LMS                          | full      | full       | full    |         |       |     |             |
-| GyrusAim LMS                       | full      | full       | full    | full    |       |     |             |
-| HealthStream LMS                   | full      | full       |         |         |       |     |             |
-| HotChalk                           |           |            |         |         |       |     | proprietary |
-| ILIAS LMS                          | full      | full       |         |         |       |     |             |
-| iLMS                               | full      | full       |         | full    |       |     | open source |
-| IMC Learning Suite                 |           | full       |         |         |       |     |             |
-| Informetica LMS                    | full      | full       |         |         |       |     |             |
-| Inquisiq R4 LMS                    | full      | full       |         |         |       |     |             |
-| Intuition Rubicon LMS              | full      |            |         |         |       |     |             |
-| In2itive LMS                       | full      | full       |         |         |       |     |             |
-| ISOtrain LMS                       | full      | full       |         | full    |       |     |             |
-| iSpring Learn                      | full      | full       |         |         |       |     |             |
-| JLMS                               | full      | full       | full    | full    |       |     |             |
-| JoomlaLMS                          | full      | full       |         |         |       |     |             |
-| Kannu                              |           |            |         |         |       |     | proprietary |
-| KMI LMS                            | full      |            | full    |         |       |     |             |
-| LabVine LMS by LTS Health Learning | full      |            |         |         |       |     |             |
-| LAMS                               | partial   |            |         |         |       |     | open source |
-| LatitudeLearning LMS               | full      | full       |         |         |       |     |             |
-| LearnConnect LMS                   | full      |            |         |         |       |     |             |
-| LearnDash LMS                      | no        | no         | no      | full    |       |     |             |
-| LearningCart LMS                   | full      | full       |         |         |       |     |             |
-| learningCentral LMS                | full      | full       | full    | full    |       |     |             |
-| LearningZen LMS                    | full      | full       | full    |         |       |     |             |
-| Learning Locker LRS                |           |            | full    |         |       |     |             |
-| learnPro LCMS                      | full      |            |         |         |       |     |             |
-| LearnUpon LMS                      | full      |            | full    |         |       |     |             |
-| LearnWorlds LMS                    | full      | full       |         |         |       |     |             |
-| Learn-WiseGo LMS                   |           | full       |         |         |       |     |             |
-| LifterLMS                          |           |            | full    |         |       |     |             |
-| Litmos LMS                         | full      |            | full    |         |       |     |             |
-| LMS365                             | full      | full       |         |         |       |     |             |
-| LON-CAPA                           | partial   |            |         |         |       |     | open source |
-| MATRIX LMS                         | full      |            |         |         |       |     |             |
-| Meridian LMS                       | full      | full       |         |         |       |     |             |
-| Mobile Agility LMS                 | full      | full       |         |         |       |     |             |
-| Moodle LMS                         | full      | full       |         | partial |       |     |             |
-| MOS Chorus LMS                     |           | full       |         |         |       |     |             |
-| Myicourse LMS                      | partial   | partial    |         |         |       |     |             |
-| MySkillpad LMS                     | full      | full       |         |         |       |     |             |
-| NEO LMS                            | full      |            |         |         |       |     |             |
-| NetDimensions Learning             | full      | full       |         | full    |       |     |             |
-| Nimble LMS                         | full      |            |         |         |       |     |             |
-| Ninth Brain LMS                    | full      | full       | full    |         |       |     |             |
-| OLAT LMS                           | full      | full       |         |         |       |     |             |
-| OPAL                               | full      | no         |         |         |       |     |             |
-| Open edx                           | full      |            |         |         |       |     | open source |
-| OpenOLAT                           | full      |            |         |         |       |     | open source |
-| Opigno LMS                         | full      | full       |         |         |       |     |             |
-| Oracle Taleo Learn Cloud Service   | full      | full       |         | full    |       |     |             |
-| Paradiso LMS                       | full      | full       |         |         |       |     |             |
-| Percepium LMS                      | full      | full       |         |         |       |     |             |
-| Percolate LMS                      | full      | full       |         |         |       |     |             |
-| Prosperity LMS                     | full      | full       |         |         |       |     |             |
-| RISC's Virtual Training Assistant  | full      | full       | full    | full    | full  |     |             |
-| Saba LMS                           | full      | full       |         | full    |       |     |             |
-| Sakai LMS                          | full      | full       |         |         |       |     |             |
-| SAP SuccessFactors LMS             | full      | full       |         | full    |       |     | proprietary |
-| ScholarLMS                         | full      | full       | full    |         |       |     |             |
-| Schoology LMS                      | full      | full       |         |         |       |     | proprietary |
-| Schoox LMS                         | full      | full       |         |         |       |     |             |
-| ShareKnowledge LMS                 | full      | full       |         |         |       |     |             |
-| Shika LMS                          | full      | full       |         |         |       |     |             |
-| SilkRoad LMS                       | full      | full       |         | full    |       |     |             |
-| Simplify LMS                       | full      |            | full    |         |       |     |             |
-| Skilljar LMS                       | full      |            |         |         |       |     |             |
-| Skillsoft                          |           |            |         |         |       |     | proprietary |
-| SkillsServe LMS                    | full      | full       |         |         |       |     |             |
-| SmarterU LMS                       | full      | full       |         | full    |       |     |             |
-| Spongelab                          |           |            |         |         |       |     | proprietary |
-| SuccessFactors                     |           |            |         |         |       |     | proprietary |
-| SumTotal LMS (by SkillSoft)        | full      | full       |         | full    |       |     | proprietary |
-| SWAD                               |           |            |         |         |       |     | open source |
-| SwiftLMS                           | full      | full       |         |         |       |     |             |
-| Syberworks LMS                     |           |            |         |         |       |     |             |
-| Syfadis Suite LMS                  | full      | full       |         |         |       |     |             |
-| Thinking Cap LMS                   | full      | full       |         |         |       |     |             |
-| TalentLMS                          | full      | no         | full    |         |       |     |             |
-| Taleo                              | full      | full       |         | partial |       |     | proprietary |
-| TCManager LMS                      | full      |            |         |         |       |     |             |
-| Techniworks LMS                    | full      | full       |         |         |       |     |             |
-| Thinkific LMS                      |           |            |         |         |       |     |             |
-| TOPYX LMS                          | full      | full       |         |         |       |     |             |
-| Torch LMS                          | full      | full       | full    | full    |       |     |             |
-| Totara LMS                         | full      |            |         |         |       |     |             |
-| Udutu LMS                          | full      | full       |         |         |       |     |             |
-| UpGraduate LMS                     | full      | full       | full    | full    |       |     |             |
-| UpsideLMS                          | full      | full       | partial |         |       |     |             |
-| Uzity                              |           |            |         |         |       |     | proprietary |
-| ViewCentral LMS                    | full      |            |         |         |       |     |             |
-| viLMS                              | full      | full       |         |         |       |     |             |
-| Vowel LMS                          | full      | full       |         |         |       |     |             |
-| Watershed LRS                      |           |            | full    |         |       |     |             |
-| Wax LRS                            |           |            | full    |         |       |     |             |
-| WBTServer LMS                      |           | full       |         |         |       |     |             |
-| WebCampus LMS                      | full      |            |         |         |       |     |             |
-| WeBWorK                            |           |            |         |         |       |     | open source |
-| WestNet MLP                        | partial   | partial    | partial |         |       |     |             |
-| wizBank e-Learning Platform        | full      | full       |         |         |       |     |             |
-| WizIQ LMS                          | partial   | partial    |         |         |       |     |             |
-| Workday LMS                        | full      | full       |         |         |       |     |             |
-| WorkWize LMS                       | full      |            |         |         |       |     |             |
-| xapiapps LMS                       | full      | full       | full    |         |       |     |             |
-| 360Learning LMS                    | full      | full       |         |         |       |     |             |
+| LMS                                | SCORM 1.2 | SCORM 2004 | xAPI    | AICC    | CMI-5 | IMS  | License     |
+| ---------------------------------- | --------- | ---------- | ------- | ------- | ----- | ---- | ----------- |
+| Abara LMS                          | full      | full       |         |         |       |      |             |
+| Absorb LMS                         | full      | full       | full    | full    |       |      |             |
+| Academy LMS                        | full      | full       |         |         |       |      |             |
+| Academy Of Mine                    | full      | full       | full    |         |       |      |             |
+| Accessplanit LMS                   | full      | full       |         |         |       |      |             |
+| Accord LMS                         | full      | full       |         |         |       |      |             |
+| Activate LMS                       |           | full       |         |         |       |      |             |
+| Administrate LMS                   | full      | full       |         |         |       |      |             |
+| Adobe Captivate Prime LMS          | full      |            |         |         |       |      |             |
+| Agylia LMS                         | full      |            | full    |         |       |      |             |
+| Alchemy LMS                        |           | full       |         |         |       |      |             |
+| Alumn-e LMS                        | full      |            |         |         |       |      |             |
+| aNewSpring LMS                     | full      |            |         |         |       |      |             |
+| Asentia LMS                        | full      | full       | full    |         |       |      |             |
+| aTutor                             | full      |            |         |         |       | full | open source |
+| Axis LMS                           | partial   |            |         |         |       |      |             |
+| BIStrainer LMS                     | full      | full       |         |         |       |      |             |
+| BizLibrary LMS                     | full      |            |         |         |       |      |             |
+| Blackboard LMS                     | full      | full       | partial | full    |       |      |             |
+| BlueVolt LMS                       | full      | full       |         | full    |       |      |             |
+| BrainCert LMS                      | full      | full       |         |         |       |      |             |
+| Bridge LMS                         | full      | full       |         | full    |       |      |             |
+| Brightspace LMS                    | full      | full       |         |         |       |      |             |
+| Business Training TV (by Vocam)    | full      | full       | full    |         |       |      |             |
+| Buzz LMS (by Agilix)               | full      | full       |         | partial |       |      |             |
+| Canvas LMS                         | full      | full       |         |         |       |      | open source |
+| CERTPOINT Systems Inc.             | full      | full       |         |         |       |      | proprietary |
+| Chamilo LMS                        | full      |            |         |         |       | full | open source |
+| Claroline                          | full      |            |         |         |       | full | open source |
+| Claromentis LMS                    | full      |            |         |         |       |      |             |
+| chocolateLMS                       | full      |            |         |         |       |      |             |
+| Coggno LMS                         | full      | full       |         |         |       |      |             |
+| Cognology LMS                      | full      |            |         |         |       |      |             |
+| Collaborator LMS                   | full      | full       |         |         |       |      |             |
+| ComplianceWire LMS                 | full      | full       |         |         |       |      |             |
+| Cornerstone LMS                    | partial   | full       |         |         |       |      |             |
+| CourseMill LMS                     | full      | full       |         |         |       |      |             |
+| CoursePark LMS                     | full      | full       |         |         |       |      |             |
+| Coursepath LMS                     | full      | full       | full    |         |       |      |             |
+| Courseplay LMS                     | full      | full       |         |         |       |      |             |
+| CourseSites LMS                    | full      | full       |         |         |       |      |             |
+| CrossKnowledge Learning Suite      | full      | full       |         | full    |       |      |             |
+| Curatr LMS                         | partial   | partial    | full    |         |       |      |             |
+| DigitalChalk LMS                   | full      | no         | full    |         |       |      |             |
+| Desire2Learn                       |           | full       |         |         | full  | full | proprietary |
+| Docebo LMS                         | full      | full       |         | full    |       |      |             |
+| EasyCampus LMS                     | full      |            |         |         |       |      |             |
+| eCollege                           |           |            |         |         |       |      | proprietary |
+| Edmodo                             |           |            |         |         |       |      | proprietary |
+| EduBrite LMS                       | full      | full       |         | full    |       |      |             |
+| EducationFolder LMS                |           |            | full    |         |       |      |             |
+| EduNxt                             | full      | full       |         |         |       |      | proprietary |
+| Eduson LMS                         | partial   |            |         |         |       |      |             |
+| Edvance360 LMS                     | full      |            |         |         |       |      |             |
+| Effectus LMS                       | full      | full       | full    |         |       |      |             |
+| eFront LMS                         | full      |            |         |         |       |      | open source |
+| eLeap LMS                          | full      |            |         |         |       |      |             |
+| ELMO                               | full      |            |         |         |       |      |             |
+| Elsevier Performance Manager LMS   | full      |            |         |         |       |      |             |
+| Emtrain LMS                        | full      | full       |         | full    |       |      |             |
+| Engrade                            |           |            |         |         |       |      | proprietary |
+| eSSential LMS                      | full      |            | full    |         |       |      |             |
+| eTraining TV (by Vocam)            | full      | full       | full    |         |       |      |             |
+| Evolve LMS                         | full      |            |         |         |       |      |             |
+| Exceed LMS                         | full      |            |         |         |       |      |             |
+| ExpertusONE LMS                    | full      | full       |         |         |       |      |             |
+| EZ LCMS                            | full      | full       |         |         |       |      |             |
+| Firmwater LMS                      | full      | full       |         |         |       |      |             |
+| Flora                              | full      | full       |         |         |       |      |             |
+| Forma LMS                          | full      | full       |         |         |       |      |             |
+| Geenio LMS                         | partial   | partial    |         |         |       |      |             |
+| GlobalScholar                      |           |            |         |         |       |      | proprietary |
+| Glow                               |           |            |         |         |       |      | proprietary |
+| GnosisConnect LMS                  | full      | full       |         |         |       |      |             |
+| Google Classroom                   | no        | no         | no      |         |       |      |             |
+| GoSkills LMS                       | full      | full       | full    |         |       |      |             |
+| GO1 LMS                            | full      | full       |         |         |       |      |             |
+| GrassBlade LRS                     | full      | full       | full    |         |       |      |             |
+| Grovo LMS                          | full      | full       | full    |         |       |      |             |
+| GyrusAim LMS                       | full      | full       | full    | full    |       |      |             |
+| HealthStream LMS                   | full      | full       |         |         |       |      |             |
+| HotChalk                           |           |            |         |         |       |      | proprietary |
+| ILIAS LMS                          | full      | full       |         |         |       | full |             |
+| iLMS                               | full      | full       |         | full    |       |      | open source |
+| IMC Learning Suite                 |           | full       |         |         |       |      |             |
+| Informetica LMS                    | full      | full       |         |         |       |      |             |
+| Inquisiq R4 LMS                    | full      | full       |         |         |       |      |             |
+| Intuition Rubicon LMS              | full      |            |         |         |       |      |             |
+| In2itive LMS                       | full      | full       |         |         |       |      |             |
+| ISOtrain LMS                       | full      | full       |         | full    |       |      |             |
+| iSpring Learn                      | full      | full       |         |         |       |      |             |
+| itslearning                        |           |            |         |         |       | full |             |
+| JLMS                               | full      | full       | full    | full    |       |      |             |
+| JoomlaLMS                          | full      | full       |         |         |       |      |             |
+| Kannu                              |           |            |         |         |       |      | proprietary |
+| KMI LMS                            | full      |            | full    |         |       |      |             |
+| LabVine LMS by LTS Health Learning | full      |            |         |         |       |      |             |
+| LAMS                               | partial   |            |         |         |       | full | open source |
+| LatitudeLearning LMS               | full      | full       |         |         |       |      |             |
+| LearnConnect LMS                   | full      |            |         |         |       |      |             |
+| LearnDash LMS                      | no        | no         | no      | full    |       |      |             |
+| LearningCart LMS                   | full      | full       |         |         |       |      |             |
+| learningCentral LMS                | full      | full       | full    | full    |       |      |             |
+| LearningZen LMS                    | full      | full       | full    |         |       |      |             |
+| Learning Locker LRS                |           |            | full    |         |       |      |             |
+| learnPro LCMS                      | full      |            |         |         |       |      |             |
+| LearnUpon LMS                      | full      |            | full    |         |       |      |             |
+| LearnWorlds LMS                    | full      | full       |         |         |       |      |             |
+| Learn-WiseGo LMS                   |           | full       |         |         |       |      |             |
+| LifterLMS                          |           |            | full    |         |       |      |             |
+| Litmos LMS                         | full      |            | full    |         |       |      |             |
+| LMS365                             | full      | full       |         |         |       |      |             |
+| LON-CAPA                           | partial   |            |         |         |       |      | open source |
+| MATRIX LMS                         | full      |            |         |         |       |      |             |
+| Meridian LMS                       | full      | full       |         |         |       |      |             |
+| Mobile Agility LMS                 | full      | full       |         |         |       |      |             |
+| Moodle LMS                         | full      | full       |         | partial |       | full |             |
+| MOS Chorus LMS                     |           | full       |         |         |       |      |             |
+| Myicourse LMS                      | partial   | partial    |         |         |       |      |             |
+| MySkillpad LMS                     | full      | full       |         |         |       |      |             |
+| NEO LMS                            | full      |            |         |         |       |      |             |
+| NetDimensions Learning             | full      | full       |         | full    |       |      |             |
+| Nimble LMS                         | full      |            |         |         |       |      |             |
+| Ninth Brain LMS                    | full      | full       | full    |         |       |      |             |
+| OLAT LMS                           | full      | full       |         |         |       | full |             |
+| OPAL                               | full      | no         |         |         |       |      |             |
+| Open edx                           | full      |            |         |         |       |      | open source |
+| OpenOLAT                           | full      |            |         |         |       | full | open source |
+| Opigno LMS                         | full      | full       |         |         |       |      |             |
+| Oracle Taleo Learn Cloud Service   | full      | full       |         | full    |       |      |             |
+| Paradiso LMS                       | full      | full       |         |         |       |      |             |
+| Percepium LMS                      | full      | full       |         |         |       |      |             |
+| Percolate LMS                      | full      | full       |         |         |       |      |             |
+| Prosperity LMS                     | full      | full       |         |         |       |      |             |
+| RISC's Virtual Training Assistant  | full      | full       | full    | full    | full  |      |             |
+| Saba LMS                           | full      | full       |         | full    |       |      |             |
+| Sakai LMS                          | full      | full       |         |         |       |      |             |
+| SAP SuccessFactors LMS             | full      | full       |         | full    |       |      | proprietary |
+| ScholarLMS                         | full      | full       | full    |         |       |      |             |
+| Schoology LMS                      | full      | full       |         |         |       |      | proprietary |
+| Schoox LMS                         | full      | full       |         |         |       |      |             |
+| ShareKnowledge LMS                 | full      | full       |         |         |       |      |             |
+| Shika LMS                          | full      | full       |         |         |       |      |             |
+| SilkRoad LMS                       | full      | full       |         | full    |       |      |             |
+| Simplify LMS                       | full      |            | full    |         |       |      |             |
+| Skilljar LMS                       | full      |            |         |         |       |      |             |
+| Skillsoft                          |           |            |         |         |       |      | proprietary |
+| SkillsServe LMS                    | full      | full       |         |         |       |      |             |
+| SmarterU LMS                       | full      | full       |         | full    |       |      |             |
+| Spongelab                          |           |            |         |         |       |      | proprietary |
+| SuccessFactors                     |           |            |         |         |       |      | proprietary |
+| SumTotal LMS (by SkillSoft)        | full      | full       |         | full    |       |      | proprietary |
+| SWAD                               |           |            |         |         |       |      | open source |
+| SwiftLMS                           | full      | full       |         |         |       |      |             |
+| Syberworks LMS                     |           |            |         |         |       |      |             |
+| Syfadis Suite LMS                  | full      | full       |         |         |       |      |             |
+| Thinking Cap LMS                   | full      | full       |         |         |       |      |             |
+| TalentLMS                          | full      | no         | full    |         |       |      |             |
+| Taleo                              | full      | full       |         | partial |       |      | proprietary |
+| TCManager LMS                      | full      |            |         |         |       |      |             |
+| Techniworks LMS                    | full      | full       |         |         |       |      |             |
+| Thinkific LMS                      |           |            |         |         |       |      |             |
+| TOPYX LMS                          | full      | full       |         |         |       |      |             |
+| Torch LMS                          | full      | full       | full    | full    |       |      |             |
+| Totara LMS                         | full      |            |         |         |       |      |             |
+| Udutu LMS                          | full      | full       |         |         |       |      |             |
+| UpGraduate LMS                     | full      | full       | full    | full    |       |      |             |
+| UpsideLMS                          | full      | full       | partial |         |       |      |             |
+| Uzity                              |           |            |         |         |       |      | proprietary |
+| ViewCentral LMS                    | full      |            |         |         |       |      |             |
+| viLMS                              | full      | full       |         |         |       |      |             |
+| Vowel LMS                          | full      | full       |         |         |       |      |             |
+| Watershed LRS                      |           |            | full    |         |       |      |             |
+| Wax LRS                            |           |            | full    |         |       |      |             |
+| WBTServer LMS                      |           | full       |         |         |       |      |             |
+| WebCampus LMS                      | full      |            |         |         |       |      |             |
+| WeBWorK                            |           |            |         |         |       |      | open source |
+| WestNet MLP                        | partial   | partial    | partial |         |       |      |             |
+| wizBank e-Learning Platform        | full      | full       |         |         |       |      |             |
+| WizIQ LMS                          | partial   | partial    |         |         |       |      |             |
+| Workday LMS                        | full      | full       |         |         |       |      |             |
+| WorkWize LMS                       | full      |            |         |         |       |      |             |
+| xapiapps LMS                       | full      | full       | full    |         |       |      |             |
+| 360Learning LMS                    | full      | full       |         |         |       |      |             |

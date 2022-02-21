@@ -5,6 +5,7 @@ var $9Afec$path = require("path");
 var $9Afec$fsextra = require("fs-extra");
 var $9Afec$minimist = require("minimist");
 var $9Afec$temp = require("temp");
+var $9Afec$archiver = require("archiver");
 var $9Afec$liascriptsimplescormpackager = require("@liascript/simple-scorm-packager");
 var $9Afec$puppeteer = require("puppeteer");
 
@@ -12209,6 +12210,8 @@ type alias Process =
 'use strict';
 
 
+
+
 function $320134ce32dd9048$export$6b76988456c0292f() {
     return new Promise((resolve, reject)=>{
         $9Afec$temp.mkdir('lia', function(err, tmpPath) {
@@ -12241,6 +12244,72 @@ function $320134ce32dd9048$export$a976684a0efeb93f(element, into) {
 }
 function $320134ce32dd9048$export$bab98af026af71ac(uri) {
     return uri.startsWith('http://') || uri.startsWith('https://') || uri.startsWith('file://');
+}
+async function $320134ce32dd9048$export$8cde213409fd6377(tmpPath, readme) {
+    await $320134ce32dd9048$export$552bfb764b5cd2b4($9Afec$path.join(tmpPath, 'start.html'), `<!DOCTYPE html>
+    <html style="height:100%; overflow: hidden">
+    <head>
+    
+    </head>
+    <body style="height:100%">
+    
+    <iframe id="lia-container" src="" style="border: 0px; width: 100%; height: 100%"></iframe>
+    
+    <script>
+      let path = window.location.pathname.replace("start.html", "")
+      let iframe = document.getElementById("lia-container")
+
+      if (iframe) {          
+        const src = path + "index.html?" + path + "${readme.replace('./', '')}"
+        iframe.src = src 
+      }
+    </script>
+
+    </body>
+    </html> 
+    `);
+}
+async function $320134ce32dd9048$export$8901015135f2fb22(dir, filename) {
+    const output = $9Afec$fsextra.createWriteStream($9Afec$path.dirname(filename) + '/' + $9Afec$path.basename(filename + '.zip'));
+    const archive = $9Afec$archiver('zip', {
+        zlib: {
+            level: 9
+        }
+    });
+    // listen for all archive data to be written
+    // 'close' event is fired only when a file descriptor is involved
+    output.on('close', function() {
+        console.log(archive.pointer() + ' total bytes');
+        console.log('archiver has been finalized and the output file descriptor has closed.');
+    });
+    // This event is fired when the data source is drained no matter what was the data source.
+    // It is not part of this library but rather from the NodeJS Stream API.
+    // @see: https://nodejs.org/api/stream.html#stream_event_end
+    output.on('end', function() {
+        console.log('Data has been drained');
+    });
+    // good practice to catch warnings (ie stat failures and other non-blocking errors)
+    archive.on('warning', function(err) {
+        if (err.code === 'ENOENT') ;
+        else // throw error
+        throw err;
+    });
+    // good practice to catch this error explicitly
+    archive.on('error', function(err) {
+        throw err;
+    });
+    // pipe archive data to the file
+    archive.pipe(output);
+    archive.directory(dir, false);
+    archive.finalize();
+}
+function $320134ce32dd9048$export$4385e60b38654f68(length = 16) {
+    // Declare all characters
+    let chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    // Pick characters randomly
+    let str = '';
+    for(let i = 0; i < length; i++)str += chars.charAt(Math.floor(Math.random() * chars.length));
+    return str;
 }
 
 
@@ -12291,7 +12360,8 @@ async function $1e521125b288b3fc$export$372e2d09604f52f0(argument, json) {
     }
     // copy base path or readme-directory into temp
     await $9Afec$fsextra.copy(argument.path, tmpPath);
-    await $9Afec$fsextra.move(tmpPath, argument.output, {
+    if (argument['web-zip']) $320134ce32dd9048$export$8901015135f2fb22(tmpPath, argument.output);
+    else await $9Afec$fsextra.move(tmpPath, argument.output, {
         filter: $320134ce32dd9048$export$3032dc2899b8ea9b
     });
 }
@@ -12301,30 +12371,6 @@ async function $1e521125b288b3fc$export$372e2d09604f52f0(argument, json) {
 
 
 
-async function $699da5868da0be18$export$8cde213409fd6377(tmpPath, readme) {
-    await $320134ce32dd9048$export$552bfb764b5cd2b4($9Afec$path.join(tmpPath, 'start.html'), `<!DOCTYPE html>
-    <html style="height:100%; overflow: hidden">
-    <head>
-    
-    </head>
-    <body style="height:100%">
-    
-    <iframe id="lia-container" src="" style="border: 0px; width: 100%; height: 100%"></iframe>
-    
-    <script>
-      let path = window.location.pathname.replace("start.html", "")
-      let iframe = document.getElementById("lia-container")
-
-      if (iframe) {          
-        const src = path + "index.html?" + path + "${readme.replace('./', '')}"
-        iframe.src = src 
-      }
-    </script>
-
-    </body>
-    </html> 
-    `);
-}
 async function $699da5868da0be18$export$372e2d09604f52f0(argument, json) {
     // make temp folder
     let tmp = await $320134ce32dd9048$export$6b76988456c0292f();
@@ -12340,7 +12386,7 @@ async function $699da5868da0be18$export$372e2d09604f52f0(argument, json) {
         quiz: json.quiz,
         survey: json.survey
     }) + ';');
-    if (argument['scorm-iframe']) await $699da5868da0be18$export$8cde213409fd6377(tmpPath, argument.readme);
+    if (argument['scorm-iframe']) await $320134ce32dd9048$export$8cde213409fd6377(tmpPath, argument.readme);
     try {
         await $320134ce32dd9048$export$552bfb764b5cd2b4($9Afec$path.join(tmpPath, 'index.html'), index);
     } catch (e) {
@@ -12392,7 +12438,6 @@ async function $699da5868da0be18$export$372e2d09604f52f0(argument, json) {
 
 
 
-
 async function $c4fe6e5c8950c8b3$export$372e2d09604f52f0(argument, json) {
     // make temp folder
     let tmp = await $320134ce32dd9048$export$6b76988456c0292f();
@@ -12408,7 +12453,7 @@ async function $c4fe6e5c8950c8b3$export$372e2d09604f52f0(argument, json) {
         quiz: json.quiz,
         survey: json.survey
     }) + ';');
-    if (argument['scorm-iframe']) await $699da5868da0be18$export$8cde213409fd6377(tmpPath, argument.readme);
+    if (argument['scorm-iframe']) await $320134ce32dd9048$export$8cde213409fd6377(tmpPath, argument.readme);
     try {
         await $320134ce32dd9048$export$552bfb764b5cd2b4($9Afec$path.join(tmpPath, 'index.html'), index);
     } catch (e) {
@@ -12564,6 +12609,91 @@ async function $fe4c9e5866fc6c52$export$372e2d09604f52f0(argument, json) {
 
 
 
+
+
+async function $e5a6b0d412255288$export$372e2d09604f52f0(argument, json) {
+    // make temp folder
+    let tmp = await $320134ce32dd9048$export$6b76988456c0292f();
+    let tmpPath = $9Afec$path.join(tmp, 'pro');
+    // copy assets to temp
+    await $9Afec$fsextra.copy($9Afec$path.join(__dirname, argument['ims-indexeddb'] ? './assets/app' : './assets/web'), tmpPath);
+    let index = $9Afec$fsextra.readFileSync($9Afec$path.join(tmpPath, 'index.html'), 'utf8');
+    // change responsive key
+    if (argument.key) index = $320134ce32dd9048$export$31a09876afc8115c(argument.key, index);
+    try {
+        await $320134ce32dd9048$export$552bfb764b5cd2b4($9Afec$path.join(tmpPath, 'index.html'), index);
+    } catch (e) {
+        console.warn(e);
+        return;
+    }
+    await $e5a6b0d412255288$var$manifest(tmpPath, json.lia);
+    // copy base path or readme-directory into temp
+    await $9Afec$fsextra.copy(argument.path, tmpPath, {
+        filter: $320134ce32dd9048$export$3032dc2899b8ea9b
+    });
+    if (argument['ims-indexeddb']) {
+        let newReadme = $320134ce32dd9048$export$4385e60b38654f68(20) + '.md';
+        let old_ = $9Afec$path.join(tmpPath, argument.readme);
+        let new_ = $9Afec$path.join($9Afec$path.dirname(old_), newReadme);
+        argument.readme = argument.readme.replace($9Afec$path.basename(argument.readme), newReadme);
+        await $9Afec$fsextra.move(old_, new_);
+    }
+    await $320134ce32dd9048$export$8cde213409fd6377(tmpPath, argument.readme);
+    $320134ce32dd9048$export$8901015135f2fb22(tmpPath, argument.output);
+}
+async function $e5a6b0d412255288$var$manifest(tmpPath, meta) {
+    let keywords = '';
+    try {
+        const tags = meta.definition.macro.tags.split(',').map((e)=>e.trim()
+        );
+        for(let i = 0; i < tags.length; i++)keywords += `<imsmd:langstring xml:lang="${meta.definition.language}">${tags[i]}</imsmd:langstring>`;
+    } catch (e) {
+    }
+    await $320134ce32dd9048$export$552bfb764b5cd2b4($9Afec$path.join(tmpPath, 'imsmanifest.xml'), `<manifest xmlns="http://www.imsglobal.org/xsd/imscp_v1p1" xmlns:imsmd="http://www.imsglobal.org/xsd/imsmd_v1p2"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.imsglobal.org/xsd/imscp_v1p1 http://www.imsglobal.org/xsd/imscp_v1p1.xsd http://www.imsglobal.org/xsd/imsmd_v1p2 http://www.imsglobal.org/xsd/imsmd_v1p2.xsd "
+    identifier="Manifest5-CEC3D3-3201-DF8E-8F42-3CEED12F4197" version="IMS CP 1.1.4">
+    <metadata>
+        <schema>IMS Content</schema>
+        <schemaversion>1.1.4</schemaversion>
+        <imsmd:lom>
+            <imsmd:general>
+                <imsmd:title>
+                    <imsmd:langstring xml:lang="${meta.definition.language}">${meta.str_title}</imsmd:langstring>
+                </imsmd:title>
+                <imsmd:language>${meta.definition.language}</imsmd:language>
+                <imsmd:description>
+                    <imsmd:langstring xml:lang="${meta.definition.language}">${meta.comment}</imsmd:langstring>
+                </imsmd:description>
+                <imsmd:keyword>
+                    ${keywords}
+                </imsmd:keyword>
+            </imsmd:general>
+            <imsmd:lifecycle>
+                <imsmd:version>
+                    <imsmd:langstring xml:lang="${meta.definition.language}">${meta.definition.version}</imsmd:langstring>
+                </imsmd:version>
+            </imsmd:lifecycle>
+        </imsmd:lom>
+    </metadata>
+    <organizations default="TOC1">
+        <organization identifier="TOC1" structure="hierarchical">
+            <title>All Lessons</title>
+            <item identifier="ITEM1" identifierref="LIASCRIPT">
+                <title>Lesson 1</title>
+            </item>
+        </organization>
+    </organizations>
+    <resources>
+        <resource identifier="LIASCRIPT" type="webcontent" href="start.html">
+            <file href="start.html" />
+        </resource>
+    </resources>
+</manifest>`);
+}
+
+
+
 $parcel$global.XMLHttpRequest = $9Afec$xhr2;
 
 
@@ -12604,6 +12734,9 @@ function $ccdb061a5468de1f$var$run(argument) {
             case 'scorm2004':
                 $c4fe6e5c8950c8b3$export$372e2d09604f52f0(argument, JSON.parse(string));
                 break;
+            case 'ims':
+                $e5a6b0d412255288$export$372e2d09604f52f0(argument, JSON.parse(string));
+                break;
             case 'web':
                 $1e521125b288b3fc$export$372e2d09604f52f0(argument, JSON.parse(string));
                 break;
@@ -12617,7 +12750,7 @@ function $ccdb061a5468de1f$var$run(argument) {
     try {
         // the format is changed only locally, the SCORM and web exporters simply
         // require some meta data from the parsed json output
-        const format = argument.format == 'scorm1.2' || argument.format == 'scorm2004' || argument.format == 'pdf' || argument.format == 'web' ? 'fulljson' : argument.format;
+        const format = argument.format == 'scorm1.2' || argument.format == 'scorm2004' || argument.format == 'pdf' || argument.format == 'web' || argument.format == 'ims' ? 'fulljson' : argument.format;
         if (!$320134ce32dd9048$export$bab98af026af71ac(argument.input)) {
             const data = $9Afec$fsextra.readFileSync(argument.input, 'utf8');
             app.ports.input.send([
@@ -12638,15 +12771,21 @@ function $ccdb061a5468de1f$var$help() {
     console.log('-i', '--input', '          file to be used as input');
     console.log('-p', '--path', '           path to be packed, if not set, the path of the input file is used');
     console.log('-o', '--output', '         output file name (default is output), the ending is define by the format');
-    console.log('-f', '--format', '         scorm1.2, scorm2004, json, fullJson, web, pdf (default is json)');
+    console.log('-f', '--format', '         scorm1.2, scorm2004, json, fullJson, web, ims, pdf (default is json)');
     console.log('-v', '--version', '        output the current version');
     console.log('\n-k', '--key', '            responsive voice key ');
-    console.log('\nSCORM 1.2 settings:');
+    console.log('\nSCORM settings:');
     console.log('');
     console.log('--scorm-organization', '      set the organization title');
     console.log('--scorm-masteryScore', '      set the scorm masteryScore (a value between 0 -- 100), default is 0');
     console.log('--scorm-typicalDuration', '   set the scorm duration, default is PT0H5M0S');
     console.log('--scorm-iframe', '            use an iframe, when a SCORM starting parameter is not working');
+    console.log('\nIMS settings:');
+    console.log('');
+    console.log('--ims-indexeddb', '           Use IndexedDB to store data persistently');
+    console.log('\nWEB settings:');
+    console.log('');
+    console.log('--web-zip                  By default the result is not zipped, you can change this with this parameter.');
     console.log('\nPDF settings:\n');
     console.log('--pdf-stylesheet           Inject an local CSS for changing the appearance.');
     console.log('--pdf-theme                LiaScript themes: default, turquoise, blue, red, yellow');
@@ -12683,6 +12822,10 @@ function $ccdb061a5468de1f$var$parseArguments() {
         'scorm-masteryScore': $ccdb061a5468de1f$var$argv['scorm-masteryScore'],
         'scorm-typicalDuration': $ccdb061a5468de1f$var$argv['scorm-typicalDuration'],
         'scorm-iframe': $ccdb061a5468de1f$var$argv['scorm-iframe'],
+        // special IMS cases
+        'ims-indexeddb': $ccdb061a5468de1f$var$argv['ims-indexeddb'],
+        // web-cases
+        'web-zip': $ccdb061a5468de1f$var$argv['web-zip'],
         // pdf cases
         'pdf-preview': $ccdb061a5468de1f$var$argv['pdf-preview'],
         'pdf-scale': $ccdb061a5468de1f$var$argv['pdf-scale'],

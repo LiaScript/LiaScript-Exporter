@@ -19,8 +19,9 @@
   "preferGlobal": true,
   "scripts": {
     "__preinstall": "cd LiaScript && npm i && npm run build:scorm1.2 && cp -r dist ../assets/scorm1.2",
-    "build:assets": "npm run clean && npm run asset:scorm1.2 && npm run asset:scorm2004 && npm run asset:web && npm run asset:pdf",
+    "build:assets": "npm run clean && npm run asset:scorm1.2 && npm run asset:scorm2004 && npm run asset:web && npm run asset:app && npm run asset:pdf",
     "clean": "rm -rf dist/assets/*",
+    "asset:app": "cd LiaScript && npm i && npm run build:app && cp -r dist ../dist/assets/app",
     "asset:web": "cd LiaScript && npm i && npm run build:base && cp -r dist ../dist/assets/web",
     "asset:pdf": "cd LiaScript && git checkout feat/fullPage && npm i && npm run build:pdf && cp -r dist ../dist/assets/pdf && git checkout development",
     "asset:scorm1.2": "cd LiaScript && npm i && npm run build:scorm1.2 && cp -r dist ../dist/assets/scorm1.2",
@@ -42,6 +43,7 @@
   "license": "ISC",
   "dependencies": {
     "@liascript/simple-scorm-packager": "^0.2.6",
+    "archiver": "^5.3.0",
     "fs-extra": "^9.1.0",
     "minimist": "^1.2.5",
     "path": "^0.12.7",

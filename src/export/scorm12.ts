@@ -4,34 +4,6 @@ const scormPackager = require('@liascript/simple-scorm-packager')
 const path = require('path')
 const fs = require('fs-extra')
 
-export async function iframe(tmpPath, readme: string) {
-  await helper.writeFile(
-    path.join(tmpPath, 'start.html'),
-    `<!DOCTYPE html>
-    <html style="height:100%; overflow: hidden">
-    <head>
-    
-    </head>
-    <body style="height:100%">
-    
-    <iframe id="lia-container" src="" style="border: 0px; width: 100%; height: 100%"></iframe>
-    
-    <script>
-      let path = window.location.pathname.replace("start.html", "")
-      let iframe = document.getElementById("lia-container")
-
-      if (iframe) {          
-        const src = path + "index.html?" + path + "${readme.replace('./', '')}"
-        iframe.src = src 
-      }
-    </script>
-
-    </body>
-    </html> 
-    `
-  )
-}
-
 export async function exporter(
   argument: {
     input: string
@@ -77,7 +49,7 @@ export async function exporter(
   )
 
   if (argument['scorm-iframe']) {
-    await iframe(tmpPath, argument.readme)
+    await helper.iframe(tmpPath, argument.readme)
   }
 
   try {

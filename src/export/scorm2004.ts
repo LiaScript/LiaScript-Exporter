@@ -1,5 +1,4 @@
 import * as helper from './helper'
-import * as SCORM from './scorm12'
 
 const scormPackager = require('@liascript/simple-scorm-packager')
 const path = require('path')
@@ -50,7 +49,7 @@ export async function exporter(
   )
 
   if (argument['scorm-iframe']) {
-    await SCORM.iframe(tmpPath, argument.readme)
+    await helper.iframe(tmpPath, argument.readme)
   }
 
   try {

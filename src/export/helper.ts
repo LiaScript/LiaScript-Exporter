@@ -2,6 +2,8 @@
 
 const temp = require('temp')
 const fs = require('fs-extra')
+const path = require('path')
+const archiver = require('archiver')
 
 export function tmpDir() {
   return new Promise((resolve, reject) => {
@@ -50,4 +52,92 @@ export function isURL(uri: string) {
     uri.startsWith('https://') ||
     uri.startsWith('file://')
   )
+}
+
+export async function iframe(tmpPath, readme: string) {
+  await writeFile(
+    path.join(tmpPath, 'start.html'),
+    `<!DOCTYPE html>
+    <html style="height:100%; overflow: hidden">
+    <head>
+    
+    </head>
+    <body style="height:100%">
+    
+    <iframe id="lia-container" src="" style="border: 0px; width: 100%; height: 100%"></iframe>
+    
+    <script>
+      let path = window.location.pathname.replace("start.html", "")
+      let iframe = document.getElementById("lia-container")
+
+      if (iframe) {          
+        const src = path + "index.html?" + path + "${readme.replace('./', '')}"
+        iframe.src = src 
+      }
+    </script>
+
+    </body>
+    </html> 
+    `
+  )
+}
+
+export async function zip(dir: string, filename: string) {
+  const output = fs.createWriteStream(
+    path.dirname(filename) + '/' + path.basename(filename + '.zip')
+  )
+
+  const archive = archiver('zip', {
+    zlib: { level: 9 }, // Sets the compression level.
+  })
+
+  // listen for all archive data to be written
+  // 'close' event is fired only when a file descriptor is involved
+  output.on('close', function () {
+    console.log(archive.pointer() + ' total bytes')
+    console.log(
+      'archiver has been finalized and the output file descriptor has closed.'
+    )
+  })
+
+  // This event is fired when the data source is drained no matter what was the data source.
+  // It is not part of this library but rather from the NodeJS Stream API.
+  // @see: https://nodejs.org/api/stream.html#stream_event_end
+  output.on('end', function () {
+    console.log('Data has been drained')
+  })
+
+  // good practice to catch warnings (ie stat failures and other non-blocking errors)
+  archive.on('warning', function (err) {
+    if (err.code === 'ENOENT') {
+      // log warning
+    } else {
+      // throw error
+      throw err
+    }
+  })
+
+  // good practice to catch this error explicitly
+  archive.on('error', function (err) {
+    throw err
+  })
+
+  // pipe archive data to the file
+  archive.pipe(output)
+
+  archive.directory(dir, false)
+  archive.finalize()
+}
+
+export function random(length: number = 16) {
+  // Declare all characters
+  let chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+
+  // Pick characters randomly
+  let str = ''
+  for (let i = 0; i < length; i++) {
+    str += chars.charAt(Math.floor(Math.random() * chars.length))
+  }
+
+  return str
 }
