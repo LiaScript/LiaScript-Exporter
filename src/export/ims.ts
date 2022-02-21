@@ -115,7 +115,7 @@ async function manifest(tmpPath: any, meta: any) {
         <organization identifier="TOC1" structure="hierarchical">
             <title>All Lessons</title>
             <item identifier="ITEM1" identifierref="LIASCRIPT">
-                <title>Lesson 1</title>
+                <title>LiaScript - Course</title>
             </item>
         </organization>
     </organizations>

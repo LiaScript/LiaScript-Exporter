@@ -12680,7 +12680,6 @@ async function $e5a6b0d412255288$var$manifest(tmpPath, meta) {
         <organization identifier="TOC1" structure="hierarchical">
             <title>All Lessons</title>
             <item identifier="ITEM1" identifierref="LIASCRIPT">
-                <title>Lesson 1</title>
             </item>
         </organization>
     </organizations>
