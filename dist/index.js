@@ -12303,6 +12303,14 @@ async function $320134ce32dd9048$export$8901015135f2fb22(dir, filename) {
     archive.directory(dir, false);
     archive.finalize();
 }
+function $320134ce32dd9048$export$4385e60b38654f68(length = 16) {
+    // Declare all characters
+    let chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    // Pick characters randomly
+    let str = '';
+    for(let i = 0; i < length; i++)str += chars.charAt(Math.floor(Math.random() * chars.length));
+    return str;
+}
 
 
 
@@ -12617,12 +12625,19 @@ async function $e5a6b0d412255288$export$372e2d09604f52f0(argument, json) {
         console.warn(e);
         return;
     }
-    await $320134ce32dd9048$export$8cde213409fd6377(tmpPath, argument.readme);
     await $e5a6b0d412255288$var$manifest(tmpPath, json.lia);
     // copy base path or readme-directory into temp
     await $9Afec$fsextra.copy(argument.path, tmpPath, {
         filter: $320134ce32dd9048$export$3032dc2899b8ea9b
     });
+    if (argument['ims-indexeddb']) {
+        let newReadme = $320134ce32dd9048$export$4385e60b38654f68(20) + '.md';
+        let old_ = $9Afec$path.join(tmpPath, argument.readme);
+        let new_ = $9Afec$path.join($9Afec$path.dirname(old_), newReadme);
+        argument.readme = argument.readme.replace($9Afec$path.basename(argument.readme), newReadme);
+        await $9Afec$fsextra.move(old_, new_);
+    }
+    await $320134ce32dd9048$export$8cde213409fd6377(tmpPath, argument.readme);
     $320134ce32dd9048$export$8901015135f2fb22(tmpPath, argument.output);
 }
 async function $e5a6b0d412255288$var$manifest(tmpPath, meta) {

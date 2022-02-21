@@ -128,3 +128,16 @@ export async function zip(dir: string, filename: string) {
   archive.directory(dir, false)
   archive.finalize()
 }
+
+export function random(length: number = 16) {
+  // Declare all characters
+  let chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+
+  // Pick characters randomly
+  let str = ''
+  for (let i = 0; i < length; i++) {
+    str += chars.charAt(Math.floor(Math.random() * chars.length))
+  }
+
+  return str
+}

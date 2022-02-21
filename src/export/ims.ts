@@ -45,12 +45,26 @@ export async function exporter(
     return
   }
 
-  await helper.iframe(tmpPath, argument.readme)
-
   await manifest(tmpPath, json.lia)
 
   // copy base path or readme-directory into temp
   await fs.copy(argument.path, tmpPath, { filter: helper.filterHidden })
+
+  if (argument['ims-indexeddb']) {
+    let newReadme = helper.random(20) + '.md'
+
+    let old_ = path.join(tmpPath, argument.readme)
+    let new_ = path.join(path.dirname(old_), newReadme)
+
+    argument.readme = argument.readme.replace(
+      path.basename(argument.readme),
+      newReadme
+    )
+
+    await fs.move(old_, new_)
+  }
+
+  await helper.iframe(tmpPath, argument.readme)
 
   helper.zip(tmpPath, argument.output)
 }
