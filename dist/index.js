@@ -12360,7 +12360,8 @@ async function $1e521125b288b3fc$export$372e2d09604f52f0(argument, json) {
     }
     // copy base path or readme-directory into temp
     await $9Afec$fsextra.copy(argument.path, tmpPath);
-    await $9Afec$fsextra.move(tmpPath, argument.output, {
+    if (argument['web-zip']) $320134ce32dd9048$export$8901015135f2fb22(tmpPath, argument.output);
+    else await $9Afec$fsextra.move(tmpPath, argument.output, {
         filter: $320134ce32dd9048$export$3032dc2899b8ea9b
     });
 }
@@ -12782,6 +12783,9 @@ function $ccdb061a5468de1f$var$help() {
     console.log('\nIMS settings:');
     console.log('');
     console.log('--ims-indexeddb', '           Use IndexedDB to store data persistently');
+    console.log('\nWEB settings:');
+    console.log('');
+    console.log('--web-zip                  By default the result is not zipped, you can change this with this parameter.');
     console.log('\nPDF settings:\n');
     console.log('--pdf-stylesheet           Inject an local CSS for changing the appearance.');
     console.log('--pdf-theme                LiaScript themes: default, turquoise, blue, red, yellow');
@@ -12818,8 +12822,10 @@ function $ccdb061a5468de1f$var$parseArguments() {
         'scorm-masteryScore': $ccdb061a5468de1f$var$argv['scorm-masteryScore'],
         'scorm-typicalDuration': $ccdb061a5468de1f$var$argv['scorm-typicalDuration'],
         'scorm-iframe': $ccdb061a5468de1f$var$argv['scorm-iframe'],
-        // special IMS casaes
+        // special IMS cases
         'ims-indexeddb': $ccdb061a5468de1f$var$argv['ims-indexeddb'],
+        // web-cases
+        'web-zip': $ccdb061a5468de1f$var$argv['web-zip'],
         // pdf cases
         'pdf-preview': $ccdb061a5468de1f$var$argv['pdf-preview'],
         'pdf-scale': $ccdb061a5468de1f$var$argv['pdf-scale'],

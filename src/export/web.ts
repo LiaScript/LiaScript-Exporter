@@ -11,6 +11,8 @@ export async function exporter(
     format: string
     path: string
     key?: string
+
+    'web-zip'?: boolean
   },
   json: any
 ) {
@@ -85,5 +87,10 @@ export async function exporter(
 
   // copy base path or readme-directory into temp
   await fs.copy(argument.path, tmpPath)
-  await fs.move(tmpPath, argument.output, { filter: helper.filterHidden })
+
+  if (argument['web-zip']) {
+    helper.zip(tmpPath, argument.output)
+  } else {
+    await fs.move(tmpPath, argument.output, { filter: helper.filterHidden })
+  }
 }

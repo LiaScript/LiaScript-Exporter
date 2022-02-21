@@ -87,6 +87,10 @@ IMS settings:
 
 --ims-indexeddb            Use IndexedDB to store data persistently
 
+WEB settings:
+
+--web-zip                  By default the result is not zipped, you can change this with this parameter.
+
 PDF settings:
 
 --pdf-stylesheet           Inject an local CSS for changing the appearance.
@@ -304,6 +308,9 @@ information is used to generate preview cards properly.
 
 If you want your site to speak the text out loud, then you will have to add your
 responsivevoice-key via `--key`.
+
+__`--web-zip`:__ Use this parameter to directly bundle all input into a zip
+file instead of a folder.
 
 ### PDF
 

@@ -145,6 +145,12 @@ function help() {
     '           Use IndexedDB to store data persistently'
   )
 
+  console.log('\nWEB settings:')
+  console.log('')
+  console.log(
+    '--web-zip                  By default the result is not zipped, you can change this with this parameter.'
+  )
+
   console.log('\nPDF settings:\n')
   console.log(
     '--pdf-stylesheet           Inject an local CSS for changing the appearance.'
@@ -227,8 +233,11 @@ function parseArguments() {
     'scorm-typicalDuration': argv['scorm-typicalDuration'],
     'scorm-iframe': argv['scorm-iframe'],
 
-    // special IMS casaes
+    // special IMS cases
     'ims-indexeddb': argv['ims-indexeddb'],
+
+    // web-cases
+    'web-zip': argv['web-zip'],
 
     // pdf cases
     'pdf-preview': argv['pdf-preview'],
