@@ -37,7 +37,7 @@ export async function exporter(
   if (!window.LIA) {
     window.LIA = {}
   }
-  window.LIA.defaultCourse="${path.basename(argument.readme)}"
+   window.LIA.defaultCourseURL = "${path.basename(argument.readme)}"
   </script>`,
     index
   )

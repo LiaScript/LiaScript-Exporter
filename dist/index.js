@@ -12329,7 +12329,7 @@ async function $1e521125b288b3fc$export$372e2d09604f52f0(argument, json) {
   if (!window.LIA) {
     window.LIA = {}
   }
-  window.LIA.defaultCourse="${$9Afec$path.basename(argument.readme)}"
+   window.LIA.defaultCourseURL = "${$9Afec$path.basename(argument.readme)}"
   </script>`, index);
     try {
         index = index.replace('<title>Lia</title>', `<title>${json.lia.str_title}</title><meta property="og:title" content="${json.lia.str_title}"> <meta name="twitter:title" content="${json.lia.str_title}">`);
