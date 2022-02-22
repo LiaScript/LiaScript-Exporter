@@ -3,4 +3,5 @@ LiaScript
 .gitmodules
 .parcel-cache
 .custom.css
+.vscode
 docker
