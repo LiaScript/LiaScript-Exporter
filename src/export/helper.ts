@@ -54,9 +54,14 @@ export function isURL(uri: string) {
   )
 }
 
-export async function iframe(tmpPath, readme: string) {
+export async function iframe(
+  tmpPath,
+  filename: string,
+  readme: string,
+  index?: string
+) {
   await writeFile(
-    path.join(tmpPath, 'start.html'),
+    path.join(tmpPath, filename),
     `<!DOCTYPE html>
     <html style="height:100%; overflow: hidden">
     <head>
@@ -71,7 +76,9 @@ export async function iframe(tmpPath, readme: string) {
       let iframe = document.getElementById("lia-container")
 
       if (iframe) {          
-        const src = path + "index.html?" + path + "${readme.replace('./', '')}"
+        const src = path + "${
+          index || 'index.html'
+        }?" + path + "${readme.replace('./', '')}"
         iframe.src = src 
       }
     </script>

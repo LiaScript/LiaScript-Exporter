@@ -49,7 +49,7 @@ export async function exporter(
   )
 
   if (argument['scorm-iframe']) {
-    await helper.iframe(tmpPath, argument.readme)
+    await helper.iframe(tmpPath, 'start.html', argument.readme)
   }
 
   try {

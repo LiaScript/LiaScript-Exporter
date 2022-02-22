@@ -12245,8 +12245,8 @@ function $320134ce32dd9048$export$a976684a0efeb93f(element, into) {
 function $320134ce32dd9048$export$bab98af026af71ac(uri) {
     return uri.startsWith('http://') || uri.startsWith('https://') || uri.startsWith('file://');
 }
-async function $320134ce32dd9048$export$8cde213409fd6377(tmpPath, readme) {
-    await $320134ce32dd9048$export$552bfb764b5cd2b4($9Afec$path.join(tmpPath, 'start.html'), `<!DOCTYPE html>
+async function $320134ce32dd9048$export$8cde213409fd6377(tmpPath, filename, readme, index) {
+    await $320134ce32dd9048$export$552bfb764b5cd2b4($9Afec$path.join(tmpPath, filename), `<!DOCTYPE html>
     <html style="height:100%; overflow: hidden">
     <head>
     
@@ -12260,7 +12260,7 @@ async function $320134ce32dd9048$export$8cde213409fd6377(tmpPath, readme) {
       let iframe = document.getElementById("lia-container")
 
       if (iframe) {          
-        const src = path + "index.html?" + path + "${readme.replace('./', '')}"
+        const src = path + "${index || 'index.html'}?" + path + "${readme.replace('./', '')}"
         iframe.src = src 
       }
     </script>
@@ -12324,8 +12324,8 @@ async function $1e521125b288b3fc$export$372e2d09604f52f0(argument, json) {
     // copy base path or readme-directory into temp
     await $9Afec$fsextra.copy(argument.path, tmpPath);
     // rename the readme if necessary
-    if (argument['web-indexeddb']) {
-        let newReadme = $320134ce32dd9048$export$4385e60b38654f68(20) + '.md';
+    if (argument['web-indexeddb'] !== undefined) {
+        let newReadme = (typeof argument['web-indexeddb'] === 'string' ? argument['web-indexeddb'] : $320134ce32dd9048$export$4385e60b38654f68(20)) + '.md';
         let old_ = $9Afec$path.join(tmpPath, argument.readme);
         let new_ = $9Afec$path.join($9Afec$path.dirname(old_), newReadme);
         argument.readme = argument.readme.replace($9Afec$path.basename(argument.readme), newReadme);
@@ -12363,7 +12363,10 @@ async function $1e521125b288b3fc$export$372e2d09604f52f0(argument, json) {
         console.warn('could not add image');
     }
     try {
-        await $320134ce32dd9048$export$552bfb764b5cd2b4($9Afec$path.join(tmpPath, 'index.html'), index);
+        if (argument['web-iframe']) {
+            await $320134ce32dd9048$export$552bfb764b5cd2b4($9Afec$path.join(tmpPath, 'start.html'), index);
+            await $320134ce32dd9048$export$8cde213409fd6377(tmpPath, 'index.html', argument.readme, 'start.html');
+        } else await $320134ce32dd9048$export$552bfb764b5cd2b4($9Afec$path.join(tmpPath, 'index.html'), index);
     } catch (e3) {
         console.warn(e3);
         return;
@@ -12394,7 +12397,7 @@ async function $699da5868da0be18$export$372e2d09604f52f0(argument, json) {
         quiz: json.quiz,
         survey: json.survey
     }) + ';');
-    if (argument['scorm-iframe']) await $320134ce32dd9048$export$8cde213409fd6377(tmpPath, argument.readme);
+    if (argument['scorm-iframe']) await $320134ce32dd9048$export$8cde213409fd6377(tmpPath, 'start.html', argument.readme);
     try {
         await $320134ce32dd9048$export$552bfb764b5cd2b4($9Afec$path.join(tmpPath, 'index.html'), index);
     } catch (e) {
@@ -12461,7 +12464,7 @@ async function $c4fe6e5c8950c8b3$export$372e2d09604f52f0(argument, json) {
         quiz: json.quiz,
         survey: json.survey
     }) + ';');
-    if (argument['scorm-iframe']) await $320134ce32dd9048$export$8cde213409fd6377(tmpPath, argument.readme);
+    if (argument['scorm-iframe']) await $320134ce32dd9048$export$8cde213409fd6377(tmpPath, 'start.html', argument.readme);
     try {
         await $320134ce32dd9048$export$552bfb764b5cd2b4($9Afec$path.join(tmpPath, 'index.html'), index);
     } catch (e) {
@@ -12646,7 +12649,7 @@ async function $e5a6b0d412255288$export$372e2d09604f52f0(argument, json) {
         argument.readme = argument.readme.replace($9Afec$path.basename(argument.readme), newReadme);
         await $9Afec$fsextra.move(old_, new_);
     }
-    await $320134ce32dd9048$export$8cde213409fd6377(tmpPath, argument.readme);
+    await $320134ce32dd9048$export$8cde213409fd6377(tmpPath, 'start.html', argument.readme);
     $320134ce32dd9048$export$8901015135f2fb22(tmpPath, argument.output);
 }
 async function $e5a6b0d412255288$var$manifest(tmpPath, meta) {
@@ -12793,7 +12796,8 @@ function $ccdb061a5468de1f$var$help() {
     console.log('--ims-indexeddb', '           Use IndexedDB to store data persistently');
     console.log('\nWEB settings:');
     console.log('');
-    console.log('--web-indexeddb            This will allow to store data within the browser using indexeddb.');
+    console.log('--web-iframe               Use an iframed version to hide the course URL.');
+    console.log('--web-indexeddb            This will allow to store data within the browser using indexeddb, you can optionally pass a unique key (by default one is generated randomly).');
     console.log('--web-zip                  By default the result is not zipped, you can change this with this parameter.');
     console.log('\nPDF settings:\n');
     console.log('--pdf-stylesheet           Inject an local CSS for changing the appearance.');
@@ -12836,6 +12840,7 @@ function $ccdb061a5468de1f$var$parseArguments() {
         // web-cases
         'web-zip': $ccdb061a5468de1f$var$argv['web-zip'],
         'web-indexeddb': $ccdb061a5468de1f$var$argv['web-indexeddb'],
+        'web-iframe': $ccdb061a5468de1f$var$argv['web-iframe'],
         // pdf cases
         'pdf-preview': $ccdb061a5468de1f$var$argv['pdf-preview'],
         'pdf-scale': $ccdb061a5468de1f$var$argv['pdf-scale'],

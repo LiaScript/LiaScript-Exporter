@@ -12,6 +12,7 @@ export async function exporter(
     path: string
     key?: string
 
+    'web-iframe'?: boolean
     'web-indexeddb'?: boolean
     'web-zip'?: boolean
   },
@@ -35,8 +36,11 @@ export async function exporter(
   await fs.copy(argument.path, tmpPath)
 
   // rename the readme if necessary
-  if (argument['web-indexeddb']) {
-    let newReadme = helper.random(20) + '.md'
+  if (argument['web-indexeddb'] !== undefined) {
+    let newReadme =
+      (typeof argument['web-indexeddb'] === 'string'
+        ? argument['web-indexeddb']
+        : helper.random(20)) + '.md'
 
     let old_ = path.join(tmpPath, argument.readme)
     let new_ = path.join(path.dirname(old_), newReadme)
@@ -104,7 +108,12 @@ export async function exporter(
   }
 
   try {
-    await helper.writeFile(path.join(tmpPath, 'index.html'), index)
+    if (argument['web-iframe']) {
+      await helper.writeFile(path.join(tmpPath, 'start.html'), index)
+      await helper.iframe(tmpPath, 'index.html', argument.readme, 'start.html')
+    } else {
+      await helper.writeFile(path.join(tmpPath, 'index.html'), index)
+    }
   } catch (e) {
     console.warn(e)
     return

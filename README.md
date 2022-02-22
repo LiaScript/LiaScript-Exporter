@@ -89,7 +89,8 @@ IMS settings:
 
 WEB settings:
 
---web-indexeddb            This will allow to store data within the browser using indexeddb.
+--web-iframe               Use an iframed version to hide the course URL.
+--web-indexeddb            This will allow to store data within the browser using indexeddb, you can optionally pass a unique key (by default one is generated randomly).
 --web-zip                  By default the result is not zipped, you can change this with this parameter.
 
 PDF settings:
@@ -312,6 +313,24 @@ responsivevoice-key via `--key`.
 
 __`--web-zip`:__ Use this parameter to directly bundle all input into a zip
 file instead of a folder.
+
+__`--web-iframe`:__ This will put the course into an secondary iframe, which will
+hide the course-URL (the Markdown-file). Unfortunately, it will not be possible
+anymore to link from outside to a specific slide.
+
+__`web-indexeddb`:__ Generate a LiaScript package that will store states persistently.
+By default, the database is generated uniquely for the packed course. That means,
+every update will use a new database, which makes sense, if and only if, typos get
+corrected or content is added to the end of the document. Mixing content and moving
+quizzes and surveys to different slides might cause some problems in restoring the
+state. But you can use this parameter with a key:
+
+```shell
+liaex --format web -i project/README.md -o outputFolder --web-indexeddb someKeyToUse
+updating title ...
+updating description ...
+updating logo ...
+```
 
 ### PDF
 

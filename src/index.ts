@@ -148,7 +148,10 @@ function help() {
   console.log('\nWEB settings:')
   console.log('')
   console.log(
-    '--web-indexeddb            This will allow to store data within the browser using indexeddb.'
+    '--web-iframe               Use an iframed version to hide the course URL.'
+  )
+  console.log(
+    '--web-indexeddb            This will allow to store data within the browser using indexeddb, you can optionally pass a unique key (by default one is generated randomly).'
   )
   console.log(
     '--web-zip                  By default the result is not zipped, you can change this with this parameter.'
@@ -242,6 +245,7 @@ function parseArguments() {
     // web-cases
     'web-zip': argv['web-zip'],
     'web-indexeddb': argv['web-indexeddb'],
+    'web-iframe': argv['web-iframe'],
 
     // pdf cases
     'pdf-preview': argv['pdf-preview'],

@@ -64,7 +64,7 @@ export async function exporter(
     await fs.move(old_, new_)
   }
 
-  await helper.iframe(tmpPath, argument.readme)
+  await helper.iframe(tmpPath, 'start.html', argument.readme)
 
   helper.zip(tmpPath, argument.output)
 }
