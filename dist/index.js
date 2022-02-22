@@ -12320,7 +12320,17 @@ async function $1e521125b288b3fc$export$372e2d09604f52f0(argument, json) {
     let tmp = await $320134ce32dd9048$export$6b76988456c0292f();
     let tmpPath = $9Afec$path.join(tmp, 'pro');
     // copy assets to temp
-    await $9Afec$fsextra.copy($9Afec$path.join(__dirname, './assets/web'), tmpPath);
+    await $9Afec$fsextra.copy($9Afec$path.join(__dirname, argument['web-indexeddb'] ? './assets/indexeddb' : './assets/web'), tmpPath);
+    // copy base path or readme-directory into temp
+    await $9Afec$fsextra.copy(argument.path, tmpPath);
+    // rename the readme if necessary
+    if (argument['web-indexeddb']) {
+        let newReadme = $320134ce32dd9048$export$4385e60b38654f68(20) + '.md';
+        let old_ = $9Afec$path.join(tmpPath, argument.readme);
+        let new_ = $9Afec$path.join($9Afec$path.dirname(old_), newReadme);
+        argument.readme = argument.readme.replace($9Afec$path.basename(argument.readme), newReadme);
+        await $9Afec$fsextra.move(old_, new_);
+    }
     let index = $9Afec$fsextra.readFileSync($9Afec$path.join(tmpPath, 'index.html'), 'utf8');
     // change responsive key
     if (argument.key) index = $320134ce32dd9048$export$31a09876afc8115c(argument.key, index);
@@ -12358,8 +12368,6 @@ async function $1e521125b288b3fc$export$372e2d09604f52f0(argument, json) {
         console.warn(e3);
         return;
     }
-    // copy base path or readme-directory into temp
-    await $9Afec$fsextra.copy(argument.path, tmpPath);
     if (argument['web-zip']) $320134ce32dd9048$export$8901015135f2fb22(tmpPath, argument.output);
     else await $9Afec$fsextra.move(tmpPath, argument.output, {
         filter: $320134ce32dd9048$export$3032dc2899b8ea9b
@@ -12785,6 +12793,7 @@ function $ccdb061a5468de1f$var$help() {
     console.log('--ims-indexeddb', '           Use IndexedDB to store data persistently');
     console.log('\nWEB settings:');
     console.log('');
+    console.log('--web-indexeddb            This will allow to store data within the browser using indexeddb.');
     console.log('--web-zip                  By default the result is not zipped, you can change this with this parameter.');
     console.log('\nPDF settings:\n');
     console.log('--pdf-stylesheet           Inject an local CSS for changing the appearance.');
@@ -12826,6 +12835,7 @@ function $ccdb061a5468de1f$var$parseArguments() {
         'ims-indexeddb': $ccdb061a5468de1f$var$argv['ims-indexeddb'],
         // web-cases
         'web-zip': $ccdb061a5468de1f$var$argv['web-zip'],
+        'web-indexeddb': $ccdb061a5468de1f$var$argv['web-indexeddb'],
         // pdf cases
         'pdf-preview': $ccdb061a5468de1f$var$argv['pdf-preview'],
         'pdf-scale': $ccdb061a5468de1f$var$argv['pdf-scale'],

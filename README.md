@@ -89,6 +89,7 @@ IMS settings:
 
 WEB settings:
 
+--web-indexeddb            This will allow to store data within the browser using indexeddb.
 --web-zip                  By default the result is not zipped, you can change this with this parameter.
 
 PDF settings:

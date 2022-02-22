@@ -12,6 +12,7 @@ export async function exporter(
     path: string
     key?: string
 
+    'web-indexeddb'?: boolean
     'web-zip'?: boolean
   },
   json: any
@@ -22,7 +23,31 @@ export async function exporter(
   let tmpPath = path.join(tmp, 'pro')
 
   // copy assets to temp
-  await fs.copy(path.join(__dirname, './assets/web'), tmpPath)
+  await fs.copy(
+    path.join(
+      __dirname,
+      argument['web-indexeddb'] ? './assets/indexeddb' : './assets/web'
+    ),
+    tmpPath
+  )
+
+  // copy base path or readme-directory into temp
+  await fs.copy(argument.path, tmpPath)
+
+  // rename the readme if necessary
+  if (argument['web-indexeddb']) {
+    let newReadme = helper.random(20) + '.md'
+
+    let old_ = path.join(tmpPath, argument.readme)
+    let new_ = path.join(path.dirname(old_), newReadme)
+
+    argument.readme = argument.readme.replace(
+      path.basename(argument.readme),
+      newReadme
+    )
+
+    await fs.move(old_, new_)
+  }
 
   let index = fs.readFileSync(path.join(tmpPath, 'index.html'), 'utf8')
 
@@ -84,9 +109,6 @@ export async function exporter(
     console.warn(e)
     return
   }
-
-  // copy base path or readme-directory into temp
-  await fs.copy(argument.path, tmpPath)
 
   if (argument['web-zip']) {
     helper.zip(tmpPath, argument.output)
