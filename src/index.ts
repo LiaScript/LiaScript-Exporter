@@ -7,6 +7,7 @@ import * as SCORM2004 from './export/scorm2004'
 import * as PDF from './export/pdf'
 import * as helper from './export/helper'
 import * as IMS from './export/ims'
+import * as ANDROID from './export/android'
 
 global.XMLHttpRequest = require('xhr2')
 
@@ -66,6 +67,10 @@ function run(argument) {
         PDF.exporter(argument, JSON.parse(string))
         break
       }
+      case 'android': {
+        ANDROID.exporter(argument, JSON.parse(string))
+        break
+      }
       default: {
         console.warn('unknown output format', argument.format)
       }
@@ -80,7 +85,8 @@ function run(argument) {
       argument.format == 'scorm2004' ||
       argument.format == 'pdf' ||
       argument.format == 'web' ||
-      argument.format == 'ims'
+      argument.format == 'ims' ||
+      argument.format == 'android'
         ? 'fulljson'
         : argument.format
 

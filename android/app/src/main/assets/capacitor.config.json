@@ -1,0 +1,6 @@
+{
+	"appId": "org.liascript.app",
+	"appName": "LiaScript",
+	"webDir": "dist/assets/indexeddb",
+	"bundledWebRuntime": false
+}

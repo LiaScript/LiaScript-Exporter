@@ -8,6 +8,7 @@ var $9Afec$temp = require("temp");
 var $9Afec$archiver = require("archiver");
 var $9Afec$liascriptsimplescormpackager = require("@liascript/simple-scorm-packager");
 var $9Afec$puppeteer = require("puppeteer");
+var $9Afec$child_process = require("child_process");
 
 var $parcel$global =
 typeof globalThis !== 'undefined'
@@ -12703,6 +12704,69 @@ async function $e5a6b0d412255288$var$manifest(tmpPath, meta) {
 
 
 
+
+
+
+var $3eed299f4b9e5004$require$exec = $9Afec$child_process.exec;
+async function $3eed299f4b9e5004$export$372e2d09604f52f0(argument, json) {
+    // make temp folder
+    let tmp = await $320134ce32dd9048$export$6b76988456c0292f();
+    let tmpPath = $9Afec$path.join(tmp, 'pro');
+    // copy assets to temp
+    await $9Afec$fsextra.copy($9Afec$path.join(__dirname, '../android'), tmpPath);
+    await $9Afec$fsextra.copy($9Afec$path.join(__dirname, '../node_modules/@capacitor'), $9Afec$path.join(tmpPath, '../node_modules/@capacitor'));
+    let index = $9Afec$fsextra.readFileSync($9Afec$path.join(tmpPath, 'app/src/main/assets/public/index.html'), 'utf8');
+    /*
+  let config = fs.readFileSync(
+    path.join(
+      tmpPath,
+      'app/build/intermediates/incremental/mergeDebugResources/merged.dir/values/values.xml'
+    ),
+    'utf8'
+  )
+
+  config = config.replace('LiaScript', json.lia.str_title)
+
+  await helper.writeFile(
+    path.join(
+      tmpPath,
+      'app/build/intermediates/incremental/mergeDebugResources/merged.dir/values/values.xml'
+    ),
+    config
+  )
+  */ // change responsive key
+    if (argument.key) index = $320134ce32dd9048$export$31a09876afc8115c(argument.key, index);
+    // add default course
+    index = $320134ce32dd9048$export$a976684a0efeb93f(`<script> if (!window.LIA) { window.LIA = {} } window.LIA.defaultCourseURL = "./${$9Afec$path.basename(argument.readme)}"</script>`, index);
+    console.log(`<script>
+    if (!window.LIA) {
+      window.LIA = {}
+    }
+     window.LIA.defaultCourseURL = "./${$9Afec$path.basename(argument.readme)}"
+    </script>`);
+    try {
+        await $320134ce32dd9048$export$552bfb764b5cd2b4($9Afec$path.join(tmpPath, 'app/src/main/assets/public/index.html'), index);
+    } catch (e) {
+        console.warn(e);
+        return;
+    }
+    // copy base path or readme-directory into temp
+    await $9Afec$fsextra.copy(argument.path, $9Afec$path.join(tmpPath, 'app/src/main/assets/public/'), {
+        filter: $320134ce32dd9048$export$3032dc2899b8ea9b
+    });
+    console.warn('2222', $9Afec$path.join(tmpPath, 'app/src/main/assets/public/'));
+    console.warn('SSSSSSSSSSSSSSSSSSSSSSSSs', tmpPath);
+    $3eed299f4b9e5004$require$exec(`cd ${tmpPath} && ./gradlew assembleDebug`, (error, stdout, stderr)=>{
+        if (error) console.log(`error: ${error.message}`);
+        if (stderr) console.log(`stderr: ${stderr}`);
+        console.log(`stdout: ${stdout}`);
+        $9Afec$fsextra.copy($9Afec$path.join(tmpPath, 'app/build/outputs/apk/debug/app-debug.apk'), argument.output + '.apk');
+    });
+    console.log($9Afec$path.join(tmpPath, 'app/build/outputs/apk/debug/app-debug.apk'));
+}
+
+
+
 $parcel$global.XMLHttpRequest = $9Afec$xhr2;
 
 
@@ -12752,6 +12816,9 @@ function $ccdb061a5468de1f$var$run(argument) {
             case 'pdf':
                 $fe4c9e5866fc6c52$export$372e2d09604f52f0(argument, JSON.parse(string));
                 break;
+            case 'android':
+                $3eed299f4b9e5004$export$372e2d09604f52f0(argument, JSON.parse(string));
+                break;
             default:
                 console.warn('unknown output format', argument.format);
         }
@@ -12759,7 +12826,7 @@ function $ccdb061a5468de1f$var$run(argument) {
     try {
         // the format is changed only locally, the SCORM and web exporters simply
         // require some meta data from the parsed json output
-        const format = argument.format == 'scorm1.2' || argument.format == 'scorm2004' || argument.format == 'pdf' || argument.format == 'web' || argument.format == 'ims' ? 'fulljson' : argument.format;
+        const format = argument.format == 'scorm1.2' || argument.format == 'scorm2004' || argument.format == 'pdf' || argument.format == 'web' || argument.format == 'ims' || argument.format == 'android' ? 'fulljson' : argument.format;
         if (!$320134ce32dd9048$export$bab98af026af71ac(argument.input)) {
             const data = $9Afec$fsextra.readFileSync(argument.input, 'utf8');
             app.ports.input.send([
