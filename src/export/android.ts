@@ -1,4 +1,3 @@
-import config from '../../capacitor.config'
 import * as helper from './helper'
 
 const path = require('path')
@@ -13,6 +12,10 @@ export async function exporter(
     format: string
     path: string
     key?: string
+
+    'android-sdk'?: string
+    'android-appId'?: string
+    'android-appName'?: string
   },
   json: any
 ) {
@@ -21,45 +24,51 @@ export async function exporter(
 
   let tmpPath = path.join(tmp, 'pro')
 
-  // copy assets to temp
-  await fs.copy(path.join(__dirname, '../android'), tmpPath)
-
+  // copy assets to temp/dist
   await fs.copy(
-    path.join(__dirname, '../node_modules/@capacitor'),
-    path.join(tmpPath, '../node_modules/@capacitor')
+    path.join(__dirname, './assets/capacitor'),
+    path.join(tmpPath, './dist')
   )
 
-  let index = fs.readFileSync(
-    path.join(tmpPath, 'app/src/main/assets/public/index.html'),
-    'utf8'
-  )
-
-  /*
-  let config = fs.readFileSync(
-    path.join(
-      tmpPath,
-      'app/build/intermediates/incremental/mergeDebugResources/merged.dir/values/values.xml'
-    ),
-    'utf8'
-  )
-
-  config = config.replace('LiaScript', json.lia.str_title)
+  // copy base path or readme-directory into temp
+  await fs.copy(argument.path, path.join(tmpPath, './dist/'), {
+    filter: helper.filterHidden,
+  })
 
   await helper.writeFile(
-    path.join(
-      tmpPath,
-      'app/build/intermediates/incremental/mergeDebugResources/merged.dir/values/values.xml'
-    ),
-    config
+    path.join(tmpPath, '../capacitor.config.json'),
+    `{
+      "appId": "${argument['android-appId']}",
+      "appName": "${argument['android-appName'] || json.lia.str_title}",
+      "bundledWebRuntime": true,
+      "webDir": "pro/dist",
+      "plugins": {
+        "SplashScreen": {
+          "launchShowDuration": 0
+        }
+      }
+    }`
   )
-  */
 
-  // change responsive key
-  if (argument.key) {
-    index = helper.injectResponsivevoice(argument.key, index)
-  }
+  await helper.writeFile(
+    path.join(tmpPath, '../package.json'),
+    `{
+    "scripts": {
+      "build": "npx cap add android"
+    },
+    "dependencies": {
+      "@capacitor-community/text-to-speech": "^1.1.2",
+      "@capacitor/android": "^3.4.1",
+      "@capacitor/cli": "^3.4.3"
+    },
+    "engines": {
+      "node": ">= 12"
+    }
+  }`
+  )
 
-  // add default course
+  let index = fs.readFileSync(path.join(tmpPath, 'dist/index.html'), 'utf8')
+
   index = helper.inject(
     `<script> if (!window.LIA) { window.LIA = {} } window.LIA.defaultCourseURL = "./${path.basename(
       argument.readme
@@ -67,35 +76,51 @@ export async function exporter(
     index
   )
 
-  console.log(`<script>
-    if (!window.LIA) {
-      window.LIA = {}
-    }
-     window.LIA.defaultCourseURL = "./${path.basename(argument.readme)}"
-    </script>`)
-
   try {
-    await helper.writeFile(
-      path.join(tmpPath, 'app/src/main/assets/public/index.html'),
-      index
-    )
+    await helper.writeFile(path.join(tmpPath, 'dist/index.html'), index)
   } catch (e) {
     console.warn(e)
     return
   }
 
-  // copy base path or readme-directory into temp
-  await fs.copy(
-    argument.path,
-    path.join(tmpPath, 'app/src/main/assets/public/'),
-    { filter: helper.filterHidden }
+  execute(
+    `cd ${tmpPath} && cd .. && npm i && npx cap add android`,
+    async function () {
+      await sdk(tmpPath, argument['android-sdk'])
+
+      execute(
+        `cd ${tmpPath} && cd .. && cd android && ./gradlew assembleDebug`,
+        function () {
+          console.warn('DONE')
+          fs.copy(
+            path.join(
+              tmpPath,
+              '../android/app/build/outputs/apk/debug/app-debug.apk'
+            ),
+            argument.output + '.apk'
+          )
+        }
+      )
+    }
   )
+}
 
-  console.warn('2222', path.join(tmpPath, 'app/src/main/assets/public/'))
+async function sdk(tmpPath: string, uri?: string) {
+  if (!uri) return
 
-  console.warn('SSSSSSSSSSSSSSSSSSSSSSSSs', tmpPath)
+  try {
+    helper.writeFile(
+      path.join(tmpPath, '../android/local.properties'),
+      `sdk.dir=${uri}`
+    )
+  } catch (e) {
+    console.warn(e)
+    return
+  }
+}
 
-  exec(`cd ${tmpPath} && ./gradlew assembleDebug`, (error, stdout, stderr) => {
+function execute(cmd: string, callback) {
+  exec(cmd, async (error, stdout, stderr) => {
     if (error) {
       console.log(`error: ${error.message}`)
     }
@@ -104,11 +129,6 @@ export async function exporter(
     }
     console.log(`stdout: ${stdout}`)
 
-    fs.copy(
-      path.join(tmpPath, 'app/build/outputs/apk/debug/app-debug.apk'),
-      argument.output + '.apk'
-    )
+    callback()
   })
-
-  console.log(path.join(tmpPath, 'app/build/outputs/apk/debug/app-debug.apk'))
 }

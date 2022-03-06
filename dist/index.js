@@ -12712,57 +12712,69 @@ async function $3eed299f4b9e5004$export$372e2d09604f52f0(argument, json) {
     // make temp folder
     let tmp = await $320134ce32dd9048$export$6b76988456c0292f();
     let tmpPath = $9Afec$path.join(tmp, 'pro');
-    // copy assets to temp
-    await $9Afec$fsextra.copy($9Afec$path.join(__dirname, '../android'), tmpPath);
-    await $9Afec$fsextra.copy($9Afec$path.join(__dirname, '../node_modules/@capacitor'), $9Afec$path.join(tmpPath, '../node_modules/@capacitor'));
-    let index = $9Afec$fsextra.readFileSync($9Afec$path.join(tmpPath, 'app/src/main/assets/public/index.html'), 'utf8');
-    /*
-  let config = fs.readFileSync(
-    path.join(
-      tmpPath,
-      'app/build/intermediates/incremental/mergeDebugResources/merged.dir/values/values.xml'
-    ),
-    'utf8'
-  )
-
-  config = config.replace('LiaScript', json.lia.str_title)
-
-  await helper.writeFile(
-    path.join(
-      tmpPath,
-      'app/build/intermediates/incremental/mergeDebugResources/merged.dir/values/values.xml'
-    ),
-    config
-  )
-  */ // change responsive key
-    if (argument.key) index = $320134ce32dd9048$export$31a09876afc8115c(argument.key, index);
-    // add default course
-    index = $320134ce32dd9048$export$a976684a0efeb93f(`<script> if (!window.LIA) { window.LIA = {} } window.LIA.defaultCourseURL = "./${$9Afec$path.basename(argument.readme)}"</script>`, index);
-    console.log(`<script>
-    if (!window.LIA) {
-      window.LIA = {}
+    console.warn('SSSSSSSSSSSSSSSSSSSSSSSSs', tmpPath, argument);
+    // copy assets to temp/dist
+    await $9Afec$fsextra.copy($9Afec$path.join(__dirname, './assets/capacitor'), $9Afec$path.join(tmpPath, './dist'));
+    // copy base path or readme-directory into temp
+    await $9Afec$fsextra.copy(argument.path, $9Afec$path.join(tmpPath, './dist/'), {
+        filter: $320134ce32dd9048$export$3032dc2899b8ea9b
+    });
+    await $320134ce32dd9048$export$552bfb764b5cd2b4($9Afec$path.join(tmpPath, '../capacitor.config.json'), `{
+      "appId": "${argument['android-appId']}",
+      "appName": "${argument['android-appName'] || json.lia.str_title}",
+      "bundledWebRuntime": true,
+      "webDir": "pro/dist",
+      "plugins": {
+        "SplashScreen": {
+          "launchShowDuration": 0
+        }
+      }
+    }`);
+    await $320134ce32dd9048$export$552bfb764b5cd2b4($9Afec$path.join(tmpPath, '../package.json'), `{
+    "scripts": {
+      "build": "npx cap add android"
+    },
+    "dependencies": {
+      "@capacitor-community/text-to-speech": "^1.1.2",
+      "@capacitor/android": "^3.4.1",
+      "@capacitor/cli": "^3.4.3"
+    },
+    "engines": {
+      "node": ">= 12"
     }
-     window.LIA.defaultCourseURL = "./${$9Afec$path.basename(argument.readme)}"
-    </script>`);
+  }`);
+    let index = $9Afec$fsextra.readFileSync($9Afec$path.join(tmpPath, 'dist/index.html'), 'utf8');
+    index = $320134ce32dd9048$export$a976684a0efeb93f(`<script> if (!window.LIA) { window.LIA = {} } window.LIA.defaultCourseURL = "./${$9Afec$path.basename(argument.readme)}"</script>`, index);
     try {
-        await $320134ce32dd9048$export$552bfb764b5cd2b4($9Afec$path.join(tmpPath, 'app/src/main/assets/public/index.html'), index);
+        await $320134ce32dd9048$export$552bfb764b5cd2b4($9Afec$path.join(tmpPath, 'dist/index.html'), index);
     } catch (e) {
         console.warn(e);
         return;
     }
-    // copy base path or readme-directory into temp
-    await $9Afec$fsextra.copy(argument.path, $9Afec$path.join(tmpPath, 'app/src/main/assets/public/'), {
-        filter: $320134ce32dd9048$export$3032dc2899b8ea9b
+    $3eed299f4b9e5004$var$execute(`cd ${tmpPath} && cd .. && npm i && npx cap add android`, async function() {
+        await $3eed299f4b9e5004$var$sdk(tmpPath, argument['android-sdk']);
+        $3eed299f4b9e5004$var$execute(`cd ${tmpPath} && cd .. && cd android && ./gradlew assembleDebug`, function() {
+            console.warn('DONE');
+            $9Afec$fsextra.copy($9Afec$path.join(tmpPath, '../android/app/build/outputs/apk/debug/app-debug.apk'), argument.output + '.apk');
+        });
     });
-    console.warn('2222', $9Afec$path.join(tmpPath, 'app/src/main/assets/public/'));
-    console.warn('SSSSSSSSSSSSSSSSSSSSSSSSs', tmpPath);
-    $3eed299f4b9e5004$require$exec(`cd ${tmpPath} && ./gradlew assembleDebug`, (error, stdout, stderr)=>{
+}
+async function $3eed299f4b9e5004$var$sdk(tmpPath, uri) {
+    if (!uri) return;
+    try {
+        $320134ce32dd9048$export$552bfb764b5cd2b4($9Afec$path.join(tmpPath, '../android/local.properties'), `sdk.dir=${uri}`);
+    } catch (e) {
+        console.warn(e);
+        return;
+    }
+}
+function $3eed299f4b9e5004$var$execute(cmd, callback) {
+    $3eed299f4b9e5004$require$exec(cmd, async (error, stdout, stderr)=>{
         if (error) console.log(`error: ${error.message}`);
         if (stderr) console.log(`stderr: ${stderr}`);
         console.log(`stdout: ${stdout}`);
-        $9Afec$fsextra.copy($9Afec$path.join(tmpPath, 'app/build/outputs/apk/debug/app-debug.apk'), argument.output + '.apk');
+        callback();
     });
-    console.log($9Afec$path.join(tmpPath, 'app/build/outputs/apk/debug/app-debug.apk'));
 }
 
 
@@ -12847,7 +12859,7 @@ function $ccdb061a5468de1f$var$help() {
     console.log('-i', '--input', '          file to be used as input');
     console.log('-p', '--path', '           path to be packed, if not set, the path of the input file is used');
     console.log('-o', '--output', '         output file name (default is output), the ending is define by the format');
-    console.log('-f', '--format', '         scorm1.2, scorm2004, json, fullJson, web, ims, pdf (default is json)');
+    console.log('-f', '--format', '         scorm1.2, scorm2004, json, fullJson, web, ims, pdf, android (default is json)');
     console.log('-v', '--version', '        output the current version');
     console.log('\n-k', '--key', '            responsive voice key ');
     console.log('\nSCORM settings:');
@@ -12864,6 +12876,11 @@ function $ccdb061a5468de1f$var$help() {
     console.log('--web-iframe               Use an iframed version to hide the course URL.');
     console.log('--web-indexeddb            This will allow to store data within the browser using indexeddb, you can optionally pass a unique key (by default one is generated randomly).');
     console.log('--web-zip                  By default the result is not zipped, you can change this with this parameter.');
+    console.log('\nAndroid settings:');
+    console.log('');
+    console.log('--android-sdk              Specify sdk.dir which is required for building.');
+    console.log('--android-appName          Name of the App (Main-title is used as default).');
+    console.log('--android-appId            Required to identify your App reverse url such as io.github.liascript');
     console.log('\nPDF settings:\n');
     console.log('--pdf-stylesheet           Inject an local CSS for changing the appearance.');
     console.log('--pdf-theme                LiaScript themes: default, turquoise, blue, red, yellow');
@@ -12925,7 +12942,10 @@ function $ccdb061a5468de1f$var$parseArguments() {
         'pdf-omitBackground': $ccdb061a5468de1f$var$argv['pdf-omitBackground'],
         'pdf-timeout': $ccdb061a5468de1f$var$argv['pdf-timeout'],
         'pdf-stylesheet': $ccdb061a5468de1f$var$argv['pdf-stylesheet'],
-        'pdf-theme': $ccdb061a5468de1f$var$argv['pdf-theme']
+        'pdf-theme': $ccdb061a5468de1f$var$argv['pdf-theme'],
+        'android-sdk': $ccdb061a5468de1f$var$argv['android-sdk'],
+        'android-appId': $ccdb061a5468de1f$var$argv['android-appId'],
+        'android-appName': $ccdb061a5468de1f$var$argv['android-appName']
     };
     argument.format = argument.format.toLowerCase();
     if (!argument.path && !$320134ce32dd9048$export$bab98af026af71ac(argument.input)) argument.path = $9Afec$path.dirname(argument.input);
