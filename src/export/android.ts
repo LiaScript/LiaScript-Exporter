@@ -16,6 +16,9 @@ export async function exporter(
     'android-sdk'?: string
     'android-appId'?: string
     'android-appName'?: string
+    'android-icon'?: string
+    'android-splash'?: string
+    'android-splashDuration'?: number
   },
   json: any
 ) {
@@ -28,6 +31,12 @@ export async function exporter(
   await fs.copy(
     path.join(__dirname, './assets/capacitor'),
     path.join(tmpPath, './dist')
+  )
+
+  // copy logo and splash
+  await fs.copy(
+    path.join(__dirname, './resources'),
+    path.join(tmpPath, '../resources')
   )
 
   // copy base path or readme-directory into temp
@@ -44,7 +53,7 @@ export async function exporter(
       "webDir": "pro/dist",
       "plugins": {
         "SplashScreen": {
-          "launchShowDuration": 0
+          "launchShowDuration": ${argument['android-splashDuration'] || 0}
         }
       }
     }`
@@ -59,7 +68,8 @@ export async function exporter(
     "dependencies": {
       "@capacitor-community/text-to-speech": "^1.1.2",
       "@capacitor/android": "^3.4.1",
-      "@capacitor/cli": "^3.4.3"
+      "@capacitor/cli": "^3.4.3",
+      "capacitor-resources": "^2.0.5"
     },
     "engines": {
       "node": ">= 12"
@@ -84,7 +94,15 @@ export async function exporter(
   }
 
   execute(
-    `cd ${tmpPath} && cd .. && npm i && npx cap add android`,
+    `cd ${tmpPath} && cd .. && npm i && npx cap add android && npx capacitor-resources -p "android" ${
+      argument['android-icon']
+        ? '--icon ' + path.resolve(argument['android-icon'])
+        : ''
+    } ${
+      argument['android-splash']
+        ? '--splash ' + path.resolve(argument['android-splash'])
+        : ''
+    }`,
     async function () {
       await sdk(tmpPath, argument['android-sdk'])
 

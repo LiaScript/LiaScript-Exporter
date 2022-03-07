@@ -12712,9 +12712,10 @@ async function $3eed299f4b9e5004$export$372e2d09604f52f0(argument, json) {
     // make temp folder
     let tmp = await $320134ce32dd9048$export$6b76988456c0292f();
     let tmpPath = $9Afec$path.join(tmp, 'pro');
-    console.warn('SSSSSSSSSSSSSSSSSSSSSSSSs', tmpPath, argument);
     // copy assets to temp/dist
     await $9Afec$fsextra.copy($9Afec$path.join(__dirname, './assets/capacitor'), $9Afec$path.join(tmpPath, './dist'));
+    // copy logo and splash
+    await $9Afec$fsextra.copy($9Afec$path.join(__dirname, './resources'), $9Afec$path.join(tmpPath, '../resources'));
     // copy base path or readme-directory into temp
     await $9Afec$fsextra.copy(argument.path, $9Afec$path.join(tmpPath, './dist/'), {
         filter: $320134ce32dd9048$export$3032dc2899b8ea9b
@@ -12726,7 +12727,7 @@ async function $3eed299f4b9e5004$export$372e2d09604f52f0(argument, json) {
       "webDir": "pro/dist",
       "plugins": {
         "SplashScreen": {
-          "launchShowDuration": 0
+          "launchShowDuration": ${argument['android-splashDuration'] || 0}
         }
       }
     }`);
@@ -12737,7 +12738,8 @@ async function $3eed299f4b9e5004$export$372e2d09604f52f0(argument, json) {
     "dependencies": {
       "@capacitor-community/text-to-speech": "^1.1.2",
       "@capacitor/android": "^3.4.1",
-      "@capacitor/cli": "^3.4.3"
+      "@capacitor/cli": "^3.4.3",
+      "capacitor-resources": "^2.0.5"
     },
     "engines": {
       "node": ">= 12"
@@ -12751,7 +12753,7 @@ async function $3eed299f4b9e5004$export$372e2d09604f52f0(argument, json) {
         console.warn(e);
         return;
     }
-    $3eed299f4b9e5004$var$execute(`cd ${tmpPath} && cd .. && npm i && npx cap add android`, async function() {
+    $3eed299f4b9e5004$var$execute(`cd ${tmpPath} && cd .. && npm i && npx cap add android && npx capacitor-resources -p "android" ${argument['android-icon'] ? '--icon ' + $9Afec$path.resolve(argument['android-icon']) : ''} ${argument['android-splash'] ? '--splash ' + $9Afec$path.resolve(argument['android-splash']) : ''}`, async function() {
         await $3eed299f4b9e5004$var$sdk(tmpPath, argument['android-sdk']);
         $3eed299f4b9e5004$var$execute(`cd ${tmpPath} && cd .. && cd android && ./gradlew assembleDebug`, function() {
             console.warn('DONE');
@@ -12881,6 +12883,9 @@ function $ccdb061a5468de1f$var$help() {
     console.log('--android-sdk              Specify sdk.dir which is required for building.');
     console.log('--android-appName          Name of the App (Main-title is used as default).');
     console.log('--android-appId            Required to identify your App reverse url such as io.github.liascript');
+    console.log('--android-icon             Optional icon with 1024x1024 px');
+    console.log('--android-splash           Optional splash image with 2732x2732 px');
+    console.log('--android-splashDuration   Duration for splash-screen default 0 milliseconds');
     console.log('\nPDF settings:\n');
     console.log('--pdf-stylesheet           Inject an local CSS for changing the appearance.');
     console.log('--pdf-theme                LiaScript themes: default, turquoise, blue, red, yellow');
@@ -12945,9 +12950,25 @@ function $ccdb061a5468de1f$var$parseArguments() {
         'pdf-theme': $ccdb061a5468de1f$var$argv['pdf-theme'],
         'android-sdk': $ccdb061a5468de1f$var$argv['android-sdk'],
         'android-appId': $ccdb061a5468de1f$var$argv['android-appId'],
-        'android-appName': $ccdb061a5468de1f$var$argv['android-appName']
+        'android-appName': $ccdb061a5468de1f$var$argv['android-appName'],
+        'android-icon': $ccdb061a5468de1f$var$argv['android-icon'],
+        'android-splash': $ccdb061a5468de1f$var$argv['android-splash'],
+        'android-splashDuration': $ccdb061a5468de1f$var$argv['android-splashDuration']
     };
     argument.format = argument.format.toLowerCase();
+    if (argument.format == 'android') {
+        if (!argument['android-sdk']) {
+            console.warn('Path to SDK has to be defined, you will have to install:');
+            console.warn('https://developer.android.com/studio/');
+            process.exit(1);
+        }
+        if (!argument['android-appId']) {
+            console.warn('The appId has to provided to uniquely identify your App.');
+            console.warn('This can be the URL of your site in reverse order, eg.:');
+            console.warn('io.github.liascript');
+            process.exit(1);
+        }
+    }
     if (!argument.path && !$320134ce32dd9048$export$bab98af026af71ac(argument.input)) argument.path = $9Afec$path.dirname(argument.input);
     argument.readme = argument.input.replace(argument.path, '.');
     return argument;

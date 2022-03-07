@@ -174,6 +174,13 @@ function help() {
   console.log(
     '--android-appId            Required to identify your App reverse url such as io.github.liascript'
   )
+  console.log('--android-icon             Optional icon with 1024x1024 px')
+  console.log(
+    '--android-splash           Optional splash image with 2732x2732 px'
+  )
+  console.log(
+    '--android-splashDuration   Duration for splash-screen default 0 milliseconds'
+  )
 
   console.log('\nPDF settings:\n')
   console.log(
@@ -290,9 +297,27 @@ function parseArguments() {
     'android-sdk': argv['android-sdk'],
     'android-appId': argv['android-appId'],
     'android-appName': argv['android-appName'],
+    'android-icon': argv['android-icon'],
+    'android-splash': argv['android-splash'],
+    'android-splashDuration': argv['android-splashDuration'],
   }
 
   argument.format = argument.format.toLowerCase()
+
+  if (argument.format == 'android') {
+    if (!argument['android-sdk']) {
+      console.warn('Path to SDK has to be defined, you will have to install:')
+      console.warn('https://developer.android.com/studio/')
+      process.exit(1)
+    }
+
+    if (!argument['android-appId']) {
+      console.warn('The appId has to provided to uniquely identify your App.')
+      console.warn('This can be the URL of your site in reverse order, eg.:')
+      console.warn('io.github.liascript')
+      process.exit(1)
+    }
+  }
 
   if (!argument.path && !helper.isURL(argument.input)) {
     argument.path = path.dirname(argument.input)
