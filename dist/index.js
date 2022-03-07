@@ -8,6 +8,7 @@ var $9Afec$temp = require("temp");
 var $9Afec$archiver = require("archiver");
 var $9Afec$liascriptsimplescormpackager = require("@liascript/simple-scorm-packager");
 var $9Afec$puppeteer = require("puppeteer");
+var $9Afec$child_process = require("child_process");
 
 var $parcel$global =
 typeof globalThis !== 'undefined'
@@ -12703,6 +12704,83 @@ async function $e5a6b0d412255288$var$manifest(tmpPath, meta) {
 
 
 
+
+
+
+var $3eed299f4b9e5004$require$exec = $9Afec$child_process.exec;
+async function $3eed299f4b9e5004$export$372e2d09604f52f0(argument, json) {
+    // make temp folder
+    let tmp = await $320134ce32dd9048$export$6b76988456c0292f();
+    let tmpPath = $9Afec$path.join(tmp, 'pro');
+    // copy assets to temp/dist
+    await $9Afec$fsextra.copy($9Afec$path.join(__dirname, './assets/capacitor'), $9Afec$path.join(tmpPath, './dist'));
+    // copy logo and splash
+    await $9Afec$fsextra.copy($9Afec$path.join(__dirname, './resources'), $9Afec$path.join(tmpPath, '../resources'));
+    // copy base path or readme-directory into temp
+    await $9Afec$fsextra.copy(argument.path, $9Afec$path.join(tmpPath, './dist/'), {
+        filter: $320134ce32dd9048$export$3032dc2899b8ea9b
+    });
+    await $320134ce32dd9048$export$552bfb764b5cd2b4($9Afec$path.join(tmpPath, '../capacitor.config.json'), `{
+      "appId": "${argument['android-appId']}",
+      "appName": "${argument['android-appName'] || json.lia.str_title}",
+      "bundledWebRuntime": true,
+      "webDir": "pro/dist",
+      "plugins": {
+        "SplashScreen": {
+          "launchShowDuration": ${argument['android-splashDuration'] || 0}
+        }
+      }
+    }`);
+    await $320134ce32dd9048$export$552bfb764b5cd2b4($9Afec$path.join(tmpPath, '../package.json'), `{
+    "scripts": {
+      "build": "npx cap add android"
+    },
+    "dependencies": {
+      "@capacitor-community/text-to-speech": "^1.1.2",
+      "@capacitor/android": "^3.4.1",
+      "@capacitor/cli": "^3.4.3",
+      "capacitor-resources": "^2.0.5"
+    },
+    "engines": {
+      "node": ">= 12"
+    }
+  }`);
+    let index = $9Afec$fsextra.readFileSync($9Afec$path.join(tmpPath, 'dist/index.html'), 'utf8');
+    index = $320134ce32dd9048$export$a976684a0efeb93f(`<script> if (!window.LIA) { window.LIA = {} } window.LIA.defaultCourseURL = "./${$9Afec$path.basename(argument.readme)}"</script>`, index);
+    try {
+        await $320134ce32dd9048$export$552bfb764b5cd2b4($9Afec$path.join(tmpPath, 'dist/index.html'), index);
+    } catch (e) {
+        console.warn(e);
+        return;
+    }
+    $3eed299f4b9e5004$var$execute(`cd ${tmpPath} && cd .. && npm i && npx cap add android && npx capacitor-resources -p "android" ${argument['android-icon'] ? '--icon ' + $9Afec$path.resolve(argument['android-icon']) : ''} ${argument['android-splash'] ? '--splash ' + $9Afec$path.resolve(argument['android-splash']) : ''}`, async function() {
+        await $3eed299f4b9e5004$var$sdk(tmpPath, argument['android-sdk']);
+        $3eed299f4b9e5004$var$execute(`cd ${tmpPath} && cd .. && cd android && ./gradlew assembleDebug`, function() {
+            console.warn('DONE');
+            $9Afec$fsextra.copy($9Afec$path.join(tmpPath, '../android/app/build/outputs/apk/debug/app-debug.apk'), argument.output + '.apk');
+        });
+    });
+}
+async function $3eed299f4b9e5004$var$sdk(tmpPath, uri) {
+    if (!uri) return;
+    try {
+        $320134ce32dd9048$export$552bfb764b5cd2b4($9Afec$path.join(tmpPath, '../android/local.properties'), `sdk.dir=${uri}`);
+    } catch (e) {
+        console.warn(e);
+        return;
+    }
+}
+function $3eed299f4b9e5004$var$execute(cmd, callback) {
+    $3eed299f4b9e5004$require$exec(cmd, async (error, stdout, stderr)=>{
+        if (error) console.log(`error: ${error.message}`);
+        if (stderr) console.log(`stderr: ${stderr}`);
+        console.log(`stdout: ${stdout}`);
+        callback();
+    });
+}
+
+
+
 $parcel$global.XMLHttpRequest = $9Afec$xhr2;
 
 
@@ -12752,6 +12830,9 @@ function $ccdb061a5468de1f$var$run(argument) {
             case 'pdf':
                 $fe4c9e5866fc6c52$export$372e2d09604f52f0(argument, JSON.parse(string));
                 break;
+            case 'android':
+                $3eed299f4b9e5004$export$372e2d09604f52f0(argument, JSON.parse(string));
+                break;
             default:
                 console.warn('unknown output format', argument.format);
         }
@@ -12759,7 +12840,7 @@ function $ccdb061a5468de1f$var$run(argument) {
     try {
         // the format is changed only locally, the SCORM and web exporters simply
         // require some meta data from the parsed json output
-        const format = argument.format == 'scorm1.2' || argument.format == 'scorm2004' || argument.format == 'pdf' || argument.format == 'web' || argument.format == 'ims' ? 'fulljson' : argument.format;
+        const format = argument.format == 'scorm1.2' || argument.format == 'scorm2004' || argument.format == 'pdf' || argument.format == 'web' || argument.format == 'ims' || argument.format == 'android' ? 'fulljson' : argument.format;
         if (!$320134ce32dd9048$export$bab98af026af71ac(argument.input)) {
             const data = $9Afec$fsextra.readFileSync(argument.input, 'utf8');
             app.ports.input.send([
@@ -12780,7 +12861,7 @@ function $ccdb061a5468de1f$var$help() {
     console.log('-i', '--input', '          file to be used as input');
     console.log('-p', '--path', '           path to be packed, if not set, the path of the input file is used');
     console.log('-o', '--output', '         output file name (default is output), the ending is define by the format');
-    console.log('-f', '--format', '         scorm1.2, scorm2004, json, fullJson, web, ims, pdf (default is json)');
+    console.log('-f', '--format', '         scorm1.2, scorm2004, json, fullJson, web, ims, pdf, android (default is json)');
     console.log('-v', '--version', '        output the current version');
     console.log('\n-k', '--key', '            responsive voice key ');
     console.log('\nSCORM settings:');
@@ -12797,6 +12878,14 @@ function $ccdb061a5468de1f$var$help() {
     console.log('--web-iframe               Use an iframed version to hide the course URL.');
     console.log('--web-indexeddb            This will allow to store data within the browser using indexeddb, you can optionally pass a unique key (by default one is generated randomly).');
     console.log('--web-zip                  By default the result is not zipped, you can change this with this parameter.');
+    console.log('\nAndroid settings:');
+    console.log('');
+    console.log('--android-sdk              Specify sdk.dir which is required for building.');
+    console.log('--android-appName          Name of the App (Main-title is used as default).');
+    console.log('--android-appId            Required to identify your App reverse url such as io.github.liascript');
+    console.log('--android-icon             Optional icon with 1024x1024 px');
+    console.log('--android-splash           Optional splash image with 2732x2732 px');
+    console.log('--android-splashDuration   Duration for splash-screen default 0 milliseconds');
     console.log('\nPDF settings:\n');
     console.log('--pdf-stylesheet           Inject an local CSS for changing the appearance.');
     console.log('--pdf-theme                LiaScript themes: default, turquoise, blue, red, yellow');
@@ -12858,9 +12947,28 @@ function $ccdb061a5468de1f$var$parseArguments() {
         'pdf-omitBackground': $ccdb061a5468de1f$var$argv['pdf-omitBackground'],
         'pdf-timeout': $ccdb061a5468de1f$var$argv['pdf-timeout'],
         'pdf-stylesheet': $ccdb061a5468de1f$var$argv['pdf-stylesheet'],
-        'pdf-theme': $ccdb061a5468de1f$var$argv['pdf-theme']
+        'pdf-theme': $ccdb061a5468de1f$var$argv['pdf-theme'],
+        'android-sdk': $ccdb061a5468de1f$var$argv['android-sdk'],
+        'android-appId': $ccdb061a5468de1f$var$argv['android-appId'],
+        'android-appName': $ccdb061a5468de1f$var$argv['android-appName'],
+        'android-icon': $ccdb061a5468de1f$var$argv['android-icon'],
+        'android-splash': $ccdb061a5468de1f$var$argv['android-splash'],
+        'android-splashDuration': $ccdb061a5468de1f$var$argv['android-splashDuration']
     };
     argument.format = argument.format.toLowerCase();
+    if (argument.format == 'android') {
+        if (!argument['android-sdk']) {
+            console.warn('Path to SDK has to be defined, you will have to install:');
+            console.warn('https://developer.android.com/studio/');
+            process.exit(1);
+        }
+        if (!argument['android-appId']) {
+            console.warn('The appId has to provided to uniquely identify your App.');
+            console.warn('This can be the URL of your site in reverse order, eg.:');
+            console.warn('io.github.liascript');
+            process.exit(1);
+        }
+    }
     if (!argument.path && !$320134ce32dd9048$export$bab98af026af71ac(argument.input)) argument.path = $9Afec$path.dirname(argument.input);
     argument.readme = argument.input.replace(argument.path, '.');
     return argument;

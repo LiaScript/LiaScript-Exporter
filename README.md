@@ -21,40 +21,38 @@ At the moment this is a simple command-line tool based on NodeJS, thus you will
 have to install NodeJS first, which contains also `npm` the Node Package
 Manager. You can directly download the installer for your system from:
 
-https://nodejs.org/en/download/
+<https://nodejs.org/en/download/>
 
 Afterwards you can open your terminal and type in the following command, this
 will install the LiaScript-Exporter as a global application on your system.
 
-**Install from npm:**
+__Install from npm:__
 
 ``` bash
-$ npm install -g --verbose @liascript/exporter
+npm install -g --verbose @liascript/exporter
 ```
 
 Depending on your configuration, you might need to run this command with root
 privileges. In my case on Linux it is simply:
 
 ``` bash
-$ sudo npm install -g --verbose @liascript/exporter
+sudo npm install -g --verbose @liascript/exporter
 ```
 
-**Install from github:** Similar to the code above...
-
+__Install from github:__ Similar to the code above...
 
 ``` bash
-$ npm install -g --verbose https://github.com/liaScript/LiaScript-Exporter
+npm install -g --verbose https://github.com/liaScript/LiaScript-Exporter
 ```
 
 Depending on your configuration, you might need to run this command with root
 privileges. In my case on Linux it is simply:
 
 ``` bash
-$ sudo npm install -g --verbose https://github.com/liaScript/LiaScript-Exporter
+sudo npm install -g --verbose https://github.com/liaScript/LiaScript-Exporter
 ```
 
 On Windows you might need to run the terminal with administrator-privileges.
-
 
 ## Basic usage
 
@@ -92,6 +90,15 @@ WEB settings:
 --web-iframe               Use an iframed version to hide the course URL.
 --web-indexeddb            This will allow to store data within the browser using indexeddb, you can optionally pass a unique key (by default one is generated randomly).
 --web-zip                  By default the result is not zipped, you can change this with this parameter.
+
+Android settings:
+
+--android-sdk              Specify sdk.dir which is required for building.
+--android-appName          Name of the App (Main-title is used as default).
+--android-appId            Required to identify your App reverse url such as io.github.liascript
+--android-icon             Optional icon with 1024x1024 px
+--android-splash           Optional splash image with 2732x2732 px
+--android-splashDuration   Duration for splash-screen default 0 milliseconds
 
 PDF settings:
 
@@ -156,12 +163,12 @@ number of you course as well as the current date.
 > only support to store location information, all states of quizzes, surveys, etc.
 > will be lost after reload.
 >
-> Better use **SCORM2004** as output
+> Better use __SCORM2004__ as output
 
 __Text 2 Speech `--key`__
 
 If you want to use text2speech, you will have to register your website (where
-the scorm package will be served) at https://responsivevoice.org/ ... it is free
+the scorm package will be served) at <https://responsivevoice.org/> ... it is free
 for educational and non commercial purposes. After your registration, you will
 get a key in the format of `KluQksUs`. To inject this key into your package,
 simly add the key as a paramter:
@@ -196,7 +203,6 @@ __`--scrom-organization`__
 
 This parameter simply sets the organization parameter in your SCORM
 `imsmanifest` file. All other parameters are taken from the course
-
 
 __`--scorm-iframe`__
 
@@ -290,6 +296,7 @@ archiver has been finalized and the output file descriptor has closed.
 $ ls
 .. course.zip ..
 ```
+
 ### WEB
 
 This format will generate an autonomous & standalone web-project that can be uploaded
@@ -332,6 +339,91 @@ updating description ...
 updating logo ...
 ```
 
+### Android
+
+To generate an APK project of your course, you will have to download the
+[Android SDK](https://developer.android.com/studio) at first and provide the path
+via the option `--android-sdk`. Additionally you will have to define an `appId`
+via `--android-appId`, which is in most cases an unique URL (in reverse order)
+that is pointing to your website/project. This export uses
+[capacitorjs](https://capacitorjs.com) to pack the entire LiaScript runtime
+environment and your resources into one installable Android apk.
+
+``` shell
+$ liaex -f android \
+  -i ../LiaBooks/Arbeitsbuch-Prolog/README.md \
+  --android-sdk /home/andre/Android/Sdk \
+  --android-appId io.github.liascript.arbeitsbuch-prolog
+...
+../LiaBooks/Arbeitsbuch-Prolog
+../LiaBooks/Arbeitsbuch-Prolog/img
+../LiaBooks/Arbeitsbuch-Prolog/img/turtle.png
+...
+added 401 packages, and audited 402 packages in 34s
+
+23 packages are looking for funding
+  run `npm fund` for details
+
+5 moderate severity vulnerabilities
+
+...
+✔ Adding native android project in android in 37.13ms
+✔ add in 38.39ms
+✔ Copying web assets from dist to android/app/src/main/assets/public in 97.33ms
+✔ Creating capacitor.config.json in android/app/src/main/assets in 207.60μs
+✔ copy android in 100.41ms
+✔ Updating Android plugins in 592.70μs
+[info] Found 1 Capacitor plugin for android:
+       @capacitor-community/text-to-speech@1.1.2
+✔ update android in 18.04ms
+✔ Syncing Gradle in 143.57μs
+[success] android platform added!
+Follow the Developer Workflow guide to get building:
+https://capacitorjs.com/docs/basics/workflow
+📦  Capacitor Resources v2.0.5
+-----------------------------
+
+Checking files and directories...
+ ✓  Processing files for: android
+ ✓  Icon file ok (1024x1024)
+ ✓  Splash file ok (2732x2732)
+ ✓  Output directory ok (resources)
+
+Generating files...
+ ✓  Generated icon files for android
+ ✓  Generated splash files for android
+ ✓  Successfully generated all files
+Root path: /tmp/lia202227-209284-1q2g2zd.tn3x
+
+----------------------------------------------
+
+📦  Capacitor resources generated successfully!
+...
+Currently detected usages in: root project 'android', project ':app', project ':capacitor-android', ...
+> Task :app:preBuild UP-TO-DATE
+> Task :app:preDebugBuild UP-TO-DATE
+> Task :capacitor-android:preBuild UP-TO-DATE
+> Task :capacitor-android:preDebugBuild UP-TO-DATE
+> Task :capacitor-android:compileDebugAidl NO-SOURCE
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 8.0.
+Use '--warning-mode all' to show the individual deprecation warnings.
+See https://docs.gradle.org/7.0/userguide/command_line_interface.html#sec:command_line_warnings
+
+BUILD SUCCESSFUL in 3s
+103 actionable tasks: 103 executed
+
+DONE
+
+$ ls 
+... output.apk ...
+```
+
+> __Note:__ To achieve better performance and offline capabilities, try to add
+> all resources as local ones to your project (i.e. images, audio,scripts, css).
+
+__Still a bit experimental__
+
 ### PDF
 
 For printing out courses to PDF this package uses
@@ -345,9 +437,8 @@ as screenshots, which provide a link to the original resource.
 This format has a `--pdf-preview` mode, which allows you to inspect your course,
 which works also with https inputs.
 
-
 ``` shell
-$ liaex --format pdf --pdf-preview -i https://raw.githubusercontent.com/TUBAF-IfI-LiaScript/VL_ProzeduraleProgrammierung/master/08_Objekte.md
+liaex --format pdf --pdf-preview -i https://raw.githubusercontent.com/TUBAF-IfI-LiaScript/VL_ProzeduraleProgrammierung/master/08_Objekte.md
 
 ```
 
@@ -397,7 +488,6 @@ $ liaex --format pdf \
 depending on the size of the course, this can take a while, please be patient...
 ```
 
-
 __`--pdf-timeout`__
 
 You have to be aware, that the PDF generation can be quite time consuming
@@ -414,18 +504,18 @@ $ liaex --format pdf \
 
 depending on the size of the course, this can take a while, please be patient...
 ```
+
 ## TODOs & Contributions
 
 * Further exporter
 
-  - AICC
-  - xAPI
-  - ePub
+  * AICC
+  * xAPI
+  * ePub
 
 * Integration into the Atom IDE
 
 * GitHub actions to automate building during push ...
-
 
 ### Custom extensions
 
@@ -437,15 +527,12 @@ Actually it is a simple class that inherits all methods from `Base/Connector`,
 which have to be changed in accordance to you system.
 __I will have to document this__
 
-
 ## LMS Support List
-
 
 Most of the data is taken from:
 
-* https://www.ispringsolutions.com/supported-lms
-* https://en.wikipedia.org/wiki/List_of_learning_management_systems
-
+* <https://www.ispringsolutions.com/supported-lms>
+* <https://en.wikipedia.org/wiki/List_of_learning_management_systems>
 
 | LMS                                | SCORM 1.2 | SCORM 2004 | xAPI    | AICC    | CMI-5 | IMS  | License     |
 | ---------------------------------- | --------- | ---------- | ------- | ------- | ----- | ---- | ----------- |

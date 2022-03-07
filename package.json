@@ -1,6 +1,6 @@
 {
   "name": "@liascript/exporter",
-  "version": "2.2.0--0.10.1",
+  "version": "2.3.0--0.10.1",
   "description": "A generic exporter for LiaScript",
   "main": "dist/index.js",
   "repository": {
@@ -19,13 +19,15 @@
   "preferGlobal": true,
   "scripts": {
     "__preinstall": "cd LiaScript && npm i && npm run build:scorm1.2 && cp -r dist ../assets/scorm1.2",
-    "build:assets": "npm run clean && npm run asset:scorm1.2 && npm run asset:scorm2004 && npm run asset:web && npm run asset:indexeddb && npm run asset:pdf",
+    "build:assets": "npm run clean && npm run asset:scorm1.2 && npm run asset:scorm2004 && npm run asset:web && npm run asset:indexeddb && npm run asset:pdf && npm run asset:capacitor && npm run asset:logo",
     "clean": "rm -rf dist/assets/*",
+    "asset:logo": "cp -r LiaScript/resources dist",
     "asset:web": "cd LiaScript && npm i && npm run build:base && cp -r dist ../dist/assets/web",
     "asset:pdf": "cd LiaScript && git checkout feat/fullPage && npm i && npm run build:pdf && cp -r dist ../dist/assets/pdf && git checkout development",
     "asset:scorm1.2": "cd LiaScript && npm i && npm run build:scorm1.2 && cp -r dist ../dist/assets/scorm1.2",
     "asset:scorm2004": "cd LiaScript && npm i && npm run build:scorm2004 && cp -r dist ../dist/assets/scorm2004",
     "asset:indexeddb": "cd LiaScript && npm i && npm run build:indexeddb && cp -r dist ../dist/assets/indexeddb",
+    "asset:capacitor": "cd LiaScript && git checkout feat/capacitor && npm i && npm run build:android && cp -r dist ../dist/assets/capacitor && git checkout development",
     "build": "npx parcel build --no-cache --no-source-maps --no-scope-hoist src/index.ts && npm run shebang",
     "build:debug": "npx parcel build --target node --no-minify --log-level 5 src/index.ts",
     "run:moodle": "cd docker/moodle && docker-compose up",
