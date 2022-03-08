@@ -99,6 +99,7 @@ Android settings:
 --android-icon             Optional icon with 1024x1024 px
 --android-splash           Optional splash image with 2732x2732 px
 --android-splashDuration   Duration for splash-screen default 0 milliseconds
+--android-preview          Open course in Android-Studio
 
 PDF settings:
 
@@ -421,6 +422,9 @@ $ ls
 
 > __Note:__ To achieve better performance and offline capabilities, try to add
 > all resources as local ones to your project (i.e. images, audio,scripts, css).
+>
+> If you want to preview the result, simply use `--android-preview`, which will
+> open android-studio
 
 __Still a bit experimental__
 
