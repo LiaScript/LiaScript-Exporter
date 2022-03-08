@@ -19,6 +19,7 @@ export async function exporter(
     'android-icon'?: string
     'android-splash'?: string
     'android-splashDuration'?: number
+    'android-preview'?: boolean
   },
   json: any
 ) {
@@ -39,10 +40,23 @@ export async function exporter(
     path.join(tmpPath, '../resources')
   )
 
-  // copy base path or readme-directory into temp
-  await fs.copy(argument.path, path.join(tmpPath, './dist/'), {
-    filter: helper.filterHidden,
-  })
+  if (argument['android-preview']) {
+    // create a link, this way, the app can be updated interactively
+    await fs.symlink(
+      path.resolve(argument.path),
+      path.join(tmpPath, './dist/res'),
+      'dir'
+    )
+  } else {
+    // copy base path or readme-directory into temp
+    await fs.copy(
+      path.resolve(argument.path),
+      path.join(tmpPath, './dist/res'),
+      {
+        filter: helper.filterHidden,
+      }
+    )
+  }
 
   await helper.writeFile(
     path.join(tmpPath, '../capacitor.config.json'),
@@ -51,6 +65,8 @@ export async function exporter(
       "appName": "${argument['android-appName'] || json.lia.str_title}",
       "bundledWebRuntime": true,
       "webDir": "pro/dist",
+      "linuxAndroidStudioPath": "${argument['android-sdk']}",
+      "windowsAndroidStudioPath": "${argument['android-sdk']}",
       "plugins": {
         "SplashScreen": {
           "launchShowDuration": ${argument['android-splashDuration'] || 0}
@@ -80,7 +96,7 @@ export async function exporter(
   let index = fs.readFileSync(path.join(tmpPath, 'dist/index.html'), 'utf8')
 
   index = helper.inject(
-    `<script> if (!window.LIA) { window.LIA = {} } window.LIA.defaultCourseURL = "./${path.basename(
+    `<script> if (!window.LIA) { window.LIA = {} } window.LIA.defaultCourseURL = "./res/${path.basename(
       argument.readme
     )}"</script>`,
     index
@@ -106,19 +122,25 @@ export async function exporter(
     async function () {
       await sdk(tmpPath, argument['android-sdk'])
 
-      execute(
-        `cd ${tmpPath} && cd .. && cd android && ./gradlew assembleDebug`,
-        function () {
-          console.warn('DONE')
-          fs.copy(
-            path.join(
-              tmpPath,
-              '../android/app/build/outputs/apk/debug/app-debug.apk'
-            ),
-            argument.output + '.apk'
-          )
-        }
-      )
+      if (argument['android-preview']) {
+        execute(`cd ${tmpPath} && cd .. && npx cap open android`, () => {
+          console.log('ready')
+        })
+      } else {
+        execute(
+          `cd ${tmpPath} && cd .. && cd android && ./gradlew assembleDebug`,
+          function () {
+            console.warn('DONE')
+            fs.copy(
+              path.join(
+                tmpPath,
+                '../android/app/build/outputs/apk/debug/app-debug.apk'
+              ),
+              argument.output + '.apk'
+            )
+          }
+        )
+      }
     }
   )
 }

@@ -12716,8 +12716,10 @@ async function $3eed299f4b9e5004$export$372e2d09604f52f0(argument, json) {
     await $9Afec$fsextra.copy($9Afec$path.join(__dirname, './assets/capacitor'), $9Afec$path.join(tmpPath, './dist'));
     // copy logo and splash
     await $9Afec$fsextra.copy($9Afec$path.join(__dirname, './resources'), $9Afec$path.join(tmpPath, '../resources'));
-    // copy base path or readme-directory into temp
-    await $9Afec$fsextra.copy(argument.path, $9Afec$path.join(tmpPath, './dist/'), {
+    if (argument['android-preview']) // create a link, this way, the app can be updated interactively
+    await $9Afec$fsextra.symlink($9Afec$path.resolve(argument.path), $9Afec$path.join(tmpPath, './dist/res'), 'dir');
+    else // copy base path or readme-directory into temp
+    await $9Afec$fsextra.copy($9Afec$path.resolve(argument.path), $9Afec$path.join(tmpPath, './dist/res'), {
         filter: $320134ce32dd9048$export$3032dc2899b8ea9b
     });
     await $320134ce32dd9048$export$552bfb764b5cd2b4($9Afec$path.join(tmpPath, '../capacitor.config.json'), `{
@@ -12725,6 +12727,8 @@ async function $3eed299f4b9e5004$export$372e2d09604f52f0(argument, json) {
       "appName": "${argument['android-appName'] || json.lia.str_title}",
       "bundledWebRuntime": true,
       "webDir": "pro/dist",
+      "linuxAndroidStudioPath": "${argument['android-sdk']}",
+      "windowsAndroidStudioPath": "${argument['android-sdk']}",
       "plugins": {
         "SplashScreen": {
           "launchShowDuration": ${argument['android-splashDuration'] || 0}
@@ -12746,7 +12750,7 @@ async function $3eed299f4b9e5004$export$372e2d09604f52f0(argument, json) {
     }
   }`);
     let index = $9Afec$fsextra.readFileSync($9Afec$path.join(tmpPath, 'dist/index.html'), 'utf8');
-    index = $320134ce32dd9048$export$a976684a0efeb93f(`<script> if (!window.LIA) { window.LIA = {} } window.LIA.defaultCourseURL = "./${$9Afec$path.basename(argument.readme)}"</script>`, index);
+    index = $320134ce32dd9048$export$a976684a0efeb93f(`<script> if (!window.LIA) { window.LIA = {} } window.LIA.defaultCourseURL = "./res/${$9Afec$path.basename(argument.readme)}"</script>`, index);
     try {
         await $320134ce32dd9048$export$552bfb764b5cd2b4($9Afec$path.join(tmpPath, 'dist/index.html'), index);
     } catch (e) {
@@ -12755,7 +12759,10 @@ async function $3eed299f4b9e5004$export$372e2d09604f52f0(argument, json) {
     }
     $3eed299f4b9e5004$var$execute(`cd ${tmpPath} && cd .. && npm i && npx cap add android && npx capacitor-resources -p "android" ${argument['android-icon'] ? '--icon ' + $9Afec$path.resolve(argument['android-icon']) : ''} ${argument['android-splash'] ? '--splash ' + $9Afec$path.resolve(argument['android-splash']) : ''}`, async function() {
         await $3eed299f4b9e5004$var$sdk(tmpPath, argument['android-sdk']);
-        $3eed299f4b9e5004$var$execute(`cd ${tmpPath} && cd .. && cd android && ./gradlew assembleDebug`, function() {
+        if (argument['android-preview']) $3eed299f4b9e5004$var$execute(`cd ${tmpPath} && cd .. && npx cap open android`, ()=>{
+            console.log('ready');
+        });
+        else $3eed299f4b9e5004$var$execute(`cd ${tmpPath} && cd .. && cd android && ./gradlew assembleDebug`, function() {
             console.warn('DONE');
             $9Afec$fsextra.copy($9Afec$path.join(tmpPath, '../android/app/build/outputs/apk/debug/app-debug.apk'), argument.output + '.apk');
         });
@@ -12781,6 +12788,7 @@ function $3eed299f4b9e5004$var$execute(cmd, callback) {
 
 
 
+// import * as IOS from './export/ios'
 $parcel$global.XMLHttpRequest = $9Afec$xhr2;
 
 
@@ -12833,14 +12841,18 @@ function $ccdb061a5468de1f$var$run(argument) {
             case 'android':
                 $3eed299f4b9e5004$export$372e2d09604f52f0(argument, JSON.parse(string));
                 break;
-            default:
+            /*
+      case 'ios': {
+        IOS.exporter(argument, JSON.parse(string))
+        break
+      }*/ default:
                 console.warn('unknown output format', argument.format);
         }
     });
     try {
         // the format is changed only locally, the SCORM and web exporters simply
         // require some meta data from the parsed json output
-        const format = argument.format == 'scorm1.2' || argument.format == 'scorm2004' || argument.format == 'pdf' || argument.format == 'web' || argument.format == 'ims' || argument.format == 'android' ? 'fulljson' : argument.format;
+        const format = argument.format == 'scorm1.2' || argument.format == 'scorm2004' || argument.format == 'pdf' || argument.format == 'web' || argument.format == 'ims' || argument.format == 'android' || argument.format == 'ios' ? 'fulljson' : argument.format;
         if (!$320134ce32dd9048$export$bab98af026af71ac(argument.input)) {
             const data = $9Afec$fsextra.readFileSync(argument.input, 'utf8');
             app.ports.input.send([
@@ -12886,6 +12898,7 @@ function $ccdb061a5468de1f$var$help() {
     console.log('--android-icon             Optional icon with 1024x1024 px');
     console.log('--android-splash           Optional splash image with 2732x2732 px');
     console.log('--android-splashDuration   Duration for splash-screen default 0 milliseconds');
+    console.log('--android-preview          Open course in Android-Studio');
     console.log('\nPDF settings:\n');
     console.log('--pdf-stylesheet           Inject an local CSS for changing the appearance.');
     console.log('--pdf-theme                LiaScript themes: default, turquoise, blue, red, yellow');
@@ -12953,7 +12966,8 @@ function $ccdb061a5468de1f$var$parseArguments() {
         'android-appName': $ccdb061a5468de1f$var$argv['android-appName'],
         'android-icon': $ccdb061a5468de1f$var$argv['android-icon'],
         'android-splash': $ccdb061a5468de1f$var$argv['android-splash'],
-        'android-splashDuration': $ccdb061a5468de1f$var$argv['android-splashDuration']
+        'android-splashDuration': $ccdb061a5468de1f$var$argv['android-splashDuration'],
+        'android-preview': $ccdb061a5468de1f$var$argv['android-preview']
     };
     argument.format = argument.format.toLowerCase();
     if (argument.format == 'android') {

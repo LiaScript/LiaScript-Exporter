@@ -8,6 +8,7 @@ import * as PDF from './export/pdf'
 import * as helper from './export/helper'
 import * as IMS from './export/ims'
 import * as ANDROID from './export/android'
+// import * as IOS from './export/ios'
 
 global.XMLHttpRequest = require('xhr2')
 
@@ -71,6 +72,11 @@ function run(argument) {
         ANDROID.exporter(argument, JSON.parse(string))
         break
       }
+      /*
+      case 'ios': {
+        IOS.exporter(argument, JSON.parse(string))
+        break
+      }*/
       default: {
         console.warn('unknown output format', argument.format)
       }
@@ -86,7 +92,8 @@ function run(argument) {
       argument.format == 'pdf' ||
       argument.format == 'web' ||
       argument.format == 'ims' ||
-      argument.format == 'android'
+      argument.format == 'android' ||
+      argument.format == 'ios'
         ? 'fulljson'
         : argument.format
 
@@ -181,6 +188,7 @@ function help() {
   console.log(
     '--android-splashDuration   Duration for splash-screen default 0 milliseconds'
   )
+  console.log('--android-preview          Open course in Android-Studio')
 
   console.log('\nPDF settings:\n')
   console.log(
@@ -300,6 +308,7 @@ function parseArguments() {
     'android-icon': argv['android-icon'],
     'android-splash': argv['android-splash'],
     'android-splashDuration': argv['android-splashDuration'],
+    'android-preview': argv['android-preview'],
   }
 
   argument.format = argument.format.toLowerCase()
