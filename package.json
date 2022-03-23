@@ -1,6 +1,6 @@
 {
   "name": "@liascript/exporter",
-  "version": "2.4.1--0.10.4",
+  "version": "2.4.1--0.10.5",
   "description": "A generic exporter for LiaScript",
   "main": "dist/index.js",
   "repository": {
