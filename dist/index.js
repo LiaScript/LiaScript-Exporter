@@ -7535,6 +7535,9 @@ type alias Process =
     var $author$project$Lia$Sync$Types$Disconnected = {
         $: 'Disconnected'
     };
+    var $author$project$Lia$Sync$Via$Edrys = {
+        $: 'Edrys'
+    };
     var $author$project$Lia$Sync$Via$GUN = function(a) {
         return {
             $: 'GUN',
@@ -7570,11 +7573,13 @@ type alias Process =
     });
     var $author$project$Lia$Sync$Via$fromString = function(via) {
         var _v0 = A2($author$project$Lia$Sync$Via$mapHead, $elm$core$String$toLower, A2($elm$core$String$split, '|', via));
-        _v0$7: while(true){
+        _v0$8: while(true){
             if (_v0.b) {
                 if (!_v0.b.b) switch(_v0.a){
                     case 'beaker':
                         return $elm$core$Maybe$Just($author$project$Lia$Sync$Via$Beaker);
+                    case 'edrys':
+                        return $elm$core$Maybe$Just($author$project$Lia$Sync$Via$Edrys);
                     case 'gun':
                         return $elm$core$Maybe$Just($author$project$Lia$Sync$Via$GUN(''));
                     case 'jitsi':
@@ -7584,14 +7589,14 @@ type alias Process =
                     case 'pubnub':
                         return $elm$core$Maybe$Just(A2($author$project$Lia$Sync$Via$PubNub, '', ''));
                     default:
-                        break _v0$7;
+                        break _v0$8;
                 }
                 else if (!_v0.b.b.b) {
                     if (_v0.a === 'gun') {
                         var _v1 = _v0.b;
                         var urls = _v1.a;
                         return $elm$core$Maybe$Just($author$project$Lia$Sync$Via$GUN(urls));
-                    } else break _v0$7;
+                    } else break _v0$8;
                 } else {
                     if (_v0.a === 'pubnub' && !_v0.b.b.b.b) {
                         var _v2 = _v0.b;
@@ -7599,9 +7604,9 @@ type alias Process =
                         var _v3 = _v2.b;
                         var sub = _v3.a;
                         return $elm$core$Maybe$Just(A2($author$project$Lia$Sync$Via$PubNub, pub, sub));
-                    } else break _v0$7;
+                    } else break _v0$8;
                 }
-            } else break _v0$7;
+            } else break _v0$8;
         }
         return $elm$core$Maybe$Nothing;
     };
@@ -7653,6 +7658,7 @@ type alias Process =
                 select: $elm$core$Maybe$Nothing,
                 support: A2($elm$core$List$map, $author$project$Lia$Sync$Types$isMember(supported), _List_fromArray([
                     $author$project$Lia$Sync$Via$Beaker,
+                    $author$project$Lia$Sync$Via$Edrys,
                     $author$project$Lia$Sync$Via$GUN($author$project$Const$gunDB_ServerURL),
                     $author$project$Lia$Sync$Via$Jitsi,
                     $author$project$Lia$Sync$Via$Matrix,
@@ -12799,7 +12805,7 @@ $parcel$global.XMLHttpRequest = $9Afec$xhr2;
 
 const $ccdb061a5468de1f$var$argv = $9Afec$minimist(process.argv.slice(2));
 // -------------------------------Main Execution-------------------------------
-if ($ccdb061a5468de1f$var$argv.v || $ccdb061a5468de1f$var$argv.version) console.log('version: 2.4.1--0.10.5');
+if ($ccdb061a5468de1f$var$argv.v || $ccdb061a5468de1f$var$argv.version) console.log('version: 2.4.1--0.10.8');
 else if ($ccdb061a5468de1f$var$argv.h || $ccdb061a5468de1f$var$argv.help) $ccdb061a5468de1f$var$help();
 else if ($ccdb061a5468de1f$var$argv.i || $ccdb061a5468de1f$var$argv.input) $ccdb061a5468de1f$var$run($ccdb061a5468de1f$var$parseArguments());
 else {
