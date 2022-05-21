@@ -12750,9 +12750,9 @@ async function $3eed299f4b9e5004$export$372e2d09604f52f0(argument, json) {
       "build": "npx cap add android"
     },
     "dependencies": {
-      "@capacitor-community/text-to-speech": "^1.1.2",
-      "@capacitor/android": "^3.4.1",
-      "@capacitor/cli": "^3.4.3",
+      "@capacitor-community/text-to-speech": "^1.1.3",
+      "@capacitor/android": "^3.5.1",
+      "@capacitor/cli": "^3.5.1",
       "capacitor-resources": "^2.0.5"
     },
     "engines": {
@@ -12767,12 +12767,22 @@ async function $3eed299f4b9e5004$export$372e2d09604f52f0(argument, json) {
         console.warn(e);
         return;
     }
-    $3eed299f4b9e5004$var$execute(`cd ${tmpPath} && cd .. && npm i && npx cap add android && npx capacitor-resources -p "android" ${argument['android-icon'] ? '--icon ' + $9Afec$path.resolve(argument['android-icon']) : ''} ${argument['android-splash'] ? '--splash ' + $9Afec$path.resolve(argument['android-splash']) : ''}`, async function() {
+    console.warn('WWWWWWWWWWWWWWWW', $9Afec$path.join(tmpPath, '../android'));
+    $3eed299f4b9e5004$var$execute([
+        'npm i',
+        'npm update',
+        'npx cap add android',
+        `npx capacitor-resources -p "android" ${argument['android-icon'] ? '--icon ' + $9Afec$path.resolve(argument['android-icon']) : ''} ${argument['android-splash'] ? '--splash ' + $9Afec$path.resolve(argument['android-splash']) : ''}`, 
+    ], $9Afec$path.join(tmpPath, '..'), async function() {
         await $3eed299f4b9e5004$var$sdk(tmpPath, argument['android-sdk']);
-        if (argument['android-preview']) $3eed299f4b9e5004$var$execute(`cd ${tmpPath} && cd .. && npx cap open android`, ()=>{
+        if (argument['android-preview']) $3eed299f4b9e5004$var$execute([
+            'npx cap open android'
+        ], $9Afec$path.join(tmpPath, '..'), ()=>{
             console.log('ready');
         });
-        else $3eed299f4b9e5004$var$execute(`cd ${tmpPath} && cd .. && cd android && ./gradlew assembleDebug`, function() {
+        else $3eed299f4b9e5004$var$execute([
+            './gradlew assembleDebug'
+        ], $9Afec$path.join(tmpPath, '../android'), function() {
             console.warn('DONE');
             $9Afec$fsextra.copy($9Afec$path.join(tmpPath, '../android/app/build/outputs/apk/debug/app-debug.apk'), argument.output + '.apk');
         });
@@ -12787,13 +12797,19 @@ async function $3eed299f4b9e5004$var$sdk(tmpPath, uri) {
         return;
     }
 }
-function $3eed299f4b9e5004$var$execute(cmd, callback) {
-    $3eed299f4b9e5004$require$exec(cmd, async (error, stdout, stderr)=>{
-        if (error) console.log(`error: ${error.message}`);
-        if (stderr) console.log(`stderr: ${stderr}`);
-        console.log(`stdout: ${stdout}`);
-        callback();
-    });
+function $3eed299f4b9e5004$var$execute(cmds, cwd, callback) {
+    const cmd = cmds.shift();
+    if (cmd) {
+        console.log('exec:', cmd);
+        $3eed299f4b9e5004$require$exec(cmd, {
+            cwd: cwd
+        }, async (error, stdout, stderr)=>{
+            if (error) console.warn(`error: ${error.message}`);
+            if (stderr) console.warn(`stderr: ${stderr}`);
+            console.log(`stdout: ${stdout}`);
+            $3eed299f4b9e5004$var$execute(cmds, cwd, callback);
+        });
+    } else callback();
 }
 
 
