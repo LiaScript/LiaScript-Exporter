@@ -82,9 +82,9 @@ export async function exporter(
       "build": "npx cap add android"
     },
     "dependencies": {
-      "@capacitor-community/text-to-speech": "^1.1.2",
-      "@capacitor/android": "^3.4.1",
-      "@capacitor/cli": "^3.4.3",
+      "@capacitor-community/text-to-speech": "^1.1.3",
+      "@capacitor/android": "^3.5.1",
+      "@capacitor/cli": "^3.5.1",
       "capacitor-resources": "^2.0.5"
     },
     "engines": {
@@ -109,26 +109,39 @@ export async function exporter(
     return
   }
 
+  console.warn('WWWWWWWWWWWWWWWW', path.join(tmpPath, '../android'))
   execute(
-    `cd ${tmpPath} && cd .. && npm i && npx cap add android && npx capacitor-resources -p "android" ${
-      argument['android-icon']
-        ? '--icon ' + path.resolve(argument['android-icon'])
-        : ''
-    } ${
-      argument['android-splash']
-        ? '--splash ' + path.resolve(argument['android-splash'])
-        : ''
-    }`,
+    [
+      'npm i',
+      'npm update',
+      'npx cap add android',
+      `npx capacitor-resources -p "android" ${
+        argument['android-icon']
+          ? '--icon ' + path.resolve(argument['android-icon'])
+          : ''
+      } ${
+        argument['android-splash']
+          ? '--splash ' + path.resolve(argument['android-splash'])
+          : ''
+      }`,
+    ],
+    path.join(tmpPath, '..'),
     async function () {
       await sdk(tmpPath, argument['android-sdk'])
 
       if (argument['android-preview']) {
-        execute(`cd ${tmpPath} && cd .. && npx cap open android`, () => {
-          console.log('ready')
-        })
+        execute(
+          ['npx cap open android'],
+          path.join(tmpPath, '..'),
+
+          () => {
+            console.log('ready')
+          }
+        )
       } else {
         execute(
-          `cd ${tmpPath} && cd .. && cd android && ./gradlew assembleDebug`,
+          ['./gradlew assembleDebug'],
+          path.join(tmpPath, '../android'),
           function () {
             console.warn('DONE')
             fs.copy(
@@ -159,16 +172,23 @@ async function sdk(tmpPath: string, uri?: string) {
   }
 }
 
-function execute(cmd: string, callback) {
-  exec(cmd, async (error, stdout, stderr) => {
-    if (error) {
-      console.log(`error: ${error.message}`)
-    }
-    if (stderr) {
-      console.log(`stderr: ${stderr}`)
-    }
-    console.log(`stdout: ${stdout}`)
+function execute(cmds: string[], cwd: string, callback) {
+  const cmd = cmds.shift()
 
+  if (cmd) {
+    console.log('exec:', cmd)
+    exec(cmd, { cwd: cwd }, async (error, stdout, stderr) => {
+      if (error) {
+        console.warn(`error: ${error.message}`)
+      }
+      if (stderr) {
+        console.warn(`stderr: ${stderr}`)
+      }
+      console.log(`stdout: ${stdout}`)
+
+      execute(cmds, cwd, callback)
+    })
+  } else {
     callback()
-  })
+  }
 }
