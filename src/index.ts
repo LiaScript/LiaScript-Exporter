@@ -18,7 +18,7 @@ const argv = require('minimist')(process.argv.slice(2))
 
 // -------------------------------Main Execution-------------------------------
 if (argv.v || argv.version) {
-  console.log('version: 2.4.1--0.10.8')
+  console.log('version: 2.4.3--0.10.8')
 } else if (argv.h || argv.help) {
   help()
 } else if (argv.i || argv.input) {
@@ -257,6 +257,14 @@ function help() {
   )
 }
 
+function escapeBackslash(path?: string) {
+  if (path) {
+    return path.replace(/\\/g, '\\\\')
+  }
+
+  return path
+}
+
 function parseArguments() {
   const argument = {
     input: argv.i || argv.input,
@@ -302,11 +310,11 @@ function parseArguments() {
     'pdf-stylesheet': argv['pdf-stylesheet'],
     'pdf-theme': argv['pdf-theme'],
 
-    'android-sdk': argv['android-sdk'],
+    'android-sdk': escapeBackslash(argv['android-sdk']),
     'android-appId': argv['android-appId'],
     'android-appName': argv['android-appName'],
-    'android-icon': argv['android-icon'],
-    'android-splash': argv['android-splash'],
+    'android-icon': escapeBackslash(argv['android-icon']),
+    'android-splash': escapeBackslash(argv['android-splash']),
     'android-splashDuration': argv['android-splashDuration'],
     'android-preview': argv['android-preview'],
   }

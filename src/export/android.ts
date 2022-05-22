@@ -109,7 +109,6 @@ export async function exporter(
     return
   }
 
-  console.warn('WWWWWWWWWWWWWWWW', path.join(tmpPath, '../android'))
   execute(
     [
       'npm i',

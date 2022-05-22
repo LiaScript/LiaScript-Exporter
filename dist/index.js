@@ -12767,7 +12767,6 @@ async function $3eed299f4b9e5004$export$372e2d09604f52f0(argument, json) {
         console.warn(e);
         return;
     }
-    console.warn('WWWWWWWWWWWWWWWW', $9Afec$path.join(tmpPath, '../android'));
     $3eed299f4b9e5004$var$execute([
         'npm i',
         'npm update',
@@ -12821,7 +12820,7 @@ $parcel$global.XMLHttpRequest = $9Afec$xhr2;
 
 const $ccdb061a5468de1f$var$argv = $9Afec$minimist(process.argv.slice(2));
 // -------------------------------Main Execution-------------------------------
-if ($ccdb061a5468de1f$var$argv.v || $ccdb061a5468de1f$var$argv.version) console.log('version: 2.4.1--0.10.8');
+if ($ccdb061a5468de1f$var$argv.v || $ccdb061a5468de1f$var$argv.version) console.log('version: 2.4.3--0.10.8');
 else if ($ccdb061a5468de1f$var$argv.h || $ccdb061a5468de1f$var$argv.help) $ccdb061a5468de1f$var$help();
 else if ($ccdb061a5468de1f$var$argv.i || $ccdb061a5468de1f$var$argv.input) $ccdb061a5468de1f$var$run($ccdb061a5468de1f$var$parseArguments());
 else {
@@ -12948,6 +12947,10 @@ function $ccdb061a5468de1f$var$help() {
     console.log('--pdf-preferCSSPageSize    Give any CSS @page size declared in the page priority over what is declared in width and height or format options.');
     console.log('--pdf-omitBackground       Hides default white background and allows capturing screenshots with transparency. Defaults to true. ');
 }
+function $ccdb061a5468de1f$var$escapeBackslash(path) {
+    if (path) return path.replace(/\\/g, '\\\\');
+    return path;
+}
 function $ccdb061a5468de1f$var$parseArguments() {
     const argument = {
         input: $ccdb061a5468de1f$var$argv.i || $ccdb061a5468de1f$var$argv.input,
@@ -12987,11 +12990,11 @@ function $ccdb061a5468de1f$var$parseArguments() {
         'pdf-timeout': $ccdb061a5468de1f$var$argv['pdf-timeout'],
         'pdf-stylesheet': $ccdb061a5468de1f$var$argv['pdf-stylesheet'],
         'pdf-theme': $ccdb061a5468de1f$var$argv['pdf-theme'],
-        'android-sdk': $ccdb061a5468de1f$var$argv['android-sdk'],
+        'android-sdk': $ccdb061a5468de1f$var$escapeBackslash($ccdb061a5468de1f$var$argv['android-sdk']),
         'android-appId': $ccdb061a5468de1f$var$argv['android-appId'],
         'android-appName': $ccdb061a5468de1f$var$argv['android-appName'],
-        'android-icon': $ccdb061a5468de1f$var$argv['android-icon'],
-        'android-splash': $ccdb061a5468de1f$var$argv['android-splash'],
+        'android-icon': $ccdb061a5468de1f$var$escapeBackslash($ccdb061a5468de1f$var$argv['android-icon']),
+        'android-splash': $ccdb061a5468de1f$var$escapeBackslash($ccdb061a5468de1f$var$argv['android-splash']),
         'android-splashDuration': $ccdb061a5468de1f$var$argv['android-splashDuration'],
         'android-preview': $ccdb061a5468de1f$var$argv['android-preview']
     };
