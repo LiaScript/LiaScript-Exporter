@@ -7807,6 +7807,7 @@ type alias Process =
             media: $elm$core$Dict$empty,
             modal: $elm$core$Maybe$Nothing,
             origin: origin,
+            persistent: false,
             readme: readme,
             repositoryUrl: $author$project$Lia$Parser$PatReplace$repo(readme),
             resource: _List_Nil,
@@ -7938,7 +7939,7 @@ type alias Process =
     var $author$project$Worker$error = function(title) {
         return A2($elm$core$Basics$composeR, $elm$core$Basics$append('Error (' + (title + ') -> ')), A2($elm$core$Basics$composeR, $elm$core$Tuple$pair(false), $author$project$Worker$output));
     };
-    var $author$project$Lia$Script$checkFalse = function(string) {
+    var $author$project$Lia$Utils$checkFalse = function(string) {
         var _v0 = $elm$core$String$toList($elm$core$String$toLower($elm$core$String$trim(string)));
         _v0$4: while(true){
             if (_v0.b) {
@@ -7980,6 +7981,7 @@ type alias Process =
         }
         return true;
     };
+    var $author$project$Lia$Utils$checkPersistency = A2($elm$core$Basics$composeR, $elm$core$Dict$get('persistent'), A2($elm$core$Basics$composeR, $elm$core$Maybe$map($author$project$Lia$Utils$checkFalse), $elm$core$Maybe$withDefault(false)));
     var $author$project$Translations$Ar = {
         $: 'Ar'
     };
@@ -8010,8 +8012,8 @@ type alias Process =
     var $author$project$Translations$Tw = {
         $: 'Tw'
     };
-    var $author$project$Translations$Ua = {
-        $: 'Ua'
+    var $author$project$Translations$Uk = {
+        $: 'Uk'
     };
     var $author$project$Translations$Zh = {
         $: 'Zh'
@@ -8039,8 +8041,8 @@ type alias Process =
                 return $elm$core$Maybe$Just($author$project$Translations$Ru);
             case 'tw':
                 return $elm$core$Maybe$Just($author$project$Translations$Tw);
-            case 'ua':
-                return $elm$core$Maybe$Just($author$project$Translations$Ua);
+            case 'uk':
+                return $elm$core$Maybe$Just($author$project$Translations$Uk);
             case 'zh':
                 return $elm$core$Maybe$Just($author$project$Translations$Zh);
             case 'en':
@@ -8062,22 +8064,23 @@ type alias Process =
                 }),
                 langCode: definition.language,
                 langCodeOriginal: definition.language,
+                persistent: $author$project$Lia$Utils$checkPersistency(definition.macro),
                 settings: _Utils_update(settings, {
                     customTheme: A2($elm$core$Dict$get, 'custom', definition.macro),
                     hasShareApi: function() {
-                        var _v2 = A2($elm$core$Maybe$map, $author$project$Lia$Script$checkFalse, A2($elm$core$Dict$get, 'sharing', definition.macro));
+                        var _v2 = A2($elm$core$Maybe$map, $author$project$Lia$Utils$checkFalse, A2($elm$core$Dict$get, 'sharing', definition.macro));
                         if (_v2.$ === 'Just' && !_v2.a) return $elm$core$Maybe$Nothing;
                         else return settings.hasShareApi;
                     }(),
                     light: A2($elm$core$Maybe$withDefault, settings.light, definition.lightMode),
                     mode: A2($elm$core$Maybe$withDefault, settings.mode, definition.mode),
                     sync: function() {
-                        var _v3 = A2($elm$core$Maybe$map, $author$project$Lia$Script$checkFalse, A2($elm$core$Dict$get, 'classroom', definition.macro));
+                        var _v3 = A2($elm$core$Maybe$map, $author$project$Lia$Utils$checkFalse, A2($elm$core$Dict$get, 'classroom', definition.macro));
                         if (_v3.$ === 'Just' && !_v3.a) return $elm$core$Maybe$Nothing;
                         else return settings.sync;
                     }(),
                     translateWithGoogle: function() {
-                        var _v4 = A2($elm$core$Maybe$map, $author$project$Lia$Script$checkFalse, A2($elm$core$Dict$get, 'translateWithGoogle', definition.macro));
+                        var _v4 = A2($elm$core$Maybe$map, $author$project$Lia$Utils$checkFalse, A2($elm$core$Dict$get, 'translateWithGoogle', definition.macro));
                         if (_v4.$ === 'Just' && !_v4.a) return $elm$core$Maybe$Nothing;
                         else return settings.translateWithGoogle;
                     }()
@@ -8667,6 +8670,7 @@ type alias Process =
             id: id,
             indentation: base.indentation,
             parsed: false,
+            persistent: $elm$core$Maybe$Nothing,
             quiz_vector: $elm$core$Array$empty,
             survey_vector: $elm$core$Array$empty,
             sync: $elm$core$Maybe$Nothing,
@@ -8810,8 +8814,8 @@ type alias Process =
                 return 'ru';
             case 'Tw':
                 return 'tw';
-            case 'Ua':
-                return 'ua';
+            case 'Uk':
+                return 'uk';
             case 'Zh':
                 return 'zh';
             default:
@@ -9471,9 +9475,9 @@ type alias Process =
                         else {
                             if ($elm$core$List$length(rows) * A2($elm$core$Maybe$withDefault, 1, A2($elm$core$Maybe$map, $elm$core$List$length, headLine)) >= 50) return $author$project$Lia$Markdown$Table$Types$Parallel;
                             else {
-                                var maxima = A2($elm$core$List$filterMap, $elm$core$Basics$identity, A2($elm$core$List$map, A2($elm$core$Basics$composeR, $elm$core$List$filterMap($elm$core$Basics$identity), $elm$core$List$maximum), A2($author$project$Lia$Markdown$Table$Matrix$map, function($) {
+                                var maxima = A2($elm$core$List$filterMap, A2($elm$core$Basics$composeR, $elm$core$List$filterMap($elm$core$Basics$identity), $elm$core$List$maximum), A2($author$project$Lia$Markdown$Table$Matrix$map, function($) {
                                     return $._float;
-                                }, $author$project$Lia$Markdown$Table$Matrix$split($author$project$Lia$Markdown$Table$Matrix$transpose(rows)).b)));
+                                }, $author$project$Lia$Markdown$Table$Matrix$split($author$project$Lia$Markdown$Table$Matrix$transpose(rows)).b));
                                 return _Utils_cmp($elm$core$Basics$abs(A2($elm$core$Maybe$withDefault, 0, $elm$core$List$maximum(maxima))), 10 * $elm$core$Basics$abs(A2($elm$core$Maybe$withDefault, 0, $elm$core$List$minimum(maxima)))) > 0 ? $author$project$Lia$Markdown$Table$Types$Radar : $author$project$Lia$Markdown$Table$Types$BarChart;
                             }
                         }
@@ -10406,11 +10410,15 @@ type alias Process =
         return A2($andre_dietrich$parser_combinators$Combine$optional, _List_Nil, A2($andre_dietrich$parser_combinators$Combine$ignore, $andre_dietrich$parser_combinators$Combine$maybe(A2($andre_dietrich$parser_combinators$Combine$ignore, $author$project$Lia$Parser$Indentation$check, $andre_dietrich$parser_combinators$Combine$regex('[\t ]*\\n'))), A2($andre_dietrich$parser_combinators$Combine$keep, $author$project$Lia$Markdown$Inline$Parser$comment(attr), A2($andre_dietrich$parser_combinators$Combine$keep, $author$project$Lia$Markdown$Macro$Parser$macro, $author$project$Lia$Parser$Helper$spaces))));
     }();
     var $author$project$Lia$Markdown$Parser$horizontal_line = A2($andre_dietrich$parser_combinators$Combine$map, $author$project$Lia$Markdown$Types$HLine, A2($andre_dietrich$parser_combinators$Combine$ignore, $andre_dietrich$parser_combinators$Combine$regex('-{3,}'), $author$project$Lia$Markdown$Parser$md_annotations));
+    var $author$project$Lia$Markdown$Types$HtmlComment = {
+        $: 'HtmlComment'
+    };
+    var $author$project$Lia$Parser$Indentation$skip = $andre_dietrich$parser_combinators$Combine$modifyState($author$project$Lia$Parser$Indentation$skip_(true));
+    var $author$project$Lia$Markdown$Parser$htmlComment = A2($andre_dietrich$parser_combinators$Combine$onsuccess, $author$project$Lia$Markdown$Types$HtmlComment, A2($andre_dietrich$parser_combinators$Combine$ignore, $author$project$Lia$Markdown$Inline$Parser$comment($andre_dietrich$parser_combinators$Combine$Char$anyChar), A2($andre_dietrich$parser_combinators$Combine$ignore, $author$project$Lia$Parser$Indentation$check, $author$project$Lia$Parser$Indentation$skip)));
     var $author$project$Lia$Markdown$Effect$Parser$multi = function(blocks) {
         return A2($andre_dietrich$parser_combinators$Combine$keep, A2($andre_dietrich$parser_combinators$Combine$manyTill, A2($andre_dietrich$parser_combinators$Combine$ignore, $author$project$Lia$Parser$Helper$newlines, blocks), $andre_dietrich$parser_combinators$Combine$regex('[\t ]*\\*{3,}')), A2($andre_dietrich$parser_combinators$Combine$ignore, $andre_dietrich$parser_combinators$Combine$regex('[\t ]*\\*{3,}\\n+'), $author$project$Lia$Parser$Indentation$check));
     };
     var $author$project$Lia$Markdown$Effect$Parser$single = $andre_dietrich$parser_combinators$Combine$map($elm$core$List$singleton);
-    var $author$project$Lia$Parser$Indentation$skip = $andre_dietrich$parser_combinators$Combine$modifyState($author$project$Lia$Parser$Indentation$skip_(true));
     var $author$project$Lia$Markdown$Effect$Parser$markdown = function(blocks) {
         return A2($andre_dietrich$parser_combinators$Combine$andMap, $author$project$Lia$Markdown$Effect$Parser$effect_id, A2($andre_dietrich$parser_combinators$Combine$ignore, $author$project$Lia$Markdown$Effect$Parser$reset_effect_number, A2($andre_dietrich$parser_combinators$Combine$andMap, A2($andre_dietrich$parser_combinators$Combine$or, $author$project$Lia$Markdown$Effect$Parser$multi(blocks), $author$project$Lia$Markdown$Effect$Parser$single(blocks)), A2($andre_dietrich$parser_combinators$Combine$ignore, A2($andre_dietrich$parser_combinators$Combine$or, $andre_dietrich$parser_combinators$Combine$skip($andre_dietrich$parser_combinators$Combine$string('\n')), $author$project$Lia$Parser$Indentation$skip), A2($andre_dietrich$parser_combinators$Combine$ignore, $andre_dietrich$parser_combinators$Combine$regex('}}[\t ]*'), A2($andre_dietrich$parser_combinators$Combine$map, F3(function(e, b, c) {
             return _Utils_update(e, {
@@ -11915,7 +11923,8 @@ type alias Process =
             A2($andre_dietrich$parser_combinators$Combine$andMap, $author$project$Lia$Markdown$Parser$cyclic$unordered_list(), A2($andre_dietrich$parser_combinators$Combine$map, $author$project$Lia$Markdown$Types$BulletList, $author$project$Lia$Markdown$Parser$md_annotations)),
             A2($andre_dietrich$parser_combinators$Combine$ignore, $andre_dietrich$parser_combinators$Combine$regex('[ \t]*\n'), A2($andre_dietrich$parser_combinators$Combine$andMap, $author$project$Lia$Markdown$HTML$Parser$parse($author$project$Lia$Markdown$Parser$cyclic$blocks()), A2($andre_dietrich$parser_combinators$Combine$map, $author$project$Lia$Markdown$Types$HTML, $author$project$Lia$Markdown$Parser$md_annotations))),
             A2($andre_dietrich$parser_combinators$Combine$andMap, $author$project$Lia$Markdown$Gallery$Parser$parse, A2($andre_dietrich$parser_combinators$Combine$map, $author$project$Lia$Markdown$Types$Gallery, $author$project$Lia$Markdown$Parser$md_annotations)),
-            A2($andre_dietrich$parser_combinators$Combine$andMap, $author$project$Lia$Markdown$Parser$paragraph, A2($andre_dietrich$parser_combinators$Combine$map, $author$project$Lia$Markdown$Parser$checkForCitation, $author$project$Lia$Markdown$Parser$md_annotations))
+            A2($andre_dietrich$parser_combinators$Combine$andMap, $author$project$Lia$Markdown$Parser$paragraph, A2($andre_dietrich$parser_combinators$Combine$map, $author$project$Lia$Markdown$Parser$checkForCitation, $author$project$Lia$Markdown$Parser$md_annotations)),
+            $author$project$Lia$Markdown$Parser$htmlComment
         ]));
     }
     function $author$project$Lia$Markdown$Parser$cyclic$unordered_list() {
@@ -12036,6 +12045,9 @@ type alias Process =
                     if (_v2.$ === 'Ok') {
                         var new_sec = _v2.a;
                         return _Utils_update(new_sec, {
+                            persistent: A2($elm$core$Maybe$map, A2($elm$core$Basics$composeR, function($) {
+                                return $.macro;
+                            }, $author$project$Lia$Utils$checkPersistency), new_sec.definition),
                             sync: sec.sync
                         });
                     } else {
@@ -12820,7 +12832,7 @@ $parcel$global.XMLHttpRequest = $9Afec$xhr2;
 
 const $ccdb061a5468de1f$var$argv = $9Afec$minimist(process.argv.slice(2));
 // -------------------------------Main Execution-------------------------------
-if ($ccdb061a5468de1f$var$argv.v || $ccdb061a5468de1f$var$argv.version) console.log('version: 2.4.3--0.10.8');
+if ($ccdb061a5468de1f$var$argv.v || $ccdb061a5468de1f$var$argv.version) console.log('version: 2.4.3--0.10.12');
 else if ($ccdb061a5468de1f$var$argv.h || $ccdb061a5468de1f$var$argv.help) $ccdb061a5468de1f$var$help();
 else if ($ccdb061a5468de1f$var$argv.i || $ccdb061a5468de1f$var$argv.input) $ccdb061a5468de1f$var$run($ccdb061a5468de1f$var$parseArguments());
 else {
