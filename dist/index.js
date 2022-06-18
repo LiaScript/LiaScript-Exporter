@@ -6874,10 +6874,13 @@ type alias Process =
         'title',
         'transparent'
     ]);
+    var $author$project$Lia$Markdown$Inline$Multimedia$website = {
+        youtube: 'https://www.youtube.com/embed/'
+    };
     var $author$project$Lia$Markdown$Inline$Multimedia$movie = $author$project$Lia$Parser$PatReplace$replace(_List_fromArray([
         {
             by: F2(function(url, w) {
-                return 'https://www.youtube.com/embed/' + (w + A2($author$project$Lia$Markdown$Inline$Multimedia$preserve, url, $author$project$Lia$Markdown$Inline$Multimedia$youTubeRules));
+                return _Utils_ap($author$project$Lia$Markdown$Inline$Multimedia$website.youtube, _Utils_ap(w, A2($author$project$Lia$Markdown$Inline$Multimedia$preserve, url, $author$project$Lia$Markdown$Inline$Multimedia$youTubeRules)));
             }),
             pattern: $author$project$Lia$Parser$PatReplace$root('(?:youtu\\.be/|youtube\\.com/(?:(?:watch)?\\?(?:.*&)?v(?:i)?=|(?:v|vi|user)/))([^\\?&\"\'<> #]+)')
         },
@@ -7007,9 +7010,9 @@ type alias Process =
         A2($andre_dietrich$parser_combinators$Combine$onsuccess, '😖', $andre_dietrich$parser_combinators$Combine$string(':-§'))
     ])));
     var $author$project$Lia$Markdown$Inline$Parser$stringBase = A2($andre_dietrich$parser_combinators$Combine$map, $author$project$Lia$Markdown$Inline$Types$Chars, $andre_dietrich$parser_combinators$Combine$regex('[^\\[\\]\\(\\)@*+_~:;`\\^|{}\\\\\\n<>=$ \"\\-]+'));
-    var $author$project$Lia$Markdown$Inline$Parser$stringBase2 = A2($andre_dietrich$parser_combinators$Combine$map, $author$project$Lia$Markdown$Inline$Types$Chars, $andre_dietrich$parser_combinators$Combine$regex('[^\n*|<>+\\-]+'));
-    var $author$project$Lia$Markdown$Inline$Parser$stringCharacters = A2($andre_dietrich$parser_combinators$Combine$map, $author$project$Lia$Markdown$Inline$Types$Chars, $andre_dietrich$parser_combinators$Combine$regex('[\\[\\]\\(\\)~:_;=${}\\-+\"*]'));
-    var $author$project$Lia$Markdown$Inline$Parser$stringEscape = A2($andre_dietrich$parser_combinators$Combine$map, $author$project$Lia$Markdown$Inline$Types$Chars, A2($andre_dietrich$parser_combinators$Combine$keep, $andre_dietrich$parser_combinators$Combine$regex('[@\\^*_+~`\\\\${}\\[\\]|#\\-]'), $andre_dietrich$parser_combinators$Combine$string('\\')));
+    var $author$project$Lia$Markdown$Inline$Parser$stringBase2 = A2($andre_dietrich$parser_combinators$Combine$map, $author$project$Lia$Markdown$Inline$Types$Chars, $andre_dietrich$parser_combinators$Combine$regex('[^\n*|+\\-]+'));
+    var $author$project$Lia$Markdown$Inline$Parser$stringCharacters = A2($andre_dietrich$parser_combinators$Combine$map, $author$project$Lia$Markdown$Inline$Types$Chars, $andre_dietrich$parser_combinators$Combine$regex('[\\[\\]\\(\\)~:_;=${}\\-+\"*<>]'));
+    var $author$project$Lia$Markdown$Inline$Parser$stringEscape = A2($andre_dietrich$parser_combinators$Combine$map, $author$project$Lia$Markdown$Inline$Types$Chars, A2($andre_dietrich$parser_combinators$Combine$keep, $andre_dietrich$parser_combinators$Combine$regex('[@\\^*_+~`\\\\${}\\[\\]|#\\-<>]'), $andre_dietrich$parser_combinators$Combine$string('\\')));
     var $author$project$Lia$Markdown$Inline$Parser$stringSpaces = A2($andre_dietrich$parser_combinators$Combine$map, $author$project$Lia$Markdown$Inline$Types$Chars, $andre_dietrich$parser_combinators$Combine$regex('[ \t]+'));
     var $author$project$Lia$Markdown$Inline$Types$Container = F2(function(a, b) {
         return {
@@ -8702,7 +8705,7 @@ type alias Process =
         $andre_dietrich$parser_combinators$Combine$regex('(?:[^#`<]+|[\\x0D\n]+|<!--[\\S\\s]{0,1000}?-->)'),
         $andre_dietrich$parser_combinators$Combine$regex('(`{3,})[\\S\\s]*?\\1'),
         $andre_dietrich$parser_combinators$Combine$regex('`.+?`'),
-        $andre_dietrich$parser_combinators$Combine$regex('(?:<([\\w+\\-]+)[\\S\\s]*?</\\1>|`|<)'),
+        $andre_dietrich$parser_combinators$Combine$regex('(?:<([\\w+\\-]+)[\\S\\s]*?<[ \t]*/[ \t]*\\1[ \t]*>|`|<)'),
         $andre_dietrich$parser_combinators$Combine$regex('#+(\\w|[^\\u0000-\\u007F]|[ \t]*\n)'),
         A2($andre_dietrich$parser_combinators$Combine$keep, $andre_dietrich$parser_combinators$Combine$string('#'), $andre_dietrich$parser_combinators$Combine$withColumn($author$project$Lia$Parser$Preprocessor$check))
     ]))));
@@ -11366,7 +11369,7 @@ type alias Process =
     var $author$project$Lia$Markdown$Quiz$Vector$Parser$groupBy = F3(function(begin, end, parser) {
         return $andre_dietrich$parser_combinators$Combine$many1(A2($andre_dietrich$parser_combinators$Combine$ignore, $author$project$Lia$Parser$Helper$newline, A2($andre_dietrich$parser_combinators$Combine$andMap, $author$project$Lia$Markdown$Inline$Parser$line, A2($andre_dietrich$parser_combinators$Combine$ignore, $author$project$Lia$Parser$Helper$spaces, A2($andre_dietrich$parser_combinators$Combine$ignore, end, A2($andre_dietrich$parser_combinators$Combine$map, $elm$core$Tuple$pair, A2($andre_dietrich$parser_combinators$Combine$keep, parser, A2($andre_dietrich$parser_combinators$Combine$ignore, begin, A2($andre_dietrich$parser_combinators$Combine$ignore, $author$project$Lia$Parser$Helper$spaces, $andre_dietrich$parser_combinators$Combine$maybe($author$project$Lia$Parser$Indentation$check))))))))));
     });
-    var $author$project$Lia$Markdown$Quiz$Vector$Parser$group = A2($elm$core$Basics$composeR, A2($author$project$Lia$Markdown$Quiz$Vector$Parser$groupBy, $andre_dietrich$parser_combinators$Combine$regex('(?:- )?\\['), $andre_dietrich$parser_combinators$Combine$string(']')), $andre_dietrich$parser_combinators$Combine$map($elm$core$List$unzip));
+    var $author$project$Lia$Markdown$Quiz$Vector$Parser$group = A2($elm$core$Basics$composeR, A2($author$project$Lia$Markdown$Quiz$Vector$Parser$groupBy, $andre_dietrich$parser_combinators$Combine$regex('(?:-[ \t]?)?\\['), $andre_dietrich$parser_combinators$Combine$string(']')), $andre_dietrich$parser_combinators$Combine$map($elm$core$List$unzip));
     var $author$project$Lia$Markdown$Quiz$Parser$hints = A2($andre_dietrich$parser_combinators$Combine$optional, _List_Nil, A2($andre_dietrich$parser_combinators$Combine$map, $elm$core$Tuple$second, $author$project$Lia$Markdown$Quiz$Vector$Parser$group($andre_dietrich$parser_combinators$Combine$string('[?]'))));
     var $author$project$Lia$Markdown$Quiz$Parser$adds = function(type_) {
         return A2($andre_dietrich$parser_combinators$Combine$andMap, $author$project$Lia$Markdown$Quiz$Parser$hints, A2($andre_dietrich$parser_combinators$Combine$map, $author$project$Lia$Markdown$Quiz$Types$Quiz(type_), $author$project$Lia$Markdown$Quiz$Parser$get_counter));
@@ -11790,7 +11793,7 @@ type alias Process =
             return $.task_vector;
         }, A2($elm$core$Basics$composeR, $elm$core$Array$length, $andre_dietrich$parser_combinators$Combine$succeed)))));
     };
-    var $author$project$Lia$Markdown$Task$Parser$parse = A2($andre_dietrich$parser_combinators$Combine$andThen, $author$project$Lia$Markdown$Task$Parser$modify_State, A2($andre_dietrich$parser_combinators$Combine$map, $elm$core$List$unzip, A3($author$project$Lia$Markdown$Quiz$Vector$Parser$groupBy, $andre_dietrich$parser_combinators$Combine$string('- ['), $andre_dietrich$parser_combinators$Combine$string(']'), A2($author$project$Lia$Markdown$Quiz$Vector$Parser$either, '[xX]', ' '))));
+    var $author$project$Lia$Markdown$Task$Parser$parse = A2($andre_dietrich$parser_combinators$Combine$andThen, $author$project$Lia$Markdown$Task$Parser$modify_State, A2($andre_dietrich$parser_combinators$Combine$map, $elm$core$List$unzip, A3($author$project$Lia$Markdown$Quiz$Vector$Parser$groupBy, $andre_dietrich$parser_combinators$Combine$regex('-[ \t]?\\['), $andre_dietrich$parser_combinators$Combine$string(']'), A2($author$project$Lia$Markdown$Quiz$Vector$Parser$either, '[xX]', ' '))));
     var $author$project$Lia$Parser$Indentation$pop = $andre_dietrich$parser_combinators$Combine$modifyState(function(state) {
         return _Utils_update(state, {
             indentation: $elm$core$List$reverse(A2($elm$core$List$drop, 1, $elm$core$List$reverse(state.indentation))),
@@ -12832,7 +12835,7 @@ $parcel$global.XMLHttpRequest = $9Afec$xhr2;
 
 const $ccdb061a5468de1f$var$argv = $9Afec$minimist(process.argv.slice(2));
 // -------------------------------Main Execution-------------------------------
-if ($ccdb061a5468de1f$var$argv.v || $ccdb061a5468de1f$var$argv.version) console.log('version: 2.4.3--0.10.12');
+if ($ccdb061a5468de1f$var$argv.v || $ccdb061a5468de1f$var$argv.version) console.log('version: 2.4.3--0.10.14');
 else if ($ccdb061a5468de1f$var$argv.h || $ccdb061a5468de1f$var$argv.help) $ccdb061a5468de1f$var$help();
 else if ($ccdb061a5468de1f$var$argv.i || $ccdb061a5468de1f$var$argv.input) $ccdb061a5468de1f$var$run($ccdb061a5468de1f$var$parseArguments());
 else {
