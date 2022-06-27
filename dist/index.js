@@ -12835,7 +12835,7 @@ $parcel$global.XMLHttpRequest = $9Afec$xhr2;
 
 const $ccdb061a5468de1f$var$argv = $9Afec$minimist(process.argv.slice(2));
 // -------------------------------Main Execution-------------------------------
-if ($ccdb061a5468de1f$var$argv.v || $ccdb061a5468de1f$var$argv.version) console.log('version: 2.4.3--0.10.14');
+if ($ccdb061a5468de1f$var$argv.v || $ccdb061a5468de1f$var$argv.version) console.log('version: 2.4.3--0.10.15');
 else if ($ccdb061a5468de1f$var$argv.h || $ccdb061a5468de1f$var$argv.help) $ccdb061a5468de1f$var$help();
 else if ($ccdb061a5468de1f$var$argv.i || $ccdb061a5468de1f$var$argv.input) $ccdb061a5468de1f$var$run($ccdb061a5468de1f$var$parseArguments());
 else {

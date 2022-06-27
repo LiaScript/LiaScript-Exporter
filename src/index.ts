@@ -18,7 +18,7 @@ const argv = require('minimist')(process.argv.slice(2))
 
 // -------------------------------Main Execution-------------------------------
 if (argv.v || argv.version) {
-  console.log('version: 2.4.3--0.10.14')
+  console.log('version: 2.4.3--0.10.15')
 } else if (argv.h || argv.help) {
   help()
 } else if (argv.i || argv.input) {
