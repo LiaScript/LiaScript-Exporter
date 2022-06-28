@@ -11684,8 +11684,8 @@ type alias Process =
         return A3($author$project$Lia$Markdown$Survey$Types$Vector, bool, definition, $author$project$Lia$Markdown$Survey$Types$analyseType(A2($elm$core$List$map, $elm$core$Tuple$first, definition)));
     });
     var $author$project$Lia$Markdown$Survey$Parser$id_str = A2($andre_dietrich$parser_combinators$Combine$andThen, function(s) {
-        return s === 'X' ? $andre_dietrich$parser_combinators$Combine$fail('') : $andre_dietrich$parser_combinators$Combine$succeed(s);
-    }, $andre_dietrich$parser_combinators$Combine$regex('\\w(\\w+| )*'));
+        return s === 'X' || s === 'x' ? $andre_dietrich$parser_combinators$Combine$fail('') : $andre_dietrich$parser_combinators$Combine$succeed(s);
+    }, $andre_dietrich$parser_combinators$Combine$regex('\\S[^)\\]]*'));
     var $author$project$Lia$Markdown$Survey$Parser$question = function(p) {
         return A2($andre_dietrich$parser_combinators$Combine$ignore, $author$project$Lia$Parser$Helper$newline, A2($andre_dietrich$parser_combinators$Combine$andMap, $author$project$Lia$Markdown$Inline$Parser$line, A2($andre_dietrich$parser_combinators$Combine$map, $elm$core$Tuple$pair, p)));
     };
@@ -12835,7 +12835,7 @@ $parcel$global.XMLHttpRequest = $9Afec$xhr2;
 
 const $ccdb061a5468de1f$var$argv = $9Afec$minimist(process.argv.slice(2));
 // -------------------------------Main Execution-------------------------------
-if ($ccdb061a5468de1f$var$argv.v || $ccdb061a5468de1f$var$argv.version) console.log('version: 2.4.3--0.10.15');
+if ($ccdb061a5468de1f$var$argv.v || $ccdb061a5468de1f$var$argv.version) console.log('version: 2.4.3--0.10.16');
 else if ($ccdb061a5468de1f$var$argv.h || $ccdb061a5468de1f$var$argv.help) $ccdb061a5468de1f$var$help();
 else if ($ccdb061a5468de1f$var$argv.i || $ccdb061a5468de1f$var$argv.input) $ccdb061a5468de1f$var$run($ccdb061a5468de1f$var$parseArguments());
 else {
