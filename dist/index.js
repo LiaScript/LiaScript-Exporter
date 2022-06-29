@@ -10465,15 +10465,6 @@ type alias Process =
     var $author$project$Lia$Markdown$Parser$paragraph = A2($andre_dietrich$parser_combinators$Combine$map, A2($elm$core$Basics$composeR, $elm$core$List$intersperse(_List_fromArray([
         A2($author$project$Lia$Markdown$Inline$Types$Chars, ' ', _List_Nil)
     ])), A2($elm$core$Basics$composeR, $elm$core$List$concat, $author$project$Lia$Markdown$Inline$Types$combine)), A2($andre_dietrich$parser_combinators$Combine$keep, $andre_dietrich$parser_combinators$Combine$many1(A2($andre_dietrich$parser_combinators$Combine$ignore, $author$project$Lia$Parser$Helper$newline, A2($andre_dietrich$parser_combinators$Combine$keep, $author$project$Lia$Markdown$Inline$Parser$line, $author$project$Lia$Parser$Indentation$check))), A2($andre_dietrich$parser_combinators$Combine$ignore, $author$project$Lia$Parser$Indentation$skip, $author$project$Lia$Markdown$Parser$checkParagraph)));
-    var $author$project$Lia$Markdown$Chart$Types$Chart = F5(function(title, yLabel, xLabel, legend, diagrams) {
-        return {
-            diagrams: diagrams,
-            legend: legend,
-            title: title,
-            xLabel: xLabel,
-            yLabel: yLabel
-        };
-    });
     var $author$project$Lia$Markdown$Chart$Types$Dots = F2(function(a, b) {
         return {
             $: 'Dots',
@@ -10626,23 +10617,37 @@ type alias Process =
             var y_label = _v2.a;
             var data_labels = _v2.b;
             var labels = $elm$core$Dict$fromList(A2($elm$core$List$filterMap, $elm$core$Basics$identity, data_labels));
-            return A5($author$project$Lia$Markdown$Chart$Types$Chart, title, $elm$core$String$trim($elm$core$String$concat(y_label)), x_label, $elm$core$Dict$values(labels), A2($elm$core$Dict$map, F2(function(k, v) {
-                return A2($author$project$Lia$Markdown$Chart$Parser$unique, $elm$core$Maybe$Nothing, A2($elm$core$List$map, function($) {
-                    return $.x;
-                }, v)) ? A2($author$project$Lia$Markdown$Chart$Types$Lines, v, A2($elm$core$Dict$get, $elm$core$String$fromChar(k), labels)) : A2($author$project$Lia$Markdown$Chart$Types$Dots, v, A2($elm$core$Dict$get, $elm$core$String$fromChar(k), labels));
-            }), A2($elm$core$Dict$map, F2(function(_v5, v) {
-                return A2($elm$core$List$sortBy, function($) {
-                    return $.x;
-                }, v);
-            }), A3($elm$core$List$foldr, $author$project$Lia$Markdown$Chart$Parser$magicMerge, $elm$core$Dict$empty, A2($elm$core$List$map, function(_v3) {
-                var y = _v3.a;
-                var l = _v3.b;
-                return A2($elm$core$Dict$map, F2(function(_v4, xs) {
-                    return A2($elm$core$List$map, function(x) {
-                        return A2($author$project$Lia$Markdown$Chart$Types$Point, x * x_segment + x0, y * y_segment + y0);
-                    }, xs);
-                }), l);
-            }, A2($elm$core$List$indexedMap, $elm$core$Tuple$pair, $elm$core$List$reverse(data)))))));
+            return {
+                diagrams: A2($elm$core$Dict$map, F2(function(k, v) {
+                    return A2($author$project$Lia$Markdown$Chart$Parser$unique, $elm$core$Maybe$Nothing, A2($elm$core$List$map, function($) {
+                        return $.x;
+                    }, v)) ? A2($author$project$Lia$Markdown$Chart$Types$Lines, v, A2($elm$core$Dict$get, $elm$core$String$fromChar(k), labels)) : A2($author$project$Lia$Markdown$Chart$Types$Dots, v, A2($elm$core$Dict$get, $elm$core$String$fromChar(k), labels));
+                }), A2($elm$core$Dict$map, F2(function(_v5, v) {
+                    return A2($elm$core$List$sortBy, function($) {
+                        return $.x;
+                    }, v);
+                }), A3($elm$core$List$foldr, $author$project$Lia$Markdown$Chart$Parser$magicMerge, $elm$core$Dict$empty, A2($elm$core$List$map, function(_v3) {
+                    var y = _v3.a;
+                    var l = _v3.b;
+                    return A2($elm$core$Dict$map, F2(function(_v4, xs) {
+                        return A2($elm$core$List$map, function(x) {
+                            return A2($author$project$Lia$Markdown$Chart$Types$Point, x * x_segment + x0, y * y_segment + y0);
+                        }, xs);
+                    }), l);
+                }, A2($elm$core$List$indexedMap, $elm$core$Tuple$pair, $elm$core$List$reverse(data)))))),
+                legend: $elm$core$Dict$values(labels),
+                title: title,
+                xLabel: x_label,
+                xLimits: {
+                    max: $elm$core$Maybe$Nothing,
+                    min: $elm$core$Maybe$Nothing
+                },
+                yLabel: $elm$core$String$trim($elm$core$String$concat(y_label)),
+                yLimits: {
+                    max: $elm$core$Maybe$Nothing,
+                    min: $elm$core$Maybe$Nothing
+                }
+            };
         });
         return A2($andre_dietrich$parser_combinators$Combine$andMap, $author$project$Lia$Markdown$Chart$Parser$x_axis, A2($andre_dietrich$parser_combinators$Combine$andMap, A2($andre_dietrich$parser_combinators$Combine$optional, 0, A2($andre_dietrich$parser_combinators$Combine$keep, $author$project$Lia$Markdown$Chart$Parser$number, $andre_dietrich$parser_combinators$Combine$regex('[\t ]*'))), A2($andre_dietrich$parser_combinators$Combine$andMap, $andre_dietrich$parser_combinators$Combine$many1($author$project$Lia$Markdown$Chart$Parser$row), A2($andre_dietrich$parser_combinators$Combine$andMap, A2($andre_dietrich$parser_combinators$Combine$optional, 1, A2($andre_dietrich$parser_combinators$Combine$keep, $author$project$Lia$Markdown$Chart$Parser$number, $andre_dietrich$parser_combinators$Combine$regex('[\t ]*'))), A2($andre_dietrich$parser_combinators$Combine$map, A2($elm$core$Basics$composeR, $elm$core$String$trim, chart), A2($andre_dietrich$parser_combinators$Combine$optional, '', $andre_dietrich$parser_combinators$Combine$regex('[\t ]*[^\n\\|`]*\n')))))));
     }();
@@ -12835,7 +12840,7 @@ $parcel$global.XMLHttpRequest = $9Afec$xhr2;
 
 const $ccdb061a5468de1f$var$argv = $9Afec$minimist(process.argv.slice(2));
 // -------------------------------Main Execution-------------------------------
-if ($ccdb061a5468de1f$var$argv.v || $ccdb061a5468de1f$var$argv.version) console.log('version: 2.4.3--0.10.16');
+if ($ccdb061a5468de1f$var$argv.v || $ccdb061a5468de1f$var$argv.version) console.log('version: 2.4.3--0.10.17');
 else if ($ccdb061a5468de1f$var$argv.h || $ccdb061a5468de1f$var$argv.help) $ccdb061a5468de1f$var$help();
 else if ($ccdb061a5468de1f$var$argv.i || $ccdb061a5468de1f$var$argv.input) $ccdb061a5468de1f$var$run($ccdb061a5468de1f$var$parseArguments());
 else {
