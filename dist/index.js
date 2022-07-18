@@ -7798,7 +7798,7 @@ type alias Process =
     var $author$project$Lia$Settings$Json$toModel = function(model) {
         return $elm$json$Json$Decode$decodeValue(A3($elm$json$Json$Decode$map2, $elm$core$Basics$apR, A2($elm$json$Json$Decode$map, $elm$core$Maybe$withDefault(false), $elm$json$Json$Decode$maybe(A2($elm$json$Json$Decode$field, 'tooltips', $elm$json$Json$Decode$bool))), A9($elm$json$Json$Decode$map8, $author$project$Lia$Settings$Json$settings(model), A2($elm$json$Json$Decode$field, 'table_of_contents', $elm$json$Json$Decode$bool), A2($elm$json$Json$Decode$andThen, $author$project$Lia$Settings$Json$toMode, A2($elm$json$Json$Decode$field, 'mode', $elm$json$Json$Decode$string)), A2($elm$json$Json$Decode$field, 'theme', $elm$json$Json$Decode$string), A2($elm$json$Json$Decode$field, 'light', $elm$json$Json$Decode$bool), A2($elm$json$Json$Decode$field, 'editor', $elm$json$Json$Decode$string), A2($elm$json$Json$Decode$field, 'font_size', $elm$json$Json$Decode$int), A2($elm$json$Json$Decode$field, 'sound', $elm$json$Json$Decode$bool), A2($elm$json$Json$Decode$field, 'lang', $elm$json$Json$Decode$string))));
     };
-    var $author$project$Lia$Model$init = F8(function(hasShareApi, openTOC, settings, allowedBackends, url, readme, origin, anchor) {
+    var $author$project$Lia$Model$init = F8(function(hasShareApi, openTOC, settings, backends, url, readme, origin, anchor) {
         var _default = A2($author$project$Lia$Settings$Types$init, hasShareApi, $author$project$Lia$Settings$Types$Presentation);
         return {
             anchor: anchor,
@@ -7819,11 +7819,11 @@ type alias Process =
             sections: $elm$core$Array$empty,
             settings: (function(set) {
                 return _Utils_update(set, {
-                    sync: $elm$core$List$isEmpty(allowedBackends) ? $elm$core$Maybe$Nothing : set.sync,
+                    sync: $elm$core$List$isEmpty(backends.support) ? $elm$core$Maybe$Nothing : set.sync,
                     table_of_contents: openTOC
                 });
             })(A2($elm$core$Result$withDefault, _default, A2($author$project$Lia$Settings$Json$toModel, _default, settings))),
-            sync: $author$project$Lia$Sync$Types$init(allowedBackends),
+            sync: $author$project$Lia$Sync$Types$init(backends.support),
             title: 'Lia',
             to_do: _List_Nil,
             translation: $author$project$Translations$En,
@@ -7842,7 +7842,10 @@ type alias Process =
         ]));
     });
     var $author$project$Worker$init = function(flags) {
-        return _Utils_Tuple2(A4($author$project$Worker$Model, $author$project$Model$Idle, '', $elm$core$Maybe$Nothing, A8($author$project$Lia$Script$init, false, true, $elm$json$Json$Encode$null, _List_Nil, '', '', '', $elm$core$Maybe$Nothing)), flags.cmd === '' ? $elm$core$Platform$Cmd$none : $author$project$Worker$output($author$project$Worker$defines(flags.cmd)));
+        return _Utils_Tuple2(A4($author$project$Worker$Model, $author$project$Model$Idle, '', $elm$core$Maybe$Nothing, A8($author$project$Lia$Script$init, false, true, $elm$json$Json$Encode$null, {
+            enabled: false,
+            support: _List_Nil
+        }, '', '', '', $elm$core$Maybe$Nothing)), flags.cmd === '' ? $elm$core$Platform$Cmd$none : $author$project$Worker$output($author$project$Worker$defines(flags.cmd)));
     };
     var $elm$json$Json$Decode$list = _Json_decodeList;
     var $author$project$Worker$input = _Platform_incomingPort('input', $elm$json$Json$Decode$list($elm$json$Json$Decode$string));
@@ -12840,7 +12843,7 @@ $parcel$global.XMLHttpRequest = $9Afec$xhr2;
 
 const $ccdb061a5468de1f$var$argv = $9Afec$minimist(process.argv.slice(2));
 // -------------------------------Main Execution-------------------------------
-if ($ccdb061a5468de1f$var$argv.v || $ccdb061a5468de1f$var$argv.version) console.log('version: 2.4.3--0.10.17');
+if ($ccdb061a5468de1f$var$argv.v || $ccdb061a5468de1f$var$argv.version) console.log('version: 2.4.3--0.10.18');
 else if ($ccdb061a5468de1f$var$argv.h || $ccdb061a5468de1f$var$argv.help) $ccdb061a5468de1f$var$help();
 else if ($ccdb061a5468de1f$var$argv.i || $ccdb061a5468de1f$var$argv.input) $ccdb061a5468de1f$var$run($ccdb061a5468de1f$var$parseArguments());
 else {
