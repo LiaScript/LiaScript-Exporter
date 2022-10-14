@@ -2853,6 +2853,9 @@ type alias Process =
             task_vector: $elm$core$Array$empty
         };
     });
+    var $andre_dietrich$parser_combinators$Combine$keep = F2(function(p1, p2) {
+        return A2($andre_dietrich$parser_combinators$Combine$andMap, p1, A2($andre_dietrich$parser_combinators$Combine$map, $pilatch$flip$Flip$flip($elm$core$Basics$always), p2));
+    });
     var $andre_dietrich$parser_combinators$Combine$or = F2(function(lp, rp) {
         return $andre_dietrich$parser_combinators$Combine$Parser(F2(function(state, stream) {
             var _v0 = A3($andre_dietrich$parser_combinators$Combine$app, lp, state, stream);
@@ -2871,9 +2874,6 @@ type alias Process =
                 }
             }
         }));
-    });
-    var $andre_dietrich$parser_combinators$Combine$keep = F2(function(p1, p2) {
-        return A2($andre_dietrich$parser_combinators$Combine$andMap, p1, A2($andre_dietrich$parser_combinators$Combine$map, $pilatch$flip$Flip$flip($elm$core$Basics$always), p2));
     });
     var $andre_dietrich$parser_combinators$Combine$manyTill = F2(function(p, end_) {
         var accumulate = F3(function(acc, state, stream) {
@@ -3083,7 +3083,7 @@ type alias Process =
     };
     var $elm$core$String$toLower = _String_toLower;
     var $author$project$Lia$Markdown$HTML$Attributes$allowedProtocol = function(url) {
-        var _v0 = $elm$core$String$toLower(A2($elm$core$Maybe$withDefault, '', $elm$core$List$head(A2($elm$core$String$split, '://', url))));
+        var _v0 = $elm$core$String$toLower(A2($elm$core$Maybe$withDefault, '', $elm$core$List$head(A2($elm$core$String$split, ':', url))));
         switch(_v0){
             case 'https':
                 return true;
@@ -3098,6 +3098,8 @@ type alias Process =
             case 'ipfs':
                 return true;
             case 'ipns':
+                return true;
+            case 'blob':
                 return true;
             default:
                 return false;
@@ -7485,7 +7487,7 @@ type alias Process =
         return '\n> I was trying to parse the **first** part of the course, which is either an\n> HTML-comment or something else, until I reach the header (which is marked by\n> an `#`). But, everything I got was the following:\n\n```\n' + ($elm$core$String$concat(A2($elm$core$List$intersperse, '\n', A2($elm$core$List$take, 15, $elm$core$String$lines(code)))) + ('\n...\n```\n\n> I might be wrong, but in most cases this refers to a falsely loaded HTML page!\n>\n> Please make sure, that the course you try to load is a Markdown file, which\n> is served as a plain text file...\n\n---\n\n**Error Message:**\n\n```\n' + (message + '\n```\n\n---\n\nIf it should work, and you think you have detected bug, please contact us. For\nmore information see the [last Section](#get-help?).\n')));
     });
     var $author$project$Lia$Parser$Parser$parse_definition = F2(function(base, code) {
-        var _v0 = A3($andre_dietrich$parser_combinators$Combine$runParser, A2($andre_dietrich$parser_combinators$Combine$ignore, A2($andre_dietrich$parser_combinators$Combine$or, $andre_dietrich$parser_combinators$Combine$string('#'), $author$project$Lia$Parser$Helper$stringTill($andre_dietrich$parser_combinators$Combine$regex('\n#'))), $author$project$Lia$Definition$Parser$parse), A2($author$project$Lia$Parser$Context$init, $elm$core$Maybe$Nothing, $author$project$Lia$Definition$Types$default(base)), code + '\n');
+        var _v0 = A3($andre_dietrich$parser_combinators$Combine$runParser, A2($andre_dietrich$parser_combinators$Combine$ignore, A2($andre_dietrich$parser_combinators$Combine$or, $andre_dietrich$parser_combinators$Combine$string('#'), $author$project$Lia$Parser$Helper$stringTill($andre_dietrich$parser_combinators$Combine$regex('\n#'))), A2($andre_dietrich$parser_combinators$Combine$keep, $author$project$Lia$Definition$Parser$parse, $andre_dietrich$parser_combinators$Combine$regex('[\n\t ]*'))), A2($author$project$Lia$Parser$Context$init, $elm$core$Maybe$Nothing, $author$project$Lia$Definition$Types$default(base)), code + '\n');
         if (_v0.$ === 'Ok') {
             var _v1 = _v0.a;
             var state = _v1.a;
@@ -11377,7 +11379,7 @@ type alias Process =
     var $author$project$Lia$Markdown$Quiz$Vector$Parser$groupBy = F3(function(begin, end, parser) {
         return $andre_dietrich$parser_combinators$Combine$many1(A2($andre_dietrich$parser_combinators$Combine$ignore, $author$project$Lia$Parser$Helper$newline, A2($andre_dietrich$parser_combinators$Combine$andMap, $author$project$Lia$Markdown$Inline$Parser$line, A2($andre_dietrich$parser_combinators$Combine$ignore, $author$project$Lia$Parser$Helper$spaces, A2($andre_dietrich$parser_combinators$Combine$ignore, end, A2($andre_dietrich$parser_combinators$Combine$map, $elm$core$Tuple$pair, A2($andre_dietrich$parser_combinators$Combine$keep, parser, A2($andre_dietrich$parser_combinators$Combine$ignore, begin, A2($andre_dietrich$parser_combinators$Combine$ignore, $author$project$Lia$Parser$Helper$spaces, $andre_dietrich$parser_combinators$Combine$maybe($author$project$Lia$Parser$Indentation$check))))))))));
     });
-    var $author$project$Lia$Markdown$Quiz$Vector$Parser$group = A2($elm$core$Basics$composeR, A2($author$project$Lia$Markdown$Quiz$Vector$Parser$groupBy, $andre_dietrich$parser_combinators$Combine$regex('(?:-[ \t]?)?\\['), $andre_dietrich$parser_combinators$Combine$string(']')), $andre_dietrich$parser_combinators$Combine$map($elm$core$List$unzip));
+    var $author$project$Lia$Markdown$Quiz$Vector$Parser$group = A2($elm$core$Basics$composeR, A2($author$project$Lia$Markdown$Quiz$Vector$Parser$groupBy, $andre_dietrich$parser_combinators$Combine$regex('(?:(\\-|\\+|\\*)[ \t]?)?\\['), $andre_dietrich$parser_combinators$Combine$string(']')), $andre_dietrich$parser_combinators$Combine$map($elm$core$List$unzip));
     var $author$project$Lia$Markdown$Quiz$Parser$hints = A2($andre_dietrich$parser_combinators$Combine$optional, _List_Nil, A2($andre_dietrich$parser_combinators$Combine$map, $elm$core$Tuple$second, $author$project$Lia$Markdown$Quiz$Vector$Parser$group($andre_dietrich$parser_combinators$Combine$string('[?]'))));
     var $author$project$Lia$Markdown$Quiz$Parser$adds = function(type_) {
         return A2($andre_dietrich$parser_combinators$Combine$andMap, $author$project$Lia$Markdown$Quiz$Parser$hints, A2($andre_dietrich$parser_combinators$Combine$map, $author$project$Lia$Markdown$Quiz$Types$Quiz(type_), $author$project$Lia$Markdown$Quiz$Parser$get_counter));
@@ -11520,7 +11522,7 @@ type alias Process =
     var $author$project$Lia$Markdown$Quiz$Matrix$Parser$inBrackets = A2($andre_dietrich$parser_combinators$Combine$keep, A2($andre_dietrich$parser_combinators$Combine$manyTill, $author$project$Lia$Markdown$Inline$Parser$inlines, $andre_dietrich$parser_combinators$Combine$regex('[ \\t]*\\][ \\t]*')), $andre_dietrich$parser_combinators$Combine$regex('[ \\t]*\\[[ \\t]*'));
     var $author$project$Lia$Markdown$Quiz$Matrix$Parser$inParenthesis = A2($andre_dietrich$parser_combinators$Combine$keep, A2($andre_dietrich$parser_combinators$Combine$manyTill, $author$project$Lia$Markdown$Inline$Parser$inlines, $andre_dietrich$parser_combinators$Combine$regex('[ \\t]*\\)[ \\t]*')), $andre_dietrich$parser_combinators$Combine$regex('[ \\t]*\\([ \\t]*'));
     var $author$project$Lia$Markdown$Quiz$Matrix$Parser$options = A2($andre_dietrich$parser_combinators$Combine$or, $author$project$Lia$Markdown$Quiz$Matrix$Parser$inParenthesis, $author$project$Lia$Markdown$Quiz$Matrix$Parser$inBrackets);
-    var $author$project$Lia$Markdown$Quiz$Matrix$Parser$header = A2($andre_dietrich$parser_combinators$Combine$ignore, $author$project$Lia$Parser$Helper$newline, A2($andre_dietrich$parser_combinators$Combine$ignore, $andre_dietrich$parser_combinators$Combine$string(']'), A2($andre_dietrich$parser_combinators$Combine$keep, $andre_dietrich$parser_combinators$Combine$many1($author$project$Lia$Markdown$Quiz$Matrix$Parser$options), A2($andre_dietrich$parser_combinators$Combine$ignore, $andre_dietrich$parser_combinators$Combine$regex('(?:- )?\\['), A2($andre_dietrich$parser_combinators$Combine$ignore, $author$project$Lia$Parser$Helper$spaces, $andre_dietrich$parser_combinators$Combine$maybe($author$project$Lia$Parser$Indentation$check))))));
+    var $author$project$Lia$Markdown$Quiz$Matrix$Parser$header = A2($andre_dietrich$parser_combinators$Combine$ignore, $author$project$Lia$Parser$Helper$newline, A2($andre_dietrich$parser_combinators$Combine$ignore, $andre_dietrich$parser_combinators$Combine$string(']'), A2($andre_dietrich$parser_combinators$Combine$keep, $andre_dietrich$parser_combinators$Combine$many1($author$project$Lia$Markdown$Quiz$Matrix$Parser$options), A2($andre_dietrich$parser_combinators$Combine$ignore, $andre_dietrich$parser_combinators$Combine$regex('(?:(\\-|\\+\\*)[\t ]*)?\\['), A2($andre_dietrich$parser_combinators$Combine$ignore, $author$project$Lia$Parser$Helper$spaces, $andre_dietrich$parser_combinators$Combine$maybe($author$project$Lia$Parser$Indentation$check))))));
     var $author$project$Lia$Markdown$Quiz$Matrix$Types$Quiz = F3(function(headers, options, solution) {
         return {
             headers: headers,
@@ -11640,7 +11642,7 @@ type alias Process =
     };
     var $andre_dietrich$parser_combinators$Combine$brackets = A2($andre_dietrich$parser_combinators$Combine$between, $andre_dietrich$parser_combinators$Combine$string('['), $andre_dietrich$parser_combinators$Combine$string(']'));
     var $author$project$Lia$Markdown$Survey$Parser$pattern = function(p) {
-        return A2($andre_dietrich$parser_combinators$Combine$ignore, $andre_dietrich$parser_combinators$Combine$regex('\\][\t ]*'), A2($andre_dietrich$parser_combinators$Combine$keep, p, A2($andre_dietrich$parser_combinators$Combine$ignore, $andre_dietrich$parser_combinators$Combine$regex('\\-?[\t ]*\\['), $andre_dietrich$parser_combinators$Combine$maybe($author$project$Lia$Parser$Indentation$check))));
+        return A2($andre_dietrich$parser_combinators$Combine$ignore, $andre_dietrich$parser_combinators$Combine$regex('\\][\t ]*'), A2($andre_dietrich$parser_combinators$Combine$keep, p, A2($andre_dietrich$parser_combinators$Combine$ignore, $andre_dietrich$parser_combinators$Combine$regex('(\\-|\\+|\\*)?[\t ]*\\['), $andre_dietrich$parser_combinators$Combine$maybe($author$project$Lia$Parser$Indentation$check))));
     };
     var $author$project$Lia$Markdown$Survey$Parser$header = F2(function(begin, end) {
         return A2($andre_dietrich$parser_combinators$Combine$ignore, $author$project$Lia$Parser$Helper$newline, $author$project$Lia$Markdown$Survey$Parser$pattern($andre_dietrich$parser_combinators$Combine$many1(A2($andre_dietrich$parser_combinators$Combine$keep, A2($andre_dietrich$parser_combinators$Combine$manyTill, $author$project$Lia$Markdown$Inline$Parser$inlines, $andre_dietrich$parser_combinators$Combine$string(end)), $andre_dietrich$parser_combinators$Combine$string(begin)))));
@@ -11801,7 +11803,7 @@ type alias Process =
             return $.task_vector;
         }, A2($elm$core$Basics$composeR, $elm$core$Array$length, $andre_dietrich$parser_combinators$Combine$succeed)))));
     };
-    var $author$project$Lia$Markdown$Task$Parser$parse = A2($andre_dietrich$parser_combinators$Combine$andThen, $author$project$Lia$Markdown$Task$Parser$modify_State, A2($andre_dietrich$parser_combinators$Combine$map, $elm$core$List$unzip, A3($author$project$Lia$Markdown$Quiz$Vector$Parser$groupBy, $andre_dietrich$parser_combinators$Combine$regex('-[ \t]?\\['), $andre_dietrich$parser_combinators$Combine$string(']'), A2($author$project$Lia$Markdown$Quiz$Vector$Parser$either, '[xX]', ' '))));
+    var $author$project$Lia$Markdown$Task$Parser$parse = A2($andre_dietrich$parser_combinators$Combine$andThen, $author$project$Lia$Markdown$Task$Parser$modify_State, A2($andre_dietrich$parser_combinators$Combine$map, $elm$core$List$unzip, A3($author$project$Lia$Markdown$Quiz$Vector$Parser$groupBy, $andre_dietrich$parser_combinators$Combine$regex('(\\-|\\*|\\+)[ \t]?\\['), $andre_dietrich$parser_combinators$Combine$string(']'), A2($author$project$Lia$Markdown$Quiz$Vector$Parser$either, '[xX]', ' '))));
     var $author$project$Lia$Parser$Indentation$pop = $andre_dietrich$parser_combinators$Combine$modifyState(function(state) {
         return _Utils_update(state, {
             indentation: $elm$core$List$reverse(A2($elm$core$List$drop, 1, $elm$core$List$reverse(state.indentation))),
@@ -12843,7 +12845,7 @@ $parcel$global.XMLHttpRequest = $9Afec$xhr2;
 
 const $ccdb061a5468de1f$var$argv = $9Afec$minimist(process.argv.slice(2));
 // -------------------------------Main Execution-------------------------------
-if ($ccdb061a5468de1f$var$argv.v || $ccdb061a5468de1f$var$argv.version) console.log('version: 2.4.3--0.10.18');
+if ($ccdb061a5468de1f$var$argv.v || $ccdb061a5468de1f$var$argv.version) console.log('version: 2.4.3--0.10.22');
 else if ($ccdb061a5468de1f$var$argv.h || $ccdb061a5468de1f$var$argv.help) $ccdb061a5468de1f$var$help();
 else if ($ccdb061a5468de1f$var$argv.i || $ccdb061a5468de1f$var$argv.input) $ccdb061a5468de1f$var$run($ccdb061a5468de1f$var$parseArguments());
 else {
