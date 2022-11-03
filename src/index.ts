@@ -126,6 +126,11 @@ function help() {
     '         output file name (default is output), the ending is define by the format'
   )
   console.log(
+    '-s',
+    '--style',
+    '         additional styling to passed to the export, can be used for fixes, such as "height: 100vh; width: 100%; border: 2px;"'
+  )
+  console.log(
     '-f',
     '--format',
     '         scorm1.2, scorm2004, json, fullJson, web, ims, pdf, android (default is json)'
@@ -273,6 +278,7 @@ function parseArguments() {
     format: argv.f || argv.format || 'json',
     path: argv.p || argv.path,
     key: argv.k || argv.key,
+    style: argv.s || argv.style,
 
     // special cases for SCORM
     'scorm-organization': argv['scorm-organization'],

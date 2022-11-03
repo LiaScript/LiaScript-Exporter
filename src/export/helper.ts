@@ -58,6 +58,7 @@ export async function iframe(
   tmpPath,
   filename: string,
   readme: string,
+  style?: string,
   index?: string
 ) {
   await writeFile(
@@ -69,7 +70,9 @@ export async function iframe(
     </head>
     <body style="height:100%">
     
-    <iframe id="lia-container" src="" style="border: 0px; width: 100%; height: 100%"></iframe>
+    <iframe id="lia-container" src="" style="${
+      style || 'border: 0px; width: 100%; height: 100%'
+    }"></iframe>
     
     <script>
       let path = window.location.pathname.replace("start.html", "")

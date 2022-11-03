@@ -11,6 +11,7 @@ export async function exporter(
     format: string
     path: string
     key?: string
+    style?: string
 
     'web-iframe'?: boolean
     'web-indexeddb'?: boolean
@@ -110,7 +111,13 @@ export async function exporter(
   try {
     if (argument['web-iframe']) {
       await helper.writeFile(path.join(tmpPath, 'start.html'), index)
-      await helper.iframe(tmpPath, 'index.html', argument.readme, 'start.html')
+      await helper.iframe(
+        tmpPath,
+        'index.html',
+        argument.readme,
+        argument.style,
+        'start.html'
+      )
     } else {
       await helper.writeFile(path.join(tmpPath, 'index.html'), index)
     }

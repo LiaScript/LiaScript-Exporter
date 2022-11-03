@@ -12,6 +12,7 @@ export async function exporter(
     format: string
     path: string
     key?: string
+    style?: string
 
     // special cases for SCORM
     'scorm-organization'?: string
@@ -49,7 +50,7 @@ export async function exporter(
   )
 
   if (argument['scorm-iframe']) {
-    await helper.iframe(tmpPath, 'start.html', argument.readme)
+    await helper.iframe(tmpPath, 'start.html', argument.readme, argument.style)
   }
 
   try {

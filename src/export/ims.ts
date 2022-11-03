@@ -11,6 +11,7 @@ export async function exporter(
     format: string
     path: string
     key?: string
+    style?: string
 
     // special cases for IMS
     'ims-indexeddb'?: boolean
@@ -64,7 +65,7 @@ export async function exporter(
     await fs.move(old_, new_)
   }
 
-  await helper.iframe(tmpPath, 'start.html', argument.readme)
+  await helper.iframe(tmpPath, 'start.html', argument.readme, argument.style)
 
   helper.zip(tmpPath, argument.output)
 }
