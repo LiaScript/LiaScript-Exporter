@@ -63,5 +63,10 @@
   },
   "engines": {
     "node": ">= 12"
+  },
+  "targets": {
+    "main": {
+		  "optimize": true
+	  }
   }
 }
