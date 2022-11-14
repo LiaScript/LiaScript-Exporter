@@ -79,7 +79,9 @@ export async function exporter(
 
       for (let j = 0; j < course.collection.length; j++) {
         subCards +=
-          "<div class='col-4'>" + toCard(course.collection[j]) + '</div>'
+          "<div class='col-sm-6 col-md-4 col-lg-3'>" +
+          toCard(course.collection[j]) +
+          '</div>'
       }
 
       cards += `
@@ -90,16 +92,22 @@ export async function exporter(
                 </div>
                 <div class="card-body">
                     <p class="card-text">${course.comment}</p>
-                    <div class="row">
+                    <div style="display: flex; scroll-snap-type: x mandatory; overflow-x: auto; overflow-y: hidden; padding-bottom: 10px">
                         ${subCards}
                     </div>
                 </div>
             </div>
         </div>`
+    } else if (course.html) {
+      cards += "<div class='col-12'>" + course.html + '</div>'
     } else {
       cards += "<div class='col'>" + toCard(course) + '</div>'
       console.warn(course)
     }
+
+    const background = json.logo
+      ? `style="background-size: cover; background-image: url('${json.logo}'); background-position: center center; background-repeat: no-repeat;"`
+      : ''
 
     const html = `<!DOCTYPE html>
 <html>
@@ -109,20 +117,21 @@ export async function exporter(
 <body>
     
     <main>
-
-        <section class="py-5 text-center container">
-            <div class="row py-lg-5">
-                <div class="col-lg-6 col-md-8 mx-auto">
-                <h1 class="fw-light">${
-                  json.title || 'LiaScript course index'
-                }</h1>
-                <p class="lead text-muted">${json.comment || ''}</p>
-                <p>
-                    <a href="#" class="btn btn-primary my-2">Main call to action</a>
-                </p>
+        <div class="container-fluid" ${background} >
+            <section class="py-5 text-center container">
+                <div class="row py-lg-5">
+                    <div class="col-lg-6 col-md-8 mx-auto">
+                    <h1 class="fw-light">${
+                      json.title || 'LiaScript Course Index'
+                    }</h1>
+                    <p class="lead text-muted">${json.comment || ''}</p>
+                    <p>
+                        <a href="#" class="btn btn-primary my-2">Main call to action</a>
+                    </p>
+                    </div>
                 </div>
-            </div>
-        </section>
+            </section>
+        </div>
 
         <div class="album py-5 bg-light">
             <div class="container">
@@ -135,13 +144,15 @@ export async function exporter(
     </main>
     
 
-    <footer class="text-muted py-5">
+    <footer class="text-muted py-3">
         <div class="container">
-            <p class="float-end mb-1">
+            <p class="float-end">
                 <a href="#">Back to top</a>
             </p>
-            <p class="mb-1">Album example is © Bootstrap, but please download and customize it for yourself!</p>
-            <p class="mb-0">New to Bootstrap? <a href="/">Visit the homepage</a> or read our <a href="/docs/5.2/getting-started/introduction/">getting started guide</a>.</p>
+            <p>${
+              json.footer ||
+              '<a href="https://liascript.github.io" target="_blank">LiaScript</a> is a Markdown dialect made for education. For more information checkout out <a href="https://www.youtube.com/channel/UCyiTe2GkW_u05HSdvUblGYg" target="_blank">YouTube-Channel</a> or follow us on <a href="https://twitter.com/LiaScript" target="_blank">Twitter</a>.'
+            }</p>
         </div>
     </footer>
 
@@ -186,11 +197,14 @@ function card(
     image =
       //`<img src="${img_url}" class="card-img-top" alt="">`
       `<div class="card-img-top" style="background-size: cover; height: 175px; background-image: url('${img_url}'); background-position: center center; background-repeat: no-repeat;"></div>`
-  } else {
+  }
+  /*
+  else {
     image = `<svg class="bd-placeholder-img card-img-top" width="100%" height="175" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="${stringToColor(
       title
     )}"></rect></svg>`
   }
+  */
 
   let tag_list = ''
   if (tags.length > 0) {
