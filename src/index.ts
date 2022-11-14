@@ -9,9 +9,11 @@ import * as helper from './export/helper'
 import * as IMS from './export/ims'
 import * as ANDROID from './export/android'
 // import * as IOS from './export/ios'
+import * as PROJECT from './export/project'
 
 global.XMLHttpRequest = require('xhr2')
 
+import YAML from 'yaml'
 const path = require('path')
 const fs = require('fs-extra')
 const argv = require('minimist')(process.argv.slice(2))
@@ -28,6 +30,8 @@ if (argv.v || argv.version) {
   help()
 }
 // ----------------------------------------------------------------------------
+
+var collection: any
 
 function run(argument) {
   var app = Elm.Worker.init({ flags: { cmd: '' } })
@@ -72,6 +76,26 @@ function run(argument) {
         ANDROID.exporter(argument, JSON.parse(string))
         break
       }
+      case 'project': {
+        if (collection) {
+          try {
+            PROJECT.storeNext(collection, JSON.parse(string).lia)
+
+            const next = PROJECT.getNext(collection)
+
+            if (next) {
+              console.warn('loading:', next)
+              app.ports.input.send(['fulljson', next])
+            } else {
+              PROJECT.exporter(argument, collection)
+            }
+          } catch (e) {
+            console.warn('project export error:', e)
+          }
+        }
+
+        break
+      }
       /*
       case 'ios': {
         IOS.exporter(argument, JSON.parse(string))
@@ -93,11 +117,21 @@ function run(argument) {
       argument.format == 'web' ||
       argument.format == 'ims' ||
       argument.format == 'android' ||
-      argument.format == 'ios'
+      argument.format == 'ios' ||
+      argument.format == 'project'
         ? 'fulljson'
         : argument.format
 
-    if (!helper.isURL(argument.input)) {
+    if (argument.format === 'project') {
+      const file = fs.readFileSync(argument.input, 'utf8')
+      collection = YAML.parse(file)
+
+      if (collection) {
+        const next = PROJECT.getNext(collection)
+        console.warn('loading:', next)
+        app.ports.input.send([format, next])
+      }
+    } else if (!helper.isURL(argument.input)) {
       const data = fs.readFileSync(argument.input, 'utf8')
       app.ports.input.send([format, data])
     } else if (argument.format === 'pdf') {

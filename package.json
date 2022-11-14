@@ -28,7 +28,7 @@
     "asset:scorm2004": "cd LiaScript && npm i && npm run build:scorm2004 && cp -r dist ../dist/assets/scorm2004",
     "asset:indexeddb": "cd LiaScript && npm i && npm run build:indexeddb && cp -r dist ../dist/assets/indexeddb",
     "asset:capacitor": "cd LiaScript && git checkout feat/capacitor && npm i && npm run build:android && cp -r dist ../dist/assets/capacitor && git checkout development",
-    "build": "npx parcel build --no-cache --no-source-maps --no-scope-hoist src/index.ts && npm run shebang",
+    "build": "npx parcel build --no-cache --no-source-maps src/index.ts && npm run shebang",
     "build:debug": "npx parcel build --target node --no-minify --log-level 5 src/index.ts",
     "run:moodle": "cd docker/moodle && docker-compose up",
     "run:ilias": "cd docker/ilias && docker-compose up",
@@ -51,7 +51,8 @@
     "path": "^0.12.7",
     "puppeteer": "^13.7.0",
     "temp": "^0.9.4",
-    "xhr2": "^0.2.1"
+    "xhr2": "^0.2.1",
+    "yaml": "^2.1.3"
   },
   "devDependencies": {
     "@parcel/transformer-elm": "^2.3.1",
