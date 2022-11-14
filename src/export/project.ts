@@ -1,5 +1,7 @@
 import * as helper from './helper'
 
+var Categories: Set<string> = new Set([])
+
 export function getNext(collection: any): string | null {
   if (collection['collection']) {
     collection = collection['collection']
@@ -12,7 +14,6 @@ export function getNext(collection: any): string | null {
       let course = collection[i]
 
       if (course.collection) {
-        console.warn('group')
         let url = getNext(course)
 
         if (url) {
@@ -65,16 +66,12 @@ export async function exporter(
 ) {
   // make temp folder
 
-  console.warn('Exporter', json)
-
   let cards = ''
 
   for (let i = 0; i < json.collection.length; i++) {
     let course = json.collection[i]
 
     if (course.collection) {
-      console.warn('todo')
-
       let subCards = ''
 
       for (let j = 0; j < course.collection.length; j++) {
@@ -102,17 +99,47 @@ export async function exporter(
       cards += "<div class='col-12'>" + course.html + '</div>'
     } else {
       cards += "<div class='col'>" + toCard(course) + '</div>'
-      console.warn(course)
+    }
+  }
+
+  const background = json.logo
+    ? `style="background-size: cover; background-image: url('${json.logo}'); background-position: center center; background-repeat: no-repeat;"`
+    : ''
+
+  let options = ''
+
+  if (Categories.size > 0) {
+    const opt = [...Categories].sort()
+
+    for (let i = 0; i < opt.length; i++) {
+      options += `<option value="${opt[i]}">${opt[i]}</option>`
     }
 
-    const background = json.logo
-      ? `style="background-size: cover; background-image: url('${json.logo}'); background-position: center center; background-repeat: no-repeat;"`
-      : ''
+    options =
+      `<select class="form-select" aria-label="Default select example" onchange="window.blur(this.value)">
+          <option value="" selected>All categories</option>` +
+      options +
+      '</select>'
+  }
 
-    const html = `<!DOCTYPE html>
+  const html = `<!DOCTYPE html>
 <html>
 <head>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+    <script>
+        window.blur = function(category) {
+            const cards = document.querySelectorAll('div[data-category]')
+
+            for (card of cards) {
+                if(card.dataset.category.includes(category)) {
+                    card.style.filter = ""
+                } else {
+                    card.style.filter = "blur(1px) opacity(35%)"
+                }
+            }
+        }
+    </script>
 </head>
 <body>
     
@@ -121,13 +148,12 @@ export async function exporter(
             <section class="py-5 text-center container">
                 <div class="row py-lg-5">
                     <div class="col-lg-6 col-md-8 mx-auto">
-                    <h1 class="fw-light">${
-                      json.title || 'LiaScript Course Index'
-                    }</h1>
-                    <p class="lead text-muted">${json.comment || ''}</p>
-                    <p>
-                        <a href="#" class="btn btn-primary my-2">Main call to action</a>
-                    </p>
+                        <h1 class="fw-light">${
+                          json.title || 'LiaScript Course Index'
+                        }</h1>
+                        <p class="lead text-muted">${json.comment || ''}</p>
+
+                        ${options}
                     </div>
                 </div>
             </section>
@@ -161,27 +187,31 @@ export async function exporter(
 </html> 
 `
 
-    await helper.writeFile(argument.output + '.html', html)
+  await helper.writeFile(argument.output + '.html', html)
+}
+
+function toCard(course: any) {
+  let tags
+  try {
+    tags = course.data.definition.macro.tags
+      .split(',')
+      .map((e: string) => e.trim())
+  } catch (e) {
+    tags = []
   }
 
-  function toCard(course: any) {
-    let tags
-    try {
-      tags = course.data.definition.macro.tags
-        .split(',')
-        .map((e: string) => e.trim())
-    } catch (e) {
-      tags = []
-    }
-
-    return card(
-      course.data.readme,
-      course.title || course.data.str_title,
-      course.comment || course.data.comment,
-      course.tags || tags,
-      course.logo || course.data.definition.logo
-    )
+  const tagList = course.tags || tags
+  for (let i = 0; i < tagList.length; i++) {
+    Categories.add(tagList[i].toLowerCase())
   }
+
+  return card(
+    course.data.readme,
+    course.title || course.data.str_title,
+    course.comment || course.data.comment,
+    tagList,
+    course.logo || course.data.definition.logo
+  )
 }
 
 function card(
@@ -207,6 +237,7 @@ function card(
   */
 
   let tag_list = ''
+
   if (tags.length > 0) {
     for (let i = 0; i < tags.length; i++) {
       tag_list += `<span class="badge rounded-pill bg-light text-dark">${tags[i]}</span>`
@@ -215,7 +246,9 @@ function card(
     tag_list = `<div class="d-flex align-items-center">${tag_list}</div>`
   }
 
-  return `<div class="card shadow-sm m-1" style="height: 100%">
+  return `<div class="card shadow-sm m-1" style="height: 100%" data-category="${tags
+    .map((e) => e.toLowerCase())
+    .join('|')}">
     ${image}
     <div class="card-body">
         <a href="https://liascript.github.io/course/?${url}" target="_blank" class="link-dark stretched-link">
