@@ -61,6 +61,9 @@ export async function exporter(
     path: string
     key?: string
     style?: string
+
+    // special project settings
+    'project-no-categories'?: boolean
   },
   json
 ) {
@@ -108,7 +111,7 @@ export async function exporter(
 
   let options = ''
 
-  if (Categories.size > 0) {
+  if (Categories.size > 0 && !argument['project-no-categories']) {
     const opt = [...Categories].sort()
 
     for (let i = 0; i < opt.length; i++) {
@@ -190,6 +193,10 @@ export async function exporter(
   await helper.writeFile(argument.output + '.html', html)
 }
 
+function overwrite(check, defaultsTo) {
+  return check === null ? null : check || defaultsTo
+}
+
 function toCard(course: any) {
   let tags
   try {
@@ -207,10 +214,10 @@ function toCard(course: any) {
 
   return card(
     course.data.readme,
-    course.title || course.data.str_title,
-    course.comment || course.data.comment,
+    overwrite(course.title, course.data.str_title),
+    overwrite(course.comment, course.data.comment),
     tagList,
-    course.logo || course.data.definition.logo
+    overwrite(course.logo, course.data.definition.logo)
   )
 }
 

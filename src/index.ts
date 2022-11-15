@@ -294,6 +294,12 @@ function help() {
   console.log(
     '--pdf-omitBackground       Hides default white background and allows capturing screenshots with transparency. Defaults to true. '
   )
+
+  console.log('\nProject settings:')
+  console.log('')
+  console.log(
+    '--project-no-categories    Disable the filter for categories/tags.'
+  )
 }
 
 function escapeBackslash(path?: string) {
@@ -357,6 +363,9 @@ function parseArguments() {
     'android-splash': escapeBackslash(argv['android-splash']),
     'android-splashDuration': argv['android-splashDuration'],
     'android-preview': argv['android-preview'],
+
+    // project settings
+    'project-no-categories': argv['project-no-categories'],
   }
 
   argument.format = argument.format.toLowerCase()
