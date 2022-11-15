@@ -78,10 +78,11 @@ export async function exporter(
       let subCards = ''
 
       for (let j = 0; j < course.collection.length; j++) {
-        subCards +=
-          "<div class='col-sm-6 col-md-4 col-lg-3'>" +
-          toCard(course.collection[j]) +
-          '</div>'
+        subCards += `<div class='col-sm-6 col-md-4 col-lg-3 ${
+          course.grid ? 'mb-3' : ''
+        }'>
+          ${toCard(course.collection[j], true)}
+          </div>`
       }
 
       cards += `
@@ -92,7 +93,11 @@ export async function exporter(
                 </div>
                 <div class="card-body">
                     <p class="card-text">${course.comment}</p>
-                    <div style="display: flex; scroll-snap-type: x mandatory; overflow-x: auto; overflow-y: hidden; padding-bottom: 10px">
+                    <div ${
+                      course.grid
+                        ? 'class="row"'
+                        : 'style="display: flex; scroll-snap-type: x mandatory; overflow-x: auto; overflow-y: hidden; padding-bottom: 10px"'
+                    }>
                         ${subCards}
                     </div>
                 </div>
@@ -211,7 +216,7 @@ function overwrite(check, defaultsTo) {
   return check === null ? null : check || defaultsTo
 }
 
-function toCard(course: any) {
+function toCard(course: any, small: boolean = false) {
   let tags
   try {
     tags = course.data.definition.macro.tags
@@ -227,6 +232,7 @@ function toCard(course: any) {
   }
 
   return card(
+    small,
     course.data.readme,
     overwrite(course.title, course.data.str_title),
     overwrite(course.comment, course.data.comment),
@@ -236,6 +242,7 @@ function toCard(course: any) {
 }
 
 function card(
+  small: boolean,
   url: string,
   title: string,
   comment: string,
@@ -245,6 +252,12 @@ function card(
   let image = ''
 
   if (img_url) {
+    if (!(img_url.startsWith('http:') || img_url.startsWith('https:'))) {
+      const fullImageUrl = new URL(img_url, url)
+
+      img_url = fullImageUrl.toString()
+    }
+
     image =
       //`<img src="${img_url}" class="card-img-top" alt="">`
       `<div class="card-img-top" style="background-size: cover; height: 175px; background-image: url('${img_url}'); background-position: center center; background-repeat: no-repeat;"></div>`
@@ -267,13 +280,17 @@ function card(
     tag_list = `<div class="d-flex align-items-center">${tag_list}</div>`
   }
 
+  if (small && comment) {
+    comment = '<small>' + comment + '</small>'
+  }
+
   return `<div class="card shadow-sm m-1" style="height: 100%" data-category="${tags
     .map((e) => e.toLowerCase())
     .join('|')}">
     ${image}
     <div class="card-body">
         <a href="https://liascript.github.io/course/?${url}" target="_blank" class="link-dark stretched-link">
-            <h5 class="card-title">${title}</h5>
+            <h${small ? 6 : 5} class="card-title">${title}</h${small ? 6 : 5}>
         </a>
         <p class="card-text">${comment}</p>
         ${tag_list}
