@@ -125,9 +125,23 @@ export async function exporter(
       '</select>'
   }
 
+  let title = json.title || 'LiaScript Course Index'
+
+  if (json.title) {
+    title = title.replace(/<[^>]+>/g, '')
+  }
+
   const html = `<!DOCTYPE html>
 <html>
 <head>
+    <title>${title}</title>
+
+    ${
+      json.icon
+        ? '<link rel="icon" type="image/x-icon" href="' + json.icon + '">'
+        : ''
+    }
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 
     <script>
