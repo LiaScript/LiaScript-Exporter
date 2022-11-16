@@ -126,6 +126,13 @@ https://github.com/puppeteer/puppeteer/blob/main/docs/api.md#pagepdfoptions
 --pdf-margin-left          Left margin, accepts values labeled with units. 
 --pdf-preferCSSPageSize    Give any CSS @page size declared in the page priority over what is declared in width and height or format options.
 --pdf-omitBackground       Hides default white background and allows capturing screenshots with transparency. Defaults to true.
+
+Project settings:
+
+--project-no-meta          Disable the generation of meta information for OpenGraph and Twitter-cards.
+--project-no-categories    Disable the filter for categories/tags.
+--project-category-blur    Enable this and the categories will be blurred instead of deleted.
+--project-generate-pdf     PDFs are automatically generated and added to every card.
 ```
 
 ### SCORM1.2
@@ -290,7 +297,12 @@ $ liaex -i project/README.md --format ims --output course --ims-indexeddb
 ..
 project/README.md
 project/Lizenz.md
-..
+..Project settings:
+
+--project-no-meta          Disable the generation of meta information for OpenGraph and Twitter-cards.
+--project-no-categories    Disable the filter for categories/tags.
+--project-category-blur    Enable this and the categories will be blurred instead of deleted.
+--project-generate-pdf     PDFs are automatically generated and added to every card.
 6041733 total bytes
 archiver has been finalized and the output file descriptor has closed.
 
@@ -507,6 +519,146 @@ $ liaex --format pdf \
   -i https://github.com/TUBAF-IfI-LiaScript/VL_ProzeduraleProgrammierung/blob/master/08_Objekte.md
 
 depending on the size of the course, this can take a while, please be patient...
+```
+
+### Project
+
+Projects are a way to bundle a collection of courses and to make a custom overview page for it.
+
+The input has to be a yaml file that looks like the following one:
+
+```yml
+title: >
+  <span style="background-color: rgba(0,106,179,0.75); padding: 5px; color: white">
+    My personal OER - collection
+  </span>
+
+comment: >
+  This is used as a subtitle or as a description of your page
+
+logo: https://upload.wikimedia.org/wikipedia/commons/thumb/8/81/Universitaetsbibliothek_Freiberg_Fassade.jpg/1024px-Universitaetsbibliothek_Freiberg_Fassade.jpg
+
+icon: https://upload.wikimedia.org/wikipedia/commons/thumb/d/de/Logo_TU_Bergakademie_Freiberg.svg/242px-Logo_TU_Bergakademie_Freiberg.svg.png
+
+footer: >
+  Simply add a custom footer - that can also contain HTML
+  <a href="https://liascript.github.io" target="_blank">Made with LiaScript</a>
+
+# With this settings you can customize social metadata, og-graph for facebook or twitter
+# if not present, the title, comment, and logo will be used.
+# You can explicitly turn this of with the cmd-parameter --project-no-meta
+meta:
+  title: OER-Collection
+  description: Sammlung der OER Inhalte der Arbeitsgruppe Softwareentwicklung und Robotik (TU Freiberg)
+  #image: url
+
+# A collection is where you put all your courses into, all information, such as title, comment, logo, etc.
+# will be taken from the links that you provide ...
+collection:
+
+  - url: https://raw.githubusercontent.com/LiaScript/docs/master/README.md
+  - url: https://raw.githubusercontent.com/LiaBooks/LiaScript-Tutorial/main/README.md
+  - url: https://raw.githubusercontent.com/LiaPlayground/LiaScript_WeAreDevelopers2022/main/README.md
+
+  # Additionally it is possible to manually overwrite parameters
+  - url: https://raw.githubusercontent.com/LiaPlayground/LiaScript_Tutorial_Kigali/main/README.md
+    title: eLearning Africa Workshop 2022
+    comment: Shows only an introduction, please follow the links within the course.
+    # logo: https://another_image.jpg
+    # or leave, so that no card-image is added to your preview-cards
+    # logo: 
+
+    # You can manually tag courses, if this has not been done within the main comment of the course.
+    # By default, these tags will be treated as categories, which can be used to navigate through
+    # your courses. To disable this, use the cmd-param --project-no-categories
+    # 
+    # For smaller overviews, you can also use the --project-category-blur parameter.
+    # this will not hide the courses, that do not match, but instead blur them.
+    tags:
+      - Tutorial
+      - LiaScript
+      - OER
+
+  - html: >
+      <hr>
+      <h1>Some content in between</h1>
+      
+      <p>You can add additional content in between to group your course collections or provide more information.</p>
+
+  # If you want to group multiple courses into one sub-collection, then instead of an "-url:"
+  # define another `collection`. All parameters can be changed as above. Additionally you can switch of images or comments,
+  # just by adding an empty attribute. And, it is also possible to add tags to every sub-course.
+  - title: Prozedurale Programmierung
+    comment: todo
+    collection:
+      - url: https://raw.githubusercontent.com/TUBAF-IfI-LiaScript/VL_ProzeduraleProgrammierung/master/00_Einfuehrung.md
+        #title: Rename the current course
+        #logo: Manually set an logo
+        #comment: Add a custom description, this will overwrite the comment within the course
+        # tags will be used for navigation and searching
+        #tags: 
+        # - C++
+        # - Programmierung
+        # - Hardware
+      - url: https://raw.githubusercontent.com/TUBAF-IfI-LiaScript/VL_ProzeduraleProgrammierung/master/01_EingabeAusgabeDatentypen.md
+      - url: https://raw.githubusercontent.com/TUBAF-IfI-LiaScript/VL_ProzeduraleProgrammierung/master/02_OperatorenKontrollstrukturen.md
+      #- url: ...
+
+  # HTML content can be placed between cards
+  - html: >
+      <hr>
+      <h1>Softwareentwicklung</h1>
+      
+      <p>todo</p>
+
+  - title: Softwareentwicklung
+    comment: Todo
+    grid: true # if you have larger collections and you want them to appear in a grid and not in a row, with some
+               # hidden content, then set the grid-parameter to true.
+    collection:
+      - url: https://raw.githubusercontent.com/TUBAF-IfI-LiaScript/VL_Softwareentwicklung/master/00_Einfuehrung.md
+        logo: # this is used to empty the default image icon
+      - url: https://raw.githubusercontent.com/TUBAF-IfI-LiaScript/VL_Softwareentwicklung/master/01_Software.md
+      - url: https://raw.githubusercontent.com/TUBAF-IfI-LiaScript/VL_Softwareentwicklung/master/02_DotNet.md
+      - url: https://raw.githubusercontent.com/TUBAF-IfI-LiaScript/VL_Softwareentwicklung/master/03_CsharpGrundlagenI.md
+      - url: https://raw.githubusercontent.com/TUBAF-IfI-LiaScript/VL_Softwareentwicklung/master/04_CsharpGrundlagenII.md
+      - url: https://raw.githubusercontent.com/TUBAF-IfI-LiaScript/VL_Softwareentwicklung/master/05_CsharpGrundlagenIII.md
+      - url: https://raw.githubusercontent.com/TUBAF-IfI-LiaScript/VL_Softwareentwicklung/master/06_ProgrammflussUndFunktionen.md
+      - url: https://raw.githubusercontent.com/TUBAF-IfI-LiaScript/VL_Softwareentwicklung/master/07_OOPGrundlagenI.md
+      - url: https://raw.githubusercontent.com/TUBAF-IfI-LiaScript/VL_Softwareentwicklung/master/08_OOPGrundlagenII.md
+      - url: https://raw.githubusercontent.com/TUBAF-IfI-LiaScript/VL_Softwareentwicklung/master/09_Vererbung.md
+      - url: https://raw.githubusercontent.com/TUBAF-IfI-LiaScript/VL_Softwareentwicklung/master/10_AbstrakteKlassenUndInterfaces.md
+      - url: https://raw.githubusercontent.com/TUBAF-IfI-LiaScript/VL_Softwareentwicklung/master/11_VersionsverwaltungI.md
+      - url: https://raw.githubusercontent.com/TUBAF-IfI-LiaScript/VL_Softwareentwicklung/master/12_VersionsverwaltungII.md
+      - url: https://raw.githubusercontent.com/TUBAF-IfI-LiaScript/VL_Softwareentwicklung/master/13_UML_Modellierung.md
+      - url: https://raw.githubusercontent.com/TUBAF-IfI-LiaScript/VL_Softwareentwicklung/master/14_UML_ModellierungII.md
+      - url: https://raw.githubusercontent.com/TUBAF-IfI-LiaScript/VL_Softwareentwicklung/master/15_UML_ModellierungIII.md
+      - url: https://raw.githubusercontent.com/TUBAF-IfI-LiaScript/VL_Softwareentwicklung/master/16_Testen.md
+      - url: https://raw.githubusercontent.com/TUBAF-IfI-LiaScript/VL_Softwareentwicklung/master/17_Dokumentation_BuildTools.md
+      - url: https://raw.githubusercontent.com/TUBAF-IfI-LiaScript/VL_Softwareentwicklung/master/18_ContinuousIntegration.md
+      - url: https://raw.githubusercontent.com/TUBAF-IfI-LiaScript/VL_Softwareentwicklung/master/19_Generics.md
+      - url: https://raw.githubusercontent.com/TUBAF-IfI-LiaScript/VL_Softwareentwicklung/master/20_Container.md
+      - url: https://raw.githubusercontent.com/TUBAF-IfI-LiaScript/VL_Softwareentwicklung/master/21_Delegaten.md
+      - url: https://raw.githubusercontent.com/TUBAF-IfI-LiaScript/VL_Softwareentwicklung/master/22_Events.md
+      - url: https://raw.githubusercontent.com/TUBAF-IfI-LiaScript/VL_Softwareentwicklung/master/23_Threads.md
+      - url: https://raw.githubusercontent.com/TUBAF-IfI-LiaScript/VL_Softwareentwicklung/master/24_Tasks.md
+      - url: https://raw.githubusercontent.com/TUBAF-IfI-LiaScript/VL_Softwareentwicklung/master/25_LINQ.md
+      - url: https://raw.githubusercontent.com/TUBAF-IfI-LiaScript/VL_Softwareentwicklung/master/26_DesignPattern.md
+      - url: https://raw.githubusercontent.com/TUBAF-IfI-LiaScript/VL_Softwareentwicklung/master/27_Anwendungen.md
+```
+
+Basic usage:
+
+``` shell
+liaex -i curriculum.yml --format project
+```
+
+If you want to add precompiled pdf to every course, then you simply have to add the `--project-generate-pdf` command.
+Additionally, you can pass any pdf settings to customize the pdf output.
+
+
+``` shell
+liaex -i curriculum.yml --format project --project-generate-pdf --pdf-format A4
 ```
 
 ## TODOs & Contributions
