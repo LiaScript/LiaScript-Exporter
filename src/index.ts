@@ -20,7 +20,7 @@ const argv = require('minimist')(process.argv.slice(2))
 
 // -------------------------------Main Execution-------------------------------
 if (argv.v || argv.version) {
-  console.log('version: 2.5.1--0.10.22')
+  console.log('version: 2.5.2--0.10.22')
 } else if (argv.h || argv.help) {
   help()
 } else if (argv.i || argv.input) {
@@ -310,6 +310,10 @@ function help() {
   console.log(
     '--project-generate-pdf     PDFs are automatically generated and added to every card.'
   )
+
+  console.log(
+    '--project-generate-cache   Only generate new files, if they do not exist.'
+  )
 }
 
 function escapeBackslash(path?: string) {
@@ -379,6 +383,7 @@ function parseArguments() {
     'project-no-categories': argv['project-no-categories'],
     'project-category-blur': argv['project-category-blur'],
     'project-generate-pdf': argv['project-generate-pdf'],
+    'project-generate-cache': argv['project-generate-cache'],
   }
 
   argument.format = argument.format.toLowerCase()

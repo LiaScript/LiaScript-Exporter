@@ -133,6 +133,7 @@ Project settings:
 --project-no-categories    Disable the filter for categories/tags.
 --project-category-blur    Enable this and the categories will be blurred instead of deleted.
 --project-generate-pdf     PDFs are automatically generated and added to every card.
+--project-generate-cache   Only generate new files, if they do not exist.
 ```
 
 ### SCORM1.2

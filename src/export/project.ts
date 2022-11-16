@@ -71,27 +71,7 @@ export async function exporter(
     'project-no-categories'?: boolean
     'project-category-blur'?: boolean
     'project-generate-pdf'?: boolean
-
-    // allow to pass pdf settings
-    'pdf-scale'?: number
-    'pdf-displayHeaderFooter'?: string
-    'pdf-headerTemplate'?: string
-    'pdf-footerTemplate'?: string
-    'pdf-printBackground'?: boolean
-    'pdf-landscape'?: boolean
-    'pdf-format'?: string
-    'pdf-width'?: string | number
-    'pdf-height'?: string | number
-    'pdf-margin-top'?: string | number
-    'pdf-margin-bottom'?: string | number
-    'pdf-margin-right'?: string | number
-    'pdf-margin-left'?: string | number
-    'pdf-preferCSSPageSize'?: boolean
-    'pdf-omitBackground'?: boolean
-    'pdf-timeout'?: number
-
-    'pdf-stylesheet'?: string
-    'pdf-theme'?: string
+    'project-generate-cache'?: boolean
   },
   json
 ) {
@@ -318,13 +298,20 @@ async function toCard(argument: any, course: any, small: boolean = false) {
     argument.output = hash(course.data.readme)
     const file = argument.output + '.pdf'
 
-    console.log('generate pdf of', argument.input, ' -> ', file)
-
-    await PDF.exporter(argument, {})
-
-    if (fs.existsSync(file)) {
-      moveFile(file, 'assets/pdf/' + file)
+    if (
+      argument['project-generate-cache'] &&
+      fs.existsSync('assets/pdf/' + file)
+    ) {
       downloads['pdf'] = 'assets/pdf/' + file
+    } else {
+      console.log('generate pdf of', argument.input, ' -> ', file)
+
+      await PDF.exporter(argument, {})
+
+      if (fs.existsSync(file)) {
+        moveFile(file, 'assets/pdf/' + file)
+        downloads['pdf'] = 'assets/pdf/' + file
+      }
     }
   }
 
