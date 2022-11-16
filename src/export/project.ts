@@ -300,7 +300,7 @@ async function toCard(argument: any, course: any, small: boolean = false) {
 
     if (
       argument['project-generate-cache'] &&
-      fs.existsSync('assets/pdf/' + file)
+      fs.existsSync(path.join(process.cwd(), 'assets/pdf/' + file))
     ) {
       downloads['pdf'] = 'assets/pdf/' + file
     } else {
