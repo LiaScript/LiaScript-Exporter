@@ -64,6 +64,7 @@ export async function exporter(
 
     // special project settings
     'project-no-categories'?: boolean
+    'project-category-blur'?: boolean
   },
   json
 ) {
@@ -155,9 +156,17 @@ export async function exporter(
 
             for (card of cards) {
                 if(card.dataset.category.includes(category)) {
-                    card.style.filter = ""
+                    ${
+                      argument['project-category-blur']
+                        ? 'card.style.filter = ""'
+                        : 'card.parentNode.style.display = "block"'
+                    }
                 } else {
-                    card.style.filter = "blur(1px) opacity(35%)"
+                  ${
+                    argument['project-category-blur']
+                      ? 'card.style.filter = "blur(1px) opacity(35%)"'
+                      : 'card.parentNode.style.display = "none"'
+                  }
                 }
             }
         }

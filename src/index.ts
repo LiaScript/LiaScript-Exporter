@@ -300,6 +300,9 @@ function help() {
   console.log(
     '--project-no-categories    Disable the filter for categories/tags.'
   )
+  console.log(
+    '--project-category-blur    Enable this and the categories will be blurred instead of deleted.'
+  )
 }
 
 function escapeBackslash(path?: string) {
@@ -366,6 +369,7 @@ function parseArguments() {
 
     // project settings
     'project-no-categories': argv['project-no-categories'],
+    'project-category-blur': argv['project-category-blur'],
   }
 
   argument.format = argument.format.toLowerCase()
