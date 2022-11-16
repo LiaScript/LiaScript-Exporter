@@ -36,7 +36,9 @@ export async function exporter(
   },
   json
 ) {
-  let url = `file://${__dirname}/assets/pdf/index.html?`
+  const dirname = helper.dirname()
+
+  let url = `file://${dirname}/../../dist/assets/pdf/index.html?`
 
   if (helper.isURL(argument.input)) {
     url += argument.input
@@ -78,7 +80,7 @@ export async function exporter(
   }
 
   if (argument['pdf-stylesheet']) {
-    const href = path.resolve(__dirname + '/../', argument['pdf-stylesheet'])
+    const href = path.resolve(dirname + '/../', argument['pdf-stylesheet'])
 
     await page.evaluate(async (href) => {
       const link = document.createElement('link')

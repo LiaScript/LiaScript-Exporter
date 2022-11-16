@@ -21,13 +21,14 @@ export async function exporter(
 ) {
   // make temp folder
   let tmp = await helper.tmpDir()
+  const dirname = helper.dirname()
 
   let tmpPath = path.join(tmp, 'pro')
 
   // copy assets to temp
   await fs.copy(
     path.join(
-      __dirname,
+      dirname,
       argument['web-indexeddb'] ? './assets/indexeddb' : './assets/web'
     ),
     tmpPath

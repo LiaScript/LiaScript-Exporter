@@ -15,6 +15,10 @@ export function tmpDir() {
   })
 }
 
+export function dirname() {
+  return path.join(__dirname, 'exporter')
+}
+
 export function writeFile(filename: string, content: string) {
   return new Promise((resolve, reject) => {
     fs.writeFile(filename, content, function (err) {

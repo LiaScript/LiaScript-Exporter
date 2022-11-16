@@ -18,6 +18,8 @@ export async function exporter(
   },
   json: any
 ) {
+  const dirname = helper.dirname()
+
   // make temp folder
   let tmp = await helper.tmpDir()
 
@@ -26,7 +28,7 @@ export async function exporter(
   // copy assets to temp
   await fs.copy(
     path.join(
-      __dirname,
+      dirname,
       argument['ims-indexeddb'] ? './assets/indexeddb' : './assets/web'
     ),
     tmpPath

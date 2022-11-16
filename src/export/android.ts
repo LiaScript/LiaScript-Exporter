@@ -25,18 +25,19 @@ export async function exporter(
 ) {
   // make temp folder
   let tmp = await helper.tmpDir()
+  const dirname = helper.dirname()
 
   let tmpPath = path.join(tmp, 'pro')
 
   // copy assets to temp/dist
   await fs.copy(
-    path.join(__dirname, './assets/capacitor'),
+    path.join(dirname, './assets/capacitor'),
     path.join(tmpPath, './dist')
   )
 
   // copy logo and splash
   await fs.copy(
-    path.join(__dirname, './resources'),
+    path.join(dirname, './resources'),
     path.join(tmpPath, '../resources')
   )
 
