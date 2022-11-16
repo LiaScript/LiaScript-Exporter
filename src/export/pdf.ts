@@ -73,7 +73,9 @@ export async function exporter(
       // remove timeout
       timeout: 0,
     })
-  } catch (e) {}
+  } catch (e) {
+    console.warn('pdf generation failed:', e)
+  }
 
   if (argument['pdf-stylesheet']) {
     const href = path.resolve(__dirname + '/../', argument['pdf-stylesheet'])
@@ -127,29 +129,42 @@ export async function exporter(
 
   console.warn(argument)
   */
-  if (!argument['pdf-preview'])
-    setTimeout(async function () {
-      await page.emulateMediaType('screen')
-      await page.pdf({
-        path: argument.output + '.pdf',
-        format: argument['pdf-format'] || 'a4',
-        printBackground: argument['pdf-printBackground'] || true,
-        displayHeaderFooter: argument['pdf-displayHeaderFooter'] || false,
-        margin: {
-          top: argument['pdf-margin-top'] || 80,
-          bottom: argument['pdf-margin-bottom'] || 80,
-          left: argument['pdf-margin-left'] || 30,
-          right: argument['pdf-margin-right'] || 30,
-        },
-        scale: argument['pdf-scale'] || 1,
-        headerTemplate: argument['pdf-headerTemplate'],
-        footerTemplate: argument['pdf-footerTemplate'] || '',
-        landscape: argument['pdf-landscape'] || false,
-        width: argument['pdf-width'] || '',
-        height: argument['pdf-height'] || '',
-        //preferCSSPageSize: argument['pdf-preferCSSPageSize'] || '',
-        omitBackground: argument['pdf-omitBackground'] || false,
-      })
-      await browser.close()
-    }, argument['pdf-timeout'] || 30000)
+  if (!argument['pdf-preview']) {
+    await sleep(argument['pdf-timeout'] || 30000)
+    await toPDF(argument, browser, page)
+  }
+}
+
+function sleep(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms))
+}
+
+async function toPDF(argument: any, browser: any, page: any) {
+  try {
+    await page.emulateMediaType('screen')
+    await page.pdf({
+      path: argument.output + '.pdf',
+      format: argument['pdf-format'] || 'a4',
+      printBackground: argument['pdf-printBackground'] || true,
+      displayHeaderFooter: argument['pdf-displayHeaderFooter'] || false,
+      margin: {
+        top: argument['pdf-margin-top'] || 80,
+        bottom: argument['pdf-margin-bottom'] || 80,
+        left: argument['pdf-margin-left'] || 30,
+        right: argument['pdf-margin-right'] || 30,
+      },
+      scale: argument['pdf-scale'] || 1,
+      headerTemplate: argument['pdf-headerTemplate'],
+      footerTemplate: argument['pdf-footerTemplate'] || '',
+      landscape: argument['pdf-landscape'] || false,
+      width: argument['pdf-width'] || '',
+      height: argument['pdf-height'] || '',
+      //preferCSSPageSize: argument['pdf-preferCSSPageSize'] || '',
+      omitBackground: argument['pdf-omitBackground'] || false,
+    })
+  } catch (e) {
+    console.warn('failed to print to pdf', e)
+  }
+
+  await browser.close()
 }

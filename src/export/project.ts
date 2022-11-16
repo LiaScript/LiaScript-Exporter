@@ -1,4 +1,8 @@
 import * as helper from './helper'
+import * as PDF from './pdf'
+
+const fs = require('fs-extra')
+const path = require('path')
 
 var Categories: Set<string> = new Set([])
 
@@ -66,12 +70,35 @@ export async function exporter(
     'project-no-meta'?: boolean
     'project-no-categories'?: boolean
     'project-category-blur'?: boolean
+    'project-generate-pdf'?: boolean
+
+    // allow to pass pdf settings
+    'pdf-scale'?: number
+    'pdf-displayHeaderFooter'?: string
+    'pdf-headerTemplate'?: string
+    'pdf-footerTemplate'?: string
+    'pdf-printBackground'?: boolean
+    'pdf-landscape'?: boolean
+    'pdf-format'?: string
+    'pdf-width'?: string | number
+    'pdf-height'?: string | number
+    'pdf-margin-top'?: string | number
+    'pdf-margin-bottom'?: string | number
+    'pdf-margin-right'?: string | number
+    'pdf-margin-left'?: string | number
+    'pdf-preferCSSPageSize'?: boolean
+    'pdf-omitBackground'?: boolean
+    'pdf-timeout'?: number
+
+    'pdf-stylesheet'?: string
+    'pdf-theme'?: string
   },
   json
 ) {
   // make temp folder
 
   let cards = ''
+  const output = argument.output
 
   for (let i = 0; i < json.collection.length; i++) {
     let course = json.collection[i]
@@ -83,7 +110,7 @@ export async function exporter(
         subCards += `<div class='col-sm-6 col-md-4 col-lg-3 ${
           course.grid ? 'mb-3' : ''
         }'>
-          ${toCard(course.collection[j], true)}
+          ${await toCard(argument, course.collection[j], true)}
           </div>`
       }
 
@@ -108,7 +135,7 @@ export async function exporter(
     } else if (course.html) {
       cards += "<div class='col-12'>" + course.html + '</div>'
     } else {
-      cards += "<div class='col'>" + toCard(course) + '</div>'
+      cards += "<div class='col'>" + (await toCard(argument, course)) + '</div>'
     }
   }
 
@@ -221,7 +248,16 @@ export async function exporter(
 </html> 
 `
 
-  await helper.writeFile(argument.output + '.html', html)
+  await helper.writeFile(output + '.html', html)
+}
+
+async function moveFile(oldPath, newPath) {
+  // 1. Create the destination directory if it does not exist
+  // Set the `recursive` option to `true` to create all the subdirectories
+  await fs.mkdir(path.dirname(newPath), { recursive: true })
+  // 2. Rename the file (move it to the new directory)
+  // Return the promise
+  return fs.rename(oldPath, newPath)
 }
 
 function cleanHTML(html: string) {
@@ -251,7 +287,17 @@ function overwrite(check, defaultsTo) {
   return check === null ? null : check || defaultsTo
 }
 
-function toCard(course: any, small: boolean = false) {
+function hash(url: string) {
+  const value = url
+    .split('')
+    .map((v) => v.charCodeAt(0))
+    .reduce((a, v) => (a + ((a << 7) + (a << 3))) ^ v)
+    .toString(16)
+
+  return value.startsWith('-') ? '0' + value.slice(1) : value
+}
+
+async function toCard(argument: any, course: any, small: boolean = false) {
   let tags
   try {
     tags = course.data.definition.macro.tags
@@ -266,12 +312,29 @@ function toCard(course: any, small: boolean = false) {
     Categories.add(tagList[i].toLowerCase())
   }
 
+  let downloads = {}
+  if (argument['project-generate-pdf']) {
+    argument.input = course.data.readme
+    argument.output = hash(course.data.readme)
+    const file = argument.output + '.pdf'
+
+    console.log('generate pdf of', argument.input, ' -> ', file)
+
+    await PDF.exporter(argument, {})
+
+    if (fs.existsSync(file)) {
+      moveFile(file, 'assets/pdf/' + file)
+      downloads['pdf'] = 'assets/pdf/' + file
+    }
+  }
+
   return card(
     small,
     course.data.readme,
     overwrite(course.title, course.data.str_title),
     overwrite(course.comment, course.data.comment),
     tagList,
+    downloads,
     overwrite(course.logo, course.data.definition.logo)
   )
 }
@@ -282,6 +345,13 @@ function card(
   title: string,
   comment: string,
   tags: string[],
+  download: {
+    pdf?: string
+    scorm12?: string
+    scorm2004?: string
+    ims?: string
+    apk?: string
+  },
   img_url?: string
 ) {
   let image = ''
@@ -319,17 +389,73 @@ function card(
     comment = '<small>' + comment + '</small>'
   }
 
+  let footer = ''
+
+  if (Object.keys(download).length > 0) {
+    footer = `<div class="card-footer">
+  <div class="dropdown">
+    <a class="btn btn-secondary btn-sm dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+      Download as ...
+    </a>
+  
+    <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink" style="">
+      ${
+        download.pdf
+          ? '<li><a class="dropdown-item btn-sm" target="_blank" href="' +
+            download.pdf +
+            '">PDF</a></li>'
+          : ''
+      }
+      ${
+        download.scorm12
+          ? '<li><a class="dropdown-item btn-sm" href="' +
+            download.scorm12 +
+            '">SCORM 1.2</a></li>'
+          : ''
+      }
+      ${
+        download.scorm2004
+          ? '<li><a class="dropdown-item btn-sm" href="' +
+            download.scorm2004 +
+            '">SCORM 2004</a></li>'
+          : ''
+      }
+      ${
+        download.ims
+          ? '<li><a class="dropdown-item btn-sm" href="' +
+            download.ims +
+            '">IMS</a></li>'
+          : ''
+      }
+      ${
+        download.apk
+          ? '<li><a class="dropdown-item btn-sm" href="' +
+            download.apk +
+            '">Android APK</a></li>'
+          : ''
+      }
+      
+      
+      
+      
+    </ul>
+  </div>
+  </div>
+  `
+  }
+
   return `<div class="card shadow-sm m-1" style="height: 100%" data-category="${tags
     .map((e) => e.toLowerCase())
     .join('|')}">
     ${image}
-    <div class="card-body">
+    <div class="card-body" style="transform: rotate(0);">
         <a href="https://liascript.github.io/course/?${url}" target="_blank" class="link-dark stretched-link">
             <h${small ? 6 : 5} class="card-title">${title}</h${small ? 6 : 5}>
         </a>
         <p class="card-text">${comment}</p>
         ${tag_list}
     </div>
+    ${footer}
 </div>
 `
 }

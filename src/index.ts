@@ -306,6 +306,10 @@ function help() {
   console.log(
     '--project-category-blur    Enable this and the categories will be blurred instead of deleted.'
   )
+
+  console.log(
+    '--project-generate-pdf     PDFs are automatically generated and added to every card.'
+  )
 }
 
 function escapeBackslash(path?: string) {
@@ -348,7 +352,7 @@ function parseArguments() {
     'pdf-footerTemplate': argv['pdf-footerTemplate'],
     'pdf-printBackground': argv['pdf-printBackground'],
     'pdf-landscape': argv['pdf-landscape'],
-    'pdf-format': argv['pdf-format'],
+    'pdf-format': argv['pdf-format'] || 'A4',
     'pdf-width': argv['pdf-width'],
     'pdf-height': argv['pdf-height'],
     'pdf-margin-top': argv['pdf-margin-top'],
@@ -374,6 +378,7 @@ function parseArguments() {
     'project-no-meta': argv['project-no-meta'],
     'project-no-categories': argv['project-no-categories'],
     'project-category-blur': argv['project-category-blur'],
+    'project-generate-pdf': argv['project-generate-pdf'],
   }
 
   argument.format = argument.format.toLowerCase()
