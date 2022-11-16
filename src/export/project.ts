@@ -63,6 +63,7 @@ export async function exporter(
     style?: string
 
     // special project settings
+    'project-no-meta'?: boolean
     'project-no-categories'?: boolean
     'project-category-blur'?: boolean
   },
@@ -148,6 +149,8 @@ export async function exporter(
         : ''
     }
 
+    ${argument['project-no-meta'] ? '' : meta(json)}
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 
     <script>
@@ -219,6 +222,29 @@ export async function exporter(
 `
 
   await helper.writeFile(argument.output + '.html', html)
+}
+
+function cleanHTML(html: string) {
+  return html.replace(/<[^>]+>/g, '')
+}
+
+function meta(json: any) {
+  const title =
+    json.meta.title || cleanHTML(json.title) || 'LiaScript Course Index'
+
+  const description = json.meta.description || cleanHTML(json.comment)
+
+  const image = json.meta.image || json.logo
+
+  return `<meta property="og:type" content="website">
+  <meta property="og:title" content="${title}">
+  <meta property="og:description" content="${description}">
+  <meta property="og:image" content="${image}">
+
+  <meta name="twitter:title" content="${title}">
+  <meta name="twitter:description" content="${description}">
+  <meta name="twitter:image" content="${image}">
+  `
 }
 
 function overwrite(check, defaultsTo) {

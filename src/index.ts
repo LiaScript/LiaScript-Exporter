@@ -298,6 +298,9 @@ function help() {
   console.log('\nProject settings:')
   console.log('')
   console.log(
+    '--project-no-meta          Disable the generation of meta information for OpenGraph and Twitter-cards.'
+  )
+  console.log(
     '--project-no-categories    Disable the filter for categories/tags.'
   )
   console.log(
@@ -368,6 +371,7 @@ function parseArguments() {
     'android-preview': argv['android-preview'],
 
     // project settings
+    'project-no-meta': argv['project-no-meta'],
     'project-no-categories': argv['project-no-categories'],
     'project-category-blur': argv['project-category-blur'],
   }
