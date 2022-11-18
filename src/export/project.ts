@@ -278,6 +278,14 @@ function hash(url: string) {
 }
 
 async function toCard(argument: any, course: any, small: boolean = false) {
+  // if other parameters are defined for a specific course
+  // then they are treated
+  if (course.arguments) {
+    argument = course.arguments.reduce((a, b) => {
+      return { ...a, ...b }
+    }, argument)
+  }
+
   let tags
   try {
     tags = course.data.definition.macro.tags
