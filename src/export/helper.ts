@@ -16,7 +16,11 @@ export function tmpDir() {
 }
 
 export function dirname() {
-  return path.join(__dirname, 'exporter')
+  return __dirname //path.join(__dirname, 'exporter')
+}
+
+export function sleep(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms))
 }
 
 export function writeFile(filename: string, content: string) {
@@ -154,4 +158,25 @@ export function random(length: number = 16) {
   }
 
   return str
+}
+
+export function getRepository(raw_url: string) {
+  const match = raw_url.match(
+    /raw\.githubusercontent\.com\/([^\/]+)\/([^\/]+)\/([^\/]+)\/(.*)/i
+  )
+
+  if (match?.length === 5) {
+    const [_, organization, repository, branch, path] = match
+
+    const url = `https://github.com/${organization}/${repository}`
+
+    return {
+      url,
+      branch,
+      path,
+      cmd: `git clone --branch ${branch} ${url} tmp`,
+    }
+  }
+
+  return null
 }

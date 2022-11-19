@@ -3,6 +3,7 @@ import * as helper from './helper'
 const scormPackager = require('@liascript/simple-scorm-packager')
 const path = require('path')
 const fs = require('fs-extra')
+const util = require('util')
 
 export async function exporter(
   argument: {
@@ -96,8 +97,5 @@ export async function exporter(
     },
   }
 
-  scormPackager(config, function (msg) {
-    console.log(msg)
-    process.exit(0)
-  })
+  await scormPackager(config)
 }

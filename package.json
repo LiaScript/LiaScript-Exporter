@@ -1,6 +1,6 @@
 {
   "name": "@liascript/exporter",
-  "version": "2.5.3--0.10.22",
+  "version": "2.5.4--0.10.22",
   "description": "A generic exporter for LiaScript",
   "main": "dist/index.js",
   "repository": {
@@ -44,7 +44,7 @@
   "author": "André Dietrich",
   "license": "ISC",
   "dependencies": {
-    "@liascript/simple-scorm-packager": "^0.2.6",
+    "@liascript/simple-scorm-packager": "^0.3.0",
     "archiver": "^5.3.0",
     "fs-extra": "^9.1.0",
     "minimist": "^1.2.5",

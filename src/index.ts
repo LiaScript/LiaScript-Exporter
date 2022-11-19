@@ -79,7 +79,7 @@ function run(argument) {
       case 'project': {
         if (collection) {
           try {
-            PROJECT.storeNext(collection, JSON.parse(string).lia)
+            PROJECT.storeNext(collection, JSON.parse(string))
 
             const next = PROJECT.getNext(collection)
 
@@ -383,6 +383,10 @@ function parseArguments() {
     'project-no-categories': argv['project-no-categories'],
     'project-category-blur': argv['project-category-blur'],
     'project-generate-pdf': argv['project-generate-pdf'],
+    'project-generate-ims': argv['project-generate-ims'],
+    'project-generate-scorm12': argv['project-generate-scorm12'],
+    'project-generate-scorm2004': argv['project-generate-scorm2004'],
+    'project-generate-android': argv['project-generate-android'],
     'project-generate-cache': argv['project-generate-cache'],
   }
 

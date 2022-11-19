@@ -38,7 +38,7 @@ export async function exporter(
 ) {
   const dirname = helper.dirname()
 
-  let url = `file://${dirname}/../../dist/assets/pdf/index.html?`
+  let url = `file://${dirname}/assets/pdf/index.html?`
 
   if (helper.isURL(argument.input)) {
     url += argument.input
@@ -47,6 +47,7 @@ export async function exporter(
   }
 
   const browser = await puppeteer.launch({
+    pipe: true,
     args: [
       '--disable-web-security',
       '--disable-features=IsolateOrigins',
@@ -132,13 +133,9 @@ export async function exporter(
   console.warn(argument)
   */
   if (!argument['pdf-preview']) {
-    await sleep(argument['pdf-timeout'] || 30000)
+    await helper.sleep(argument['pdf-timeout'] || 30000)
     await toPDF(argument, browser, page)
   }
-}
-
-function sleep(ms: number) {
-  return new Promise((resolve) => setTimeout(resolve, ms))
 }
 
 async function toPDF(argument: any, browser: any, page: any) {

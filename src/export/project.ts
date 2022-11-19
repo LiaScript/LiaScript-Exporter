@@ -1,8 +1,13 @@
 import * as helper from './helper'
 import * as PDF from './pdf'
+import * as IMS from './ims'
+import * as SCORM12 from './scorm12'
+import * as SCORM2004 from './scorm2004'
+import * as ANDROID from './android'
 
 const fs = require('fs-extra')
 const path = require('path')
+const { execSync } = require('child_process')
 
 var Categories: Set<string> = new Set([])
 
@@ -288,7 +293,7 @@ async function toCard(argument: any, course: any, small: boolean = false) {
 
   let tags
   try {
-    tags = course.data.definition.macro.tags
+    tags = course.data.lia.definition.macro.tags
       .split(',')
       .map((e: string) => e.trim())
   } catch (e) {
@@ -302,8 +307,8 @@ async function toCard(argument: any, course: any, small: boolean = false) {
 
   let downloads = {}
   if (argument['project-generate-pdf']) {
-    argument.input = course.data.readme
-    argument.output = hash(course.data.readme)
+    argument.input = course.data.lia.readme
+    argument.output = hash(course.data.lia.readme)
     const file = argument.output + '.pdf'
 
     if (
@@ -323,14 +328,123 @@ async function toCard(argument: any, course: any, small: boolean = false) {
     }
   }
 
+  let repo
+  if (
+    argument['project-generate-ims'] ||
+    argument['project-generate-scorm12'] ||
+    argument['project-generate-scorm2004'] ||
+    argument['project-generate-android']
+  ) {
+    repo = helper.getRepository(course.url)
+
+    if (repo) {
+      execSync(repo.cmd)
+      argument.input = path.join('tmp', repo.path)
+      argument.path = 'tmp'
+      argument.readme = path.join('./', repo.path)
+
+      argument.output = hash(course.data.lia.readme)
+
+      execSync('rm -rf tmp/.git')
+      execSync('rm -rf tmp/.github')
+      execSync('rm -rf tmp/.gitignore')
+    }
+  }
+
+  // IMS
+  if (repo && argument['project-generate-ims']) {
+    const file = argument.output + '.zip'
+    const asset = 'assets/ims/' + file
+
+    if (
+      argument['project-generate-cache'] &&
+      fs.existsSync(path.join(process.cwd(), asset))
+    ) {
+      downloads['ims'] = asset
+    } else {
+      await IMS.exporter(argument, course.data)
+
+      if (fs.existsSync(file)) {
+        moveFile(file, asset)
+        downloads['ims'] = asset
+      }
+    }
+  }
+
+  // SCORM12
+  if (repo && argument['project-generate-scorm12']) {
+    const file = argument.output + '.zip'
+    const asset = 'assets/scorm12/' + file
+
+    if (
+      argument['project-generate-cache'] &&
+      fs.existsSync(path.join(process.cwd(), asset))
+    ) {
+      downloads['scorm12'] = asset
+    } else {
+      await SCORM12.exporter(argument, course.data)
+
+      if (fs.existsSync(file)) {
+        moveFile(file, asset)
+        downloads['scorm12'] = asset
+      }
+    }
+  }
+
+  // SCORM2004
+  if (repo && argument['project-generate-scorm12']) {
+    const file = argument.output + '.zip'
+    const asset = 'assets/scorm2004/' + file
+
+    if (
+      argument['project-generate-cache'] &&
+      fs.existsSync(path.join(process.cwd(), asset))
+    ) {
+      downloads['scorm2004'] = asset
+    } else {
+      await SCORM2004.exporter(argument, course.data)
+
+      if (fs.existsSync(file)) {
+        moveFile(file, asset)
+        downloads['scorm2004'] = asset
+      }
+    }
+  }
+
+  // Android
+  if (repo && argument['project-generate-android']) {
+    const file = argument.output + '.apk'
+
+    const asset = 'assets/android/' + file
+
+    if (
+      argument['project-generate-cache'] &&
+      fs.existsSync(path.join(process.cwd(), asset))
+    ) {
+      downloads['apk'] = asset
+    } else {
+      await ANDROID.exporter(argument, course.data)
+
+      if (fs.existsSync(file)) {
+        moveFile(file, asset)
+        downloads['apk'] = asset
+      }
+    }
+  }
+
+  // clean up
+  if (repo) {
+    execSync('rm -rf tmp')
+  }
+
   return card(
     small,
-    course.data.readme,
-    overwrite(course.title, course.data.str_title),
-    overwrite(course.comment, course.data.comment),
+    course.data.lia.readme,
+    overwrite(course.title, course.data.lia.str_title),
+    overwrite(course.comment, course.data.lia.comment),
     tagList,
     downloads,
-    overwrite(course.logo, course.data.definition.logo)
+    overwrite(course.logo, course.data.lia.definition.logo)
   )
 }
 
@@ -419,7 +533,7 @@ function card(
         download.ims
           ? '<li><a class="dropdown-item btn-sm" href="' +
             download.ims +
-            '">IMS</a></li>'
+            '">IMS Content Packaging</a></li>'
           : ''
       }
       ${
