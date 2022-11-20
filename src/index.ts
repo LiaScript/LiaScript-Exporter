@@ -20,7 +20,7 @@ const argv = require('minimist')(process.argv.slice(2))
 
 // -------------------------------Main Execution-------------------------------
 if (argv.v || argv.version) {
-  console.log('version: 2.5.3--0.10.22')
+  console.log('version: 2.5.4--0.10.22')
 } else if (argv.h || argv.help) {
   help()
 } else if (argv.i || argv.input) {
@@ -162,7 +162,7 @@ function help() {
   console.log(
     '-s',
     '--style',
-    '         additional styling to passed to the export, can be used for fixes, such as "height: 100vh; width: 100%; border: 2px;"'
+    '          additional styling to passed to the export, can be used for fixes, such as "height: 100vh; width: 100%; border: 2px;"'
   )
   console.log(
     '-f',
@@ -305,6 +305,18 @@ function help() {
   )
   console.log(
     '--project-category-blur    Enable this and the categories will be blurred instead of deleted.'
+  )
+
+  console.log(
+    '--project-generate-scrom12 SCORM12 and pass additional scrom settings.'
+  )
+
+  console.log(
+    '--project-generate-scrom2004 SCORM2004 and pass additional scrom settings.'
+  )
+
+  console.log(
+    '--project-generate-ims     IMS resources with additional config settings.'
   )
 
   console.log(

@@ -645,7 +645,14 @@ collection:
       - url: https://raw.githubusercontent.com/TUBAF-IfI-LiaScript/VL_Softwareentwicklung/master/24_Tasks.md
       - url: https://raw.githubusercontent.com/TUBAF-IfI-LiaScript/VL_Softwareentwicklung/master/25_LINQ.md
       - url: https://raw.githubusercontent.com/TUBAF-IfI-LiaScript/VL_Softwareentwicklung/master/26_DesignPattern.md
+        arguments:
+          - pdf-format: A3
+          - project-generate-scorm2004: true
+          - scorm-organization: TU-Bergakademie Freiberg
+
       - url: https://raw.githubusercontent.com/TUBAF-IfI-LiaScript/VL_Softwareentwicklung/master/27_Anwendungen.md
+        arguments:
+          - project-generate-pdf: false
 ```
 
 Basic usage:
@@ -661,6 +668,11 @@ Additionally, you can pass any pdf settings to customize the pdf output.
 ``` shell
 liaex -i curriculum.yml --format project --project-generate-pdf --pdf-format A4
 ```
+
+As it is depicted in the last part of the yaml file above, you can manually set or change all parameters.
+Such as, for which projects you want to generate a pdf and pass also all additional parameters.
+Simply pass all arguments as `arguments` with the long name and without the starting dashes.
+This way you can generate a very detailed project configuration and overview.
 
 ## TODOs & Contributions
 
