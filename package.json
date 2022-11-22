@@ -1,6 +1,6 @@
 {
   "name": "@liascript/exporter",
-  "version": "2.5.4--0.10.22",
+  "version": "2.5.5--0.10.22",
   "description": "A generic exporter for LiaScript",
   "main": "dist/index.js",
   "repository": {
@@ -27,7 +27,7 @@
     "asset:scorm1.2": "cd LiaScript && npm i && npm run build:scorm1.2 && cp -r dist ../dist/assets/scorm1.2",
     "asset:scorm2004": "cd LiaScript && npm i && npm run build:scorm2004 && cp -r dist ../dist/assets/scorm2004",
     "asset:indexeddb": "cd LiaScript && npm i && npm run build:indexeddb && cp -r dist ../dist/assets/indexeddb",
-    "asset:capacitor": "cd LiaScript && git checkout feat/capacitor && npm i && npm run build:android && cp -r dist ../dist/assets/capacitor && git checkout development",
+    "asset:capacitor": "cd LiaScript && git checkout feat/capacitor && rm -rf node_modules && npm i && npm run build:android && cp -r dist ../dist/assets/capacitor && git checkout development && rm -rf node_modules && npm i",
     "build": "npx parcel build --no-cache --no-source-maps src/index.ts && npm run shebang",
     "build:debug": "npx parcel build --target node --no-minify --log-level 5 src/index.ts",
     "run:moodle": "cd docker/moodle && docker-compose up",
