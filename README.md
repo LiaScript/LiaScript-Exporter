@@ -107,7 +107,7 @@ PDF settings:
 --pdf-theme                LiaScript themes: default, turquoise, blue, red, yellow
 --pdf-timeout              Set an additional time horizon to wait until finished.
 
-https://github.com/puppeteer/puppeteer/blob/main/docs/api.md#pagepdfoptions
+https://github.com/puppeteer/puppeteer/blob/main/docs/api/puppeteer.pdfoptions.md
 
 --pdf-preview              Open preview-browser (default false), print not possible
 --pdf-scale                Scale of the webpage rendering. Defaults to 1. Scale amount must be between 0.1 and 2.
