@@ -251,11 +251,11 @@ function cleanHTML(html: string) {
 
 function meta(json: any) {
   const title =
-    json.meta.title || cleanHTML(json.title) || 'LiaScript Course Index'
+    json.meta?.title || cleanHTML(json.title) || 'LiaScript Course Index'
 
-  const description = json.meta.description || cleanHTML(json.comment)
+  const description = json.meta?.description || cleanHTML(json.comment)
 
-  const image = json.meta.image || json.logo
+  const image = json.meta?.image || json.logo
 
   return `<meta property="og:type" content="website">
   <meta property="og:title" content="${title}">
@@ -285,6 +285,7 @@ function hash(url: string) {
 async function toCard(argument: any, course: any, small: boolean = false) {
   // if other parameters are defined for a specific course
   // then they are treated
+
   if (course.arguments) {
     argument = course.arguments.reduce((a, b) => {
       return { ...a, ...b }
