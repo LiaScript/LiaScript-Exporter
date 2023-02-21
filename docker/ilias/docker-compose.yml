@@ -3,13 +3,12 @@ services:
     ilias:
         image: srsolutions/ilias
         ports:
-          - 8081:80
+          - 8041:80
         links:
           - mysql
         environment:
           - ILIAS_AUTO_SETUP=1
           - ILIAS_DB_USER=root
-          - ILIAS_ROOT_PASSWORD=test1234
           - ILIAS_DB_PASSWORD=example
     mysql:
         image: mysql:5.7
