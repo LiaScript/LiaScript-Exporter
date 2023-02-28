@@ -180,7 +180,7 @@ If you want to use text2speech, you will have to register your website (where
 the scorm package will be served) at <https://responsivevoice.org/> ... it is free
 for educational and non commercial purposes. After your registration, you will
 get a key in the format of `KluQksUs`. To inject this key into your package,
-simly add the key as a paramter:
+simply add the key as a parameter:
 
 ``` shell
 $ liaex -i project/README.md --format scorm1.2 --key KluQksUs --output rockOn
@@ -189,12 +189,12 @@ $ liaex -i project/README.md --format scorm1.2 --key KluQksUs --output rockOn
 
 __Mastery Score `--scorm-masteryScore`__
 
-You can define the percentage of quizzes and surveys a student had to fullfill
+You can define the percentage of quizzes and surveys a student had to fullfil
 in order to accomplish or pass the course by adding the `--scorm-masteryScore`
 parameter. Just set it to 0 to allow all to pass the course, otherwise choose a
 value between 0 and 100. All quizzes and surveys are treated equally, thus if
 your course contains 10 quizzes, every quiz counts as 10%. If you do not set
-this paramter, a default value of 80 percent is used.
+this parameter, a default value of 80 percent is used.
 
 ``` shell
 $ liaex -i project/README.md --format scorm1.2 --scorm-masteryScore 0 --output rockOn
