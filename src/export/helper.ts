@@ -76,7 +76,7 @@ export async function iframe(
     <head>
     
     </head>
-    <body style="height:100%">
+    <body style="height:100%; margin: 0px">
     
     <iframe id="lia-container" src="" style="${
       style || 'border: 0px; width: 100%; height: 100%'
