@@ -10,6 +10,7 @@ import * as IMS from './export/ims'
 import * as ANDROID from './export/android'
 // import * as IOS from './export/ios'
 import * as PROJECT from './export/project'
+import * as RDF from './export/rdf'
 
 global.XMLHttpRequest = require('xhr2')
 
@@ -17,6 +18,7 @@ import YAML from 'yaml'
 const path = require('path')
 const fs = require('fs-extra')
 const argv = require('minimist')(process.argv.slice(2))
+import fetch from 'node-fetch'
 
 // -------------------------------Main Execution-------------------------------
 if (argv.v || argv.version) {
@@ -33,7 +35,7 @@ if (argv.v || argv.version) {
 
 var collection: any
 
-function run(argument) {
+async function run(argument) {
   var app = Elm.Worker.init({ flags: { cmd: '' } })
   app.ports.output.subscribe(function (event) {
     let [ok, string] = event
@@ -50,6 +52,10 @@ function run(argument) {
         fs.writeFile(argument.output + '.json', string, function (err) {
           if (err) console.error(err)
         })
+        break
+      }
+      case 'rdf': {
+        RDF.exporter(argument, JSON.parse(string))
         break
       }
       case 'scorm1.2': {
@@ -118,6 +124,7 @@ function run(argument) {
       argument.format == 'ims' ||
       argument.format == 'android' ||
       argument.format == 'ios' ||
+      argument.format == 'rdf' ||
       argument.format == 'project'
         ? 'fulljson'
         : argument.format
@@ -136,6 +143,13 @@ function run(argument) {
       app.ports.input.send([format, data])
     } else if (argument.format === 'pdf') {
       PDF.exporter(argument, {})
+    } else if (argument.format === 'rdf') {
+      const resp = await fetch(argument.input)
+      const data = await resp.text()
+
+      if (data) {
+        app.ports.input.send([format, data])
+      }
     } else {
       console.warn('URLs are not allowed as input')
     }
@@ -167,7 +181,7 @@ function help() {
   console.log(
     '-f',
     '--format',
-    '         scorm1.2, scorm2004, json, fullJson, web, ims, pdf, android (default is json)'
+    '         scorm1.2, scorm2004, json, fullJson, web, ims, pdf, android, linkedData (default is json)'
   )
   console.log('-v', '--version', '        output the current version')
 
@@ -326,6 +340,8 @@ function help() {
   console.log(
     '--project-generate-cache   Only generate new files, if they do not exist.'
   )
+
+  RDF.help()
 }
 
 function escapeBackslash(path?: string) {
@@ -400,6 +416,14 @@ function parseArguments() {
     'project-generate-scorm2004': argv['project-generate-scorm2004'],
     'project-generate-android': argv['project-generate-android'],
     'project-generate-cache': argv['project-generate-cache'],
+
+    // RDF settngs
+    'rdf-format': argv['rdf-format'],
+    'rdf-preview': argv['rdf-preview'],
+    'rdf-url': argv['rdf-url'],
+    'rdf-type': argv['rdf-type'],
+    'rdf-license': argv['rdf-license'],
+    'rdf-educationalLevel': argv['rdf-educationalLevel'],
   }
 
   argument.format = argument.format.toLowerCase()

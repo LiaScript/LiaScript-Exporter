@@ -1,5 +1,6 @@
 'use strict'
 
+import fetch from 'node-fetch'
 const temp = require('temp')
 const fs = require('fs-extra')
 const path = require('path')
@@ -179,4 +180,26 @@ export function getRepository(raw_url: string) {
   }
 
   return null
+}
+
+export async function checkLicense(baseURL: string) {
+  const url = new URL('LICENSE', baseURL).href
+
+  return await checkFileExists(url)
+}
+
+export function baseURL(url: string) {
+  const path = url.split('/')
+  path.pop()
+  return path.join('/')
+}
+
+async function checkFileExists(fileUrl: string) {
+  try {
+    const response = await fetch(fileUrl, { method: 'HEAD' })
+    return response.status === 200
+  } catch (error) {
+    console.warn(`Error checking if file exists: ${error}`)
+    return false
+  }
 }

@@ -134,6 +134,15 @@ Project settings:
 --project-category-blur    Enable this and the categories will be blurred instead of deleted.
 --project-generate-pdf     PDFs are automatically generated and added to every card.
 --project-generate-cache   Only generate new files, if they do not exist.
+
+RDF settings:
+
+--rdf-format               Output format n-quads, json-ld (defaults to json-ld).
+--rdf-preview              Output the result to the console.
+--rdf-url                  Refer to an external URL when parsing a local project.
+--rdf-type                 Course frm schmema.org is applied as default, overwrite this with EducationalResource, etc.
+--rdf-license              Add a license-URL, otherwise if url was provided as input, this will check for an existing LICENSE file.
+--rdf-educationalLevel     Typically beginner, intermediate or advanced, and formal sets of level indicators.
 ```
 
 ### SCORM1.2
@@ -673,6 +682,159 @@ As it is depicted in the last part of the yaml file above, you can manually set 
 Such as, for which projects you want to generate a pdf and pass also all additional parameters.
 Simply pass all arguments as `arguments` with the long name and without the starting dashes.
 This way you can generate a very detailed project configuration and overview.
+
+
+### RDF & JSON-LD
+
+The LiaScript metainformation can be exported to RDF, either as json-ld or as n-quads. The option `--pdf-preview` generates a console output that can be used to inspect the result. Otherwise the result is stored in a file, defined by `-o`, the file-ending is either `.jsonld` or `.np`, depending on the `--rdf-format`
+
+``` shell
+liaex --format rdf --rdf-preview -i https://raw.githubusercontent.com/liaScript/docs/master/README.md
+
+{
+  "@context": "http://schema.org",
+  "@id": "https://raw.githubusercontent.com/liaScript/docs/master/README.md",
+  "@type": "Course",
+  "author": {
+    "@type": "Person",
+    "email": "LiaScript@web.de",
+    "name": "André Dietrich"
+  },
+  "description": "This document shall provide an entire compendium and course on the development of Open-courSes with [LiaScript](https://LiaScript.github.io). As the language and the systems grows, also this document will be updated. Feel free to fork or copy it, translations are very welcome...",
+  "image": {
+    "@type": "ImageObject",
+    "url": "https://liascript.github.io/img/bg-showcase-1.jpg"
+  },
+  "inLanguage": "en",
+  "name": "LiaScript",
+  "url": "https://LiaScript.github.io/course/?https://raw.githubusercontent.com/liaScript/docs/master/README.md",
+  "version": "22.0.2"
+}
+```
+
+The result as n-quads looks like this:
+
+``` shell
+liaex --format rdf --rdf-preview --rdf-format n-quads -i https://raw.githubusercontent.com/liaScript/docs/master/README.md
+
+<https://raw.githubusercontent.com/liaScript/docs/master/README.md> <http://schema.org/author> _:b0 .
+<https://raw.githubusercontent.com/liaScript/docs/master/README.md> <http://schema.org/description> "This document shall provide an entire compendium and course on the development of Open-courSes with [LiaScript](https://LiaScript.github.io). As the language and the systems grows, also this document will be updated. Feel free to fork or copy it, translations are very welcome..." .
+<https://raw.githubusercontent.com/liaScript/docs/master/README.md> <http://schema.org/image> _:b1 .
+<https://raw.githubusercontent.com/liaScript/docs/master/README.md> <http://schema.org/inLanguage> "en" .
+<https://raw.githubusercontent.com/liaScript/docs/master/README.md> <http://schema.org/name> "LiaScript" .
+<https://raw.githubusercontent.com/liaScript/docs/master/README.md> <http://schema.org/url> "https://LiaScript.github.io/course/?https://raw.githubusercontent.com/liaScript/docs/master/README.md" .
+<https://raw.githubusercontent.com/liaScript/docs/master/README.md> <http://schema.org/version> "22.0.2" .
+<https://raw.githubusercontent.com/liaScript/docs/master/README.md> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://schema.org/Course> .
+_:b0 <http://schema.org/email> "LiaScript@web.de" .
+_:b0 <http://schema.org/name> "André Dietrich" .
+_:b0 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://schema.org/Person> .
+_:b1 <http://schema.org/url> "https://liascript.github.io/img/bg-showcase-1.jpg" .
+_:b1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://schema.org/ImageObject> .
+```
+
+If you are working on a local repository and you want to add the remote URL, you can specify `--rdf-url` and run it with a local file as input:
+
+``` shell
+liaex --format rdf --rdf-preview -i ../LiaBooks/docs/README.md --rdf-url https://raw.githubusercontent.com/liaScript/docs/master/README.md
+
+{
+  "@context": "http://schema.org",
+  "@id": "https://raw.githubusercontent.com/liaScript/docs/master/README.md",
+  "@type": "Course",
+  "author": {
+    "@type": "Person",
+    "email": "LiaScript@web.de",
+    "name": "André Dietrich"
+  },
+  "description": "This document shall provide an entire compendium and course on the development of Open-courSes with [LiaScript](https://LiaScript.github.io). As the language and the systems grows, also this document will be updated. Feel free to fork or copy it, translations are very welcome...",
+  "image": {
+    "@type": "ImageObject",
+    "url": "https://liascript.github.io/img/bg-showcase-1.jpg"
+  },
+  "inLanguage": "en",
+  "name": "LiaScript",
+  "url": "https://LiaScript.github.io/course/?https://raw.githubusercontent.com/liaScript/docs/master/README.md",
+  "version": "22.0.2"
+}
+```
+
+---
+
+Local course but without `--rdf-url`
+
+```
+liaex --format rdf --rdf-preview -i ../LiaBooks/docs/README.md
+
+{
+  "@context": "http://schema.org",
+  "@type": "Course",
+  "author": {
+    "@type": "Person",
+    "email": "LiaScript@web.de",
+    "name": "André Dietrich"
+  },
+  "description": "This document shall provide an entire compendium and course on the development of Open-courSes with [LiaScript](https://LiaScript.github.io). As the language and the systems grows, also this document will be updated. Feel free to fork or copy it, translations are very welcome...",
+  "image": {
+    "@type": "ImageObject",
+    "url": "https://liascript.github.io/img/bg-showcase-1.jpg"
+  },
+  "inLanguage": "en",
+  "name": "LiaScript",
+  "version": "22.0.2"
+}
+```
+
+* `--rdf-type`: By default this type of resource is associated with `Course`, but you can use this param if you want to define `EducationalResource` or something else...
+* `--rdf-educationalLevel`: This is currently not defined, but can be injected, typically these are beginner, intermediate, advanced, ...
+* `--rdf-license`: Use this to specify the URL of the associated license to your course. This tool will automatically check if there is a LICENSE file in your project root and add this.
+
+#### What LiaScript meta-information is used
+
+``` markdown
+<!--
+author: Your Name
+email: author@email.com
+comment: Some basic information about your course
+version: 12.0.2
+logo: https://someimageURL.jpg
+tags: keyword 1, keyword 2, keyword 3
+language: en
+-->
+
+# Title of the course
+...
+
+```
+
+This will be translated to:
+
+``` json
+{
+  "@context": "http://schema.org",
+  "@id": "https://raw.githubusercontent.com/.../master/README.md",
+  "@type": "Course",
+  "author": {
+    "@type": "Person",
+    "email": "author@email.com",
+    "name": "Your Name"
+  },
+  "description": "Some basic information about your course",
+  "image": {
+    "@type": "ImageObject",
+    "url": "https://someimageURL.jpg"
+  },
+  "inLanguage": "en",
+  "name": "Title of the course",
+  "url": "https://LiaScript.github.io/course/?https://raw.githubusercontent.com/.../master/README.md",
+  "version": "12.0.2",
+  "keywords": [
+    "keyword 1",
+    "keyword 2",
+    "keyword 3"
+  ]
+}
+```
+
 
 ## TODOs & Contributions
 
