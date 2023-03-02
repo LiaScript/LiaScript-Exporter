@@ -2,6 +2,7 @@ import * as helper from './helper'
 
 const jsonld = require('jsonld')
 const fs = require('fs-extra')
+import fetch from 'node-fetch'
 
 export function help() {
   console.log('\nRDF settings:')
@@ -23,6 +24,9 @@ export function help() {
   console.log(
     '--rdf-educationalLevel     Typically beginner, intermediate or advanced, and formal sets of level indicators.'
   )
+  console.log(
+    '--rdf-template             Use a URL or json-file as a template.'
+  )
 }
 
 export async function exporter(
@@ -40,7 +44,7 @@ export async function exporter(
     'rdf-preview'?: string
     'rdf-url'?: string
     'rdf-type'?: string
-    //'rdf-input'?: string
+    'rdf-template'?: string
     'rdf-license'?: string
     'rdf-educationalLevel'?: string
   },
@@ -48,19 +52,36 @@ export async function exporter(
 ) {
   let doc = {}
 
-  doc = {
-    'http://schema.org/name': json.lia.str_title,
-    'http://schema.org/@type': argument['rdf-type'] || 'Course',
+  if (argument['rdf-template']) {
+    if (helper.isURL(argument['rdf-template'])) {
+      const resp = await fetch(argument['rdf-template'], {})
+      const data = await resp.json()
+
+      if (data) {
+        doc = await jsonld.expand(data)
+      } else {
+        console.warn('could not load template from:', argument['rdf-template'])
+      }
+    } else {
+      const data = fs.readFileSync(argument['rdf-template'], 'utf8')
+      doc = await jsonld.expand(JSON.parse(data))
+    }
   }
+
+  doc['http://schema.org/name'] = json.lia.str_title
+  doc['http://schema.org/@type'] =
+    doc['http://schema.org/@type'] || argument['rdf-type'] || 'Course'
 
   let baseURL: string | null = null
 
   // If a Url is defined, this Url is used as the key and to generate
   if (helper.isURL(argument.input) || argument['rdf-url']) {
-    doc['http://schema.org/@id'] = argument['rdf-url'] || argument.input
+    doc['http://schema.org/@id'] =
+      doc['http://schema.org/@id'] || argument['rdf-url'] || argument.input
     doc['http://schema.org/url'] =
+      doc['http://schema.org/url'] ||
       'https://LiaScript.github.io/course/?' +
-      (argument['rdf-url'] || argument.input)
+        (argument['rdf-url'] || argument.input)
 
     baseURL = helper.baseURL(argument['rdf-url'] || argument.input)
   }
@@ -122,21 +143,32 @@ function baseInformation(doc: any, definition: any) {
       author['http://schema.org/email'] = definition?.email
     }
 
-    doc['http://schema.org/author'] = author
+    doc['http://schema.org/author'] = doc['http://schema.org/author'] || author
   }
 
   if (definition.macro?.comment) {
-    doc['http://schema.org/description'] = definition.macro?.comment
+    doc['http://schema.org/description'] =
+      doc['http://schema.org/description'] || definition.macro?.comment
   }
 
   if (definition.macro?.tags) {
-    doc['http://schema.org/keywords'] = definition.macro.tags
-      .split(',')
-      .map((e: string) => e.trim())
+    if (typeof doc['http://schema.org/keywords'] === 'string') {
+      doc['http://schema.org/keywords'] += ', ' + definition.macro.tags
+    } else {
+      const tags = definition.macro.tags.split(',').map((e: string) => e.trim())
+
+      if (typeof doc['http://schema.org/keywords'] === 'undefined') {
+        doc['http://schema.org/keywords'] = tags
+      } else {
+        doc['http://schema.org/keywords'] =
+          doc['http://schema.org/keywords'].concat(tags)
+      }
+    }
   }
 
   if (definition?.version) {
-    doc['http://schema.org/version'] = definition?.version
+    doc['http://schema.org/version'] =
+      doc['http://schema.org/version'] || definition?.version
   }
 
   return doc
@@ -151,7 +183,8 @@ function baseInformation(doc: any, definition: any) {
  */
 function langInformation(doc: any, definition: any) {
   if (definition?.language) {
-    doc['http://schema.org/inLanguage'] = definition.language
+    doc['http://schema.org/inLanguage'] =
+      doc['http://schema.org/inLanguage'] || definition.language
   }
 
   return doc
@@ -174,7 +207,7 @@ function logoInformation(doc: any, definition: any, baseURL: null | string) {
     }
 
     if (imageUrl) {
-      doc['http://schema.org/image'] = {
+      doc['http://schema.org/image'] = doc['http://schema.org/image'] || {
         'http://schema.org/@type': 'ImageObject',
         'http://schema.org/url': imageUrl,
       }
@@ -198,7 +231,8 @@ async function licenseInformation(
   }
 
   if (licenseUrl) {
-    doc['http://schema.org/license'] = licenseUrl
+    doc['http://schema.org/license'] =
+      doc['http://schema.org/license'] || licenseUrl
   }
 
   return doc

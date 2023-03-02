@@ -144,7 +144,7 @@ async function run(argument) {
     } else if (argument.format === 'pdf') {
       PDF.exporter(argument, {})
     } else if (argument.format === 'rdf') {
-      const resp = await fetch(argument.input)
+      const resp = await fetch(argument.input, {})
       const data = await resp.text()
 
       if (data) {
@@ -424,6 +424,7 @@ function parseArguments() {
     'rdf-type': argv['rdf-type'],
     'rdf-license': argv['rdf-license'],
     'rdf-educationalLevel': argv['rdf-educationalLevel'],
+    'rdf-template': argv['rdf-template'],
   }
 
   argument.format = argument.format.toLowerCase()
