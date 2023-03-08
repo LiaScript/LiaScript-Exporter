@@ -50,6 +50,54 @@ export async function exporter(
   },
   json
 ) {
+  let doc = parse(argument, json)
+
+  if (argument['rdf-format'] === 'n-quads') {
+    const nquads = await jsonld.toRDF(doc, { format: 'application/n-quads' })
+    if (argument['rdf-preview']) {
+      console.log(nquads)
+    } else {
+      fs.writeFile(argument.output + '.nq', nquads, function (err) {
+        if (err) console.error(err)
+      })
+    }
+  } else {
+    doc = clean(doc)
+    if (argument['rdf-preview']) {
+      console.log(JSON.stringify(doc, null, 2))
+    } else {
+      fs.writeFile(
+        argument.output + '.jsonld',
+        JSON.stringify(doc, null, 2),
+        function (err) {
+          if (err) console.error(err)
+        }
+      )
+    }
+  }
+}
+
+export async function parse(
+  argument: {
+    input: string
+    readme: string
+    output: string
+    format: string
+    path: string
+    key?: string
+    style?: string
+
+    // special cases for RDF
+    'rdf-format'?: string
+    'rdf-preview'?: string
+    'rdf-url'?: string
+    'rdf-type'?: string
+    'rdf-template'?: string
+    'rdf-license'?: string
+    'rdf-educationalLevel'?: string
+  },
+  json
+) {
   let doc = {}
 
   if (argument['rdf-template']) {
@@ -96,29 +144,7 @@ export async function exporter(
   doc = await licenseInformation(doc, argument, baseURL)
   doc = await jsonld.compact(doc, 'http://schema.org')
 
-  if (argument['rdf-format'] === 'n-quads') {
-    const nquads = await jsonld.toRDF(doc, { format: 'application/n-quads' })
-    if (argument['rdf-preview']) {
-      console.log(nquads)
-    } else {
-      fs.writeFile(argument.output + '.nq', nquads, function (err) {
-        if (err) console.error(err)
-      })
-    }
-  } else {
-    doc = clean(doc)
-    if (argument['rdf-preview']) {
-      console.log(JSON.stringify(doc, null, 2))
-    } else {
-      fs.writeFile(
-        argument.output + '.jsonld',
-        JSON.stringify(doc, null, 2),
-        function (err) {
-          if (err) console.error(err)
-        }
-      )
-    }
-  }
+  return doc
 }
 
 /**

@@ -1,4 +1,5 @@
 import * as helper from './helper'
+import * as RDF from './rdf'
 
 const path = require('path')
 const fs = require('fs-extra')
@@ -16,6 +17,15 @@ export async function exporter(
     'web-iframe'?: boolean
     'web-indexeddb'?: boolean
     'web-zip'?: boolean
+
+    // special cases for RDF
+    'rdf-format'?: string
+    'rdf-preview'?: string
+    'rdf-url'?: string
+    'rdf-type'?: string
+    'rdf-template'?: string
+    'rdf-license'?: string
+    'rdf-educationalLevel'?: string
   },
   json: any
 ) {
@@ -108,6 +118,24 @@ export async function exporter(
   } catch (e) {
     console.warn('could not add image')
   }
+
+  // integrate the parsed json-ld information to the head of the html
+  try {
+    let jsonLD = await RDF.parse(argument, json)
+    index = helper.inject(
+      `<script type="application/ld+json">
+        ${JSON.stringify(jsonLD, null, 2)}
+      </script>`,
+      index
+    )
+
+    console.log('updating linked data ...')
+  } catch (e) {
+    console.warn('could not add linked data')
+  }
+
+  index = helper.prettify(index)
+  console.warn(index)
 
   try {
     if (argument['web-iframe']) {

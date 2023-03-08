@@ -8,7 +8,6 @@ import * as ANDROID from './android'
 const fs = require('fs-extra')
 const path = require('path')
 const { execSync } = require('child_process')
-const cleaner = require('clean-html')
 
 var Categories: Set<string> = new Set([])
 
@@ -233,26 +232,8 @@ export async function exporter(
 </body>
 </html> 
 `
-  cleaner.clean(
-    html,
-    {
-      wrap: 0,
-      'break-around-tags': [
-        'a',
-        'head',
-        'link',
-        'meta',
-        'p',
-        'script',
-        'small',
-        'span',
-        'title',
-      ],
-    },
-    function (htmlCleaned: string) {
-      helper.writeFile(output + '.html', htmlCleaned)
-    }
-  )
+
+  helper.writeFile(output + '.html', helper.prettify(html))
 }
 
 async function moveFile(oldPath, newPath) {

@@ -5,6 +5,7 @@ const temp = require('temp')
 const fs = require('fs-extra')
 const path = require('path')
 const archiver = require('archiver')
+const beautify = require('simply-beautiful')
 
 export function tmpDir() {
   return new Promise((resolve, reject) => {
@@ -51,6 +52,12 @@ export function injectResponsivevoice(key: string, into: string): string {
   )
 }
 
+/**
+ * Inject an arbitrary tag directly to the end of the html-head tag.
+ * @param element - new tag to be added
+ * @param into - old index.html content
+ * @returns - new index.html content
+ */
 export function inject(element: string, into: string): string {
   return into.replace('</head>', element + '</head>')
 }
@@ -202,4 +209,13 @@ async function checkFileExists(fileUrl: string) {
     console.warn(`Error checking if file exists: ${error}`)
     return false
   }
+}
+
+export function prettify(html: string) {
+  return beautify.html(html, {
+    indent_size: 4,
+    space_before_conditional: true,
+    jslint_happy: true,
+    max_char: 0,
+  })
 }
