@@ -1,4 +1,5 @@
 import * as helper from './helper'
+import * as RDF from './rdf'
 
 const path = require('path')
 const fs = require('fs-extra')
@@ -67,7 +68,15 @@ export async function exporter(
     await fs.move(old_, new_)
   }
 
-  await helper.iframe(tmpPath, 'start.html', argument.readme, argument.style)
+  const jsonLD = await RDF.script(argument, json)
+
+  await helper.iframe(
+    tmpPath,
+    'start.html',
+    argument.readme,
+    jsonLD,
+    argument.style
+  )
 
   helper.zip(tmpPath, argument.output)
 }

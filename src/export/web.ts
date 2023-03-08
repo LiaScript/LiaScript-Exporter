@@ -119,23 +119,7 @@ export async function exporter(
     console.warn('could not add image')
   }
 
-  // integrate the parsed json-ld information to the head of the html
-  try {
-    let jsonLD = await RDF.parse(argument, json)
-    index = helper.inject(
-      `<script type="application/ld+json">
-        ${JSON.stringify(jsonLD, null, 2)}
-      </script>`,
-      index
-    )
-
-    console.log('updating linked data ...')
-  } catch (e) {
-    console.warn('could not add linked data')
-  }
-
-  index = helper.prettify(index)
-  console.warn(index)
+  const jsonLD = await RDF.script(argument, json)
 
   try {
     if (argument['web-iframe']) {
@@ -144,10 +128,14 @@ export async function exporter(
         tmpPath,
         'index.html',
         argument.readme,
+        jsonLD,
         argument.style,
         'start.html'
       )
     } else {
+      index = helper.inject(jsonLD, index)
+      index = helper.prettify(index)
+
       await helper.writeFile(path.join(tmpPath, 'index.html'), index)
     }
   } catch (e) {

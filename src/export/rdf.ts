@@ -77,6 +77,32 @@ export async function exporter(
   }
 }
 
+export async function script(
+  argument: {
+    input: string
+    readme: string
+    output: string
+    format: string
+    path: string
+    key?: string
+    style?: string
+
+    // special cases for RDF
+    'rdf-format'?: string
+    'rdf-preview'?: string
+    'rdf-url'?: string
+    'rdf-type'?: string
+    'rdf-template'?: string
+    'rdf-license'?: string
+    'rdf-educationalLevel'?: string
+  },
+  json
+) {
+  return `<script type="application/ld+json">
+    ${JSON.stringify(await parse(argument, json), null, 2)}
+  </script>`
+}
+
 export async function parse(
   argument: {
     input: string

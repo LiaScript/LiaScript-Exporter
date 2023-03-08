@@ -74,15 +74,16 @@ export async function iframe(
   tmpPath,
   filename: string,
   readme: string,
+  jsonLD: string,
   style?: string,
   index?: string
 ) {
   await writeFile(
     path.join(tmpPath, filename),
-    `<!DOCTYPE html>
+    prettify(`<!DOCTYPE html>
     <html style="height:100%; overflow: hidden">
     <head>
-    
+      ${jsonLD}
     </head>
     <body style="height:100%; margin: 0px">
     
@@ -104,7 +105,7 @@ export async function iframe(
 
     </body>
     </html> 
-    `
+    `)
   )
 }
 

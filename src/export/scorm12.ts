@@ -1,4 +1,5 @@
 import * as helper from './helper'
+import * as RDF from './rdf'
 
 const scormPackager = require('@liascript/simple-scorm-packager')
 const path = require('path')
@@ -51,11 +52,20 @@ export async function exporter(
       ';'
   )
 
+  const jsonLD = await RDF.script(argument, json)
+
   if (argument['scorm-iframe']) {
-    await helper.iframe(tmpPath, 'start.html', argument.readme, argument.style)
+    await helper.iframe(
+      tmpPath,
+      'start.html',
+      argument.readme,
+      jsonLD,
+      argument.style
+    )
   }
 
   try {
+    index = helper.inject(jsonLD, index)
     await helper.writeFile(path.join(tmpPath, 'index.html'), index)
   } catch (e) {
     console.warn(e)
