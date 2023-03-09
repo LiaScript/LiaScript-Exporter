@@ -98,9 +98,17 @@ export async function script(
   },
   json
 ) {
+  let doc = await parse(argument, json)
+  doc = await jsonld.compact(doc, 'http://schema.org/')
+  doc = clean(doc)
+
   return `<script type="application/ld+json">
-    ${JSON.stringify(await parse(argument, json), null, 2)}
+    ${JSON.stringify(doc, null, 2)}
   </script>`
+}
+
+export async function compact(doc: any) {
+  return await jsonld.compact(doc, 'http://schema.org/')
 }
 
 export async function parse(
@@ -168,7 +176,7 @@ export async function parse(
   doc = langInformation(doc, json.lia.definition)
   doc = logoInformation(doc, json.lia.definition, baseURL)
   doc = await licenseInformation(doc, argument, baseURL)
-  doc = await jsonld.compact(doc, 'http://schema.org')
+  doc = await jsonld.compact(doc, 'http://schema.org/')
 
   return clean(doc)
 }

@@ -136,7 +136,6 @@ export async function exporter(
       }
 
       const itemListElement = {
-        '@context': 'http://schema.org',
         '@type': 'ItemList',
         itemListElement: subItemList,
       }
@@ -199,9 +198,9 @@ export async function exporter(
   }
 
   const jsonLD = {
-    '@context': 'http://schema.org',
+    '@context': 'http://schema.org/',
     '@type': 'ItemList',
-    itemList: itemList,
+    itemListElement: itemList,
   }
 
   let title = json.title || 'LiaScript Course Index'
@@ -221,7 +220,7 @@ export async function exporter(
     <title>${title}</title>
 
     <script type="application/ld+json">
-    ${JSON.stringify(jsonLD, null, 2)}
+    ${JSON.stringify(await RDF.compact(jsonLD), null, 2)}
     </script>
   
     ${
