@@ -200,7 +200,7 @@ export async function exporter(
   const jsonLD = {
     '@context': 'http://schema.org/',
     '@type': 'ItemList',
-    itemListElement: itemList,
+    itemListElement: removeContext(itemList),
   }
 
   let title = json.title || 'LiaScript Course Index'
@@ -220,7 +220,7 @@ export async function exporter(
     <title>${title}</title>
 
     <script type="application/ld+json">
-    ${JSON.stringify(await RDF.compact(jsonLD), null, 2)}
+    ${JSON.stringify(jsonLD, null, 2)}
     </script>
   
     ${
@@ -304,6 +304,18 @@ export async function exporter(
   helper.writeFile(output + '.html', helper.prettify(helper.prettify(html)))
 }
 
+function removeContext(obj) {
+  for (let key in obj) {
+    if (obj.hasOwnProperty(key)) {
+      if (key === '@context') {
+        delete obj[key]
+      } else if (typeof obj[key] === 'object') {
+        removeContext(obj[key])
+      }
+    }
+  }
+  return obj
+}
 async function moveFile(oldPath, newPath) {
   // 1. Create the destination directory if it does not exist
   // Set the `recursive` option to `true` to create all the subdirectories
