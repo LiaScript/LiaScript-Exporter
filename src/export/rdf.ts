@@ -170,7 +170,7 @@ export async function parse(
   doc = await licenseInformation(doc, argument, baseURL)
   doc = await jsonld.compact(doc, 'http://schema.org')
 
-  return doc
+  return clean(doc)
 }
 
 /**

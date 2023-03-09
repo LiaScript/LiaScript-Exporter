@@ -4,6 +4,7 @@ import * as IMS from './ims'
 import * as SCORM12 from './scorm12'
 import * as SCORM2004 from './scorm2004'
 import * as ANDROID from './android'
+import * as RDF from './rdf'
 
 const fs = require('fs-extra')
 const path = require('path')
@@ -61,6 +62,36 @@ export function storeNext(collection: any, data: any) {
   return
 }
 
+export function help() {
+  console.log('\nProject settings:')
+  console.log('')
+  console.log(
+    '--project-no-meta          Disable the generation of meta information for OpenGraph and Twitter-cards.'
+  )
+  console.log('--project-no-rdf           Disable the generation of json-ld.')
+  console.log(
+    '--project-no-categories    Disable the filter for categories/tags.'
+  )
+  console.log(
+    '--project-category-blur    Enable this and the categories will be blurred instead of deleted.'
+  )
+  console.log(
+    '--project-generate-scrom12 SCORM12 and pass additional scrom settings.'
+  )
+  console.log(
+    '--project-generate-scrom2004 SCORM2004 and pass additional scrom settings.'
+  )
+  console.log(
+    '--project-generate-ims     IMS resources with additional config settings.'
+  )
+  console.log(
+    '--project-generate-pdf     PDFs are automatically generated and added to every card.'
+  )
+  console.log(
+    '--project-generate-cache   Only generate new files, if they do not exist.'
+  )
+}
+
 export async function exporter(
   argument: {
     input: string
@@ -84,20 +115,40 @@ export async function exporter(
 
   let cards = ''
   const output = argument.output
+  const itemList: any[] = []
 
   for (let i = 0; i < json.collection.length; i++) {
     let course = json.collection[i]
 
     if (course.collection) {
       let subCards = ''
+      let subItemList: any[] = []
 
       for (let j = 0; j < course.collection.length; j++) {
+        let { html, json } = await toCard(argument, course.collection[j], true)
         subCards += `<div class='col-sm-6 col-md-4 col-lg-3 ${
           course.grid ? 'mb-3' : ''
         }'>
-          ${await toCard(argument, course.collection[j], true)}
+          ${html}
           </div>`
+
+        subItemList.push(json)
       }
+
+      const itemListElement = {
+        '@context': 'http://schema.org',
+        '@type': 'ItemList',
+        itemListElement: subItemList,
+      }
+
+      if (course.title) {
+        itemListElement['name'] = course.title
+      }
+      if (course.comment) {
+        itemListElement['description'] = course.comment
+      }
+
+      itemList.push(itemListElement)
 
       cards += `
         <div class="col-12">
@@ -120,7 +171,10 @@ export async function exporter(
     } else if (course.html) {
       cards += "<div class='col-12'>" + course.html + '</div>'
     } else {
-      cards += "<div class='col'>" + (await toCard(argument, course)) + '</div>'
+      let { html, json } = await toCard(argument, course)
+      cards += "<div class='col'>" + html + '</div>'
+
+      itemList.push(json)
     }
   }
 
@@ -144,10 +198,21 @@ export async function exporter(
       '</select>'
   }
 
+  const jsonLD = {
+    '@context': 'http://schema.org',
+    '@type': 'ItemList',
+    itemList: itemList,
+  }
+
   let title = json.title || 'LiaScript Course Index'
 
   if (json.title) {
-    title = title.replace(/<[^>]+>/g, '')
+    title = cleanHTML(title).replace(/\s+/g, ' ').trim()
+    jsonLD['name'] = title
+  }
+
+  if (json.comment) {
+    jsonLD['description'] = cleanHTML(json.comment).replace(/\s+/g, ' ').trim()
   }
 
   const html = `<!DOCTYPE html>
@@ -155,6 +220,10 @@ export async function exporter(
 <head>
     <title>${title}</title>
 
+    <script type="application/ld+json">
+    ${JSON.stringify(jsonLD, null, 2)}
+    </script>
+  
     ${
       json.icon
         ? '<link rel="icon" type="image/x-icon" href="' + json.icon + '">'
@@ -233,7 +302,7 @@ export async function exporter(
 </html> 
 `
 
-  helper.writeFile(output + '.html', helper.prettify(html))
+  helper.writeFile(output + '.html', helper.prettify(helper.prettify(html)))
 }
 
 async function moveFile(oldPath, newPath) {
@@ -282,7 +351,11 @@ function hash(url: string) {
   return value.startsWith('-') ? '0' + value.slice(1) : value
 }
 
-async function toCard(argument: any, course: any, small: boolean = false) {
+async function toCard(
+  argument: any,
+  course: any,
+  small: boolean = false
+): Promise<{ html: string; json: any }> {
   // if other parameters are defined for a specific course
   // then they are treated
 
@@ -438,15 +511,20 @@ async function toCard(argument: any, course: any, small: boolean = false) {
     execSync('rm -rf tmp')
   }
 
-  return card(
-    small,
-    course.data.lia.readme,
-    overwrite(course.title, course.data.lia.str_title),
-    overwrite(course.comment, course.data.lia.comment),
-    tagList,
-    downloads,
-    overwrite(course.logo, course.data.lia.definition.logo)
-  )
+  argument['rdf-url'] = course.data.lia.readme
+
+  return {
+    html: card(
+      small,
+      course.data.lia.readme,
+      overwrite(course.title, course.data.lia.str_title),
+      overwrite(course.comment, course.data.lia.comment),
+      tagList,
+      downloads,
+      overwrite(course.logo, course.data.lia.definition.logo)
+    ),
+    json: await RDF.parse(argument, course.data),
+  }
 }
 
 function card(
@@ -463,7 +541,7 @@ function card(
     apk?: string
   },
   img_url?: string
-) {
+): string {
   let image = ''
 
   if (img_url) {
@@ -544,10 +622,6 @@ function card(
             '">Android APK</a></li>'
           : ''
       }
-      
-      
-      
-      
     </ul>
   </div>
   </div>
@@ -566,8 +640,7 @@ function card(
         ${tag_list}
     </div>
     ${footer}
-</div>
-`
+    </div>`
 }
 
 function stringToColor(str: string) {

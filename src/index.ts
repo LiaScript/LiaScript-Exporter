@@ -309,37 +309,7 @@ function help() {
     '--pdf-omitBackground       Hides default white background and allows capturing screenshots with transparency. Defaults to true. '
   )
 
-  console.log('\nProject settings:')
-  console.log('')
-  console.log(
-    '--project-no-meta          Disable the generation of meta information for OpenGraph and Twitter-cards.'
-  )
-  console.log(
-    '--project-no-categories    Disable the filter for categories/tags.'
-  )
-  console.log(
-    '--project-category-blur    Enable this and the categories will be blurred instead of deleted.'
-  )
-
-  console.log(
-    '--project-generate-scrom12 SCORM12 and pass additional scrom settings.'
-  )
-
-  console.log(
-    '--project-generate-scrom2004 SCORM2004 and pass additional scrom settings.'
-  )
-
-  console.log(
-    '--project-generate-ims     IMS resources with additional config settings.'
-  )
-
-  console.log(
-    '--project-generate-pdf     PDFs are automatically generated and added to every card.'
-  )
-
-  console.log(
-    '--project-generate-cache   Only generate new files, if they do not exist.'
-  )
+  PROJECT.help()
 
   RDF.help()
 }
@@ -408,6 +378,7 @@ function parseArguments() {
 
     // project settings
     'project-no-meta': argv['project-no-meta'],
+    'project-no-rdf': argv['project-no-rdf'],
     'project-no-categories': argv['project-no-categories'],
     'project-category-blur': argv['project-category-blur'],
     'project-generate-pdf': argv['project-generate-pdf'],
