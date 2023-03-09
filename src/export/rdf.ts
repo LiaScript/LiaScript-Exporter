@@ -50,7 +50,7 @@ export async function exporter(
   },
   json
 ) {
-  let doc = parse(argument, json)
+  let doc = await parse(argument, json)
 
   if (argument['rdf-format'] === 'n-quads') {
     const nquads = await jsonld.toRDF(doc, { format: 'application/n-quads' })
@@ -176,7 +176,7 @@ export async function parse(
   doc = langInformation(doc, json.lia.definition)
   doc = logoInformation(doc, json.lia.definition, baseURL)
   doc = await licenseInformation(doc, argument, baseURL)
-  doc = await jsonld.compact(doc, 'http://schema.org/')
+  doc = await jsonld.compact(doc, 'http://schema.org')
 
   return clean(doc)
 }
