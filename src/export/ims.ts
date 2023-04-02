@@ -52,7 +52,9 @@ export async function exporter(
   await manifest(tmpPath, json.lia)
 
   // copy base path or readme-directory into temp
-  await fs.copy(argument.path, tmpPath, { filter: helper.filterHidden })
+  await fs.copy(argument.path, tmpPath, {
+    filter: helper.filterHidden(argument.path),
+  })
 
   if (argument['ims-indexeddb']) {
     let newReadme = helper.random(20) + '.md'

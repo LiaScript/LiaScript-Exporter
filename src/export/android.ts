@@ -54,7 +54,7 @@ export async function exporter(
       path.resolve(argument.path),
       path.join(tmpPath, './dist/res'),
       {
-        filter: helper.filterHidden,
+        filter: helper.filterHidden(argument.path),
       }
     )
   }

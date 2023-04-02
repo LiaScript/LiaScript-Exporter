@@ -34,15 +34,24 @@ export function writeFile(filename: string, content: string) {
   })
 }
 
-export function filterHidden(src: string, dest: string) {
-  const pattern = src.match(/(\/|\\)\.[^\\\/]+/g)
+export function filterHidden(sourceDir: string) {
+  return function (src: string, dest: string) {
+    // Get the relative path of the source folder being copied
+    const relPath = path.relative(path.resolve(sourceDir), src)
 
-  console.warn(src)
+    // Split the relative path into its components
+    const components = relPath.split(path.sep)
 
-  if (pattern === null) return true
-  else if (pattern.length == 0) return true
+    // Check each component for hidden folders
+    for (const component of components) {
+      // Check if the component starts with a dot (i.e., hidden folder)
+      if (component.startsWith('.')) {
+        return false // Exclude the folder from the copy
+      }
+    }
 
-  return false
+    return true // Include the folder in the copy
+  }
 }
 
 export function injectResponsivevoice(key: string, into: string): string {

@@ -146,6 +146,8 @@ export async function exporter(
   if (argument['web-zip']) {
     helper.zip(tmpPath, argument.output)
   } else {
-    await fs.move(tmpPath, argument.output, { filter: helper.filterHidden })
+    await fs.move(tmpPath, argument.output, {
+      filter: helper.filterHidden(argument.path),
+    })
   }
 }

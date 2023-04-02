@@ -73,7 +73,9 @@ export async function exporter(
   }
 
   // copy base path or readme-directory into temp
-  await fs.copy(argument.path, tmpPath, { filter: helper.filterHidden })
+  await fs.copy(argument.path, tmpPath, {
+    filter: helper.filterHidden(argument.path),
+  })
 
   let config = {
     version: '2004 4th Edition',
