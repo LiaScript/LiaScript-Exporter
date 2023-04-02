@@ -39,12 +39,6 @@ privileges. In my case on Linux it is simply:
 sudo npm install -g --verbose @liascript/exporter
 ```
 
-__Install from github:__ Similar to the code above...
-
-``` bash
-npm install -g --verbose https://github.com/liaScript/LiaScript-Exporter
-```
-
 Depending on your configuration, you might need to run this command with root
 privileges. In my case on Linux it is simply:
 
