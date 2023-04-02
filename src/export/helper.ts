@@ -48,6 +48,11 @@ export function filterHidden(sourceDir: string) {
       if (component.startsWith('.')) {
         return false // Exclude the folder from the copy
       }
+
+      // Check if the current folder being copied is the "node_modules" folder
+      if (component === 'node_modules') {
+        return false // Exclude the folder from the copy
+      }
     }
 
     return true // Include the folder in the copy
