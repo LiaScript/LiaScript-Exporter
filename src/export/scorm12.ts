@@ -4,7 +4,27 @@ import * as RDF from './rdf'
 const scormPackager = require('@liascript/simple-scorm-packager')
 const path = require('path')
 const fs = require('fs-extra')
-const util = require('util')
+
+export function help() {
+  console.log('\nSCORM settings:\n')
+  console.log('--scorm-organization', '      set the organization title')
+  console.log(
+    '--scorm-masteryScore',
+    '      set the scorm masteryScore (a value between 0 -- 100), default is 0'
+  )
+  console.log(
+    '--scorm-typicalDuration',
+    '   set the scorm duration, default is PT0H5M0S'
+  )
+  console.log(
+    '--scorm-iframe',
+    '            use an iframe, when a SCORM starting parameter is not working'
+  )
+  console.log(
+    '--scorm-embed',
+    '             embed the Markdown into the JS code, use in Moodle 4 to handle restrictions with dynamic loading'
+  )
+}
 
 export async function exporter(
   argument: {
@@ -21,6 +41,7 @@ export async function exporter(
     'scorm-masteryScore'?: string
     'scorm-typicalDuration'?: string
     'scorm-iframe'?: boolean
+    'scorm-embed'?: string
   },
   json
 ) {
@@ -64,6 +85,15 @@ export async function exporter(
     )
   }
 
+  if (argument['scorm-embed']) {
+    console.warn('WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW', argument['scorm-embed'])
+    index = helper.inject('<script src="course.js"></script>', index, true)
+    await helper.writeFile(
+      path.join(tmpPath, 'course.js'),
+      'window["liascript_course"] = ' + JSON.stringify(argument['scorm-embed'])
+    )
+  }
+
   try {
     index = helper.inject(jsonLD, index)
     await helper.writeFile(path.join(tmpPath, 'index.html'), index)
@@ -84,7 +114,10 @@ export async function exporter(
     language: json.lia.definition.language,
     masteryScore: argument['scorm-masteryScore'] || 0,
     startingPage: argument['scorm-iframe'] ? 'start.html' : 'index.html',
-    startingParameters: argument['scorm-iframe'] ? undefined : argument.readme,
+    startingParameters:
+      argument['scorm-iframe'] || argument['embed']
+        ? undefined
+        : argument.readme,
     source: path.join(tmp, 'pro'),
     package: {
       version: json.lia.definition.version,

@@ -22,7 +22,7 @@ import fetch from 'node-fetch'
 
 // -------------------------------Main Execution-------------------------------
 if (argv.v || argv.version) {
-  console.log('version: 2.6.6--0.11.0')
+  console.log('version: 2.6.7--0.11.0')
 } else if (argv.h || argv.help) {
   help()
 } else if (argv.i || argv.input) {
@@ -37,6 +37,9 @@ var collection: any
 
 async function run(argument) {
   var app = Elm.Worker.init({ flags: { cmd: '' } })
+
+  var embed = undefined
+
   app.ports.output.subscribe(function (event) {
     let [ok, string] = event
 
@@ -59,10 +62,16 @@ async function run(argument) {
         break
       }
       case 'scorm1.2': {
+        if (argument['scorm-embed']) {
+          argument['scorm-embed'] = embed
+        }
         SCORM12.exporter(argument, JSON.parse(string))
         break
       }
       case 'scorm2004': {
+        if (argument['scorm-embed']) {
+          argument['scorm-embed'] = embed
+        }
         SCORM2004.exporter(argument, JSON.parse(string))
         break
       }
@@ -140,6 +149,9 @@ async function run(argument) {
       }
     } else if (!helper.isURL(argument.input)) {
       const data = fs.readFileSync(argument.input, 'utf8')
+
+      embed = data
+
       app.ports.input.send([format, data])
     } else if (argument.format === 'pdf') {
       PDF.exporter(argument, {})
@@ -187,127 +199,13 @@ function help() {
 
   console.log('\n-k', '--key', '            responsive voice key ')
 
-  console.log('\nSCORM settings:')
-  console.log('')
-  console.log('--scorm-organization', '      set the organization title')
-  console.log(
-    '--scorm-masteryScore',
-    '      set the scorm masteryScore (a value between 0 -- 100), default is 0'
-  )
-  console.log(
-    '--scorm-typicalDuration',
-    '   set the scorm duration, default is PT0H5M0S'
-  )
+  SCORM12.help()
 
-  console.log(
-    '--scorm-iframe',
-    '            use an iframe, when a SCORM starting parameter is not working'
-  )
+  IMS.help()
 
-  console.log('\nIMS settings:')
-  console.log('')
-  console.log(
-    '--ims-indexeddb',
-    '           Use IndexedDB to store data persistently'
-  )
+  ANDROID.help()
 
-  console.log('\nWEB settings:')
-  console.log('')
-  console.log(
-    '--web-iframe               Use an iframed version to hide the course URL.'
-  )
-  console.log(
-    '--web-indexeddb            This will allow to store data within the browser using indexeddb, you can optionally pass a unique key (by default one is generated randomly).'
-  )
-  console.log(
-    '--web-zip                  By default the result is not zipped, you can change this with this parameter.'
-  )
-
-  console.log('\nAndroid settings:')
-  console.log('')
-  console.log(
-    '--android-sdk              Specify sdk.dir which is required for building.'
-  )
-  console.log(
-    '--android-appName          Name of the App (Main-title is used as default).'
-  )
-  console.log(
-    '--android-appId            Required to identify your App reverse url such as io.github.liascript'
-  )
-  console.log('--android-icon             Optional icon with 1024x1024 px')
-  console.log(
-    '--android-splash           Optional splash image with 2732x2732 px'
-  )
-  console.log(
-    '--android-splashDuration   Duration for splash-screen default 0 milliseconds'
-  )
-  console.log('--android-preview          Open course in Android-Studio')
-
-  console.log('\nPDF settings:\n')
-  console.log(
-    '--pdf-stylesheet           Inject an local CSS for changing the appearance.'
-  )
-  console.log(
-    '--pdf-theme                LiaScript themes: default, turquoise, blue, red, yellow'
-  )
-  console.log(
-    '--pdf-timeout              Set an additional time horizon to wait until finished.'
-  )
-  console.log(
-    '\nhttps://github.com/puppeteer/puppeteer/blob/main/docs/api.md#pagepdfoptions\n'
-  )
-  console.log(
-    '--pdf-preview              Open preview-browser (default false), print not possible'
-  )
-  console.log(
-    '--pdf-scale                Scale of the webpage rendering. Defaults to 1. Scale amount must be between 0.1 and 2.'
-  )
-  console.log(
-    '--pdf-displayHeaderFooter  Display header and footer. Defaults to false.'
-  )
-  console.log(
-    '--pdf-headerTemplate       HTML template for the print header, inject classes date, title, url, pageNumber, totalPages'
-  )
-
-  console.log(
-    '--pdf-footerTemplate       HTML template for the print footer. Should use the same format as the headerTemplate'
-  )
-  console.log(
-    '--pdf-printBackground      Print background graphics. Defaults to false'
-  )
-  console.log(
-    '--pdf-landscape            Paper orientation. Defaults to false.'
-  )
-  console.log(
-    '--pdf-pageRanges           Paper ranges to print, e.g., "1-5, 8, 11-13"'
-  )
-  console.log(
-    '--pdf-format               Paper format. If set, takes priority over width or height options. Defaults to a4.'
-  )
-  console.log(
-    '--pdf-width                Paper width, accepts values labeled with units.'
-  )
-  console.log(
-    '--pdf-height               Paper height, accepts values labeled with units.'
-  )
-  console.log(
-    '--pdf-margin-top           Top margin, accepts values labeled with units.'
-  )
-  console.log(
-    '--pdf-margin-right         Right margin, accepts values labeled with units.'
-  )
-  console.log(
-    '--pdf-margin-bottom        Bottom margin, accepts values labeled with units.'
-  )
-  console.log(
-    '--pdf-margin-left          Left margin, accepts values labeled with units. '
-  )
-  console.log(
-    '--pdf-preferCSSPageSize    Give any CSS @page size declared in the page priority over what is declared in width and height or format options.'
-  )
-  console.log(
-    '--pdf-omitBackground       Hides default white background and allows capturing screenshots with transparency. Defaults to true. '
-  )
+  PDF.help()
 
   PROJECT.help()
 
@@ -337,6 +235,7 @@ function parseArguments() {
     'scorm-masteryScore': argv['scorm-masteryScore'],
     'scorm-typicalDuration': argv['scorm-typicalDuration'],
     'scorm-iframe': argv['scorm-iframe'],
+    'scorm-embed': argv['scorm-embed'],
 
     // special IMS cases
     'ims-indexeddb': argv['ims-indexeddb'],

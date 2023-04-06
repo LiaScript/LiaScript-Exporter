@@ -21,6 +21,7 @@ export async function exporter(
     'scorm-masteryScore'?: string
     'scorm-typicalDuration'?: string
     'scorm-iframe'?: boolean
+    'scorm-embed'?: string
   },
   json
 ) {
@@ -64,6 +65,14 @@ export async function exporter(
     )
   }
 
+  if (argument['scorm-embed']) {
+    index = helper.inject('<script src="course.js"></script>', index, true)
+    await helper.writeFile(
+      path.join(tmpPath, 'course.js'),
+      'window["liascript_course"] = ' + JSON.stringify(argument['scorm-embed'])
+    )
+  }
+
   try {
     index = helper.inject(jsonLD, index)
     await helper.writeFile(path.join(tmpPath, 'index.html'), index)
@@ -84,7 +93,10 @@ export async function exporter(
     language: json.lia.definition.language,
     masteryScore: argument['scorm-masteryScore'] || 0,
     startingPage: argument['scorm-iframe'] ? 'start.html' : 'index.html',
-    startingParameters: argument['scorm-iframe'] ? undefined : argument.readme,
+    startingParameters:
+      argument['scorm-iframe'] || argument['embed']
+        ? undefined
+        : argument.readme,
     source: path.join(tmp, 'pro'),
     package: {
       version: json.lia.definition.version,

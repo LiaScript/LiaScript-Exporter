@@ -72,8 +72,14 @@ export function injectResponsivevoice(key: string, into: string): string {
  * @param into - old index.html content
  * @returns - new index.html content
  */
-export function inject(element: string, into: string): string {
-  return into.replace('</head>', element + '</head>')
+export function inject(
+  element: string,
+  into: string,
+  head: boolean = false
+): string {
+  return head
+    ? into.replace('<head>', '<head>' + element)
+    : into.replace('</head>', element + '</head>')
 }
 
 export function isURL(uri: string) {
