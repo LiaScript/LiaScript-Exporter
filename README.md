@@ -167,7 +167,7 @@ $ ls
 ```
 
 The format is `scorm1.2` and the input folder is `project/README.md`. All the
-content and sub-folders of this folder is then coppied into your SCORM.zip. The
+content and sub-folders of this folder is then copied into your SCORM.zip. The
 name is defined by your output definition and contains the current version
 number of you course as well as the current date.
 
@@ -269,6 +269,17 @@ Done
 $ ls
 .. rockOn.zip ..
 ```
+
+### SCORM Examples
+
+| LMS         | Command                                                                                     |
+|-------------|---------------------------------------------------------------------------------------------|
+| ILIAS       | `liaex -i course/README.md -f scorm2004 --scorm-masteryScore 80 --scorm-iframe`             |
+| Moodle 3.x  | `liaex -i course/README.md -f scorm1.2 --scorm-masteryScore 80 --scorm-iframe`              |
+| Moodle 4.x  | `liaex -i course/README.md -f scorm1.2 --scorm-masteryScore 80 --scorm-embed`               |
+| scrom.cloud | `liaex -i course/README.md -f scorm2004 --scorm-masteryScore 80 --scorm-iframe`             |
+|             | Additionally check: Course Properties >> Compatibility Settings >> Wrap SCO Window with API |
+
 
 ### IMS Content
 
@@ -828,7 +839,6 @@ This will be translated to:
   ]
 }
 ```
-
 
 ## TODOs & Contributions
 
