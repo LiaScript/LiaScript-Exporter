@@ -18,7 +18,7 @@ export function tmpDir() {
 }
 
 export function dirname() {
-  return __dirname //path.join(__dirname, 'exporter')
+  return path.join(__dirname, '../../dist')
 }
 
 export function sleep(ms: number) {

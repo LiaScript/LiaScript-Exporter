@@ -52,7 +52,7 @@
     "minimist": "^1.2.5",
     "node-fetch": "^2.6.9",
     "path": "^0.12.7",
-    "puppeteer": "^19.2.2",
+    "puppeteer": "^19.9.0",
     "simply-beautiful": "^0.2.14",
     "temp": "^0.9.4",
     "xhr2": "^0.2.1",
@@ -71,6 +71,7 @@
   },
   "targets": {
     "main": {
+      "context" : "node",
       "optimize": true
     }
   }
