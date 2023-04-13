@@ -125,14 +125,26 @@ export async function exporter(
       let subItemList: any[] = []
 
       for (let j = 0; j < course.collection.length; j++) {
-        let { html, json } = await toCard(argument, course.collection[j], true)
-        subCards += `<div class='col-sm-6 col-md-4 col-lg-3 ${
-          course.grid ? 'mb-3' : ''
-        }'>
+        if (course.collection[j].link) {
+          subCards += `<div class='col-sm-6 col-md-4 col-lg-3 ${
+            course.grid ? 'mb-3' : ''
+          }'>
+          ${toLinkCard(argument, course.collection[j], true)}
+          </div>`
+        } else {
+          let { html, json } = await toCard(
+            argument,
+            course.collection[j],
+            true
+          )
+          subCards += `<div class='col-sm-6 col-md-4 col-lg-3 ${
+            course.grid ? 'mb-3' : ''
+          }'>
           ${html}
           </div>`
 
-        subItemList.push(json)
+          subItemList.push(json)
+        }
       }
 
       const itemListElement = {
@@ -169,6 +181,8 @@ export async function exporter(
         </div>`
     } else if (course.html) {
       cards += "<div class='col-12'>" + course.html + '</div>'
+    } else if (course.link) {
+      cards += "<div class='col'>" + toLinkCard(argument, course) + '</div>'
     } else {
       let { html, json } = await toCard(argument, course)
       cards += "<div class='col'>" + html + '</div>'
@@ -362,6 +376,38 @@ function hash(url: string) {
   return value.startsWith('-') ? '0' + value.slice(1) : value
 }
 
+function toLinkCard(
+  argument: any,
+  course: any,
+  small: boolean = false
+): string {
+  if (course.arguments) {
+    argument = course.arguments.reduce((a, b) => {
+      return { ...a, ...b }
+    }, argument)
+  }
+
+  let tags = []
+
+  const tagList = course.tags || tags
+  for (let i = 0; i < tagList.length; i++) {
+    Categories.add(tagList[i].toLowerCase())
+  }
+
+  let comment = course.title ? course.comment : course.comment || course.link
+
+  return card(
+    small,
+    '',
+    course.title || '',
+    comment || '',
+    tagList,
+    {},
+    course.logo,
+    course.link
+  )
+}
+
 async function toCard(
   argument: any,
   course: any,
@@ -551,7 +597,8 @@ function card(
     ims?: string
     apk?: string
   },
-  img_url?: string
+  img_url?: string,
+  link?: string
 ): string {
   let image = ''
 
@@ -644,7 +691,9 @@ function card(
     .join('|')}">
     ${image}
     <div class="card-body" style="transform: rotate(0);">
-        <a href="https://liascript.github.io/course/?${url}" target="_blank" class="link-dark stretched-link">
+        <a href="${link ? '' : 'https://liascript.github.io/course/?'}${
+    link || url
+  }" target="_blank" class="link-dark stretched-link">
             <h${small ? 6 : 5} class="card-title">${title}</h${small ? 6 : 5}>
         </a>
         <p class="card-text">${comment}</p>

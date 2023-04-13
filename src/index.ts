@@ -22,7 +22,7 @@ import fetch from 'node-fetch'
 
 // -------------------------------Main Execution-------------------------------
 if (argv.v || argv.version) {
-  console.log('version: 2.6.7--0.11.1')
+  console.log('version: 2.6.8--0.11.1')
 } else if (argv.h || argv.help) {
   help()
 } else if (argv.i || argv.input) {
@@ -144,8 +144,14 @@ async function run(argument) {
 
       if (collection) {
         const next = PROJECT.getNext(collection)
-        console.warn('loading:', next)
-        app.ports.input.send([format, next])
+
+        if (next === null) {
+          PROJECT.exporter(argument, collection)
+        } else {
+          console.warn('loading:', next)
+
+          app.ports.input.send([format, next])
+        }
       }
     } else if (!helper.isURL(argument.input)) {
       const data = fs.readFileSync(argument.input, 'utf8')
