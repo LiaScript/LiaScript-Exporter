@@ -625,10 +625,10 @@ function card(
 
   if (tags.length > 0) {
     for (let i = 0; i < tags.length; i++) {
-      tag_list += `<span class="badge rounded-pill bg-light text-dark">${tags[i]}</span>`
+      tag_list += `<span style="display: inline; white-space: break-spaces;" class="badge rounded-pill bg-light text-dark">${tags[i]}</span>`
     }
 
-    tag_list = `<div class="d-flex align-items-center">${tag_list}</div>`
+    tag_list = `<p>${tag_list}</p>`
   }
 
   if (small && comment) {
