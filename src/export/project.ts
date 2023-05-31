@@ -523,7 +523,7 @@ async function toCard(
   }
 
   // SCORM2004
-  if (repo && argument['project-generate-scorm12']) {
+  if (repo && argument['project-generate-scorm2004']) {
     const file = argument.output + '.zip'
     const asset = 'assets/scorm2004/' + file
 
