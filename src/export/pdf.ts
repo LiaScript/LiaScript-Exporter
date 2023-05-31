@@ -123,7 +123,7 @@ export async function exporter(
       '--unhandled-rejections=strict',
       '--disable-features=BlockInsecurePrivateNetworkRequests',
     ],
-    headless: argument['pdf-preview'] ? false : true,
+    headless: argument['pdf-preview'] ? false : 'new',
   })
   const page = await browser.newPage()
 
