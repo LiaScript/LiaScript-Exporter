@@ -333,6 +333,7 @@ function removeContext(obj) {
 async function moveFile(oldPath, newPath) {
   // 1. Create the destination directory if it does not exist
   // Set the `recursive` option to `true` to create all the subdirectories
+
   await fs.mkdir(path.dirname(newPath), { recursive: true })
   // 2. Rename the file (move it to the new directory)
   // Return the promise
@@ -431,6 +432,8 @@ async function toCard(
     tags = []
   }
 
+  const backupOutput = hash(course.data.lia.readme)
+
   const tagList = course.tags || tags
   for (let i = 0; i < tagList.length; i++) {
     Categories.add(tagList[i].toLowerCase())
@@ -439,7 +442,8 @@ async function toCard(
   let downloads = {}
   if (argument['project-generate-pdf']) {
     argument.input = course.data.lia.readme
-    argument.output = hash(course.data.lia.readme)
+    argument.output = backupOutput
+
     const file = argument.output + '.pdf'
 
     if (
@@ -453,7 +457,7 @@ async function toCard(
       await PDF.exporter(argument, {})
 
       if (fs.existsSync(file)) {
-        moveFile(file, 'assets/pdf/' + file)
+        await moveFile(file, 'assets/pdf/' + file)
         downloads['pdf'] = 'assets/pdf/' + file
       }
     }
@@ -474,7 +478,7 @@ async function toCard(
       argument.path = 'tmp'
       argument.readme = path.join('./', repo.path)
 
-      argument.output = hash(course.data.lia.readme)
+      argument.output = backupOutput
 
       execSync('rm -rf tmp/.git')
       execSync('rm -rf tmp/.github')
@@ -484,8 +488,9 @@ async function toCard(
 
   // IMS
   if (repo && argument['project-generate-ims']) {
+    argument.output = backupOutput
     const file = argument.output + '.zip'
-    const asset = 'assets/ims/' + file
+    const asset = argument.output + '.zip'
 
     if (
       argument['project-generate-cache'] &&
@@ -495,8 +500,8 @@ async function toCard(
     } else {
       await IMS.exporter(argument, course.data)
 
-      if (fs.existsSync(file)) {
-        moveFile(file, asset)
+      if (fs.existsSync(asset)) {
+        await moveFile(file, 'assets/ims/' + file)
         downloads['ims'] = asset
       }
     }
@@ -504,8 +509,8 @@ async function toCard(
 
   // SCORM12
   if (repo && argument['project-generate-scorm12']) {
-    const file = argument.output + '.zip'
-    const asset = 'assets/scorm12/' + file
+    argument.output = 'assets/scrom12/' + backupOutput
+    const asset = argument.output + '.zip'
 
     if (
       argument['project-generate-cache'] &&
@@ -515,8 +520,7 @@ async function toCard(
     } else {
       await SCORM12.exporter(argument, course.data)
 
-      if (fs.existsSync(file)) {
-        moveFile(file, asset)
+      if (fs.existsSync(asset)) {
         downloads['scorm12'] = asset
       }
     }
@@ -524,8 +528,9 @@ async function toCard(
 
   // SCORM2004
   if (repo && argument['project-generate-scorm2004']) {
-    const file = argument.output + '.zip'
-    const asset = 'assets/scorm2004/' + file
+    argument.output = 'assets/scorm2004/' + backupOutput
+
+    const asset = argument.output + '.zip'
 
     if (
       argument['project-generate-cache'] &&
@@ -535,8 +540,7 @@ async function toCard(
     } else {
       await SCORM2004.exporter(argument, course.data)
 
-      if (fs.existsSync(file)) {
-        moveFile(file, asset)
+      if (fs.existsSync(asset)) {
         downloads['scorm2004'] = asset
       }
     }
@@ -544,6 +548,7 @@ async function toCard(
 
   // Android
   if (repo && argument['project-generate-android']) {
+    argument.output = backupOutput
     const file = argument.output + '.apk'
 
     const asset = 'assets/android/' + file
@@ -557,7 +562,7 @@ async function toCard(
       await ANDROID.exporter(argument, course.data)
 
       if (fs.existsSync(file)) {
-        moveFile(file, asset)
+        await moveFile(file, asset)
         downloads['apk'] = asset
       }
     }

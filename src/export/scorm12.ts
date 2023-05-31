@@ -86,7 +86,6 @@ export async function exporter(
   }
 
   if (argument['scorm-embed']) {
-    console.warn('WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW', argument['scorm-embed'])
     index = helper.inject('<script src="course.js"></script>', index, true)
     await helper.writeFile(
       path.join(tmpPath, 'course.js'),
