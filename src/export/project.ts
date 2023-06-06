@@ -243,8 +243,6 @@ export async function exporter(
         : ''
     }
 
-    ${!argument['project-no-meta'] ? '' : meta(json)}
-
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 
     <script>
@@ -440,6 +438,16 @@ async function toCard(
   }
 
   let downloads = {}
+
+  if (argument['project-generate-pdf'])
+    downloads['pdf'] = 'assets/pdf/' + backupOutput + '.pdf'
+  if (argument['project-generate-ims'])
+    downloads['ims'] = 'assets/ims/' + backupOutput + '.zip'
+  if (argument['project-generate-scorm12'])
+    downloads['scorm12'] = 'assets/scorm12/' + backupOutput + '.zip'
+  if (argument['project-generate-scorm2004'])
+    downloads['scorm2004'] = 'assets/scorm2004/' + backupOutput + '.zip'
+
   if (argument['project-generate-pdf']) {
     argument.input = course.data.lia.readme
     argument.output = backupOutput
@@ -450,7 +458,7 @@ async function toCard(
       argument['project-generate-cache'] &&
       fs.existsSync(path.join(process.cwd(), 'assets/pdf/' + file))
     ) {
-      downloads['pdf'] = 'assets/pdf/' + file
+      console.log('using cached file of ', argument.input, ' -> ', file)
     } else {
       console.log('generate pdf of', argument.input, ' -> ', file)
 
@@ -458,7 +466,6 @@ async function toCard(
 
       if (fs.existsSync(file)) {
         await moveFile(file, 'assets/pdf/' + file)
-        downloads['pdf'] = 'assets/pdf/' + file
       }
     }
   }
@@ -499,9 +506,8 @@ async function toCard(
       argument['project-generate-cache'] &&
       fs.existsSync(path.join(process.cwd(), file))
     ) {
-      downloads['ims'] = file
+      console.log('using cached file of ', argument.input, ' -> ', file)
     } else {
-      downloads['ims'] = file
       await IMS.exporter(argument, course.data)
     }
   }
@@ -515,13 +521,9 @@ async function toCard(
       argument['project-generate-cache'] &&
       fs.existsSync(path.join(process.cwd(), asset))
     ) {
-      downloads['scorm12'] = asset
+      console.log('using cached file of ', argument.input, ' -> ', asset)
     } else {
       await SCORM12.exporter(argument, course.data)
-
-      if (fs.existsSync(asset)) {
-        downloads['scorm12'] = asset
-      }
     }
   }
 
@@ -535,13 +537,9 @@ async function toCard(
       argument['project-generate-cache'] &&
       fs.existsSync(path.join(process.cwd(), asset))
     ) {
-      downloads['scorm2004'] = asset
+      console.log('using cached file of ', argument.input, ' -> ', asset)
     } else {
       await SCORM2004.exporter(argument, course.data)
-
-      if (fs.existsSync(asset)) {
-        downloads['scorm2004'] = asset
-      }
     }
   }
 
