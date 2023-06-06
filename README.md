@@ -123,11 +123,14 @@ https://github.com/puppeteer/puppeteer/blob/main/docs/api/puppeteer.pdfoptions.m
 
 Project settings:
 
---project-no-meta          Disable the generation of meta information for OpenGraph and Twitter-cards.
---project-no-categories    Disable the filter for categories/tags.
---project-category-blur    Enable this and the categories will be blurred instead of deleted.
---project-generate-pdf     PDFs are automatically generated and added to every card.
---project-generate-cache   Only generate new files, if they do not exist.
+--project-no-meta            Disable the generation of meta information for OpenGraph and Twitter-cards.
+--project-no-categories      Disable the filter for categories/tags.
+--project-category-blur      Enable this and the categories will be blurred instead of deleted.
+--project-generate-pdf       PDFs are automatically generated and added to every card.
+--project-generate-scrom12   SCORM12 and pass additional scrom settings.
+--project-generate-scrom2004 SCORM2004 and pass additional scrom settings.
+--project-generate-ims       IMS resources with additional config settings.
+--project-generate-cache     Only generate new files, if they do not exist.
 
 RDF settings:
 
