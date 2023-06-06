@@ -488,22 +488,21 @@ async function toCard(
 
   // IMS
   if (repo && argument['project-generate-ims']) {
-    argument.output = backupOutput
+    argument.output = 'assets/ims/' + backupOutput
     const file = argument.output + '.zip'
-    const asset = argument.output + '.zip'
+
+    try {
+      execSync('mkdir assets/ims')
+    } catch (e) {}
 
     if (
       argument['project-generate-cache'] &&
-      fs.existsSync(path.join(process.cwd(), asset))
+      fs.existsSync(path.join(process.cwd(), file))
     ) {
-      downloads['ims'] = asset
+      downloads['ims'] = file
     } else {
+      downloads['ims'] = file
       await IMS.exporter(argument, course.data)
-
-      if (fs.existsSync(asset)) {
-        await moveFile(file, 'assets/ims/' + file)
-        downloads['ims'] = asset
-      }
     }
   }
 
@@ -698,7 +697,9 @@ function card(
     <div class="card-body" style="transform: rotate(0);">
         <a href="${link ? '' : 'https://liascript.github.io/course/?'}${
     link || url
-  }" target="_blank" class="link-dark stretched-link">
+  }" target="${
+    link && !link.startsWith('http') ? '_self' : '_blank'
+  }" class="link-dark stretched-link">
             <h${small ? 6 : 5} class="card-title">${title}</h${small ? 6 : 5}>
         </a>
         <p class="card-text">${comment}</p>

@@ -101,7 +101,7 @@ export async function exporter(
     argument.style
   )
 
-  helper.zip(tmpPath, argument.output)
+  await helper.zip(tmpPath, argument.output)
 }
 
 async function manifest(tmpPath: any, meta: any) {

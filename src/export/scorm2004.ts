@@ -122,7 +122,7 @@ export async function exporter(
     },
   }
 
-  scormPackager(config, function (msg) {
+  await scormPackager(config, function (msg) {
     console.log(msg)
     process.exit(0)
   })
