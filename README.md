@@ -474,7 +474,7 @@ This format has a `--pdf-preview` mode, which allows you to inspect your course,
 which works also with https inputs.
 
 ``` shell
-liaex --format pdf --pdf-preview -i https://raw.githubusercontent.com/TUBAF-IfI-LiaScript/VL_ProzeduraleProgrammierung/master/08_Objekte.md
+liaex --format pdf --pdf-preview -i https://raw.githubusercontent.com/TUBAF-IfI-LiaScript/VL_Softwareentwicklung/master/00_Einfuehrung.md
 
 ```
 
