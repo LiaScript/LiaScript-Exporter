@@ -1,8 +1,10 @@
 LiaScript
 .cache
+.git
 .gitmodules
 .parcel-cache
 .custom.css
 .vscode
 docker
 ignore
+*.zip
