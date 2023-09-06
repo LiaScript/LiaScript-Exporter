@@ -22,7 +22,7 @@ import fetch from 'node-fetch'
 
 // -------------------------------Main Execution-------------------------------
 if (argv.v || argv.version) {
-  console.log('version: 2.6.22--0.12.4')
+  console.log('version: 2.6.23--0.12.4')
 } else if (argv.h || argv.help) {
   help()
 } else if (argv.i || argv.input) {
@@ -242,6 +242,7 @@ function parseArguments() {
     'scorm-typicalDuration': argv['scorm-typicalDuration'],
     'scorm-iframe': argv['scorm-iframe'],
     'scorm-embed': argv['scorm-embed'],
+    'scorm-alwaysActive': argv['scorm-alwaysActive'],
 
     // special IMS cases
     'ims-indexeddb': argv['ims-indexeddb'],

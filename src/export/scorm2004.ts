@@ -22,6 +22,7 @@ export async function exporter(
     'scorm-typicalDuration'?: string
     'scorm-iframe'?: boolean
     'scorm-embed'?: string
+    'scorm-alwaysActive'?: boolean
   },
   json
 ) {
@@ -42,16 +43,27 @@ export async function exporter(
   }
 
   index = helper.inject('<script src="config.js"></script>', index)
-  await helper.writeFile(
-    path.join(tmpPath, 'config.js'),
+
+  let conf =
     'window.config_ = ' +
-      JSON.stringify({
-        task: json.task,
-        quiz: json.quiz,
-        survey: json.survey,
-      }) +
-      ';'
-  )
+    JSON.stringify({
+      task: json.task,
+      quiz: json.quiz,
+      survey: json.survey,
+    }) +
+    ';'
+
+  if (argument['scorm-alwaysActive']) {
+    conf += '\n\nwindow["ACTIVE"] = true;'
+
+    if (argument['scorm-masteryScore']) {
+      conf +=
+        '\n\nwindow["MASTERY_SCORE"] =' +
+        parseFloat(argument['scorm-masteryScore']) / 100
+    }
+  }
+
+  await helper.writeFile(path.join(tmpPath, 'config.js'), conf)
 
   const jsonLD = await RDF.script(argument, json)
 
