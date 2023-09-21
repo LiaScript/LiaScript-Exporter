@@ -74,6 +74,7 @@ SCORM settings:
 --scorm-masteryScore       set the scorm masteryScore (a value between 0 -- 100), default is 0
 --scorm-typicalDuration    set the scorm duration, default is PT0H5M0S
 --scorm-iframe             use an iframe, when a SCORM starting parameter is not working
+--scorm-embed              embed the Markdown into the JS code, use in Moodle 4 to handle restrictions with dynamic loading
 
 IMS settings:
 
