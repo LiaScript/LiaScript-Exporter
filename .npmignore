@@ -8,3 +8,4 @@ LiaScript
 docker
 ignore
 *.zip
+node_modules
