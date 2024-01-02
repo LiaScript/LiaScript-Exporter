@@ -287,6 +287,7 @@ Minimal examples for SCORM1.2 and SCORM2004 for tested LMS:
 | Moodle 4.x                                            | `liaex -i course/README.md -f scorm1.2 --scorm-masteryScore 80 --scorm-embed`               |
 | [OPAL](https://www.bps-system.de/opal-lernplattform/) | `liaex -i course/README.md -f scorm1.2 --scorm-masteryScore 80 --scorm-embed`               |
 | [open edX](https://openedx.org)                       | `liaex -i course/README.md -f scorm1.2 --scorm-masteryScore 80 --scorm-embed`               |
+| [OpenOlat](https://www.openolat.com)                  | `liaex -i course/README.md -f scorm1.2 --scorm-masteryScore 80 --scorm-embed`               |
 | [scrom.cloud](https://app.cloud.scorm.com)            | `liaex -i course/README.md -f scorm2004 --scorm-masteryScore 80 --scorm-iframe`             |
 |                                                       | Additionally check: Course Properties >> Compatibility Settings >> Wrap SCO Window with API |
 
