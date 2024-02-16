@@ -1,6 +1,6 @@
 {
   "name": "@liascript/exporter",
-  "version": "2.6.26--0.14.4",
+  "version": "2.6.27--0.14.4",
   "description": "A generic exporter for LiaScript",
   "main": "dist/index.js",
   "repository": {
@@ -18,7 +18,7 @@
   },
   "preferGlobal": true,
   "scripts": {
-    "postinstall": "node node_modules/puppeteer/install.js",
+    "postinstall": "npm install puppeteer",
     "__preinstall": "cd LiaScript && npm i && npm run build:scorm1.2 && cp -r dist ../assets/scorm1.2",
     "build:assets": "npm run clean && npm run asset:scorm1.2 && npm run asset:scorm2004 && npm run asset:web && npm run asset:indexeddb && npm run asset:pdf && npm run asset:capacitor && npm run asset:logo",
     "clean": "rm -rf dist/assets/*",
@@ -53,7 +53,7 @@
     "minimist": "^1.2.5",
     "node-fetch": "^2.6.9",
     "path": "^0.12.7",
-    "puppeteer": "^19.9.0",
+    "puppeteer": "^22.0.0",
     "simply-beautiful": "^0.2.14",
     "temp": "^0.9.4",
     "xhr2": "^0.2.1",
