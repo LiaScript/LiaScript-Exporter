@@ -22,7 +22,7 @@ import fetch from 'node-fetch'
 
 // -------------------------------Main Execution-------------------------------
 if (argv.v || argv.version) {
-  console.log('version: 2.6.26--0.14.3')
+  console.log('version: 2.6.26--0.14.4')
 } else if (argv.h || argv.help) {
   help()
 } else if (argv.i || argv.input) {
