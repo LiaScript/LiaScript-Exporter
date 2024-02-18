@@ -1,7 +1,7 @@
 import * as helper from './helper'
 
 const path = require('path')
-const puppeteer = require('puppeteer')
+import puppeteer from 'puppeteer'
 
 export function help() {
   console.log('\nPDF settings:\n')
