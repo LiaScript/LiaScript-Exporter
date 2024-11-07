@@ -117,11 +117,15 @@ export async function exporter(
   const browser = await puppeteer.launch({
     pipe: true,
     args: [
+      '--no-sandbox',
       '--disable-web-security',
       '--disable-features=IsolateOrigins',
       '--disable-site-isolation-trials',
       '--unhandled-rejections=strict',
       '--disable-features=BlockInsecurePrivateNetworkRequests',
+      '--allow-file-access-from-files',
+      '--enable-local-file-accesses',
+      '--enable-features=ExperimentalJavaScript',
     ],
     headless: argument['pdf-preview'] ? false : 'new',
   })
