@@ -1,6 +1,6 @@
 {
   "name": "@liascript/exporter",
-  "version": "2.6.29--0.16.2",
+  "version": "2.6.30--0.16.2",
   "description": "A generic exporter for LiaScript",
   "main": "dist/index.js",
   "repository": {
@@ -19,7 +19,7 @@
   "preferGlobal": true,
   "scripts": {
     "__preinstall": "cd LiaScript && npm i && npm run build:scorm1.2 && cp -r dist ../assets/scorm1.2",
-    "build:assets": "npm run clean && npm run asset:scorm1.2 && npm run asset:scorm2004 && npm run asset:web && npm run asset:indexeddb && npm run asset:pdf && npm run asset:capacitor && npm run asset:logo && npm run fix:file",
+    "build:assets": "npm run clean && npm run asset:scorm1.2 && npm run asset:scorm2004 && npm run asset:web && npm run asset:indexeddb && npm run asset:pdf && npm run asset:capacitor && npm run asset:logo",
     "clean": "rm -rf dist/assets/*",
     "asset:logo": "cp -r LiaScript/resources dist",
     "asset:web": "cd LiaScript && npm i && npm run build:base && cp -r dist ../dist/assets/web",
@@ -32,7 +32,7 @@
     "build:debug": "npx parcel build --target node --no-minify --log-level 5 src/index.ts",
     "run:moodle": "cd docker/moodle && docker-compose up",
     "run:ilias": "cd docker/ilias && docker-compose up",
-    "fix:file": "find dist/ -type f -name \"*.js\" -exec sed -i 's_/(https?|file|ftp|(chrome|moz|safari-web)-extension):\\/\\/[^/]+/_/(https?|file|ftp|(chrome|moz|safari-web)-extension):\\/\\/\\/?[^/]+/_g' {} +",
+    "fix:file": "sh -c 'find dist/ -type f -name \"*.js\" -exec sed -i \"s/\\(https\\?|file\\|ftp\\|(chrome\\|moz\\|safari-web\\)-extension\\):\\/\\/[^/]\\+/\\1:\\/\\/?[^/]\\+/g\" {} +'",
     "shebang": "sed  -i '1i #!/usr/bin/env node\\n' dist/index.js && chmod +x dist/index.js",
     "minify": "find dist -name \"*.js\" -print0 | xargs -0 -P 4 -I {} sh -c 'before=$(wc -c < {}); minify {} > {}.min && after=$(wc -c < {}.min); if [ ${after} -lt ${before} ]; then mv {}.min {}; reduction=$((${before}-${after})); percent=$(awk \"BEGIN {printf \\\"%.2f\\\", ${reduction}/${before}*100}\"); echo \"{} reduced from ${before} to ${after} bytes (${percent}% reduction)\"; else rm {}.min; echo \"{} no reduction achieved, file size unchanged\"; fi'"
   },
