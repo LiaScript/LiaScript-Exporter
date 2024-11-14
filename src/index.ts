@@ -40,6 +40,22 @@ async function run(argument) {
 
   var embed = undefined
 
+  app.ports.helper.subscribe(async function ([cmd, param]) {
+    switch (cmd) {
+      case 'debug':
+        console.warn('DEBUG', param)
+        break
+      case 'file':
+        const template = path.resolve(path.dirname(argument.input), param)
+        console.warn('loading:', template)
+        const data = fs.readFileSync(template, 'utf8')
+        app.ports.input.send(['template', param, data])
+        break
+      default:
+        console.warn('unknown command:', cmd, param)
+    }
+  })
+
   app.ports.output.subscribe(function (event) {
     let [ok, string] = event
 
