@@ -205,7 +205,10 @@ export async function exporter(
     }
 
     options =
-      `<select class="form-select" aria-label="Default select example" onchange="window.blur(this.value)">
+      `<select id="categorySelect"
+                class="form-select"
+                aria-label="Default select example"
+                onchange="addCategoryChip(this.value)">
           <option value="" selected>All categories</option>` +
       options +
       '</select>'
@@ -246,25 +249,85 @@ export async function exporter(
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 
     <script>
-        window.blur = function(category) {
-            const cards = document.querySelectorAll('div[data-category]')
+      // Globale Variable zum Speichern der ausgewählten Kategorien
+      window.selectedCategories = []
 
-            for (card of cards) {
-                if(card.dataset.category.includes(category)) {
-                    ${
-                      argument['project-category-blur']
-                        ? 'card.style.filter = ""'
-                        : 'card.parentNode.style.display = "block"'
-                    }
-                } else {
-                  ${
-                    argument['project-category-blur']
-                      ? 'card.style.filter = "blur(1px) opacity(35%)"'
-                      : 'card.parentNode.style.display = "none"'
-                  }
-                }
-            }
+      // Fügt einen Chip hinzu, wenn eine Kategorie gewählt wurde
+      function addCategoryChip(category) {
+        if (!category) return // falls "All categories" gewählt wurde, nichts tun
+        if (window.selectedCategories.indexOf(category) === -1) {
+          window.selectedCategories.push(category)
+          // Option im Select-Menü deaktivieren
+          document.querySelector('#categorySelect option[value="' + category + '"]').disabled = true
+          updateChipsDisplay()
+          filterCards()
         }
+        // Setze das Select-Element zurück
+        document.getElementById('categorySelect').value = ''
+      }
+
+      // Entfernt einen Chip
+      function removeCategoryChip(category) {
+        const index = window.selectedCategories.indexOf(category)
+        if (index > -1) {
+          window.selectedCategories.splice(index, 1)
+          // Option im Select-Menü wieder aktivieren
+          document.querySelector('#categorySelect option[value="' + category + '"]').disabled = false
+          updateChipsDisplay()
+          filterCards()
+        }
+      }
+
+      // Aktualisiert die Anzeige der Chips
+      function updateChipsDisplay() {
+        const chipsContainer = document.getElementById('chipsContainer')
+        chipsContainer.innerHTML = ''
+        window.selectedCategories.forEach(function (cat) {
+          const chip = document.createElement('span')
+          chip.className = 'badge rounded-pill bg-primary me-2'
+          chip.style.cursor = 'pointer'
+          chip.style.fontSize = '1rem'
+          chip.textContent = cat + ' ×'
+          chip.onclick = function () {
+            removeCategoryChip(cat)
+          }
+          chipsContainer.appendChild(chip)
+        })
+      }
+
+      function filterCards() {
+        const cards = document.querySelectorAll('div[data-category]')
+        cards.forEach(function (card) {
+          // Falls keine Filterkategorien ausgewählt wurden, zeige alle Karten
+          if (window.selectedCategories.length === 0) {
+            ${
+              argument['project-category-blur']
+                ? 'card.style.filter = "";'
+                : 'card.parentNode.style.display = "block";'
+            }
+            return
+          }
+          // Zerlege die im data-Attribut hinterlegten Kategorien
+          const cardCategories = card.dataset.category.split('|')
+          // Prüfe, ob alle ausgewählten Kategorien in der Karte vorhanden sind
+          const show = window.selectedCategories.every(function (cat) {
+            return cardCategories.indexOf(cat) !== -1
+          })
+          if (show) {
+            ${
+              argument['project-category-blur']
+                ? 'card.style.filter = "";'
+                : 'card.parentNode.style.display = "block";'
+            }
+          } else {
+            ${
+              argument['project-category-blur']
+                ? 'card.style.filter = "blur(1px) opacity(35%)";'
+                : 'card.parentNode.style.display = "none";'
+            }
+          }
+        })
+      }
     </script>
 </head>
 <body>
@@ -280,6 +343,7 @@ export async function exporter(
                         <p class="lead text-muted">${json.comment || ''}</p>
 
                         ${options}
+                        <div id="chipsContainer" class="mt-3"></div>
                     </div>
                 </div>
             </section>
