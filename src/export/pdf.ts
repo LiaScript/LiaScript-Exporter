@@ -128,6 +128,10 @@ export async function exporter(
       '--enable-features=ExperimentalJavaScript',
     ],
     headless: argument['pdf-preview'] ? false : 'new',
+    // Try to use the system Chrome if available
+    executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || undefined,
+    // Add this to use the installed browser if no executable path is provided
+    channel: process.env.PUPPETEER_EXECUTABLE_PATH ? undefined : 'chrome',
   })
   const page = await browser.newPage()
 
