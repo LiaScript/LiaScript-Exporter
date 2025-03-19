@@ -6,7 +6,16 @@ const path = require('path')
 const fs = require('fs-extra')
 
 export function help() {
-  console.log('\n', COLOR.heading('IMS settings:'), '\n')
+  console.log('')
+  console.log(COLOR.heading('IMS settings:'), '\n')
+
+  console.log(
+    COLOR.italic(
+      'IMS (Instructional Management Systems) Content Package is an interoperable standard format for packaging learning content between different LMSes.'
+    ),
+    '\n\nLearn more: https://www.imsglobal.org/content/packaging/index.html'
+  )
+  console.log('')
 
   COLOR.command(
     null,
@@ -14,8 +23,15 @@ export function help() {
     '           Use IndexedDB to store data persistently'
   )
 
-  console.log('\n', COLOR.heading('WEB settings:'), '\n')
   console.log('')
+  console.log(COLOR.heading('WEB settings:'), '\n')
+
+  console.log(
+    COLOR.italic(
+      'Pack the project into a self contained web project that can be hosted everywhere.\n'
+    )
+  )
+
   COLOR.command(
     null,
     '--web-iframe',

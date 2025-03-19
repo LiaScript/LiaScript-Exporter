@@ -6,7 +6,20 @@ import fetch from 'node-fetch'
 import * as COLOR from '../colorize'
 
 export function help() {
-  console.log('\n', COLOR.heading('RDF settings:'), '\n')
+  console.log('')
+  console.log(COLOR.heading('RDF settings:'), '\n')
+
+  console.log(
+    COLOR.italic(
+      'RDF (Resource Description Framework) export generates structured metadata for your LiaScript course or your project-yaml in standard linked data formats. This helps with course discovery and enables semantic web applications to understand your content. Available output formats are n-quads and JSON-LD.'
+    )
+  )
+
+  console.log('\nLearn more:')
+  console.log('- RDF:     https://www.w3.org/RDF/')
+  console.log('- N-Quads: https://www.w3.org/TR/n-quads/')
+  console.log('- JSON-LD: https://json-ld.org/')
+  console.log('')
 
   COLOR.command(
     null,

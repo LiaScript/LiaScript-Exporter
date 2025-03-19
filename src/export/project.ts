@@ -64,7 +64,24 @@ export function storeNext(collection: any, data: any) {
 }
 
 export function help() {
-  console.log('\n', COLOR.heading('Project settings:'), '\n')
+  console.log('')
+  console.log(COLOR.heading('Project settings:'), '\n')
+
+  console.log(
+    COLOR.italic(
+      'A project is a bundle for multiple LiaScript resource into a single project overview page, based on a provided yaml description.\n'
+    )
+  )
+
+  console.log(
+    'Learn more: https://www.npmjs.com/package/@liascript/exporter#project \n'
+  )
+  console.log('Example:')
+  console.log(
+    '- Input:  https://github.com/LiaBooks/liabooks.github.com/blob/main/project.yaml'
+  )
+  console.log('- Output: https://liabooks.github.io')
+  console.log('')
 
   COLOR.command(
     null,

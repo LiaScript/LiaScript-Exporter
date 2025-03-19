@@ -5,7 +5,16 @@ const path = require('path')
 import puppeteer from 'puppeteer'
 
 export function help() {
-  console.log('\n', COLOR.heading('PDF settings:'), '\n')
+  console.log('')
+  console.log(COLOR.heading('PDF settings:'), '\n')
+
+  console.log(
+    COLOR.italic(
+      'PDF export generates printable documents from your LiaScript course using Puppeteer, a headless Chrome browser automation tool. This allows for high-quality rendering of all course elements including interactive content.'
+    )
+  )
+  console.log('\nLearn more: https://pptr.dev/')
+  console.log('')
 
   COLOR.command(
     null,
@@ -22,14 +31,19 @@ export function help() {
     '--pdf-timeout',
     '             Set an additional time horizon to wait until finished.'
   )
-  console.log(
-    '\nhttps://github.com/puppeteer/puppeteer/blob/main/docs/api.md#pagepdfoptions\n'
-  )
   COLOR.command(
     null,
     '--pdf-preview',
     '             Open preview-browser (default false), print not possible'
   )
+
+  console.log('')
+  console.log(COLOR.italic('The following are puppeteer specific settings.'))
+
+  console.log(
+    '\nLearn more: https://github.com/puppeteer/puppeteer/blob/main/docs/api.md#pagepdfoptions\n'
+  )
+
   COLOR.command(
     null,
     '--pdf-scale',

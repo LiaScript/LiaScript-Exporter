@@ -197,6 +197,14 @@ async function run(argument) {
 function help() {
   console.log(COLOR.heading('LiaScript-Exporter'))
   console.log('')
+  console.log(
+    COLOR.italic(
+      //2345678901234567890123456789012345678901234567890123456789012345678901234567890
+      'Export your LiaScript Markdown files to different formats. The following commandline options are available. Based on the selected output format, additional options can be used.'
+    )
+  )
+  console.log('')
+
   COLOR.command('-h', '--help', '           show this help')
 
   COLOR.command('-i', '--input', '          file to be used as input')

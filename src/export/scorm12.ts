@@ -7,7 +7,17 @@ const path = require('path')
 const fs = require('fs-extra')
 
 export function help() {
-  console.log('\n', COLOR.heading('SCORM settings:'), '\n')
+  console.log('')
+  console.log(COLOR.heading('SCORM settings:'), '\n')
+
+  console.log(
+    COLOR.italic(
+      'SCORM (Sharable Content Object Reference Model) 1.2 & 2004 are standards for e-learning content that can be imported into LMS platforms like Moodle, Blackboard, and others.\n'
+    )
+  )
+
+  console.log('Learn more: https://scorm.com/scorm-explained/\n')
+
   COLOR.command(
     null,
     '--scorm-organization',

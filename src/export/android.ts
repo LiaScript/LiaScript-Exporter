@@ -8,6 +8,16 @@ const { exec } = require('child_process')
 export function help() {
   console.log('\n', COLOR.heading('Android settings:'), '\n')
 
+  console.log(
+    COLOR.italic(
+      'Android export generates a native Android application (.apk) from your LiaScript course using Capacitor. This requires the Android SDK to be installed on your system.\n'
+    )
+  )
+  console.log('Learn more:')
+  console.log('- Capacitor:   https://capacitorjs.com/')
+  console.log('- Android SDK: https://developer.android.com/studio')
+  console.log('')
+
   COLOR.command(
     null,
     '--android-sdk',
