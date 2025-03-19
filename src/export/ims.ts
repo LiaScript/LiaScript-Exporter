@@ -9,13 +9,12 @@ export function help() {
   console.log('')
   console.log(COLOR.heading('IMS settings:'), '\n')
 
-  console.log(
-    COLOR.italic(
-      'IMS (Instructional Management Systems) Content Package is an interoperable standard format for packaging learning content between different LMSes.'
-    ),
-    '\n\nLearn more: https://www.imsglobal.org/content/packaging/index.html'
+  COLOR.info(
+    'IMS (Instructional Management Systems) Content Package is an interoperable standard format for packaging learning content between different LMSes.'
   )
-  console.log('')
+  console.log(
+    '\nLearn more: https://www.imsglobal.org/content/packaging/index.html\n'
+  )
 
   COLOR.command(
     null,
@@ -26,11 +25,11 @@ export function help() {
   console.log('')
   console.log(COLOR.heading('WEB settings:'), '\n')
 
-  console.log(
-    COLOR.italic(
-      'Pack the project into a self contained web project that can be hosted everywhere.\n'
-    )
+  COLOR.info(
+    'Pack the project into a self contained web project that can be hosted everywhere.'
   )
+
+  console.log('')
 
   COLOR.command(
     null,

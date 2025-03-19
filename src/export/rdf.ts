@@ -9,10 +9,8 @@ export function help() {
   console.log('')
   console.log(COLOR.heading('RDF settings:'), '\n')
 
-  console.log(
-    COLOR.italic(
-      'RDF (Resource Description Framework) export generates structured metadata for your LiaScript course or your project-yaml in standard linked data formats. This helps with course discovery and enables semantic web applications to understand your content. Available output formats are n-quads and JSON-LD.'
-    )
+  COLOR.info(
+    'RDF (Resource Description Framework) export generates structured metadata for your LiaScript course or your project-yaml in standard linked data formats. This helps with course discovery and enables semantic web applications to understand your content. Available output formats are n-quads and JSON-LD.'
   )
 
   console.log('\nLearn more:')

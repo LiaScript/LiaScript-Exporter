@@ -10,15 +10,17 @@ export function help() {
   console.log('')
   console.log(COLOR.heading('SCORM settings:'), '\n')
 
-  console.log(
-    COLOR.italic(
-      'SCORM (Sharable Content Object Reference Model) 1.2 & 2004 are standards for e-learning content that can be imported into LMS platforms like Moodle, Blackboard, and others.\n'
-    )
+  COLOR.info(
+    'SCORM (Sharable Content Object Reference Model) 1.2 & 2004 are standards for e-learning content that can be imported into LMS platforms like Moodle, Blackboard, and others.'
   )
 
-  console.log('Learn more: https://scorm.com/scorm-explained/\n')
+  console.log('\nLearn more: https://scorm.com/scorm-explained/\n')
 
-  COLOR.command(
+  console.log(
+    'Known SCORM configurations per LMS:\n  https://www.npmjs.com/package/@liascript/exporter#scorm-examples\n'
+  )
+
+  https: COLOR.command(
     null,
     '--scorm-organization',
     '      set the organization title'

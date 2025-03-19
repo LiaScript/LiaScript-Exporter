@@ -8,13 +8,11 @@ export function help() {
   console.log('')
   console.log(COLOR.heading('PDF settings:'), '\n')
 
-  console.log(
-    COLOR.italic(
-      'PDF export generates printable documents from your LiaScript course using Puppeteer, a headless Chrome browser automation tool. This allows for high-quality rendering of all course elements including interactive content.'
-    )
+  COLOR.info(
+    'PDF export generates printable documents from your LiaScript course using Puppeteer, a headless Chrome browser automation tool. This allows for high-quality rendering of all course elements including interactive content.'
   )
-  console.log('\nLearn more: https://pptr.dev/')
-  console.log('')
+
+  console.log('\nLearn more: https://pptr.dev/ \n')
 
   COLOR.command(
     null,
@@ -41,7 +39,7 @@ export function help() {
   console.log(COLOR.italic('The following are puppeteer specific settings.'))
 
   console.log(
-    '\nLearn more: https://github.com/puppeteer/puppeteer/blob/main/docs/api.md#pagepdfoptions\n'
+    '\nLearn more:\n  https://github.com/puppeteer/puppeteer/blob/main/docs/api.md#pagepdfoptions\n'
   )
 
   COLOR.command(

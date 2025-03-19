@@ -59,88 +59,193 @@ $ liaex
 No input defined
 LiaScript-Exporter
 
--h --help            show this help
--i --input           file to be used as input
--p --path            path to be packed, if not set, the path of the input file is used
--o --output          output file name (default is output), the ending is define by the format
--f --format          scorm1.2, scorm2004, json, fullJson, web, ims, pdf (default is json)
--v --version         output the current version
+Export your LiaScript Markdown files to different formats. The following
+commandline options are available. Based on the selected output format,
+additional options can be used.
 
--k --key             responsive voice key 
+-h --help                   show this help
+-i --input                  file to be used as input
+-p --path                   path to be packed, if not set, the path of the input
+                            file is used
+-o --output                 output file name (default is output), the ending is
+                            define by the format
+-s --style                  additional styling to passed to the export, can be
+                            used for fixes, such as "height: 100vh; width: 100%;
+                            border: 2px;"
+-f --format                 scorm1.2, scorm2004, json, fullJson, web, ims, pdf,
+                            android, linkedData (default is json)
+-v --version                output the current version
+-k --key                    responsive voice key
 
-SCORM settings:
+SCORM settings: 
 
---scorm-organization       set the organization title
---scorm-masteryScore       set the scorm masteryScore (a value between 0 -- 100), default is 0
---scorm-typicalDuration    set the scorm duration, default is PT0H5M0S
---scorm-iframe             use an iframe, when a SCORM starting parameter is not working
---scorm-embed              embed the Markdown into the JS code, use in Moodle 4 to handle restrictions with dynamic loading
+SCORM (Sharable Content Object Reference Model) 1.2 & 2004 are standards for
+e-learning content that can be imported into LMS platforms like Moodle,
+Blackboard, and others.
 
-IMS settings:
+Learn more: https://scorm.com/scorm-explained/
 
---ims-indexeddb            Use IndexedDB to store data persistently
+Known SCORM configurations per LMS:
+  https://www.npmjs.com/package/@liascript/exporter#scorm-examples
 
-WEB settings:
+--scorm-organization        set the organization title
+--scorm-masteryScore        set the scorm masteryScore (a value between 0
+                            -- 100), default is 0
+--scorm-typicalDuration     set the scorm duration, default is PT0H5M0S
+--scorm-iframe              use an iframe, when a SCORM starting
+                            parameter is not working
+--scorm-embed               embed the Markdown into the JS code,
+                            use in Moodle 4 to handle restrictions with dynamic
+                            loading
 
---web-iframe               Use an iframed version to hide the course URL.
---web-indexeddb            This will allow to store data within the browser using indexeddb, you can optionally pass a unique key (by default one is generated randomly).
---web-zip                  By default the result is not zipped, you can change this with this parameter.
+IMS settings: 
 
-Android settings:
+IMS (Instructional Management Systems) Content Package is an interoperable
+standard format for packaging learning content between different LMSes.
 
---android-sdk              Specify sdk.dir which is required for building.
---android-appName          Name of the App (Main-title is used as default).
---android-appId            Required to identify your App reverse url such as io.github.liascript
---android-icon             Optional icon with 1024x1024 px
---android-splash           Optional splash image with 2732x2732 px
---android-splashDuration   Duration for splash-screen default 0 milliseconds
---android-preview          Open course in Android-Studio
+Learn more: https://www.imsglobal.org/content/packaging/index.html
 
-PDF settings:
+--ims-indexeddb             Use IndexedDB to store data persistently
 
---pdf-stylesheet           Inject an local CSS for changing the appearance.
---pdf-theme                LiaScript themes: default, turquoise, blue, red, yellow
---pdf-timeout              Set an additional time horizon to wait until finished.
+WEB settings: 
 
-https://github.com/puppeteer/puppeteer/blob/main/docs/api/puppeteer.pdfoptions.md
+Pack the project into a self contained web project that can be hosted
+everywhere.
 
---pdf-preview              Open preview-browser (default false), print not possible
---pdf-scale                Scale of the webpage rendering. Defaults to 1. Scale amount must be between 0.1 and 2.
---pdf-displayHeaderFooter  Display header and footer. Defaults to false.
---pdf-headerTemplate       HTML template for the print header, inject classes date, title, url, pageNumber, totalPages
---pdf-footerTemplate       HTML template for the print footer. Should use the same format as the headerTemplate
---pdf-printBackground      Print background graphics. Defaults to false
---pdf-landscape            Paper orientation. Defaults to false.
---pdf-pageRanges           Paper ranges to print, e.g., "1-5, 8, 11-13"
---pdf-format               Paper format. If set, takes priority over width or height options. Defaults to a4.
---pdf-width                Paper width, accepts values labeled with units.
---pdf-height               Paper height, accepts values labeled with units.
---pdf-margin-top           Top margin, accepts values labeled with units.
---pdf-margin-right         Right margin, accepts values labeled with units.
---pdf-margin-bottom        Bottom margin, accepts values labeled with units.
---pdf-margin-left          Left margin, accepts values labeled with units. 
---pdf-preferCSSPageSize    Give any CSS @page size declared in the page priority over what is declared in width and height or format options.
---pdf-omitBackground       Hides default white background and allows capturing screenshots with transparency. Defaults to true.
+--web-iframe                Use an iframed version to hide the
+                            course URL.
+--web-indexeddb             This will allow to store data within the
+                            browser using indexeddb, you can optionally pass a
+                            unique key (by default one is generated randomly).
+--web-zip                   By default the result is not
+                            zipped, you can change this with this parameter.
 
-Project settings:
+Android settings: 
 
---project-no-meta            Disable the generation of meta information for OpenGraph and Twitter-cards.
---project-no-categories      Disable the filter for categories/tags.
---project-category-blur      Enable this and the categories will be blurred instead of deleted.
---project-generate-pdf       PDFs are automatically generated and added to every card.
---project-generate-scrom12   SCORM12 and pass additional scrom settings.
---project-generate-scrom2004 SCORM2004 and pass additional scrom settings.
---project-generate-ims       IMS resources with additional config settings.
---project-generate-cache     Only generate new files, if they do not exist.
+Android export generates a native Android application (.apk) from your LiaScript
+course using Capacitor. This requires the Android SDK to be installed on your
+system.
 
-RDF settings:
+Learn more:
+- Capacitor:   https://capacitorjs.com/
+- Android SDK: https://developer.android.com/studio
 
---rdf-format               Output format n-quads, json-ld (defaults to json-ld).
---rdf-preview              Output the result to the console.
---rdf-url                  Refer to an external URL when parsing a local project.
---rdf-type                 Course frm schmema.org is applied as default, overwrite this with EducationalResource, etc.
---rdf-license              Add a license-URL, otherwise if url was provided as input, this will check for an existing LICENSE file.
---rdf-educationalLevel     Typically beginner, intermediate or advanced, and formal sets of level indicators.
+--android-sdk               Specify sdk.dir which is required for
+                            building.
+--android-appName           Name of the App (Main-title is used as
+                            default).
+--android-appId             Required to identify your App reverse url
+                            such as io.github.liascript
+--android-icon              Optional icon with 1024x1024 px
+--android-splash            Optional splash image with 2732x2732 px
+--android-splashDuration    Duration for splash-screen default 0 milliseconds
+--android-preview           Open course in Android-Studio
+
+PDF settings: 
+
+PDF export generates printable documents from your LiaScript course using
+Puppeteer, a headless Chrome browser automation tool. This allows for
+high-quality rendering of all course elements including interactive content.
+
+Learn more: https://pptr.dev/ 
+
+--pdf-stylesheet            Inject an local CSS for changing the
+                            appearance.
+--pdf-theme                 LiaScript themes: default, turquoise,
+                            blue, red, yellow
+--pdf-timeout               Set an additional time horizon to wait
+                            until finished.
+--pdf-preview               Open preview-browser (default false),
+                            print not possible
+
+The following are puppeteer specific settings.
+
+Learn more:
+  https://github.com/puppeteer/puppeteer/blob/main/docs/api.md#pagepdfoptions
+
+--pdf-scale                 Scale of the webpage rendering.
+                            Defaults to 1. Scale amount must be between 0.1 and
+                            2.
+--pdf-displayHeaderFooter   Display header and footer. Defaults to false.
+--pdf-headerTemplate        HTML template for the print header, inject
+                            classes date, title, url, pageNumber, totalPages
+--pdf-footerTemplate        HTML template for the print footer. Should use
+                            the same format as the headerTemplate
+--pdf-printBackground       Print background graphics. Defaults to false
+--pdf-landscape             Paper orientation. Defaults to false.
+--pdf-pageRanges            Paper ranges to print, e.g., "1-5, 8,
+                            11-13"
+--pdf-format                Paper format. If set, takes priority
+                            over width or height options. Defaults to a4.
+--pdf-width                 Paper width, accepts values labeled
+                            with units.
+--pdf-height                Paper height, accepts values labeled
+                            with units.
+--pdf-margin-top            Top margin, accepts values labeled with
+                            units.
+--pdf-margin-right          Right margin, accepts values labeled with
+                            units.
+--pdf-margin-bottom         Bottom margin, accepts values labeled with
+                            units.
+--pdf-margin-left           Left margin, accepts values labeled with
+                            units.
+--pdf-preferCSSPageSize     Give any CSS @page size declared in the page
+                            priority over what is declared in width and height
+                            or format options.
+--pdf-omitBackground        Hides default white background and allows
+                            capturing screenshots with transparency. Defaults to
+                            true.
+
+Project settings: 
+
+A project is a bundle for multiple LiaScript resource into a single project
+overview page, based on a provided yaml description.
+
+Learn more: https://www.npmjs.com/package/@liascript/exporter#project 
+
+Example:
+- Input:  https://github.com/LiaBooks/liabooks.github.com/blob/main/project.yaml
+- Output: https://liabooks.github.io
+
+--project-no-meta           Disable the generation of meta information
+                            for OpenGraph and Twitter-cards.
+--project-no-rdf            Disable the generation of json-ld.
+--project-no-categories     Disable the filter for categories/tags.
+--project-category-blur     Enable this and the categories will be blurred
+                            instead of deleted.
+--project-generate-scrom12  SCORM12 and pass additional scrom settings.
+--project-generate-scrom2004SCORM2004 and pass additional scrom settings.
+--project-generate-ims      IMS resources with additional config settings.
+--project-generate-pdf      PDFs are automatically generated and added to
+                            every card.
+--project-generate-cache    Only generate new files, if they do not exist.
+
+RDF settings: 
+
+RDF (Resource Description Framework) export generates structured metadata for
+your LiaScript course or your project-yaml in standard linked data formats. This
+helps with course discovery and enables semantic web applications to understand
+your content. Available output formats are n-quads and JSON-LD.
+
+Learn more:
+- RDF:     https://www.w3.org/RDF/
+- N-Quads: https://www.w3.org/TR/n-quads/
+- JSON-LD: https://json-ld.org/
+
+--rdf-format                Output format n-quads, json-ld
+                            (defaults to json-ld).
+--rdf-preview               Output the result to the console.
+--rdf-url                   Refer to an external URL when
+                            parsing a local project.
+--rdf-type                  Course frm schmema.org is applied as
+                            default, overwrite this with EducationalResource,
+                            etc.
+--rdf-license               Add a license-URL, otherwise if url was
+                            provided as input, this will check for an existing
+                            LICENSE file.
+--rdf-educationalLevel      Typically beginner, intermediate or advanced,
+                            and formal sets of level indicators.
+--rdf-template              Use a URL or json-file as a template.
 ```
 
 ### SCORM1.2

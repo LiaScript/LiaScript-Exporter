@@ -67,14 +67,12 @@ export function help() {
   console.log('')
   console.log(COLOR.heading('Project settings:'), '\n')
 
-  console.log(
-    COLOR.italic(
-      'A project is a bundle for multiple LiaScript resource into a single project overview page, based on a provided yaml description.\n'
-    )
+  COLOR.info(
+    'A project is a bundle for multiple LiaScript resource into a single project overview page, based on a provided yaml description.'
   )
 
   console.log(
-    'Learn more: https://www.npmjs.com/package/@liascript/exporter#project \n'
+    '\nLearn more: https://www.npmjs.com/package/@liascript/exporter#project \n'
   )
   console.log('Example:')
   console.log(
