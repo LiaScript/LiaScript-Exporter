@@ -1,27 +1,35 @@
 import * as helper from './helper'
 import * as RDF from './rdf'
+import * as COLOR from '../colorize'
 
 const path = require('path')
 const fs = require('fs-extra')
 
 export function help() {
-  console.log('\nIMS settings:')
-  console.log('')
-  console.log(
+  console.log('\n', COLOR.heading('IMS settings:'), '\n')
+
+  COLOR.command(
+    null,
     '--ims-indexeddb',
     '           Use IndexedDB to store data persistently'
   )
 
-  console.log('\nWEB settings:')
+  console.log('\n', COLOR.heading('WEB settings:'), '\n')
   console.log('')
-  console.log(
-    '--web-iframe               Use an iframed version to hide the course URL.'
+  COLOR.command(
+    null,
+    '--web-iframe',
+    '              Use an iframed version to hide the course URL.'
   )
-  console.log(
-    '--web-indexeddb            This will allow to store data within the browser using indexeddb, you can optionally pass a unique key (by default one is generated randomly).'
+  COLOR.command(
+    null,
+    '--web-indexeddb',
+    '           This will allow to store data within the browser using indexeddb, you can optionally pass a unique key (by default one is generated randomly).'
   )
-  console.log(
-    '--web-zip                  By default the result is not zipped, you can change this with this parameter.'
+  COLOR.command(
+    null,
+    '--web-zip',
+    '                 By default the result is not zipped, you can change this with this parameter.'
   )
 }
 

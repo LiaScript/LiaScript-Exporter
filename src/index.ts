@@ -12,6 +12,8 @@ import * as ANDROID from './export/android'
 import * as PROJECT from './export/project'
 import * as RDF from './export/rdf'
 
+import * as COLOR from './colorize'
+
 global.XMLHttpRequest = require('xhr2')
 
 import YAML from 'yaml'
@@ -193,33 +195,34 @@ async function run(argument) {
 }
 
 function help() {
-  console.log('LiaScript-Exporter')
+  console.log(COLOR.heading('LiaScript-Exporter'))
   console.log('')
-  console.log('-h', '--help', '           show this help')
-  console.log('-i', '--input', '          file to be used as input')
-  console.log(
+  COLOR.command('-h', '--help', '           show this help')
+
+  COLOR.command('-i', '--input', '          file to be used as input')
+  COLOR.command(
     '-p',
     '--path',
     '           path to be packed, if not set, the path of the input file is used'
   )
-  console.log(
+  COLOR.command(
     '-o',
     '--output',
     '         output file name (default is output), the ending is define by the format'
   )
-  console.log(
+  COLOR.command(
     '-s',
     '--style',
     '          additional styling to passed to the export, can be used for fixes, such as "height: 100vh; width: 100%; border: 2px;"'
   )
-  console.log(
+  COLOR.command(
     '-f',
     '--format',
     '         scorm1.2, scorm2004, json, fullJson, web, ims, pdf, android, linkedData (default is json)'
   )
-  console.log('-v', '--version', '        output the current version')
+  COLOR.command('-v', '--version', '        output the current version')
 
-  console.log('\n-k', '--key', '            responsive voice key ')
+  COLOR.command('\n-k', '--key', '            responsive voice key ')
 
   SCORM12.help()
 

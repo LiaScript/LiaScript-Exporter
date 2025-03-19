@@ -5,6 +5,7 @@ import * as SCORM12 from './scorm12'
 import * as SCORM2004 from './scorm2004'
 import * as ANDROID from './android'
 import * as RDF from './rdf'
+import * as COLOR from '../colorize'
 
 const fs = require('fs-extra')
 const path = require('path')
@@ -63,32 +64,52 @@ export function storeNext(collection: any, data: any) {
 }
 
 export function help() {
-  console.log('\nProject settings:')
-  console.log('')
-  console.log(
-    '--project-no-meta          Disable the generation of meta information for OpenGraph and Twitter-cards.'
+  console.log('\n', COLOR.heading('Project settings:'), '\n')
+
+  COLOR.command(
+    null,
+    '--project-no-meta',
+    '         Disable the generation of meta information for OpenGraph and Twitter-cards.'
   )
-  console.log('--project-no-rdf           Disable the generation of json-ld.')
-  console.log(
-    '--project-no-categories    Disable the filter for categories/tags.'
+  COLOR.command(
+    null,
+    '--project-no-rdf',
+    '          Disable the generation of json-ld.'
   )
-  console.log(
-    '--project-category-blur    Enable this and the categories will be blurred instead of deleted.'
+  COLOR.command(
+    null,
+    '--project-no-categories',
+    '   Disable the filter for categories/tags.'
   )
-  console.log(
-    '--project-generate-scrom12 SCORM12 and pass additional scrom settings.'
+  COLOR.command(
+    null,
+    '--project-category-blur',
+    '   Enable this and the categories will be blurred instead of deleted.'
   )
-  console.log(
-    '--project-generate-scrom2004 SCORM2004 and pass additional scrom settings.'
+  COLOR.command(
+    null,
+    '--project-generate-scrom12',
+    'SCORM12 and pass additional scrom settings.'
   )
-  console.log(
-    '--project-generate-ims     IMS resources with additional config settings.'
+  COLOR.command(
+    null,
+    '--project-generate-scrom2004',
+    'SCORM2004 and pass additional scrom settings.'
   )
-  console.log(
-    '--project-generate-pdf     PDFs are automatically generated and added to every card.'
+  COLOR.command(
+    null,
+    '--project-generate-ims',
+    '    IMS resources with additional config settings.'
   )
-  console.log(
-    '--project-generate-cache   Only generate new files, if they do not exist.'
+  COLOR.command(
+    null,
+    '--project-generate-pdf',
+    '    PDFs are automatically generated and added to every card.'
+  )
+  COLOR.command(
+    null,
+    '--project-generate-cache',
+    '  Only generate new files, if they do not exist.'
   )
 }
 

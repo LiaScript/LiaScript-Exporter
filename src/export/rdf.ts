@@ -3,29 +3,45 @@ import * as helper from './helper'
 const jsonld = require('jsonld')
 const fs = require('fs-extra')
 import fetch from 'node-fetch'
+import * as COLOR from '../colorize'
 
 export function help() {
-  console.log('\nRDF settings:')
-  console.log('')
+  console.log('\n', COLOR.heading('RDF settings:'), '\n')
 
-  console.log(
-    '--rdf-format               Output format n-quads, json-ld (defaults to json-ld).'
+  COLOR.command(
+    null,
+    '--rdf-format',
+    '              Output format n-quads, json-ld (defaults to json-ld).'
   )
-  console.log('--rdf-preview              Output the result to the console.')
-  console.log(
-    '--rdf-url                  Refer to an external URL when parsing a local project.'
+  COLOR.command(
+    null,
+    '--rdf-preview',
+    '             Output the result to the console.'
   )
-  console.log(
-    '--rdf-type                 Course frm schmema.org is applied as default, overwrite this with EducationalResource, etc.'
+  COLOR.command(
+    null,
+    '--rdf-url',
+    '                 Refer to an external URL when parsing a local project.'
   )
-  console.log(
-    '--rdf-license              Add a license-URL, otherwise if url was provided as input, this will check for an existing LICENSE file.'
+  COLOR.command(
+    null,
+    '--rdf-type',
+    '                Course frm schmema.org is applied as default, overwrite this with EducationalResource, etc.'
   )
-  console.log(
-    '--rdf-educationalLevel     Typically beginner, intermediate or advanced, and formal sets of level indicators.'
+  COLOR.command(
+    null,
+    '--rdf-license',
+    '             Add a license-URL, otherwise if url was provided as input, this will check for an existing LICENSE file.'
   )
-  console.log(
-    '--rdf-template             Use a URL or json-file as a template.'
+  COLOR.command(
+    null,
+    '--rdf-educationalLevel',
+    '    Typically beginner, intermediate or advanced, and formal sets of level indicators.'
+  )
+  COLOR.command(
+    null,
+    '--rdf-template',
+    '            Use a URL or json-file as a template.'
   )
 }
 

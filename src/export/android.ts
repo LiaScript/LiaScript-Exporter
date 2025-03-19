@@ -1,29 +1,48 @@
 import * as helper from './helper'
 
+import * as COLOR from '../colorize'
 const path = require('path')
 const fs = require('fs-extra')
 const { exec } = require('child_process')
 
 export function help() {
-  console.log('\nAndroid settings:')
-  console.log('')
-  console.log(
-    '--android-sdk              Specify sdk.dir which is required for building.'
+  console.log('\n', COLOR.heading('Android settings:'), '\n')
+
+  COLOR.command(
+    null,
+    '--android-sdk',
+    '             Specify sdk.dir which is required for building.'
   )
-  console.log(
-    '--android-appName          Name of the App (Main-title is used as default).'
+  COLOR.command(
+    null,
+    '--android-appName',
+    '         Name of the App (Main-title is used as default).'
   )
-  console.log(
-    '--android-appId            Required to identify your App reverse url such as io.github.liascript'
+  COLOR.command(
+    null,
+    '--android-appId',
+    '           Required to identify your App reverse url such as io.github.liascript'
   )
-  console.log('--android-icon             Optional icon with 1024x1024 px')
-  console.log(
-    '--android-splash           Optional splash image with 2732x2732 px'
+  COLOR.command(
+    null,
+    '--android-icon',
+    '            Optional icon with 1024x1024 px'
   )
-  console.log(
-    '--android-splashDuration   Duration for splash-screen default 0 milliseconds'
+  COLOR.command(
+    null,
+    '--android-splash',
+    '          Optional splash image with 2732x2732 px'
   )
-  console.log('--android-preview          Open course in Android-Studio')
+  COLOR.command(
+    null,
+    '--android-splashDuration',
+    '  Duration for splash-screen default 0 milliseconds'
+  )
+  COLOR.command(
+    null,
+    '--android-preview',
+    '         Open course in Android-Studio'
+  )
 }
 
 export async function exporter(

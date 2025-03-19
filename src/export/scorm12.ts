@@ -1,26 +1,35 @@
 import * as helper from './helper'
 import * as RDF from './rdf'
+import * as COLOR from '../colorize'
 
 const scormPackager = require('@liascript/simple-scorm-packager')
 const path = require('path')
 const fs = require('fs-extra')
 
 export function help() {
-  console.log('\nSCORM settings:\n')
-  console.log('--scorm-organization', '      set the organization title')
-  console.log(
+  console.log('\n', COLOR.heading('SCORM settings:'), '\n')
+  COLOR.command(
+    null,
+    '--scorm-organization',
+    '      set the organization title'
+  )
+  COLOR.command(
+    null,
     '--scorm-masteryScore',
     '      set the scorm masteryScore (a value between 0 -- 100), default is 0'
   )
-  console.log(
+  COLOR.command(
+    null,
     '--scorm-typicalDuration',
     '   set the scorm duration, default is PT0H5M0S'
   )
-  console.log(
+  COLOR.command(
+    null,
     '--scorm-iframe',
     '            use an iframe, when a SCORM starting parameter is not working'
   )
-  console.log(
+  COLOR.command(
+    null,
     '--scorm-embed',
     '             embed the Markdown into the JS code, use in Moodle 4 to handle restrictions with dynamic loading'
   )
