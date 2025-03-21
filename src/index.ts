@@ -11,6 +11,7 @@ import * as ANDROID from './export/android'
 // import * as IOS from './export/ios'
 import * as PROJECT from './export/project'
 import * as RDF from './export/rdf'
+import * as XAPI from './export/xapi'
 
 import * as COLOR from './colorize'
 
@@ -109,6 +110,11 @@ async function run(argument) {
         ANDROID.exporter(argument, JSON.parse(string))
         break
       }
+      // Add xAPI case to the switch statement in the output.subscribe function
+      case 'xapi': {
+        XAPI.exporter(argument, JSON.parse(string))
+        break
+      }
       case 'project': {
         if (collection) {
           try {
@@ -152,6 +158,7 @@ async function run(argument) {
       argument.format == 'android' ||
       argument.format == 'ios' ||
       argument.format == 'rdf' ||
+      argument.format == 'xapi' ||
       argument.format == 'project'
         ? 'fulljson'
         : argument.format
@@ -240,6 +247,8 @@ function help() {
   PROJECT.help()
 
   RDF.help()
+
+  XAPI.help()
 }
 
 function escapeBackslash(path?: string) {
@@ -326,6 +335,15 @@ function parseArguments() {
     'rdf-license': argv['rdf-license'],
     'rdf-educationalLevel': argv['rdf-educationalLevel'],
     'rdf-template': argv['rdf-template'],
+
+    // xAPI settings
+    'xapi-endpoint': argv['xapi-endpoint'],
+    'xapi-auth': argv['xapi-auth'],
+    'xapi-actor': argv['xapi-actor'],
+    'xapi-course-id': argv['xapi-course-id'],
+    'xapi-course-title': argv['xapi-course-title'],
+    'xapi-debug': argv['xapi-debug'],
+    'xapi-zip': argv['xapi-zip'],
   }
 
   argument.format = argument.format.toLowerCase()

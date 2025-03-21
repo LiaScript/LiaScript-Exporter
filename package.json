@@ -20,7 +20,7 @@
   "scripts": {
     "postinstall": "npx puppeteer browsers install chrome",
     "__preinstall": "cd LiaScript && npm i && npm run build:scorm1.2 && cp -r dist ../assets/scorm1.2",
-    "build:assets": "npm run clean && npm run asset:scorm1.2 && npm run asset:scorm2004 && npm run asset:web && npm run asset:indexeddb && npm run asset:pdf && npm run asset:capacitor && npm run asset:logo && npm run fix:file",
+    "build:assets": "npm run clean && npm run asset:scorm1.2 && npm run asset:scorm2004 && npm run asset:xapi &&  npm run asset:web && npm run asset:indexeddb && npm run asset:pdf && npm run asset:capacitor && npm run asset:logo && npm run fix:file",
     "clean": "rm -rf dist/assets/*",
     "asset:logo": "cp -r LiaScript/resources dist",
     "asset:web": "cd LiaScript && npm i && npm run build:base && cp -r dist ../dist/assets/web",
@@ -28,6 +28,7 @@
     "asset:scorm1.2": "cd LiaScript && npm i && npm run build:scorm1.2 && cp -r dist ../dist/assets/scorm1.2",
     "asset:scorm2004": "cd LiaScript && npm i && npm run build:scorm2004 && cp -r dist ../dist/assets/scorm2004",
     "asset:indexeddb": "cd LiaScript && npm i && npm run build:indexeddb && cp -r dist ../dist/assets/indexeddb",
+    "asset:xapi": "cd LiaScript && npm i && npm run build:xapi && cp -r dist ../dist/assets/xapi",
     "asset:capacitor": "cd LiaScript && git checkout feat/capacitor && rm -rf node_modules && npm i && npm run build:android && cp -r dist ../dist/assets/capacitor && git checkout development && rm -rf node_modules && npm i",
     "build": "npx parcel build --no-cache --no-source-maps src/index.ts && npm run shebang",
     "build:debug": "npx parcel build --target node --no-minify --log-level 5 src/index.ts",
