@@ -130,10 +130,111 @@ export async function exporter(
     debug: argument['xapi-debug'] || false,
   }
 
+  // Add config UI if endpoint wasn't provided
+  if (!argument['xapi-endpoint']) {
+    index = helper.inject(
+      `<script>
+      // Store xAPI config in localStorage
+      function saveXAPIConfig() {
+        const endpoint = document.getElementById('xapi-endpoint').value;
+        const auth = document.getElementById('xapi-auth').value;
+        const actor = document.getElementById('xapi-actor').value;
+        
+        try {
+          // Validate actor as JSON
+          JSON.parse(actor);
+          
+          // Save to localStorage
+          localStorage.setItem('xapi-config', JSON.stringify({
+            endpoint,
+            auth,
+            actor: JSON.parse(actor)
+          }));
+          
+          // Reload to apply settings
+          window.location.reload();
+        } catch (e) {
+          alert('Invalid Actor JSON format. Please check your input.');
+        }
+      }
+      
+      // Load xAPI config from localStorage on page load
+      document.addEventListener('DOMContentLoaded', function() {
+        const storedConfig = localStorage.getItem('xapi-config');
+        if (storedConfig) {
+          const config = JSON.parse(storedConfig);
+          window.xAPIConfig = config;
+        }
+        
+        // Show/hide config panel
+        const configPanel = document.getElementById('xapi-config-panel');
+        if (configPanel) {
+          document.getElementById('toggle-xapi-config').addEventListener('click', function() {
+            configPanel.style.display = configPanel.style.display === 'none' ? 'block' : 'none';
+          });
+          
+          // Populate fields if stored config exists
+          if (storedConfig) {
+            const config = JSON.parse(storedConfig);
+            document.getElementById('xapi-endpoint').value = config.endpoint || '';
+            document.getElementById('xapi-auth').value = config.auth || '';
+            document.getElementById('xapi-actor').value = JSON.stringify(config.actor || {}, null, 2);
+          }
+        }
+      });
+      </script>
+      <style>
+      #xapi-config-panel {
+        position: fixed;
+        top: 0;
+        right: 0;
+        width: 400px;
+        background: white;
+        border: 1px solid #ccc;
+        padding: 15px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.2);
+        z-index: 9999;
+        display: none;
+      }
+      #toggle-xapi-config {
+        position: fixed;
+        top: 10px;
+        right: 10px;
+        z-index: 9998;
+        background: #f5f5f5;
+        border: 1px solid #ccc;
+        padding: 5px 10px;
+        cursor: pointer;
+      }
+      </style>
+      <div id="toggle-xapi-config">xAPI Settings</div>
+      <div id="xapi-config-panel">
+        <h3>xAPI LRS Configuration</h3>
+        <div>
+          <label for="xapi-endpoint">LRS Endpoint URL</label><br>
+          <input type="text" id="xapi-endpoint" style="width: 100%" placeholder="https://your-lrs.com/data/xAPI/" value="">
+        </div>
+        <div style="margin-top: 10px">
+          <label for="xapi-auth">Authentication (e.g., Basic dXNlcm5hbWU6cGFzc3dvcmQ=)</label><br>
+          <input type="text" id="xapi-auth" style="width: 100%" placeholder="Basic dXNlcm5hbWU6cGFzc3dvcmQ=" value="">
+        </div>
+        <div style="margin-top: 10px">
+          <label for="xapi-actor">Actor (JSON format)</label><br>
+          <textarea id="xapi-actor" style="width: 100%; height: 100px">{"objectType":"Agent","name":"Anonymous","mbox":"mailto:anonymous@example.com"}</textarea>
+        </div>
+        <div style="margin-top: 10px">
+          <button onclick="saveXAPIConfig()">Save Configuration</button>
+        </div>
+      </div>`,
+      index
+    )
+  }
+
+  // Set the window.xAPIConfig object with the base configuration
   index = helper.inject(
     `<script>
     window.xAPIConfig = ${JSON.stringify(xapiConfig, null, 2)};
-  </script>`,
+    </script>`,
     index
   )
 
