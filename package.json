@@ -30,6 +30,7 @@
     "asset:indexeddb": "cd LiaScript && npm i && npm run build:indexeddb && cp -r dist ../dist/assets/indexeddb",
     "asset:xapi": "cd LiaScript && npm i && npm run build:xapi && cp -r dist ../dist/assets/xapi",
     "asset:capacitor": "cd LiaScript && git checkout feat/capacitor && rm -rf node_modules && npm i && npm run build:android && cp -r dist ../dist/assets/capacitor && git checkout development && rm -rf node_modules && npm i",
+    "asset:deduplicate": "./scripts/deduplicate-assets.sh",
     "build": "npx parcel build --no-cache --no-source-maps src/index.ts && npm run shebang",
     "build:debug": "npx parcel build --target node --no-minify --log-level 5 src/index.ts",
     "run:moodle": "cd docker/moodle && docker-compose up",

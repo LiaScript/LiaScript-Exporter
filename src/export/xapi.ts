@@ -90,6 +90,7 @@ export async function exporter(
 
   // copy assets to temp
   await fs.copy(path.join(dirname, './assets/xapi'), tmpPath)
+  await fs.copy(path.join(dirname, './assets/common'), tmpPath)
 
   // copy base path or readme-directory into temp
   await fs.copy(argument.path, tmpPath)
