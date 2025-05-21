@@ -86,10 +86,10 @@ export async function exporter(
     path.join(tmpPath, './dist')
   )
 
-  await fs.copy(
-    path.join(dirname, './assets/common'),
-    path.join(tmpPath, './dist')
-  )
+  // await fs.copy(
+  //  path.join(dirname, './assets/common'),
+  //  path.join(tmpPath, './dist')
+  //)
 
   // copy logo and splash
   await fs.copy(

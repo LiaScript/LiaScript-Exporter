@@ -78,7 +78,7 @@ export async function exporter(
     ),
     tmpPath
   )
-  await fs.copy(path.join(dirname, './assets/common'), tmpPath)
+  // await fs.copy(path.join(dirname, './assets/common'), tmpPath)
 
   let index = fs.readFileSync(path.join(tmpPath, 'index.html'), 'utf8')
 

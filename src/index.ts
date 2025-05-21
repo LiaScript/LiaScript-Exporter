@@ -25,7 +25,7 @@ import fetch from 'node-fetch'
 
 // -------------------------------Main Execution-------------------------------
 if (argv.v || argv.version) {
-  console.log('version: 2.6.38--0.16.11')
+  console.log('version: 2.6.39--0.17.1')
 } else if (argv.h || argv.help) {
   help()
 } else if (argv.i || argv.input) {
