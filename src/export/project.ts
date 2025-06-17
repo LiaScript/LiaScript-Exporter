@@ -173,6 +173,7 @@ export async function exporter(
             course.collection[j],
             true
           )
+
           subCards += `<div class='col-sm-6 col-md-4 col-lg-3 ${
             course.grid ? 'mb-3' : ''
           }'>
@@ -221,6 +222,7 @@ export async function exporter(
       cards += "<div class='col'>" + toLinkCard(argument, course) + '</div>'
     } else {
       let { html, json } = await toCard(argument, course)
+
       cards += "<div class='col'>" + html + '</div>'
 
       itemList.push(json)
@@ -673,7 +675,7 @@ async function toCard(
 
   argument['rdf-url'] = course.data.lia.readme
 
-  return {
+  const rslt = {
     html: card(
       small,
       course.data.lia.readme,
@@ -685,6 +687,8 @@ async function toCard(
     ),
     json: await RDF.parse(argument, course.data),
   }
+
+  return rslt
 }
 
 function card(
@@ -704,7 +708,6 @@ function card(
   link?: string
 ): string {
   let image = ''
-
   if (img_url) {
     if (!(img_url.startsWith('http:') || img_url.startsWith('https:'))) {
       const fullImageUrl = new URL(img_url, url)
@@ -719,8 +722,8 @@ function card(
   /*
   else {
     image = `<svg class="bd-placeholder-img card-img-top" width="100%" height="175" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="${stringToColor(
-      title
-    )}"></rect></svg>`
+  title
+  )}"></rect></svg>`
   }
   */
 
@@ -742,7 +745,7 @@ function card(
 
   if (Object.keys(download).length > 0) {
     footer = `<div class="card-footer">
-  <div class="dropdown">
+    <div class="dropdown">
     <a class="btn btn-secondary btn-sm dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
       Download as ...
     </a>
@@ -755,20 +758,20 @@ function card(
             '">PDF</a></li>'
           : ''
       }
-      ${
-        download.scorm12
-          ? '<li><a class="dropdown-item btn-sm" href="' +
-            download.scorm12 +
-            '">SCORM 1.2</a></li>'
-          : ''
-      }
-      ${
-        download.scorm2004
-          ? '<li><a class="dropdown-item btn-sm" href="' +
-            download.scorm2004 +
-            '">SCORM 2004</a></li>'
-          : ''
-      }
+        ${
+          download.scorm12
+            ? '<li><a class="dropdown-item btn-sm" href="' +
+              download.scorm12 +
+              '">SCORM 1.2</a></li>'
+            : ''
+        }
+          ${
+            download.scorm2004
+              ? '<li><a class="dropdown-item btn-sm" href="' +
+                download.scorm2004 +
+                '">SCORM 2004</a></li>'
+              : ''
+          }
       ${
         download.ims
           ? '<li><a class="dropdown-item btn-sm" href="' +
@@ -776,25 +779,25 @@ function card(
             '">IMS Content Packaging</a></li>'
           : ''
       }
-      ${
-        download.apk
-          ? '<li><a class="dropdown-item btn-sm" href="' +
-            download.apk +
-            '">Android APK</a></li>'
-          : ''
-      }
-    </ul>
-  </div>
-  </div>
-  `
+          ${
+            download.apk
+              ? '<li><a class="dropdown-item btn-sm" href="' +
+                download.apk +
+                '">Android APK</a></li>'
+              : ''
+          }
+      </ul>
+      </div>
+      </div>
+      `
   }
 
   return `<div class="card shadow-sm m-1" style="height: 100%" data-category="${tags
     .map((e) => e.toLowerCase())
     .join('|')}">
-    ${image}
-    <div class="card-body" style="transform: rotate(0);">
-        <a href="${link ? '' : 'https://liascript.github.io/course/?'}${
+      ${image}
+      <div class="card-body" style="transform: rotate(0);">
+      <a href="${link ? '' : 'https://liascript.github.io/course/?'}${
     link || url
   }" target="${
     link && !link.startsWith('http') ? '_self' : '_blank'

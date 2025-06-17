@@ -314,7 +314,14 @@ async function licenseInformation(
   if (argument['rdf-license']) {
     licenseUrl = argument['rdf-license']
   } else if (baseURL && (await helper.checkLicense(baseURL))) {
-    licenseUrl = new URL(baseURL, 'LICENSE').href
+    try {
+      licenseUrl = new URL('LICENSE', baseURL).href
+    } catch (error) {
+      console.warn(
+        'Could not create a URL for the LICENSE file, using base URL as license URL.',
+        baseURL
+      )
+    }
   }
 
   if (licenseUrl) {
