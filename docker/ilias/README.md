@@ -4,7 +4,7 @@ Source: https://hub.docker.com/r/srsolutions/ilias/
 
 run: `docker-compose up`
 
-Starts at: http://127.0.0.1:8081
+Starts at: http://127.0.0.1:8041
 
 user: root
 
