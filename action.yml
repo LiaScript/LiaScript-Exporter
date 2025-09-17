@@ -1,0 +1,153 @@
+name: 'LiaScript-Exporter'
+description: 'Export LiaScript courses to SCORM, PDF, Web, and other formats for LMS deployment and distribution'
+author: 'grugnog'
+branding:
+  icon: 'book'
+  color: 'blue'
+
+inputs:
+  # Core inputs
+  input-file:
+    description: 'Path to README.md or project.yml file'
+    required: true
+  format:
+    description: 'Export format (scorm1.2, scorm2004, pdf, web, ims, xapi, rdf, json, project)'
+    required: true
+  output-name:
+    description: 'Base name for output files'
+    required: false
+  course-path:
+    description: 'Directory containing the course'
+    required: false
+
+  # SCORM settings
+  scorm-organization:
+    description: 'Organization title'
+    required: false
+  scorm-mastery-score:
+    description: 'Mastery score (0-100)'
+    required: false
+    default: '0'
+  scorm-typical-duration:
+    description: 'Duration (PT0H5M0S format)'
+    required: false
+    default: 'PT0H5M0S'
+  scorm-iframe:
+    description: 'Use iframe for SCORM'
+    required: false
+    default: 'false'
+  scorm-embed:
+    description: 'Embed Markdown in JS'
+    required: false
+    default: 'false'
+
+  # PDF settings
+  pdf-theme:
+    description: 'LiaScript theme'
+    required: false
+    default: 'default'
+  pdf-format:
+    description: 'Paper format'
+    required: false
+    default: 'A4'
+  pdf-scale:
+    description: 'Webpage rendering scale'
+    required: false
+    default: '1'
+  pdf-landscape:
+    description: 'Landscape orientation'
+    required: false
+    default: 'false'
+  pdf-print-background:
+    description: 'Print background graphics'
+    required: false
+    default: 'false'
+  pdf-stylesheet:
+    description: 'Custom CSS file path'
+    required: false
+
+  # Web settings
+  web-zip:
+    description: 'Create zip archive'
+    required: false
+    default: 'true'
+  web-indexeddb:
+    description: 'Enable IndexedDB storage'
+    required: false
+    default: 'false'
+  web-iframe:
+    description: 'Use iframe version'
+    required: false
+    default: 'false'
+
+  # IMS settings
+  ims-indexeddb:
+    description: 'Use IndexedDB for persistence'
+    required: false
+    default: 'false'
+
+  # xAPI settings
+  xapi-endpoint:
+    description: 'LRS endpoint URL'
+    required: false
+  xapi-auth:
+    description: 'Authentication string'
+    required: false
+  xapi-actor:
+    description: 'xAPI actor JSON'
+    required: false
+  xapi-course-id:
+    description: 'Course identifier'
+    required: false
+  xapi-course-title:
+    description: 'Course title'
+    required: false
+  xapi-debug:
+    description: 'Enable debug logging'
+    required: false
+    default: 'false'
+  xapi-zip:
+    description: 'Package as zip'
+    required: false
+    default: 'false'
+
+  # RDF settings
+  rdf-format:
+    description: 'Output format (json-ld, n-quads)'
+    required: false
+    default: 'json-ld'
+  rdf-url:
+    description: 'External URL reference'
+    required: false
+  rdf-type:
+    description: 'Schema.org type'
+    required: false
+    default: 'Course'
+  rdf-license:
+    description: 'License URL'
+    required: false
+  rdf-educational-level:
+    description: 'Educational level'
+    required: false
+
+  # General settings
+  style:
+    description: 'Additional CSS styling'
+    required: false
+  responsive-voice-key:
+    description: 'Text-to-speech API key'
+    required: false
+
+outputs:
+  output-file:
+    description: 'Path to the generated file'
+  file-size:
+    description: 'Size of generated file in bytes'
+  format:
+    description: 'Format that was generated'
+  success:
+    description: 'Whether export succeeded (true/false)'
+
+runs:
+  using: 'node20'
+  main: 'action/dist/index.js'

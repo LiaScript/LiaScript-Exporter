@@ -1,0 +1,44 @@
+name: Export Single Course
+on:
+  workflow_dispatch:
+    inputs:
+      format:
+        description: 'Export format'
+        required: true
+        default: 'scorm1.2'
+        type: choice
+        options:
+        - scorm1.2
+        - scorm2004
+        - pdf
+        - web
+        - ims
+        - xapi
+        - rdf
+
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+    
+    - name: Export course to ${{ inputs.format }}
+      uses: ./
+      with:
+        input-file: 'README.md'
+        format: ${{ inputs.format }}
+        output-name: 'my-course'
+        scorm-organization: 'My Organization'
+        pdf-format: 'A4'
+        web-zip: true
+    
+    - name: Upload exported course
+      uses: actions/upload-artifact@v4
+      with:
+        name: course-${{ inputs.format }}
+        path: |
+          *.zip
+          *.pdf
+          *.json

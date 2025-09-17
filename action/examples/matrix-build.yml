@@ -1,0 +1,60 @@
+name: Release Course Packages
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+    
+    - name: Extract tag name
+      run: echo "TAG_NAME=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+    
+    - name: Export to SCORM 1.2
+      uses: ./
+      with:
+        input-file: 'README.md'
+        format: 'scorm1.2'
+        output-name: 'course-${{ env.TAG_NAME }}-scorm1.2'
+        scorm-organization: 'My Organization'
+        scorm-mastery-score: '80'
+    
+    - name: Export to PDF
+      uses: ./
+      with:
+        input-file: 'README.md'
+        format: 'pdf'
+        output-name: 'course-${{ env.TAG_NAME }}'
+        pdf-format: 'A4'
+        pdf-landscape: false
+    
+    - name: Export to Web
+      uses: ./
+      with:
+        input-file: 'README.md'
+        format: 'web'
+        output-name: 'course-${{ env.TAG_NAME }}-web'
+        web-zip: true
+        web-indexeddb: true
+    
+    - name: Create Release
+      uses: softprops/action-gh-release@v1
+      with:
+        files: |
+          *.zip
+          *.pdf
+        body: |
+          Course packages for ${{ env.TAG_NAME }}
+          
+          - SCORM 1.2 package for LMS deployment
+          - PDF version for offline reading
+          - Web package for standalone hosting
+        draft: false
+        prerelease: false
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
