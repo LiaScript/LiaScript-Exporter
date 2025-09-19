@@ -118,50 +118,96 @@ exports.getFileSize = getFileSize;
  * Find output files based on format and output name
  */
 function findOutputFiles(args) {
+    // Search directories - check both working directory and course path
+    const searchDirs = [
+        process.cwd(),
+        args.path || path.dirname(args.input)
+    ].filter((dir, index, arr) => arr.indexOf(dir) === index); // Remove duplicates
+    core.info(`Searching for output files in directories: ${searchDirs.join(', ')}`);
     const outputFiles = [];
-    const baseDir = process.cwd();
-    // Common patterns based on format
-    const patterns = {
-        'scorm1.2': [`${args.output}.zip`],
-        'scorm2004': [`${args.output}.zip`],
-        'pdf': [`${args.output}.pdf`],
-        'web': args['web-zip'] ? [`${args.output}.zip`] : [`${args.output}/`, `${args.output}`],
-        'ims': [`${args.output}.zip`],
-        'xapi': args['xapi-zip'] ? [`${args.output}.zip`] : [`${args.output}/`, `${args.output}`],
-        'rdf': getRdfOutputPatterns(args),
-        'json': [`${args.output}.json`],
-        'project': ['*'] // Project generates multiple files
-    };
-    const formatPatterns = patterns[args.format] || [`${args.output}.*`];
-    for (const pattern of formatPatterns) {
-        if (pattern === '*') {
-            // For project format, find all possible generated files
-            const projectFiles = findProjectOutputFiles(args, baseDir);
-            outputFiles.push(...projectFiles);
+    for (const searchDir of searchDirs) {
+        core.info(`Checking directory: ${searchDir}`);
+        // Get all files in directory for debugging
+        try {
+            const allFiles = fs.readdirSync(searchDir);
+            core.info(`All files in ${searchDir}: ${allFiles.join(', ')}`);
         }
-        else if (pattern.endsWith('/')) {
-            // Directory output
-            const dir = path.join(baseDir, pattern);
-            if (fs.existsSync(dir) && fs.statSync(dir).isDirectory()) {
-                outputFiles.push(dir);
-            }
+        catch (error) {
+            core.warning(`Cannot read directory ${searchDir}: ${error}`);
+            continue;
         }
-        else {
-            // File output - try exact match first, then with common variations
-            const variations = [
-                pattern,
-                pattern.replace(/\.[^.]*$/, ''),
-                `${pattern}.zip`,
-                `${pattern}.pdf`,
-                `${pattern}.json`
-            ];
-            for (const variation of variations) {
-                const file = path.join(baseDir, variation);
-                if (fs.existsSync(file) && !outputFiles.includes(file)) {
-                    outputFiles.push(file);
-                    break; // Only add the first match for each pattern
+        // Format-specific file patterns
+        const outputName = args.output;
+        switch (args.format) {
+            case 'scorm1.2':
+                const scorm1File = path.join(searchDir, `${outputName}-scorm1.2.zip`);
+                if (fs.existsSync(scorm1File)) {
+                    outputFiles.push(scorm1File);
+                    core.info(`Found SCORM 1.2 file: ${scorm1File}`);
                 }
-            }
+                break;
+            case 'scorm2004':
+                const scorm2004File = path.join(searchDir, `${outputName}-scorm2004.zip`);
+                if (fs.existsSync(scorm2004File)) {
+                    outputFiles.push(scorm2004File);
+                    core.info(`Found SCORM 2004 file: ${scorm2004File}`);
+                }
+                break;
+            case 'pdf':
+                const pdfFile = path.join(searchDir, `${outputName}.pdf`);
+                if (fs.existsSync(pdfFile)) {
+                    outputFiles.push(pdfFile);
+                    core.info(`Found PDF file: ${pdfFile}`);
+                }
+                break;
+            case 'web':
+                // Web format creates a directory
+                const webDir = path.join(searchDir, outputName);
+                if (fs.existsSync(webDir) && fs.statSync(webDir).isDirectory()) {
+                    outputFiles.push(webDir);
+                    core.info(`Found web directory: ${webDir}`);
+                }
+                break;
+            case 'ims':
+                const imsFile = path.join(searchDir, `${outputName}-ims.zip`);
+                if (fs.existsSync(imsFile)) {
+                    outputFiles.push(imsFile);
+                    core.info(`Found IMS file: ${imsFile}`);
+                }
+                break;
+            case 'xapi':
+                const xapiFile = path.join(searchDir, `${outputName}-xapi.zip`);
+                if (fs.existsSync(xapiFile)) {
+                    outputFiles.push(xapiFile);
+                    core.info(`Found xAPI file: ${xapiFile}`);
+                }
+                break;
+            case 'rdf':
+                // RDF format depends on rdf-format setting
+                const rdfPatterns = getRdfOutputPatterns(args);
+                for (const pattern of rdfPatterns) {
+                    const rdfFile = path.join(searchDir, pattern);
+                    if (fs.existsSync(rdfFile)) {
+                        outputFiles.push(rdfFile);
+                        core.info(`Found RDF file: ${rdfFile}`);
+                    }
+                }
+                break;
+            case 'project':
+                // Project format is complex, delegate to helper
+                const projectFiles = findProjectOutputFiles(args, searchDir);
+                outputFiles.push(...projectFiles);
+                for (const file of projectFiles) {
+                    core.info(`Found project file: ${file}`);
+                }
+                break;
+            default:
+                // JSON format or unknown - look for JSON files
+                const jsonFile = path.join(searchDir, `${outputName}.json`);
+                if (fs.existsSync(jsonFile)) {
+                    outputFiles.push(jsonFile);
+                    core.info(`Found JSON file: ${jsonFile}`);
+                }
         }
     }
     return outputFiles;

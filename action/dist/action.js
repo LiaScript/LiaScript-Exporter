@@ -63,7 +63,11 @@ async function run() {
         core.endGroup();
         if (success) {
             // Find and set outputs
+            core.info('Searching for output files...');
+            core.info(`Working directory: ${process.cwd()}`);
+            core.info(`Course path: ${args.path || 'not set'}`);
             const outputFiles = (0, utils_1.findOutputFiles)(args);
+            core.info(`Found ${outputFiles.length} output files: ${outputFiles.join(', ')}`);
             if (outputFiles.length > 0) {
                 const primaryOutputFile = outputFiles[0];
                 const fileSize = (0, utils_1.getFileSize)(primaryOutputFile);
@@ -79,6 +83,17 @@ async function run() {
             }
             else {
                 core.warning('Export completed but no output files found');
+                // Debug: List all files in potential output directories
+                const searchDirs = [process.cwd(), args.path || path.dirname(args.input)];
+                for (const dir of searchDirs) {
+                    try {
+                        const files = require('fs').readdirSync(dir);
+                        core.info(`Files in ${dir}: ${files.join(', ')}`);
+                    }
+                    catch (error) {
+                        core.warning(`Could not list files in ${dir}: ${error}`);
+                    }
+                }
                 core.setOutput('success', 'false');
             }
         }
