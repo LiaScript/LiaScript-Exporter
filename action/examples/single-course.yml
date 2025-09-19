@@ -25,7 +25,8 @@ jobs:
       uses: actions/checkout@v4
     
     - name: Export course to ${{ inputs.format }}
-      uses: ./
+      id: export
+      uses: LiaScript/LiaScript-Exporter@master
       with:
         input-file: 'README.md'
         format: ${{ inputs.format }}
@@ -38,7 +39,4 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: course-${{ inputs.format }}
-        path: |
-          *.zip
-          *.pdf
-          *.json
+        path: ${{ steps.export.outputs.output-file }}

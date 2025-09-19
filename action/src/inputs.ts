@@ -46,15 +46,6 @@ export interface LiaScriptExporterArgs {
   'pdf-stylesheet'?: string;
   'pdf-theme'?: string;
 
-  // Android settings (not used in action)
-  'android-sdk'?: string;
-  'android-appId'?: string;
-  'android-appName'?: string;
-  'android-icon'?: string;
-  'android-splash'?: string;
-  'android-splashDuration'?: string;
-  'android-preview'?: boolean;
-
   // Project settings
   'project-no-meta'?: boolean;
   'project-no-rdf'?: boolean;
@@ -89,12 +80,9 @@ export interface LiaScriptExporterArgs {
 /**
  * Helper function to safely get boolean inputs, handling empty/undefined values
  */
-function getBooleanInputSafely(name: string, defaultValue: boolean = false): boolean {
+function getBooleanInput(name: string, defaultValue: boolean = false): boolean {
   const input = core.getInput(name);
-  if (!input || input.trim() === '') {
-    return defaultValue;
-  }
-  return core.getBooleanInput(name);
+  return input ? core.getBooleanInput(name) : defaultValue;
 }
 
 /**
@@ -132,21 +120,22 @@ export function parseInputs(): LiaScriptExporterArgs {
     'scorm-organization': core.getInput('scorm-organization') || undefined,
     'scorm-masteryScore': core.getInput('scorm-mastery-score') || undefined,
     'scorm-typicalDuration': core.getInput('scorm-typical-duration') || 'PT0H5M0S',
-    'scorm-iframe': getBooleanInputSafely('scorm-iframe'),
-    'scorm-embed': getBooleanInputSafely('scorm-embed'),
+    'scorm-iframe': getBooleanInput('scorm-iframe'),
+    'scorm-embed': getBooleanInput('scorm-embed'),
+    'scorm-alwaysActive': getBooleanInput('scorm-always-active'),
 
     // IMS settings
-    'ims-indexeddb': getBooleanInputSafely('ims-indexeddb'),
+    'ims-indexeddb': getBooleanInput('ims-indexeddb'),
 
     // Web settings
-    'web-zip': getBooleanInputSafely('web-zip', true), // Default to true
-    'web-indexeddb': getBooleanInputSafely('web-indexeddb'),
-    'web-iframe': getBooleanInputSafely('web-iframe'),
+    'web-zip': getBooleanInput('web-zip', true), // Default to true
+    'web-indexeddb': getBooleanInput('web-indexeddb'),
+    'web-iframe': getBooleanInput('web-iframe'),
 
     // PDF settings
     'pdf-scale': core.getInput('pdf-scale') || '1',
-    'pdf-printBackground': getBooleanInputSafely('pdf-print-background'),
-    'pdf-landscape': getBooleanInputSafely('pdf-landscape'),
+    'pdf-printBackground': getBooleanInput('pdf-print-background'),
+    'pdf-landscape': getBooleanInput('pdf-landscape'),
     'pdf-format': core.getInput('pdf-format') || 'A4',
     'pdf-stylesheet': core.getInput('pdf-stylesheet') || undefined,
     'pdf-theme': core.getInput('pdf-theme') || 'default',
@@ -164,8 +153,8 @@ export function parseInputs(): LiaScriptExporterArgs {
     'xapi-actor': core.getInput('xapi-actor') || undefined,
     'xapi-course-id': core.getInput('xapi-course-id') || undefined,
     'xapi-course-title': core.getInput('xapi-course-title') || undefined,
-    'xapi-debug': getBooleanInputSafely('xapi-debug'),
-    'xapi-zip': getBooleanInputSafely('xapi-zip'),
+    'xapi-debug': getBooleanInput('xapi-debug'),
+    'xapi-zip': getBooleanInput('xapi-zip'),
   };
 
   return args;
@@ -229,17 +218,19 @@ function isValidUrl(url: string): boolean {
  * Log the parsed inputs for debugging
  */
 export function logInputs(args: LiaScriptExporterArgs): void {
-  core.info(`Input file: ${args.input}`);
-  core.info(`Format: ${args.format}`);
-  core.info(`Output name: ${args.output}`);
+  const coreInputs = ['input', 'format', 'output', 'path'];
   
-  if (args.path) {
-    core.info(`Course path: ${args.path}`);
-  }
+  // Log core inputs
+  coreInputs.forEach(key => {
+    const value = (args as any)[key];
+    if (value) {
+      core.info(`${key}: ${value}`);
+    }
+  });
   
   // Log format-specific settings that are set
   Object.entries(args).forEach(([key, value]) => {
-    if (key.includes('-') && value !== undefined && value !== false && value !== '') {
+    if (!coreInputs.includes(key) && key.includes('-') && value !== undefined && value !== false && value !== '') {
       core.info(`${key}: ${value}`);
     }
   });

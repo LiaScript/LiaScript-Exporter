@@ -28,12 +28,9 @@ const core = __importStar(require("@actions/core"));
 /**
  * Helper function to safely get boolean inputs, handling empty/undefined values
  */
-function getBooleanInputSafely(name, defaultValue = false) {
+function getBooleanInput(name, defaultValue = false) {
     const input = core.getInput(name);
-    if (!input || input.trim() === '') {
-        return defaultValue;
-    }
-    return core.getBooleanInput(name);
+    return input ? core.getBooleanInput(name) : defaultValue;
 }
 /**
  * Parse and validate GitHub Action inputs into LiaScript Exporter arguments
@@ -65,18 +62,19 @@ function parseInputs() {
         'scorm-organization': core.getInput('scorm-organization') || undefined,
         'scorm-masteryScore': core.getInput('scorm-mastery-score') || undefined,
         'scorm-typicalDuration': core.getInput('scorm-typical-duration') || 'PT0H5M0S',
-        'scorm-iframe': getBooleanInputSafely('scorm-iframe'),
-        'scorm-embed': getBooleanInputSafely('scorm-embed'),
+        'scorm-iframe': getBooleanInput('scorm-iframe'),
+        'scorm-embed': getBooleanInput('scorm-embed'),
+        'scorm-alwaysActive': getBooleanInput('scorm-always-active'),
         // IMS settings
-        'ims-indexeddb': getBooleanInputSafely('ims-indexeddb'),
+        'ims-indexeddb': getBooleanInput('ims-indexeddb'),
         // Web settings
-        'web-zip': getBooleanInputSafely('web-zip', true),
-        'web-indexeddb': getBooleanInputSafely('web-indexeddb'),
-        'web-iframe': getBooleanInputSafely('web-iframe'),
+        'web-zip': getBooleanInput('web-zip', true),
+        'web-indexeddb': getBooleanInput('web-indexeddb'),
+        'web-iframe': getBooleanInput('web-iframe'),
         // PDF settings
         'pdf-scale': core.getInput('pdf-scale') || '1',
-        'pdf-printBackground': getBooleanInputSafely('pdf-print-background'),
-        'pdf-landscape': getBooleanInputSafely('pdf-landscape'),
+        'pdf-printBackground': getBooleanInput('pdf-print-background'),
+        'pdf-landscape': getBooleanInput('pdf-landscape'),
         'pdf-format': core.getInput('pdf-format') || 'A4',
         'pdf-stylesheet': core.getInput('pdf-stylesheet') || undefined,
         'pdf-theme': core.getInput('pdf-theme') || 'default',
@@ -92,8 +90,8 @@ function parseInputs() {
         'xapi-actor': core.getInput('xapi-actor') || undefined,
         'xapi-course-id': core.getInput('xapi-course-id') || undefined,
         'xapi-course-title': core.getInput('xapi-course-title') || undefined,
-        'xapi-debug': getBooleanInputSafely('xapi-debug'),
-        'xapi-zip': getBooleanInputSafely('xapi-zip'),
+        'xapi-debug': getBooleanInput('xapi-debug'),
+        'xapi-zip': getBooleanInput('xapi-zip'),
     };
     return args;
 }
@@ -153,15 +151,17 @@ function isValidUrl(url) {
  * Log the parsed inputs for debugging
  */
 function logInputs(args) {
-    core.info(`Input file: ${args.input}`);
-    core.info(`Format: ${args.format}`);
-    core.info(`Output name: ${args.output}`);
-    if (args.path) {
-        core.info(`Course path: ${args.path}`);
-    }
+    const coreInputs = ['input', 'format', 'output', 'path'];
+    // Log core inputs
+    coreInputs.forEach(key => {
+        const value = args[key];
+        if (value) {
+            core.info(`${key}: ${value}`);
+        }
+    });
     // Log format-specific settings that are set
     Object.entries(args).forEach(([key, value]) => {
-        if (key.includes('-') && value !== undefined && value !== false && value !== '') {
+        if (!coreInputs.includes(key) && key.includes('-') && value !== undefined && value !== false && value !== '') {
             core.info(`${key}: ${value}`);
         }
     });

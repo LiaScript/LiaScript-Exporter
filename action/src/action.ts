@@ -175,18 +175,29 @@ async function executeExport(args: LiaScriptExporterArgs): Promise<boolean> {
         env: { ...process.env, NODE_ENV: 'production' }
       });
       
-      let stdout = '';
       let stderr = '';
       let hasOutput = false;
       
-      // Set up timeout for long-running processes
+      // Set up timeout warning for long-running processes
       const timeout = setTimeout(() => {
         core.warning('Export process is taking longer than expected (5 minutes). This is normal for PDF exports with complex content.');
-      }, 5 * 60 * 1000); // 5 minutes
+      }, 5 * 60 * 1000);
+      
+      // Provide feedback if process seems quiet
+      const outputCheck = setInterval(() => {
+        if (!hasOutput) {
+          core.info('Export process is running (no output yet)...');
+        }
+        hasOutput = false; // Reset for next check
+      }, 30000);
+      
+      const cleanup = () => {
+        clearTimeout(timeout);
+        clearInterval(outputCheck);
+      };
       
       childProcess.stdout.on('data', (data: Buffer) => {
         const output = data.toString();
-        stdout += output;
         hasOutput = true;
         
         // Log output in real-time, filtering out excessive debug info
@@ -217,7 +228,7 @@ async function executeExport(args: LiaScriptExporterArgs): Promise<boolean> {
       });
       
       childProcess.on('close', (code: number | null, signal: string | null) => {
-        clearTimeout(timeout);
+        cleanup();
         
         if (signal) {
           core.warning(`Export process was terminated by signal: ${signal}`);
@@ -249,7 +260,7 @@ async function executeExport(args: LiaScriptExporterArgs): Promise<boolean> {
       });
       
       childProcess.on('error', (error: Error) => {
-        clearTimeout(timeout);
+        cleanup();
         
         if (error.message.includes('ENOENT')) {
           core.error(`Failed to start export process: CLI command not found (${error.message})`);
@@ -259,16 +270,8 @@ async function executeExport(args: LiaScriptExporterArgs): Promise<boolean> {
         resolve(false);
       });
       
-      // Provide feedback if process seems to hang without output
-      const outputCheckInterval = setInterval(() => {
-        if (!hasOutput) {
-          core.info('Export process is running (no output yet)...');
-        }
-        hasOutput = false; // Reset for next check
-      }, 30000); // Check every 30 seconds
-      
       childProcess.on('close', () => {
-        clearInterval(outputCheckInterval);
+        cleanup();
       });
     });
     

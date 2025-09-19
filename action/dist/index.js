@@ -176,16 +176,25 @@ async function executeExport(args) {
                 stdio: ['pipe', 'pipe', 'pipe'],
                 env: { ...process.env, NODE_ENV: 'production' }
             });
-            let stdout = '';
             let stderr = '';
             let hasOutput = false;
-            // Set up timeout for long-running processes
+            // Set up timeout warning for long-running processes
             const timeout = setTimeout(() => {
                 core.warning('Export process is taking longer than expected (5 minutes). This is normal for PDF exports with complex content.');
-            }, 5 * 60 * 1000); // 5 minutes
+            }, 5 * 60 * 1000);
+            // Provide feedback if process seems quiet
+            const outputCheck = setInterval(() => {
+                if (!hasOutput) {
+                    core.info('Export process is running (no output yet)...');
+                }
+                hasOutput = false; // Reset for next check
+            }, 30000);
+            const cleanup = () => {
+                clearTimeout(timeout);
+                clearInterval(outputCheck);
+            };
             childProcess.stdout.on('data', (data) => {
                 const output = data.toString();
-                stdout += output;
                 hasOutput = true;
                 // Log output in real-time, filtering out excessive debug info
                 output.split('\\n').filter(line => {
@@ -214,7 +223,7 @@ async function executeExport(args) {
                 });
             });
             childProcess.on('close', (code, signal) => {
-                clearTimeout(timeout);
+                cleanup();
                 if (signal) {
                     core.warning(`Export process was terminated by signal: ${signal}`);
                     resolve(false);
@@ -249,7 +258,7 @@ async function executeExport(args) {
                 }
             });
             childProcess.on('error', (error) => {
-                clearTimeout(timeout);
+                cleanup();
                 if (error.message.includes('ENOENT')) {
                     core.error(`Failed to start export process: CLI command not found (${error.message})`);
                 }
@@ -258,15 +267,8 @@ async function executeExport(args) {
                 }
                 resolve(false);
             });
-            // Provide feedback if process seems to hang without output
-            const outputCheckInterval = setInterval(() => {
-                if (!hasOutput) {
-                    core.info('Export process is running (no output yet)...');
-                }
-                hasOutput = false; // Reset for next check
-            }, 30000); // Check every 30 seconds
             childProcess.on('close', () => {
-                clearInterval(outputCheckInterval);
+                cleanup();
             });
         });
     }
@@ -351,12 +353,9 @@ const core = __importStar(__nccwpck_require__(7484));
 /**
  * Helper function to safely get boolean inputs, handling empty/undefined values
  */
-function getBooleanInputSafely(name, defaultValue = false) {
+function getBooleanInput(name, defaultValue = false) {
     const input = core.getInput(name);
-    if (!input || input.trim() === '') {
-        return defaultValue;
-    }
-    return core.getBooleanInput(name);
+    return input ? core.getBooleanInput(name) : defaultValue;
 }
 /**
  * Parse and validate GitHub Action inputs into LiaScript Exporter arguments
@@ -388,18 +387,19 @@ function parseInputs() {
         'scorm-organization': core.getInput('scorm-organization') || undefined,
         'scorm-masteryScore': core.getInput('scorm-mastery-score') || undefined,
         'scorm-typicalDuration': core.getInput('scorm-typical-duration') || 'PT0H5M0S',
-        'scorm-iframe': getBooleanInputSafely('scorm-iframe'),
-        'scorm-embed': getBooleanInputSafely('scorm-embed'),
+        'scorm-iframe': getBooleanInput('scorm-iframe'),
+        'scorm-embed': getBooleanInput('scorm-embed'),
+        'scorm-alwaysActive': getBooleanInput('scorm-always-active'),
         // IMS settings
-        'ims-indexeddb': getBooleanInputSafely('ims-indexeddb'),
+        'ims-indexeddb': getBooleanInput('ims-indexeddb'),
         // Web settings
-        'web-zip': getBooleanInputSafely('web-zip', true),
-        'web-indexeddb': getBooleanInputSafely('web-indexeddb'),
-        'web-iframe': getBooleanInputSafely('web-iframe'),
+        'web-zip': getBooleanInput('web-zip', true),
+        'web-indexeddb': getBooleanInput('web-indexeddb'),
+        'web-iframe': getBooleanInput('web-iframe'),
         // PDF settings
         'pdf-scale': core.getInput('pdf-scale') || '1',
-        'pdf-printBackground': getBooleanInputSafely('pdf-print-background'),
-        'pdf-landscape': getBooleanInputSafely('pdf-landscape'),
+        'pdf-printBackground': getBooleanInput('pdf-print-background'),
+        'pdf-landscape': getBooleanInput('pdf-landscape'),
         'pdf-format': core.getInput('pdf-format') || 'A4',
         'pdf-stylesheet': core.getInput('pdf-stylesheet') || undefined,
         'pdf-theme': core.getInput('pdf-theme') || 'default',
@@ -415,8 +415,8 @@ function parseInputs() {
         'xapi-actor': core.getInput('xapi-actor') || undefined,
         'xapi-course-id': core.getInput('xapi-course-id') || undefined,
         'xapi-course-title': core.getInput('xapi-course-title') || undefined,
-        'xapi-debug': getBooleanInputSafely('xapi-debug'),
-        'xapi-zip': getBooleanInputSafely('xapi-zip'),
+        'xapi-debug': getBooleanInput('xapi-debug'),
+        'xapi-zip': getBooleanInput('xapi-zip'),
     };
     return args;
 }
@@ -476,15 +476,17 @@ function isValidUrl(url) {
  * Log the parsed inputs for debugging
  */
 function logInputs(args) {
-    core.info(`Input file: ${args.input}`);
-    core.info(`Format: ${args.format}`);
-    core.info(`Output name: ${args.output}`);
-    if (args.path) {
-        core.info(`Course path: ${args.path}`);
-    }
+    const coreInputs = ['input', 'format', 'output', 'path'];
+    // Log core inputs
+    coreInputs.forEach(key => {
+        const value = args[key];
+        if (value) {
+            core.info(`${key}: ${value}`);
+        }
+    });
     // Log format-specific settings that are set
     Object.entries(args).forEach(([key, value]) => {
-        if (key.includes('-') && value !== undefined && value !== false && value !== '') {
+        if (!coreInputs.includes(key) && key.includes('-') && value !== undefined && value !== false && value !== '') {
             core.info(`${key}: ${value}`);
         }
     });
@@ -528,23 +530,7 @@ const path = __importStar(__nccwpck_require__(6928));
 const fs = __importStar(__nccwpck_require__(9896));
 const core = __importStar(__nccwpck_require__(7484));
 /**
- * Check if       case 'ims':
-        const imsFile = path.join(searchDir, `${outputName}.zip`);
-        core.info(`Checking for IMS file: ${imsFile}`);
-        if (fs.existsSync(imsFile)) {
-          outputFiles.push(imsFile);
-          core.info(`Found IMS file: ${imsFile}`);
-        }
-        break;
-        
-      case 'xapi':
-        const xapiFile = path.join(searchDir, `${outputName}.zip`);
-        core.info(`Checking for xAPI file: ${xapiFile}`);
-        if (fs.existsExists(xapiFile)) {
-          outputFiles.push(xapiFile);
-          core.info(`Found xAPI file: ${xapiFile}`);
-        }
-        break;RL
+ * Check if a string is a URL
  */
 function isURL(input) {
     try {
@@ -631,6 +617,17 @@ function getFileSize(filePath) {
 }
 exports.getFileSize = getFileSize;
 /**
+ * Helper function to check for a file and add it to outputs if found
+ */
+function checkAndAddFile(searchDir, fileName, description, outputFiles) {
+    const filePath = path.join(searchDir, fileName);
+    core.info(`Checking for ${description} file: ${filePath}`);
+    if (fs.existsSync(filePath)) {
+        outputFiles.push(filePath);
+        core.info(`Found ${description} file: ${filePath}`);
+    }
+}
+/**
  * Find output files based on format and output name
  */
 function findOutputFiles(args) {
@@ -656,27 +653,13 @@ function findOutputFiles(args) {
         const outputName = args.output;
         switch (args.format) {
             case 'scorm1.2':
-                const scorm1File = path.join(searchDir, `${outputName}.zip`);
-                core.info(`Checking for SCORM 1.2 file: ${scorm1File}`);
-                if (fs.existsSync(scorm1File)) {
-                    outputFiles.push(scorm1File);
-                    core.info(`Found SCORM 1.2 file: ${scorm1File}`);
-                }
+                checkAndAddFile(searchDir, `${outputName}.zip`, 'SCORM 1.2', outputFiles);
                 break;
             case 'scorm2004':
-                const scorm2004File = path.join(searchDir, `${outputName}.zip`);
-                core.info(`Checking for SCORM 2004 file: ${scorm2004File}`);
-                if (fs.existsSync(scorm2004File)) {
-                    outputFiles.push(scorm2004File);
-                    core.info(`Found SCORM 2004 file: ${scorm2004File}`);
-                }
+                checkAndAddFile(searchDir, `${outputName}.zip`, 'SCORM 2004', outputFiles);
                 break;
             case 'pdf':
-                const pdfFile = path.join(searchDir, `${outputName}.pdf`);
-                if (fs.existsSync(pdfFile)) {
-                    outputFiles.push(pdfFile);
-                    core.info(`Found PDF file: ${pdfFile}`);
-                }
+                checkAndAddFile(searchDir, `${outputName}.pdf`, 'PDF', outputFiles);
                 break;
             case 'web':
                 // Web format creates a directory
@@ -687,18 +670,10 @@ function findOutputFiles(args) {
                 }
                 break;
             case 'ims':
-                const imsFile = path.join(searchDir, `${outputName}-ims.zip`);
-                if (fs.existsSync(imsFile)) {
-                    outputFiles.push(imsFile);
-                    core.info(`Found IMS file: ${imsFile}`);
-                }
+                checkAndAddFile(searchDir, `${outputName}.zip`, 'IMS', outputFiles);
                 break;
             case 'xapi':
-                const xapiFile = path.join(searchDir, `${outputName}-xapi.zip`);
-                if (fs.existsSync(xapiFile)) {
-                    outputFiles.push(xapiFile);
-                    core.info(`Found xAPI file: ${xapiFile}`);
-                }
+                checkAndAddFile(searchDir, `${outputName}.zip`, 'xAPI', outputFiles);
                 break;
             case 'rdf':
                 // RDF format depends on rdf-format setting
@@ -721,11 +696,7 @@ function findOutputFiles(args) {
                 break;
             default:
                 // JSON format or unknown - look for JSON files
-                const jsonFile = path.join(searchDir, `${outputName}.json`);
-                if (fs.existsSync(jsonFile)) {
-                    outputFiles.push(jsonFile);
-                    core.info(`Found JSON file: ${jsonFile}`);
-                }
+                checkAndAddFile(searchDir, `${outputName}.json`, 'JSON', outputFiles);
         }
     }
     return outputFiles;

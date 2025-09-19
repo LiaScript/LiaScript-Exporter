@@ -22,7 +22,8 @@ jobs:
       uses: actions/checkout@v4
     
     - name: Export ${{ matrix.course.name }} to ${{ matrix.format }}
-      uses: ./
+      id: export
+      uses: LiaScript/LiaScript-Exporter@master
       with:
         input-file: ${{ matrix.course.path }}
         format: ${{ matrix.format }}
@@ -35,7 +36,4 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: ${{ matrix.course.name }}-${{ matrix.format }}
-        path: |
-          *.zip
-          *.pdf
-          **/
+        path: ${{ steps.export.outputs.output-file }}

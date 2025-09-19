@@ -16,7 +16,8 @@ jobs:
       run: echo "TAG_NAME=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
     
     - name: Export to SCORM 1.2
-      uses: ./
+      id: export-scorm
+      uses: LiaScript/LiaScript-Exporter@master
       with:
         input-file: 'README.md'
         format: 'scorm1.2'
@@ -25,7 +26,8 @@ jobs:
         scorm-mastery-score: '80'
     
     - name: Export to PDF
-      uses: ./
+      id: export-pdf
+      uses: LiaScript/LiaScript-Exporter@master
       with:
         input-file: 'README.md'
         format: 'pdf'
@@ -34,7 +36,8 @@ jobs:
         pdf-landscape: false
     
     - name: Export to Web
-      uses: ./
+      id: export-web
+      uses: LiaScript/LiaScript-Exporter@master
       with:
         input-file: 'README.md'
         format: 'web'
@@ -46,8 +49,9 @@ jobs:
       uses: softprops/action-gh-release@v1
       with:
         files: |
-          *.zip
-          *.pdf
+          ${{ steps.export-scorm.outputs.output-file }}
+          ${{ steps.export-pdf.outputs.output-file }}
+          ${{ steps.export-web.outputs.output-file }}
         body: |
           Course packages for ${{ env.TAG_NAME }}
           

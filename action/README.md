@@ -8,7 +8,8 @@ Add this action to your workflow:
 
 ```yaml
 - name: Export course to SCORM
-  uses: ./
+  id: export
+  uses: LiaScript/LiaScript-Exporter@master
   with:
     input-file: 'README.md'
     format: 'scorm1.2'
@@ -40,6 +41,7 @@ Add this action to your workflow:
 | `scorm-typical-duration` | Duration (PT0H5M0S format) | `PT0H5M0S` |
 | `scorm-iframe` | Use iframe for SCORM | `false` |
 | `scorm-embed` | Embed Markdown in JS | `false` |
+| `scorm-always-active` | Keep SCORM always active | `false` |
 
 ### PDF Settings
 
@@ -119,7 +121,8 @@ jobs:
     - uses: actions/checkout@v4
     
     - name: Export to SCORM
-      uses: ./
+      id: export
+      uses: LiaScript/LiaScript-Exporter@master
       with:
         input-file: 'README.md'
         format: 'scorm1.2'
@@ -131,7 +134,7 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: scorm-package
-        path: '*.zip'
+        path: ${{ steps.export.outputs.output-file }}
 ```
 
 ### Multi-Course Matrix Build
@@ -152,7 +155,8 @@ jobs:
     - uses: actions/checkout@v4
     
     - name: Export ${{ matrix.course }} to ${{ matrix.format }}
-      uses: ./
+      id: export
+      uses: LiaScript/LiaScript-Exporter@master
       with:
         input-file: '${{ matrix.course }}/README.md'
         format: '${{ matrix.format }}'
@@ -162,9 +166,7 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: ${{ matrix.course }}-${{ matrix.format }}
-        path: |
-          *.zip
-          *.pdf
+        path: ${{ steps.export.outputs.output-file }}
 ```
 
 ### Release Automation
@@ -182,14 +184,16 @@ jobs:
     - uses: actions/checkout@v4
     
     - name: Export to SCORM
-      uses: ./
+      id: export-scorm
+      uses: LiaScript/LiaScript-Exporter@master
       with:
         input-file: 'README.md'
         format: 'scorm1.2'
         output-name: 'course-${{ github.ref_name }}'
     
     - name: Export to PDF
-      uses: ./
+      id: export-pdf
+      uses: LiaScript/LiaScript-Exporter@master
       with:
         input-file: 'README.md'
         format: 'pdf'
@@ -199,8 +203,8 @@ jobs:
       uses: softprops/action-gh-release@v1
       with:
         files: |
-          *.zip
-          *.pdf
+          ${{ steps.export-scorm.outputs.output-file }}
+          ${{ steps.export-pdf.outputs.output-file }}
 ```
 
 ## Development
@@ -229,10 +233,13 @@ npm run test
 ### Common Issues
 
 **PDF export hangs or fails**
-- PDF exports require Chrome/Puppeteer which will require separate installation
+- PDF exports use Puppeteer (headless Chrome) which requires sufficient memory and may take several minutes for complex courses
+- Ensure the course content renders properly in a regular browser first
 
-**Android APK export hangs or fails**
-- Android exports require the Android SDK which must be installed and configured separately
+**Output file not found**
+- Check that the `output-name` parameter matches the expected file pattern
+- Verify the input file path is correct relative to the repository root
+- Review the action logs for detailed file search information
 
 ### Debug Information
 
@@ -247,7 +254,7 @@ Enable debug logging in your workflow:
 
 ```yaml
 - name: Export with debug
-  uses: ./
+  uses: LiaScript/LiaScript-Exporter@master
   with:
     input-file: 'README.md'
     format: 'scorm1.2'

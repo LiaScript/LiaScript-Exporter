@@ -4,23 +4,7 @@ import * as core from '@actions/core';
 import { LiaScriptExporterArgs } from './inputs';
 
 /**
- * Check if       case 'ims':
-        const imsFile = path.join(searchDir, `${outputName}.zip`);
-        core.info(`Checking for IMS file: ${imsFile}`);
-        if (fs.existsSync(imsFile)) {
-          outputFiles.push(imsFile);
-          core.info(`Found IMS file: ${imsFile}`);
-        }
-        break;
-        
-      case 'xapi':
-        const xapiFile = path.join(searchDir, `${outputName}.zip`);
-        core.info(`Checking for xAPI file: ${xapiFile}`);
-        if (fs.existsExists(xapiFile)) {
-          outputFiles.push(xapiFile);
-          core.info(`Found xAPI file: ${xapiFile}`);
-        }
-        break;RL
+ * Check if a string is a URL
  */
 export function isURL(input: string): boolean {
   try {
@@ -112,6 +96,18 @@ export function getFileSize(filePath: string): number {
 }
 
 /**
+ * Helper function to check for a file and add it to outputs if found
+ */
+function checkAndAddFile(searchDir: string, fileName: string, description: string, outputFiles: string[]): void {
+  const filePath = path.join(searchDir, fileName);
+  core.info(`Checking for ${description} file: ${filePath}`);
+  if (fs.existsSync(filePath)) {
+    outputFiles.push(filePath);
+    core.info(`Found ${description} file: ${filePath}`);
+  }
+}
+
+/**
  * Find output files based on format and output name
  */
 export function findOutputFiles(args: LiaScriptExporterArgs): string[] {
@@ -142,29 +138,15 @@ export function findOutputFiles(args: LiaScriptExporterArgs): string[] {
     
     switch (args.format) {
       case 'scorm1.2':
-        const scorm1File = path.join(searchDir, `${outputName}.zip`);
-        core.info(`Checking for SCORM 1.2 file: ${scorm1File}`);
-        if (fs.existsSync(scorm1File)) {
-          outputFiles.push(scorm1File);
-          core.info(`Found SCORM 1.2 file: ${scorm1File}`);
-        }
+        checkAndAddFile(searchDir, `${outputName}.zip`, 'SCORM 1.2', outputFiles);
         break;
         
       case 'scorm2004':
-        const scorm2004File = path.join(searchDir, `${outputName}.zip`);
-        core.info(`Checking for SCORM 2004 file: ${scorm2004File}`);
-        if (fs.existsSync(scorm2004File)) {
-          outputFiles.push(scorm2004File);
-          core.info(`Found SCORM 2004 file: ${scorm2004File}`);
-        }
+        checkAndAddFile(searchDir, `${outputName}.zip`, 'SCORM 2004', outputFiles);
         break;
         
       case 'pdf':
-        const pdfFile = path.join(searchDir, `${outputName}.pdf`);
-        if (fs.existsSync(pdfFile)) {
-          outputFiles.push(pdfFile);
-          core.info(`Found PDF file: ${pdfFile}`);
-        }
+        checkAndAddFile(searchDir, `${outputName}.pdf`, 'PDF', outputFiles);
         break;
         
       case 'web':
@@ -177,19 +159,11 @@ export function findOutputFiles(args: LiaScriptExporterArgs): string[] {
         break;
         
       case 'ims':
-        const imsFile = path.join(searchDir, `${outputName}-ims.zip`);
-        if (fs.existsSync(imsFile)) {
-          outputFiles.push(imsFile);
-          core.info(`Found IMS file: ${imsFile}`);
-        }
+        checkAndAddFile(searchDir, `${outputName}.zip`, 'IMS', outputFiles);
         break;
         
       case 'xapi':
-        const xapiFile = path.join(searchDir, `${outputName}-xapi.zip`);
-        if (fs.existsSync(xapiFile)) {
-          outputFiles.push(xapiFile);
-          core.info(`Found xAPI file: ${xapiFile}`);
-        }
+        checkAndAddFile(searchDir, `${outputName}.zip`, 'xAPI', outputFiles);
         break;
         
       case 'rdf':
@@ -215,11 +189,7 @@ export function findOutputFiles(args: LiaScriptExporterArgs): string[] {
         
       default:
         // JSON format or unknown - look for JSON files
-        const jsonFile = path.join(searchDir, `${outputName}.json`);
-        if (fs.existsSync(jsonFile)) {
-          outputFiles.push(jsonFile);
-          core.info(`Found JSON file: ${jsonFile}`);
-        }
+        checkAndAddFile(searchDir, `${outputName}.json`, 'JSON', outputFiles);
     }
   }
   
