@@ -28,7 +28,23 @@ const path = __importStar(require("path"));
 const fs = __importStar(require("fs"));
 const core = __importStar(require("@actions/core"));
 /**
- * Check if a string is a URL
+ * Check if       case 'ims':
+        const imsFile = path.join(searchDir, `${outputName}.zip`);
+        core.info(`Checking for IMS file: ${imsFile}`);
+        if (fs.existsSync(imsFile)) {
+          outputFiles.push(imsFile);
+          core.info(`Found IMS file: ${imsFile}`);
+        }
+        break;
+        
+      case 'xapi':
+        const xapiFile = path.join(searchDir, `${outputName}.zip`);
+        core.info(`Checking for xAPI file: ${xapiFile}`);
+        if (fs.existsExists(xapiFile)) {
+          outputFiles.push(xapiFile);
+          core.info(`Found xAPI file: ${xapiFile}`);
+        }
+        break;RL
  */
 function isURL(input) {
     try {
@@ -140,14 +156,16 @@ function findOutputFiles(args) {
         const outputName = args.output;
         switch (args.format) {
             case 'scorm1.2':
-                const scorm1File = path.join(searchDir, `${outputName}-scorm1.2.zip`);
+                const scorm1File = path.join(searchDir, `${outputName}.zip`);
+                core.info(`Checking for SCORM 1.2 file: ${scorm1File}`);
                 if (fs.existsSync(scorm1File)) {
                     outputFiles.push(scorm1File);
                     core.info(`Found SCORM 1.2 file: ${scorm1File}`);
                 }
                 break;
             case 'scorm2004':
-                const scorm2004File = path.join(searchDir, `${outputName}-scorm2004.zip`);
+                const scorm2004File = path.join(searchDir, `${outputName}.zip`);
+                core.info(`Checking for SCORM 2004 file: ${scorm2004File}`);
                 if (fs.existsSync(scorm2004File)) {
                     outputFiles.push(scorm2004File);
                     core.info(`Found SCORM 2004 file: ${scorm2004File}`);
