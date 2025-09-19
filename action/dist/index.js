@@ -113,13 +113,50 @@ async function executeExport(args) {
         if (!(__nccwpck_require__(9896).existsSync)(cliPath)) {
             throw new Error(`CLI library not found at ${cliPath}. Please run 'npm run build' in the main directory first.`);
         }
-        // We use a subprocess approach to call the CLI
+        // Install CLI dependencies in the action's working directory
+        core.info('Installing CLI dependencies...');
         const { spawn } = __nccwpck_require__(5317);
+        // First, install the LiaScript exporter package globally to get all dependencies
+        const installResult = await new Promise((resolve) => {
+            const npmInstall = spawn('npm', ['install', '-g', '@liascript/exporter'], {
+                stdio: ['pipe', 'pipe', 'pipe'],
+                env: { ...process.env }
+            });
+            let installOutput = '';
+            let installError = '';
+            npmInstall.stdout.on('data', (data) => {
+                installOutput += data.toString();
+                core.info(`npm install: ${data.toString().trim()}`);
+            });
+            npmInstall.stderr.on('data', (data) => {
+                installError += data.toString();
+                core.warning(`npm install warning: ${data.toString().trim()}`);
+            });
+            npmInstall.on('close', (code) => {
+                if (code === 0) {
+                    core.info('CLI dependencies installed successfully');
+                    resolve(true);
+                }
+                else {
+                    core.error(`Failed to install CLI dependencies: ${installError}`);
+                    resolve(false);
+                }
+            });
+            npmInstall.on('error', (error) => {
+                core.error(`Failed to start npm install: ${error.message}`);
+                resolve(false);
+            });
+        });
+        if (!installResult) {
+            throw new Error('Failed to install CLI dependencies');
+        }
+        // Now use the globally installed CLI instead of the local one
+        const globalCliCommand = 'liascript-exporter';
         // Build CLI arguments
         const cliArgs = buildCliArguments(args);
         core.info(`CLI arguments: ${cliArgs.join(' ')}`);
         return new Promise((resolve) => {
-            const childProcess = spawn('node', [cliPath, ...cliArgs], {
+            const childProcess = spawn(globalCliCommand, cliArgs, {
                 cwd: args.path || path.dirname(args.input),
                 stdio: ['pipe', 'pipe', 'pipe'],
                 env: { ...process.env, NODE_ENV: 'production' }
@@ -199,7 +236,7 @@ async function executeExport(args) {
             childProcess.on('error', (error) => {
                 clearTimeout(timeout);
                 if (error.message.includes('ENOENT')) {
-                    core.error(`Failed to start export process: Node.js not found or CLI path incorrect (${error.message})`);
+                    core.error(`Failed to start export process: CLI command not found (${error.message})`);
                 }
                 else {
                     core.error(`Failed to start export process: ${error.message}`);
