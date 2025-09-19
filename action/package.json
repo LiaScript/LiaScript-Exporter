@@ -5,8 +5,8 @@
   "private": true,
   "main": "dist/action.js",
   "scripts": {
-    "build": "tsc && ncc build dist/action.js -o dist --source-map --license licenses.txt",
-    "build:dev": "tsc",
+    "build": "tsc && ncc build dist/action.js -o dist --license licenses.txt",
+    "build:dev": "tsc && ncc build dist/action.js -o dist --source-map --license licenses.txt",
     "clean": "rm -rf dist/*",
     "test": "jest",
     "lint": "eslint src/**/*.ts"
