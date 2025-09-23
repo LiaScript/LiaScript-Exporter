@@ -218,28 +218,17 @@ function isValidUrl(url: string): boolean {
  * Log the parsed inputs for debugging
  */
 export function logInputs(args: LiaScriptExporterArgs): void {
-  const coreInputs = ['input', 'format', 'output', 'path'];
-  const sensitiveInputs = ['key', 'xapi-auth', 'responsive-voice-key'];
+  core.info(`input: ${args.input}`);
+  core.info(`format: ${args.format}`);
+  core.info(`output: ${args.output}`);
+  if (args.path) core.info(`path: ${args.path}`);
   
-  // Log core inputs
-  coreInputs.forEach(key => {
-    const value = (args as any)[key];
-    if (value) {
-      core.info(`${key}: ${value}`);
-    }
-  });
-  
-  // Log format-specific settings that are set, but mask sensitive values
+  // Log non-default settings
   Object.entries(args).forEach(([key, value]) => {
-    if (!coreInputs.includes(key) && key.includes('-') && value !== undefined && value !== false && value !== '') {
-      // Check if this is a sensitive value that should be masked
-      const isSensitive = sensitiveInputs.some(sensitiveKey => 
-        key === sensitiveKey || key.includes('key') || key.includes('auth') || key.includes('password')
-      );
-      
-      if (isSensitive && typeof value === 'string') {
-        const maskedValue = value.length > 4 ? `${value.substring(0, 4)}***` : '***';
-        core.info(`${key}: ${maskedValue}`);
+    if (key.includes('-') && value !== undefined && value !== false && value !== '') {
+      // Simple masking for sensitive fields
+      if (key.includes('key') || key.includes('auth')) {
+        core.info(`${key}: ***`);
       } else {
         core.info(`${key}: ${value}`);
       }

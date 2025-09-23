@@ -6,7 +6,6 @@ import {
   validateFiles,
   findOutputFiles,
   generateOutputName,
-  logEnvironmentInfo,
   ensureOutputDirectory,
   getFileSize
 } from './utils';
@@ -17,9 +16,6 @@ import {
 export async function run(): Promise<void> {
   try {
     core.info('Starting LiaScript Exporter Action');
-    
-    // Log environment info for debugging
-    logEnvironmentInfo();
     
     // Parse and validate inputs
     core.startGroup('Parsing inputs');
@@ -64,12 +60,7 @@ export async function run(): Promise<void> {
     
     if (success) {
       // Find and set outputs
-      core.info('Searching for output files...');
-      core.info(`Working directory: ${process.cwd()}`);
-      core.info(`Course path: ${args.path || 'not set'}`);
-      
       const outputFiles = findOutputFiles(args);
-      core.info(`Found ${outputFiles.length} output files: ${outputFiles.join(', ')}`);
       
       if (outputFiles.length > 0) {
         const primaryOutputFile = outputFiles[0];
@@ -87,21 +78,7 @@ export async function run(): Promise<void> {
           core.info(`Additional files generated: ${outputFiles.slice(1).join(', ')}`);
         }
       } else {
-        core.warning('Export completed but no output files found');
-        
-        // List directories searched for troubleshooting
-        const searchDirs = [process.cwd(), args.path || path.dirname(args.input)];
-        core.info(`Searched directories: ${searchDirs.join(', ')}`);
-        for (const dir of searchDirs) {
-          try {
-            const files = require('fs').readdirSync(dir);
-            const fileCount = files.length;
-            core.info(`Found ${fileCount} files in ${dir}${fileCount > 0 ? ' - check output name pattern' : ''}`);
-          } catch (error) {
-            core.warning(`Could not list files in ${dir}: ${error}`);
-          }
-        }
-        
+        core.setFailed('Export completed but no output files found');
         core.setOutput('success', 'false');
       }
     } else {
@@ -144,7 +121,7 @@ async function installCliDependencies(): Promise<boolean> {
     const { spawn } = require('child_process');
     
     return new Promise((resolve, reject) => {
-      const child = spawn('npm', ['install', '--production', '--no-audit', '--no-fund'], {
+      const child = spawn('npm', ['install', '--omit=dev', '--no-audit', '--no-fund'], {
         cwd: mainDir,
         stdio: ['pipe', 'pipe', 'pipe']
       });
@@ -212,13 +189,7 @@ async function executeExport(args: LiaScriptExporterArgs): Promise<boolean> {
     
     // Build command arguments for the local CLI
     const cliArgs = buildCliArguments(args);
-    // Log CLI execution info without exposing sensitive arguments
-    const safeArgs = cliArgs.map(arg => 
-      (arg.includes('key') || arg.includes('auth')) && !arg.startsWith('--') 
-        ? (arg.length > 4 ? `${arg.substring(0, 4)}***` : '***')
-        : arg
-    );
-    core.info(`CLI command: node ${path.basename(cliPath)} ${safeArgs.join(' ')}`);
+    core.info(`CLI command: node ${path.basename(cliPath)} [${cliArgs.length} arguments]`);
     
     // Execute the local CLI using spawn
     const { spawn } = require('child_process');
@@ -240,13 +211,27 @@ async function executeExport(args: LiaScriptExporterArgs): Promise<boolean> {
       child.stderr?.on('data', (data: Buffer) => {
         const output = data.toString();
         stderr += output;
+        
+        // Filter out known benign messages
+        const trimmedOutput = output.trim();
+        if (!trimmedOutput) return; // Skip empty lines
+        
+        // Filter out "Error: null" and "null" messages from temporary directories (CLI internal, not actual errors)
+        if (trimmedOutput.startsWith('Error: null /tmp/lia') || 
+            trimmedOutput.startsWith('null /tmp/lia') || 
+            trimmedOutput.startsWith('Error: null /var/folders') || 
+            trimmedOutput.startsWith('null /var/folders')) {
+          core.info(`CLI temp: ${trimmedOutput}`);
+          return;
+        }
+        
         // Log warnings and debug info, but don't treat as errors
         if (output.toLowerCase().includes('warn')) {
-          core.warning(output.trim());
+          core.warning(trimmedOutput);
         } else if (output.toLowerCase().includes('debug')) {
-          core.info(`DEBUG: ${output.trim()}`);
+          core.info(`DEBUG: ${trimmedOutput}`);
         } else {
-          core.error(output.trim());
+          core.error(trimmedOutput);
         }
       });
       

@@ -41,8 +41,6 @@ const utils_1 = __nccwpck_require__(9236);
 async function run() {
     try {
         core.info('Starting LiaScript Exporter Action');
-        // Log environment info for debugging
-        (0, utils_1.logEnvironmentInfo)();
         // Parse and validate inputs
         core.startGroup('Parsing inputs');
         let args = (0, inputs_1.parseInputs)();
@@ -79,11 +77,7 @@ async function run() {
         core.endGroup();
         if (success) {
             // Find and set outputs
-            core.info('Searching for output files...');
-            core.info(`Working directory: ${process.cwd()}`);
-            core.info(`Course path: ${args.path || 'not set'}`);
             const outputFiles = (0, utils_1.findOutputFiles)(args);
-            core.info(`Found ${outputFiles.length} output files: ${outputFiles.join(', ')}`);
             if (outputFiles.length > 0) {
                 const primaryOutputFile = outputFiles[0];
                 const fileSize = (0, utils_1.getFileSize)(primaryOutputFile);
@@ -98,20 +92,7 @@ async function run() {
                 }
             }
             else {
-                core.warning('Export completed but no output files found');
-                // List directories searched for troubleshooting
-                const searchDirs = [process.cwd(), args.path || path.dirname(args.input)];
-                core.info(`Searched directories: ${searchDirs.join(', ')}`);
-                for (const dir of searchDirs) {
-                    try {
-                        const files = (__nccwpck_require__(9896).readdirSync)(dir);
-                        const fileCount = files.length;
-                        core.info(`Found ${fileCount} files in ${dir}${fileCount > 0 ? ' - check output name pattern' : ''}`);
-                    }
-                    catch (error) {
-                        core.warning(`Could not list files in ${dir}: ${error}`);
-                    }
-                }
+                core.setFailed('Export completed but no output files found');
                 core.setOutput('success', 'false');
             }
         }
@@ -152,7 +133,7 @@ async function installCliDependencies() {
         core.info(`Installing CLI dependencies in: ${mainDir}`);
         const { spawn } = __nccwpck_require__(5317);
         return new Promise((resolve, reject) => {
-            const child = spawn('npm', ['install', '--production', '--no-audit', '--no-fund'], {
+            const child = spawn('npm', ['install', '--omit=dev', '--no-audit', '--no-fund'], {
                 cwd: mainDir,
                 stdio: ['pipe', 'pipe', 'pipe']
             });
@@ -214,11 +195,7 @@ async function executeExport(args) {
         }
         // Build command arguments for the local CLI
         const cliArgs = buildCliArguments(args);
-        // Log CLI execution info without exposing sensitive arguments
-        const safeArgs = cliArgs.map(arg => (arg.includes('key') || arg.includes('auth')) && !arg.startsWith('--')
-            ? (arg.length > 4 ? `${arg.substring(0, 4)}***` : '***')
-            : arg);
-        core.info(`CLI command: node ${path.basename(cliPath)} ${safeArgs.join(' ')}`);
+        core.info(`CLI command: node ${path.basename(cliPath)} [${cliArgs.length} arguments]`);
         // Execute the local CLI using spawn
         const { spawn } = __nccwpck_require__(5317);
         return new Promise((resolve, reject) => {
@@ -235,15 +212,27 @@ async function executeExport(args) {
             child.stderr?.on('data', (data) => {
                 const output = data.toString();
                 stderr += output;
+                // Filter out known benign messages
+                const trimmedOutput = output.trim();
+                if (!trimmedOutput)
+                    return; // Skip empty lines
+                // Filter out "Error: null" and "null" messages from temporary directories (CLI internal, not actual errors)
+                if (trimmedOutput.startsWith('Error: null /tmp/lia') ||
+                    trimmedOutput.startsWith('null /tmp/lia') ||
+                    trimmedOutput.startsWith('Error: null /var/folders') ||
+                    trimmedOutput.startsWith('null /var/folders')) {
+                    core.info(`CLI temp: ${trimmedOutput}`);
+                    return;
+                }
                 // Log warnings and debug info, but don't treat as errors
                 if (output.toLowerCase().includes('warn')) {
-                    core.warning(output.trim());
+                    core.warning(trimmedOutput);
                 }
                 else if (output.toLowerCase().includes('debug')) {
-                    core.info(`DEBUG: ${output.trim()}`);
+                    core.info(`DEBUG: ${trimmedOutput}`);
                 }
                 else {
-                    core.error(output.trim());
+                    core.error(trimmedOutput);
                 }
             });
             child.on('close', (code) => {
@@ -469,23 +458,17 @@ function isValidUrl(url) {
  * Log the parsed inputs for debugging
  */
 function logInputs(args) {
-    const coreInputs = ['input', 'format', 'output', 'path'];
-    const sensitiveInputs = ['key', 'xapi-auth', 'responsive-voice-key'];
-    // Log core inputs
-    coreInputs.forEach(key => {
-        const value = args[key];
-        if (value) {
-            core.info(`${key}: ${value}`);
-        }
-    });
-    // Log format-specific settings that are set, but mask sensitive values
+    core.info(`input: ${args.input}`);
+    core.info(`format: ${args.format}`);
+    core.info(`output: ${args.output}`);
+    if (args.path)
+        core.info(`path: ${args.path}`);
+    // Log non-default settings
     Object.entries(args).forEach(([key, value]) => {
-        if (!coreInputs.includes(key) && key.includes('-') && value !== undefined && value !== false && value !== '') {
-            // Check if this is a sensitive value that should be masked
-            const isSensitive = sensitiveInputs.some(sensitiveKey => key === sensitiveKey || key.includes('key') || key.includes('auth') || key.includes('password'));
-            if (isSensitive && typeof value === 'string') {
-                const maskedValue = value.length > 4 ? `${value.substring(0, 4)}***` : '***';
-                core.info(`${key}: ${maskedValue}`);
+        if (key.includes('-') && value !== undefined && value !== false && value !== '') {
+            // Simple masking for sensitive fields
+            if (key.includes('key') || key.includes('auth')) {
+                core.info(`${key}: ***`);
             }
             else {
                 core.info(`${key}: ${value}`);
@@ -619,86 +602,98 @@ function getFileSize(filePath) {
 }
 exports.getFileSize = getFileSize;
 /**
- * Helper function to check for a file and add it to outputs if found
- */
-function checkAndAddFile(searchDir, fileName, description, outputFiles) {
-    const filePath = path.join(searchDir, fileName);
-    core.info(`Checking for ${description} file: ${filePath}`);
-    if (fs.existsSync(filePath)) {
-        outputFiles.push(filePath);
-        core.info(`Found ${description} file: ${filePath}`);
-    }
-}
-/**
  * Find output files based on format and output name
  */
 function findOutputFiles(args) {
-    // Search directories - check both working directory and course path
-    const searchDirs = [
-        process.cwd(),
-        args.path || path.dirname(args.input)
-    ].filter((dir, index, arr) => arr.indexOf(dir) === index); // Remove duplicates
-    core.info(`Searching for output files in directories: ${searchDirs.join(', ')}`);
+    // The CLI creates output files in the current working directory
+    const outputDir = process.cwd();
+    const outputName = args.output;
     const outputFiles = [];
-    for (const searchDir of searchDirs) {
-        core.info(`Checking directory: ${searchDir}`);
-        // Check if directory exists and is accessible
-        try {
-            const allFiles = fs.readdirSync(searchDir);
-            core.info(`Found ${allFiles.length} files in ${searchDir}`);
-        }
-        catch (error) {
-            core.warning(`Cannot read directory ${searchDir}: ${error}`);
-            continue;
-        }
-        // Format-specific file patterns
-        const outputName = args.output;
-        switch (args.format) {
-            case 'scorm1.2':
-                checkAndAddFile(searchDir, `${outputName}.zip`, 'SCORM 1.2', outputFiles);
-                break;
-            case 'scorm2004':
-                checkAndAddFile(searchDir, `${outputName}.zip`, 'SCORM 2004', outputFiles);
-                break;
-            case 'pdf':
-                checkAndAddFile(searchDir, `${outputName}.pdf`, 'PDF', outputFiles);
-                break;
-            case 'web':
-                // Web format creates a directory
-                const webDir = path.join(searchDir, outputName);
-                if (fs.existsSync(webDir) && fs.statSync(webDir).isDirectory()) {
-                    outputFiles.push(webDir);
-                    core.info(`Found web directory: ${webDir}`);
+    core.info(`Looking for output files in: ${outputDir}`);
+    let expectedFile;
+    let description;
+    switch (args.format) {
+        case 'scorm1.2':
+            expectedFile = path.join(outputDir, `${outputName}.zip`);
+            description = 'SCORM 1.2';
+            break;
+        case 'scorm2004':
+            expectedFile = path.join(outputDir, `${outputName}.zip`);
+            description = 'SCORM 2004';
+            break;
+        case 'pdf':
+            expectedFile = path.join(outputDir, `${outputName}.pdf`);
+            description = 'PDF';
+            break;
+        case 'web':
+            expectedFile = path.join(outputDir, outputName);
+            description = 'web directory';
+            break;
+        case 'ims':
+            expectedFile = path.join(outputDir, `${outputName}.zip`);
+            description = 'IMS';
+            break;
+        case 'xapi':
+            expectedFile = path.join(outputDir, `${outputName}.zip`);
+            description = 'xAPI';
+            break;
+        case 'rdf':
+            // RDF format has multiple possible extensions
+            const rdfPatterns = getRdfOutputPatterns(args);
+            for (const pattern of rdfPatterns) {
+                const rdfFile = path.join(outputDir, pattern);
+                if (fs.existsSync(rdfFile)) {
+                    outputFiles.push(rdfFile);
+                    core.info(`Found RDF file: ${rdfFile}`);
+                    return outputFiles;
                 }
-                break;
-            case 'ims':
-                checkAndAddFile(searchDir, `${outputName}.zip`, 'IMS', outputFiles);
-                break;
-            case 'xapi':
-                checkAndAddFile(searchDir, `${outputName}.zip`, 'xAPI', outputFiles);
-                break;
-            case 'rdf':
-                // RDF format depends on rdf-format setting
-                const rdfPatterns = getRdfOutputPatterns(args);
-                for (const pattern of rdfPatterns) {
-                    const rdfFile = path.join(searchDir, pattern);
-                    if (fs.existsSync(rdfFile)) {
-                        outputFiles.push(rdfFile);
-                        core.info(`Found RDF file: ${rdfFile}`);
-                    }
-                }
-                break;
-            case 'project':
-                // Project format is complex, delegate to helper
-                const projectFiles = findProjectOutputFiles(args, searchDir);
+            }
+            core.warning(`No RDF files found with patterns: ${rdfPatterns.join(', ')}`);
+            return outputFiles;
+        case 'project':
+            // Project format can generate multiple files
+            const projectFiles = findProjectOutputFiles(args, outputDir);
+            if (projectFiles.length > 0) {
                 outputFiles.push(...projectFiles);
                 for (const file of projectFiles) {
                     core.info(`Found project file: ${file}`);
                 }
-                break;
-            default:
-                // JSON format or unknown - look for JSON files
-                checkAndAddFile(searchDir, `${outputName}.json`, 'JSON', outputFiles);
+            }
+            else {
+                core.warning(`No project files found in ${outputDir}`);
+            }
+            return outputFiles;
+        default:
+            expectedFile = path.join(outputDir, `${outputName}.json`);
+            description = 'JSON';
+            break;
+    }
+    // Check for the expected file
+    if (fs.existsSync(expectedFile)) {
+        // For web format, check if it's a directory
+        if (args.format === 'web') {
+            if (fs.statSync(expectedFile).isDirectory()) {
+                outputFiles.push(expectedFile);
+                core.info(`Found ${description}: ${expectedFile}`);
+            }
+            else {
+                core.warning(`Expected web directory but found file: ${expectedFile}`);
+            }
+        }
+        else {
+            outputFiles.push(expectedFile);
+            core.info(`Found ${description} file: ${expectedFile}`);
+        }
+    }
+    else {
+        core.warning(`Expected ${description} file not found: ${expectedFile}`);
+        // List what files are actually in the directory for debugging
+        try {
+            const actualFiles = fs.readdirSync(outputDir);
+            core.info(`Files in output directory: ${actualFiles.slice(0, 10).join(', ')}${actualFiles.length > 10 ? '...' : ''}`);
+        }
+        catch (error) {
+            core.warning(`Could not list output directory: ${error}`);
         }
     }
     return outputFiles;
@@ -754,14 +749,7 @@ function generateOutputName(args) {
     // Generate from input file
     let baseName;
     if (isURL(args.input)) {
-        // Extract name from URL
-        try {
-            const url = new URL(args.input);
-            baseName = path.basename(url.pathname, path.extname(url.pathname)) || 'course';
-        }
-        catch {
-            baseName = 'course';
-        }
+        baseName = 'course'; // Simple fallback for URLs
     }
     else {
         // Extract from file path
@@ -771,7 +759,7 @@ function generateOutputName(args) {
             baseName = path.basename(path.dirname(args.input));
         }
     }
-    // Sanitize filename
+    // Basic sanitization
     baseName = baseName.replace(/[^a-zA-Z0-9-_]/g, '-').replace(/-+/g, '-');
     return baseName || 'course';
 }

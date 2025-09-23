@@ -1,6 +1,6 @@
 name: 'LiaScript-Exporter'
 description: 'Export LiaScript courses to SCORM, PDF, Web, and other formats for LMS deployment and distribution'
-author: 'grugnog'
+author: 'LiaScript'
 branding:
   icon: 'book'
   color: 'blue'
@@ -38,6 +38,10 @@ inputs:
     default: 'false'
   scorm-embed:
     description: 'Embed Markdown in JS'
+    required: false
+    default: 'false'
+  scorm-always-active:
+    description: 'Keep SCORM always active'
     required: false
     default: 'false'
 

@@ -115,86 +115,98 @@ function getFileSize(filePath) {
 }
 exports.getFileSize = getFileSize;
 /**
- * Helper function to check for a file and add it to outputs if found
- */
-function checkAndAddFile(searchDir, fileName, description, outputFiles) {
-    const filePath = path.join(searchDir, fileName);
-    core.info(`Checking for ${description} file: ${filePath}`);
-    if (fs.existsSync(filePath)) {
-        outputFiles.push(filePath);
-        core.info(`Found ${description} file: ${filePath}`);
-    }
-}
-/**
  * Find output files based on format and output name
  */
 function findOutputFiles(args) {
-    // Search directories - check both working directory and course path
-    const searchDirs = [
-        process.cwd(),
-        args.path || path.dirname(args.input)
-    ].filter((dir, index, arr) => arr.indexOf(dir) === index); // Remove duplicates
-    core.info(`Searching for output files in directories: ${searchDirs.join(', ')}`);
+    // The CLI creates output files in the current working directory
+    const outputDir = process.cwd();
+    const outputName = args.output;
     const outputFiles = [];
-    for (const searchDir of searchDirs) {
-        core.info(`Checking directory: ${searchDir}`);
-        // Check if directory exists and is accessible
-        try {
-            const allFiles = fs.readdirSync(searchDir);
-            core.info(`Found ${allFiles.length} files in ${searchDir}`);
-        }
-        catch (error) {
-            core.warning(`Cannot read directory ${searchDir}: ${error}`);
-            continue;
-        }
-        // Format-specific file patterns
-        const outputName = args.output;
-        switch (args.format) {
-            case 'scorm1.2':
-                checkAndAddFile(searchDir, `${outputName}.zip`, 'SCORM 1.2', outputFiles);
-                break;
-            case 'scorm2004':
-                checkAndAddFile(searchDir, `${outputName}.zip`, 'SCORM 2004', outputFiles);
-                break;
-            case 'pdf':
-                checkAndAddFile(searchDir, `${outputName}.pdf`, 'PDF', outputFiles);
-                break;
-            case 'web':
-                // Web format creates a directory
-                const webDir = path.join(searchDir, outputName);
-                if (fs.existsSync(webDir) && fs.statSync(webDir).isDirectory()) {
-                    outputFiles.push(webDir);
-                    core.info(`Found web directory: ${webDir}`);
+    core.info(`Looking for output files in: ${outputDir}`);
+    let expectedFile;
+    let description;
+    switch (args.format) {
+        case 'scorm1.2':
+            expectedFile = path.join(outputDir, `${outputName}.zip`);
+            description = 'SCORM 1.2';
+            break;
+        case 'scorm2004':
+            expectedFile = path.join(outputDir, `${outputName}.zip`);
+            description = 'SCORM 2004';
+            break;
+        case 'pdf':
+            expectedFile = path.join(outputDir, `${outputName}.pdf`);
+            description = 'PDF';
+            break;
+        case 'web':
+            expectedFile = path.join(outputDir, outputName);
+            description = 'web directory';
+            break;
+        case 'ims':
+            expectedFile = path.join(outputDir, `${outputName}.zip`);
+            description = 'IMS';
+            break;
+        case 'xapi':
+            expectedFile = path.join(outputDir, `${outputName}.zip`);
+            description = 'xAPI';
+            break;
+        case 'rdf':
+            // RDF format has multiple possible extensions
+            const rdfPatterns = getRdfOutputPatterns(args);
+            for (const pattern of rdfPatterns) {
+                const rdfFile = path.join(outputDir, pattern);
+                if (fs.existsSync(rdfFile)) {
+                    outputFiles.push(rdfFile);
+                    core.info(`Found RDF file: ${rdfFile}`);
+                    return outputFiles;
                 }
-                break;
-            case 'ims':
-                checkAndAddFile(searchDir, `${outputName}.zip`, 'IMS', outputFiles);
-                break;
-            case 'xapi':
-                checkAndAddFile(searchDir, `${outputName}.zip`, 'xAPI', outputFiles);
-                break;
-            case 'rdf':
-                // RDF format depends on rdf-format setting
-                const rdfPatterns = getRdfOutputPatterns(args);
-                for (const pattern of rdfPatterns) {
-                    const rdfFile = path.join(searchDir, pattern);
-                    if (fs.existsSync(rdfFile)) {
-                        outputFiles.push(rdfFile);
-                        core.info(`Found RDF file: ${rdfFile}`);
-                    }
-                }
-                break;
-            case 'project':
-                // Project format is complex, delegate to helper
-                const projectFiles = findProjectOutputFiles(args, searchDir);
+            }
+            core.warning(`No RDF files found with patterns: ${rdfPatterns.join(', ')}`);
+            return outputFiles;
+        case 'project':
+            // Project format can generate multiple files
+            const projectFiles = findProjectOutputFiles(args, outputDir);
+            if (projectFiles.length > 0) {
                 outputFiles.push(...projectFiles);
                 for (const file of projectFiles) {
                     core.info(`Found project file: ${file}`);
                 }
-                break;
-            default:
-                // JSON format or unknown - look for JSON files
-                checkAndAddFile(searchDir, `${outputName}.json`, 'JSON', outputFiles);
+            }
+            else {
+                core.warning(`No project files found in ${outputDir}`);
+            }
+            return outputFiles;
+        default:
+            expectedFile = path.join(outputDir, `${outputName}.json`);
+            description = 'JSON';
+            break;
+    }
+    // Check for the expected file
+    if (fs.existsSync(expectedFile)) {
+        // For web format, check if it's a directory
+        if (args.format === 'web') {
+            if (fs.statSync(expectedFile).isDirectory()) {
+                outputFiles.push(expectedFile);
+                core.info(`Found ${description}: ${expectedFile}`);
+            }
+            else {
+                core.warning(`Expected web directory but found file: ${expectedFile}`);
+            }
+        }
+        else {
+            outputFiles.push(expectedFile);
+            core.info(`Found ${description} file: ${expectedFile}`);
+        }
+    }
+    else {
+        core.warning(`Expected ${description} file not found: ${expectedFile}`);
+        // List what files are actually in the directory for debugging
+        try {
+            const actualFiles = fs.readdirSync(outputDir);
+            core.info(`Files in output directory: ${actualFiles.slice(0, 10).join(', ')}${actualFiles.length > 10 ? '...' : ''}`);
+        }
+        catch (error) {
+            core.warning(`Could not list output directory: ${error}`);
         }
     }
     return outputFiles;
@@ -250,14 +262,7 @@ function generateOutputName(args) {
     // Generate from input file
     let baseName;
     if (isURL(args.input)) {
-        // Extract name from URL
-        try {
-            const url = new URL(args.input);
-            baseName = path.basename(url.pathname, path.extname(url.pathname)) || 'course';
-        }
-        catch {
-            baseName = 'course';
-        }
+        baseName = 'course'; // Simple fallback for URLs
     }
     else {
         // Extract from file path
@@ -267,7 +272,7 @@ function generateOutputName(args) {
             baseName = path.basename(path.dirname(args.input));
         }
     }
-    // Sanitize filename
+    // Basic sanitization
     baseName = baseName.replace(/[^a-zA-Z0-9-_]/g, '-').replace(/-+/g, '-');
     return baseName || 'course';
 }
