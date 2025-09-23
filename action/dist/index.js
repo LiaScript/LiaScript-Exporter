@@ -64,6 +64,15 @@ async function run() {
         core.endGroup();
         // Ensure output directory exists
         (0, utils_1.ensureOutputDirectory)();
+        // Install CLI dependencies
+        core.startGroup('Installing CLI dependencies');
+        const dependenciesInstalled = await installCliDependencies();
+        core.endGroup();
+        if (!dependenciesInstalled) {
+            core.setFailed('Failed to install CLI dependencies');
+            core.setOutput('success', 'false');
+            return;
+        }
         // Execute the export
         core.startGroup(`Exporting to ${args.format}`);
         const success = await executeExport(args);
@@ -90,12 +99,14 @@ async function run() {
             }
             else {
                 core.warning('Export completed but no output files found');
-                // Debug: List all files in potential output directories
+                // List directories searched for troubleshooting
                 const searchDirs = [process.cwd(), args.path || path.dirname(args.input)];
+                core.info(`Searched directories: ${searchDirs.join(', ')}`);
                 for (const dir of searchDirs) {
                     try {
                         const files = (__nccwpck_require__(9896).readdirSync)(dir);
-                        core.info(`Files in ${dir}: ${files.join(', ')}`);
+                        const fileCount = files.length;
+                        core.info(`Found ${fileCount} files in ${dir}${fileCount > 0 ? ' - check output name pattern' : ''}`);
                     }
                     catch (error) {
                         core.warning(`Could not list files in ${dir}: ${error}`);
@@ -117,158 +128,140 @@ async function run() {
 }
 exports.run = run;
 /**
- * Execute the LiaScript export using the CLI library
+ * Install CLI dependencies in the main directory
  */
-async function executeExport(args) {
+async function installCliDependencies() {
     try {
-        // Import the CLI library from the parent directory
-        const cliPath = path.resolve(__dirname, '../../dist/index.js');
-        core.info(`Loading CLI library from: ${cliPath}`);
-        // Verify CLI exists
-        if (!(__nccwpck_require__(9896).existsSync)(cliPath)) {
-            throw new Error(`CLI library not found at ${cliPath}. Please run 'npm run build' in the main directory first.`);
+        const mainDir = path.resolve(__dirname, '../../');
+        const nodeModulesPath = path.join(mainDir, 'node_modules');
+        // Check if node_modules already exists and has content
+        try {
+            const fs = __nccwpck_require__(9896);
+            const nodeModulesExists = fs.existsSync(nodeModulesPath);
+            if (nodeModulesExists) {
+                const nodeModulesStats = fs.readdirSync(nodeModulesPath);
+                if (nodeModulesStats.length > 0) {
+                    core.info(`Dependencies already installed in ${nodeModulesPath} (${nodeModulesStats.length} packages found)`);
+                    return true;
+                }
+            }
         }
-        // Install CLI dependencies in the action's working directory
-        core.info('Installing CLI dependencies...');
+        catch (checkError) {
+            core.info('Could not check existing node_modules, proceeding with installation');
+        }
+        core.info(`Installing CLI dependencies in: ${mainDir}`);
         const { spawn } = __nccwpck_require__(5317);
-        // First, install the LiaScript exporter package globally to get all dependencies
-        const installResult = await new Promise((resolve) => {
-            const npmInstall = spawn('npm', ['install', '-g', '@liascript/exporter'], {
-                stdio: ['pipe', 'pipe', 'pipe'],
-                env: { ...process.env }
+        return new Promise((resolve, reject) => {
+            const child = spawn('npm', ['install', '--production', '--no-audit', '--no-fund'], {
+                cwd: mainDir,
+                stdio: ['pipe', 'pipe', 'pipe']
             });
-            let installOutput = '';
-            let installError = '';
-            npmInstall.stdout.on('data', (data) => {
-                installOutput += data.toString();
-                core.info(`npm install: ${data.toString().trim()}`);
+            let stdout = '';
+            let stderr = '';
+            child.stdout?.on('data', (data) => {
+                const output = data.toString();
+                stdout += output;
+                // Log npm install progress
+                core.info(`npm install: ${output.trim()}`);
             });
-            npmInstall.stderr.on('data', (data) => {
-                installError += data.toString();
-                core.warning(`npm install warning: ${data.toString().trim()}`);
+            child.stderr?.on('data', (data) => {
+                const output = data.toString();
+                stderr += output;
+                // npm often sends normal output to stderr, so treat it as info unless it's clearly an error
+                if (output.toLowerCase().includes('error')) {
+                    core.error(`npm install error: ${output.trim()}`);
+                }
+                else {
+                    core.info(`npm install: ${output.trim()}`);
+                }
             });
-            npmInstall.on('close', (code) => {
+            child.on('close', (code) => {
                 if (code === 0) {
                     core.info('CLI dependencies installed successfully');
                     resolve(true);
                 }
                 else {
-                    core.error(`Failed to install CLI dependencies: ${installError}`);
+                    core.error(`npm install exited with code ${code}`);
+                    if (stderr) {
+                        core.error(`npm install error output: ${stderr}`);
+                    }
                     resolve(false);
                 }
             });
-            npmInstall.on('error', (error) => {
-                core.error(`Failed to start npm install: ${error.message}`);
-                resolve(false);
+            child.on('error', (error) => {
+                core.error(`Failed to run npm install: ${error.message}`);
+                reject(error);
             });
         });
-        if (!installResult) {
-            throw new Error('Failed to install CLI dependencies');
+    }
+    catch (error) {
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        core.error(`Failed to install CLI dependencies: ${errorMessage}`);
+        return false;
+    }
+}
+/**
+ * Execute the LiaScript export using the local CLI
+ */
+async function executeExport(args) {
+    try {
+        // Use the local CLI from this repository
+        const cliPath = path.resolve(__dirname, '../../dist/index.js');
+        core.info(`Using local CLI from: ${cliPath}`);
+        // Verify CLI exists
+        if (!(__nccwpck_require__(9896).existsSync)(cliPath)) {
+            throw new Error(`CLI not found at ${cliPath}. Please run 'npm run build' in the main directory first.`);
         }
-        // Now use the globally installed CLI instead of the local one
-        const globalCliCommand = 'liascript-exporter';
-        // Build CLI arguments
+        // Build command arguments for the local CLI
         const cliArgs = buildCliArguments(args);
-        core.info(`CLI arguments: ${cliArgs.join(' ')}`);
-        return new Promise((resolve) => {
-            const childProcess = spawn(globalCliCommand, cliArgs, {
-                cwd: args.path || path.dirname(args.input),
-                stdio: ['pipe', 'pipe', 'pipe'],
-                env: { ...process.env, NODE_ENV: 'production' }
+        // Log CLI execution info without exposing sensitive arguments
+        const safeArgs = cliArgs.map(arg => (arg.includes('key') || arg.includes('auth')) && !arg.startsWith('--')
+            ? (arg.length > 4 ? `${arg.substring(0, 4)}***` : '***')
+            : arg);
+        core.info(`CLI command: node ${path.basename(cliPath)} ${safeArgs.join(' ')}`);
+        // Execute the local CLI using spawn
+        const { spawn } = __nccwpck_require__(5317);
+        return new Promise((resolve, reject) => {
+            const child = spawn('node', [cliPath, ...cliArgs], {
+                stdio: ['pipe', 'pipe', 'pipe']
             });
+            let stdout = '';
             let stderr = '';
-            let hasOutput = false;
-            // Set up timeout warning for long-running processes
-            const timeout = setTimeout(() => {
-                core.warning('Export process is taking longer than expected (5 minutes). This is normal for PDF exports with complex content.');
-            }, 5 * 60 * 1000);
-            // Provide feedback if process seems quiet
-            const outputCheck = setInterval(() => {
-                if (!hasOutput) {
-                    core.info('Export process is running (no output yet)...');
-                }
-                hasOutput = false; // Reset for next check
-            }, 30000);
-            const cleanup = () => {
-                clearTimeout(timeout);
-                clearInterval(outputCheck);
-            };
-            childProcess.stdout.on('data', (data) => {
+            child.stdout?.on('data', (data) => {
                 const output = data.toString();
-                hasOutput = true;
-                // Log output in real-time, filtering out excessive debug info
-                output.split('\\n').filter(line => {
-                    const trimmed = line.trim();
-                    return trimmed && !trimmed.startsWith('DEBUG');
-                }).forEach(line => {
-                    core.info(`CLI: ${line}`);
-                });
+                stdout += output;
+                core.info(output.trim());
             });
-            childProcess.stderr.on('data', (data) => {
+            child.stderr?.on('data', (data) => {
                 const output = data.toString();
                 stderr += output;
-                hasOutput = true;
-                // Log warnings from CLI, but classify different types of messages
-                output.split('\\n').filter(line => line.trim()).forEach(line => {
-                    const trimmed = line.trim();
-                    if (trimmed.includes('warning:') || trimmed.includes('depending on the size')) {
-                        core.warning(`CLI: ${trimmed}`);
-                    }
-                    else if (trimmed.includes('error:') || trimmed.includes('ERROR')) {
-                        core.error(`CLI: ${trimmed}`);
-                    }
-                    else {
-                        core.info(`CLI: ${trimmed}`);
-                    }
-                });
-            });
-            childProcess.on('close', (code, signal) => {
-                cleanup();
-                if (signal) {
-                    core.warning(`Export process was terminated by signal: ${signal}`);
-                    resolve(false);
+                // Log warnings and debug info, but don't treat as errors
+                if (output.toLowerCase().includes('warn')) {
+                    core.warning(output.trim());
                 }
-                else if (code === 0) {
-                    core.info('Export completed successfully');
+                else if (output.toLowerCase().includes('debug')) {
+                    core.info(`DEBUG: ${output.trim()}`);
+                }
+                else {
+                    core.error(output.trim());
+                }
+            });
+            child.on('close', (code) => {
+                if (code === 0) {
+                    core.info('CLI execution completed successfully');
                     resolve(true);
                 }
-                else if (code === null) {
-                    core.error('Export process terminated unexpectedly');
-                    resolve(false);
-                }
                 else {
-                    core.error(`Export failed with exit code ${code}`);
-                    // Provide helpful error messages based on common failure patterns
-                    if (stderr.includes('ENOENT')) {
-                        core.error('Input file not found or CLI path incorrect');
-                    }
-                    else if (stderr.includes('permission denied') || stderr.includes('EACCES')) {
-                        core.error('Permission denied. Check file and directory permissions');
-                    }
-                    else if (stderr.includes('puppeteer') || stderr.includes('chrome')) {
-                        core.error('Browser automation failed. This may be due to missing Chrome dependencies or sandboxing issues');
-                    }
-                    else if (stderr.includes('timeout')) {
-                        core.error('Export timed out. Try simplifying the course or increasing timeout limits');
-                    }
-                    else if (stderr) {
-                        core.error(`CLI stderr: ${stderr.slice(-1000)}`); // Last 1000 chars to avoid too much output
+                    core.error(`CLI exited with code ${code}`);
+                    if (stderr) {
+                        core.error(`Error output: ${stderr}`);
                     }
                     resolve(false);
                 }
             });
-            childProcess.on('error', (error) => {
-                cleanup();
-                if (error.message.includes('ENOENT')) {
-                    core.error(`Failed to start export process: CLI command not found (${error.message})`);
-                }
-                else {
-                    core.error(`Failed to start export process: ${error.message}`);
-                }
-                resolve(false);
-            });
-            childProcess.on('close', () => {
-                cleanup();
+            child.on('error', (error) => {
+                core.error(`Failed to spawn CLI process: ${error.message}`);
+                reject(error);
             });
         });
     }
@@ -477,6 +470,7 @@ function isValidUrl(url) {
  */
 function logInputs(args) {
     const coreInputs = ['input', 'format', 'output', 'path'];
+    const sensitiveInputs = ['key', 'xapi-auth', 'responsive-voice-key'];
     // Log core inputs
     coreInputs.forEach(key => {
         const value = args[key];
@@ -484,10 +478,18 @@ function logInputs(args) {
             core.info(`${key}: ${value}`);
         }
     });
-    // Log format-specific settings that are set
+    // Log format-specific settings that are set, but mask sensitive values
     Object.entries(args).forEach(([key, value]) => {
         if (!coreInputs.includes(key) && key.includes('-') && value !== undefined && value !== false && value !== '') {
-            core.info(`${key}: ${value}`);
+            // Check if this is a sensitive value that should be masked
+            const isSensitive = sensitiveInputs.some(sensitiveKey => key === sensitiveKey || key.includes('key') || key.includes('auth') || key.includes('password'));
+            if (isSensitive && typeof value === 'string') {
+                const maskedValue = value.length > 4 ? `${value.substring(0, 4)}***` : '***';
+                core.info(`${key}: ${maskedValue}`);
+            }
+            else {
+                core.info(`${key}: ${value}`);
+            }
         }
     });
 }
@@ -640,10 +642,10 @@ function findOutputFiles(args) {
     const outputFiles = [];
     for (const searchDir of searchDirs) {
         core.info(`Checking directory: ${searchDir}`);
-        // Get all files in directory for debugging
+        // Check if directory exists and is accessible
         try {
             const allFiles = fs.readdirSync(searchDir);
-            core.info(`All files in ${searchDir}: ${allFiles.join(', ')}`);
+            core.info(`Found ${allFiles.length} files in ${searchDir}`);
         }
         catch (error) {
             core.warning(`Cannot read directory ${searchDir}: ${error}`);

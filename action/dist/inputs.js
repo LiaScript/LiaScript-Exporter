@@ -152,6 +152,7 @@ function isValidUrl(url) {
  */
 function logInputs(args) {
     const coreInputs = ['input', 'format', 'output', 'path'];
+    const sensitiveInputs = ['key', 'xapi-auth', 'responsive-voice-key'];
     // Log core inputs
     coreInputs.forEach(key => {
         const value = args[key];
@@ -159,10 +160,18 @@ function logInputs(args) {
             core.info(`${key}: ${value}`);
         }
     });
-    // Log format-specific settings that are set
+    // Log format-specific settings that are set, but mask sensitive values
     Object.entries(args).forEach(([key, value]) => {
         if (!coreInputs.includes(key) && key.includes('-') && value !== undefined && value !== false && value !== '') {
-            core.info(`${key}: ${value}`);
+            // Check if this is a sensitive value that should be masked
+            const isSensitive = sensitiveInputs.some(sensitiveKey => key === sensitiveKey || key.includes('key') || key.includes('auth') || key.includes('password'));
+            if (isSensitive && typeof value === 'string') {
+                const maskedValue = value.length > 4 ? `${value.substring(0, 4)}***` : '***';
+                core.info(`${key}: ${maskedValue}`);
+            }
+            else {
+                core.info(`${key}: ${value}`);
+            }
         }
     });
 }

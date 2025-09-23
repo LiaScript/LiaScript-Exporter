@@ -138,10 +138,10 @@ function findOutputFiles(args) {
     const outputFiles = [];
     for (const searchDir of searchDirs) {
         core.info(`Checking directory: ${searchDir}`);
-        // Get all files in directory for debugging
+        // Check if directory exists and is accessible
         try {
             const allFiles = fs.readdirSync(searchDir);
-            core.info(`All files in ${searchDir}: ${allFiles.join(', ')}`);
+            core.info(`Found ${allFiles.length} files in ${searchDir}`);
         }
         catch (error) {
             core.warning(`Cannot read directory ${searchDir}: ${error}`);
