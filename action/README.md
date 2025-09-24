@@ -9,7 +9,7 @@ Add this action to your workflow:
 ```yaml
 - name: Export course to SCORM
   id: export
-  uses: grugnog/LiaScript-Exporter@github-actions
+  uses: LiaScript/LiaScript-Exporter@master
   with:
     input-file: 'README.md'
     format: 'scorm1.2'
