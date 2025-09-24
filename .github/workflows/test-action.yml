@@ -219,7 +219,7 @@ jobs:
         echo "| SCORM 1.2 Full | ${{ steps.export-scorm12.outputs.output-file }} | ${{ steps.export-scorm12.outputs.file-size }} bytes | ✅ |" >> $GITHUB_STEP_SUMMARY
         echo "| SCORM 2004 | ${{ steps.export-scorm2004.outputs.output-file }} | ${{ steps.export-scorm2004.outputs.file-size }} bytes | ✅ |" >> $GITHUB_STEP_SUMMARY
         echo "| PDF Custom | ${{ steps.export-pdf.outputs.output-file }} | ${{ steps.export-pdf.outputs.file-size }} bytes | ✅ |" >> $GITHUB_STEP_SUMMARY
-        echo "| Web Export | ${{ steps.export-web.outputs.output-file }} | Directory | ✅ |" >> $GITHUB_STEP_SUMMARY
+        echo "| Web Export | ${{ steps.export-web.outputs.output-file }} | ${{ steps.export-web.outputs.file-size }} bytes | ✅ |" >> $GITHUB_STEP_SUMMARY
         echo "| IMS Package | ${{ steps.export-ims.outputs.output-file }} | ${{ steps.export-ims.outputs.file-size }} bytes | ✅ |" >> $GITHUB_STEP_SUMMARY
         echo "| xAPI Package | ${{ steps.export-xapi.outputs.output-file }} | ${{ steps.export-xapi.outputs.file-size }} bytes | ✅ |" >> $GITHUB_STEP_SUMMARY
         echo "| RDF JSON-LD | ${{ steps.export-rdf-jsonld.outputs.output-file }} | ${{ steps.export-rdf-jsonld.outputs.file-size }} bytes | ✅ |" >> $GITHUB_STEP_SUMMARY
