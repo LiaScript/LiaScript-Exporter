@@ -2,7 +2,7 @@ name: Test All Action Capabilities
 on: [push]
 
 jobs:
-  test-all-formats:
+  test-action:
     runs-on: ubuntu-latest
     
     steps:

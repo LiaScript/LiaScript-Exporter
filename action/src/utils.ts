@@ -126,8 +126,14 @@ export function findOutputFiles(args: LiaScriptExporterArgs): string[] {
       break;
       
     case 'web':
-      expectedFile = path.join(outputDir, outputName);
-      description = 'web directory';
+      // Web format can be either a directory or zip file depending on web-zip option
+      if (args['web-zip']) {
+        expectedFile = path.join(outputDir, `${outputName}.zip`);
+        description = 'web ZIP';
+      } else {
+        expectedFile = path.join(outputDir, outputName);
+        description = 'web directory';
+      }
       break;
       
     case 'ims':
@@ -175,13 +181,24 @@ export function findOutputFiles(args: LiaScriptExporterArgs): string[] {
   
   // Check for the expected file
   if (fs.existsSync(expectedFile)) {
-    // For web format, check if it's a directory
+    // For web format, handle both directory and zip cases
     if (args.format === 'web') {
-      if (fs.statSync(expectedFile).isDirectory()) {
-        outputFiles.push(expectedFile);
-        core.info(`Found ${description}: ${expectedFile}`);
+      if (args['web-zip']) {
+        // Web ZIP format - expect a file
+        if (fs.statSync(expectedFile).isFile()) {
+          outputFiles.push(expectedFile);
+          core.info(`Found ${description}: ${expectedFile}`);
+        } else {
+          core.warning(`Expected web ZIP file but found directory: ${expectedFile}`);
+        }
       } else {
-        core.warning(`Expected web directory but found file: ${expectedFile}`);
+        // Web directory format - expect a directory
+        if (fs.statSync(expectedFile).isDirectory()) {
+          outputFiles.push(expectedFile);
+          core.info(`Found ${description}: ${expectedFile}`);
+        } else {
+          core.warning(`Expected web directory but found file: ${expectedFile}`);
+        }
       }
     } else {
       outputFiles.push(expectedFile);
