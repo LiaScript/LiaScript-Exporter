@@ -1,0 +1,231 @@
+name: Test All Action Capabilities
+on: [push]
+
+jobs:
+  test-action:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Checkout LiaScript docs
+      uses: actions/checkout@v4
+      with:
+        repository: LiaScript/docs
+        path: docs
+    
+    # Test SCORM 1.2 with all settings
+    - name: Export to SCORM 1.2 (Full Settings)
+      id: export-scorm12
+      uses: ./
+      with:
+        input-file: 'docs/README.md'
+        format: 'scorm1.2'
+        output-name: 'test-scorm12-full'
+        scorm-organization: 'Test Organization'
+        scorm-mastery-score: '85'
+        scorm-typical-duration: 'PT1H30M0S'
+        scorm-iframe: true
+        scorm-embed: true
+        scorm-always-active: true
+    
+    # Test SCORM 2004
+    - name: Export to SCORM 2004
+      id: export-scorm2004
+      uses: ./
+      with:
+        input-file: 'docs/README.md'
+        format: 'scorm2004'
+        output-name: 'test-scorm2004'
+        scorm-organization: 'Test Organization'
+        scorm-mastery-score: '75'
+    
+    # Test PDF with custom settings
+    - name: Export to PDF (Custom Settings)
+      id: export-pdf
+      uses: ./
+      with:
+        input-file: 'docs/README.md'
+        format: 'pdf'
+        output-name: 'test-pdf-custom'
+        pdf-theme: 'blue'
+        pdf-format: 'A4'
+        pdf-scale: '1.2'
+        pdf-landscape: true
+        pdf-print-background: true
+    
+    # Test Web export with all settings
+    - name: Export to Web
+      id: export-web
+      uses: ./
+      with:
+        input-file: 'docs/README.md'
+        format: 'web'
+        output-name: 'test-web'
+        web-zip: true
+        web-indexeddb: true
+        web-iframe: true
+    
+    # Test IMS package
+    - name: Export to IMS
+      id: export-ims
+      uses: ./
+      with:
+        input-file: 'docs/README.md'
+        format: 'ims'
+        output-name: 'test-ims'
+        ims-indexeddb: true
+    
+    # Test xAPI package
+    - name: Export to xAPI
+      id: export-xapi
+      uses: ./
+      with:
+        input-file: 'docs/README.md'
+        format: 'xapi'
+        output-name: 'test-xapi'
+        xapi-course-id: 'test-course-123'
+        xapi-course-title: 'Test Course Title'
+        xapi-debug: true
+        xapi-zip: true
+    
+    # Test RDF export
+    - name: Export to RDF (JSON-LD)
+      id: export-rdf-jsonld
+      uses: ./
+      with:
+        input-file: 'docs/README.md'
+        format: 'rdf'
+        output-name: 'test-rdf-jsonld'
+        rdf-format: 'json-ld'
+        rdf-type: 'Course'
+        rdf-educational-level: 'intermediate'
+    
+    # Test RDF export (N-Quads)
+    - name: Export to RDF (N-Quads)
+      id: export-rdf-nquads
+      uses: ./
+      with:
+        input-file: 'docs/README.md'
+        format: 'rdf'
+        output-name: 'test-rdf-nquads'
+        rdf-format: 'n-quads'
+        rdf-type: 'EducationalResource'
+    
+    # Test JSON export
+    - name: Export to JSON
+      id: export-json
+      uses: ./
+      with:
+        input-file: 'docs/README.md'
+        format: 'json'
+        output-name: 'test-json'
+    
+    # Test with custom styling
+    - name: Export with Custom Styling
+      id: export-styled
+      uses: ./
+      with:
+        input-file: 'docs/README.md'
+        format: 'scorm1.2'
+        output-name: 'test-styled'
+        style: 'body { background-color: #f0f0f0; } .lia-slide { border: 2px solid #333; }'
+        scorm-organization: 'Styled Test'
+    
+    # Test with course path override
+    - name: Export with Course Path Override
+      id: export-course-path
+      uses: ./
+      with:
+        input-file: 'docs/README.md'
+        course-path: 'docs'
+        format: 'scorm1.2'
+        output-name: 'test-course-path'
+        scorm-organization: 'Course Path Test'
+    
+    # Upload all artifacts
+    - name: Upload SCORM 1.2 Full
+      uses: actions/upload-artifact@v4
+      with:
+        name: test-scorm12-full
+        path: ${{ steps.export-scorm12.outputs.output-file }}
+    
+    - name: Upload SCORM 2004
+      uses: actions/upload-artifact@v4
+      with:
+        name: test-scorm2004
+        path: ${{ steps.export-scorm2004.outputs.output-file }}
+    
+    - name: Upload PDF Custom
+      uses: actions/upload-artifact@v4
+      with:
+        name: test-pdf-custom
+        path: ${{ steps.export-pdf.outputs.output-file }}
+    
+    - name: Upload Web Export
+      uses: actions/upload-artifact@v4
+      with:
+        name: test-web
+        path: ${{ steps.export-web.outputs.output-file }}
+    
+    - name: Upload IMS Package
+      uses: actions/upload-artifact@v4
+      with:
+        name: test-ims
+        path: ${{ steps.export-ims.outputs.output-file }}
+    
+    - name: Upload xAPI Package
+      uses: actions/upload-artifact@v4
+      with:
+        name: test-xapi
+        path: ${{ steps.export-xapi.outputs.output-file }}
+    
+    - name: Upload RDF JSON-LD
+      uses: actions/upload-artifact@v4
+      with:
+        name: test-rdf-jsonld
+        path: ${{ steps.export-rdf-jsonld.outputs.output-file }}
+    
+    - name: Upload RDF N-Quads
+      uses: actions/upload-artifact@v4
+      with:
+        name: test-rdf-nquads
+        path: ${{ steps.export-rdf-nquads.outputs.output-file }}
+    
+    - name: Upload JSON Export
+      uses: actions/upload-artifact@v4
+      with:
+        name: test-json
+        path: ${{ steps.export-json.outputs.output-file }}
+    
+    - name: Upload Styled Export
+      uses: actions/upload-artifact@v4
+      with:
+        name: test-styled
+        path: ${{ steps.export-styled.outputs.output-file }}
+    
+    - name: Upload Course Path Test
+      uses: actions/upload-artifact@v4
+      with:
+        name: test-course-path
+        path: ${{ steps.export-course-path.outputs.output-file }}
+    
+    # Summary step to display all results
+    - name: Export Summary
+      run: |
+        echo "## Export Results Summary" >> $GITHUB_STEP_SUMMARY
+        echo "| Format | Output File | File Size | Status |" >> $GITHUB_STEP_SUMMARY
+        echo "|--------|-------------|-----------|---------|" >> $GITHUB_STEP_SUMMARY
+        echo "| SCORM 1.2 Full | ${{ steps.export-scorm12.outputs.output-file }} | ${{ steps.export-scorm12.outputs.file-size }} bytes | ✅ |" >> $GITHUB_STEP_SUMMARY
+        echo "| SCORM 2004 | ${{ steps.export-scorm2004.outputs.output-file }} | ${{ steps.export-scorm2004.outputs.file-size }} bytes | ✅ |" >> $GITHUB_STEP_SUMMARY
+        echo "| PDF Custom | ${{ steps.export-pdf.outputs.output-file }} | ${{ steps.export-pdf.outputs.file-size }} bytes | ✅ |" >> $GITHUB_STEP_SUMMARY
+        echo "| Web Export | ${{ steps.export-web.outputs.output-file }} | ${{ steps.export-web.outputs.file-size }} bytes | ✅ |" >> $GITHUB_STEP_SUMMARY
+        echo "| IMS Package | ${{ steps.export-ims.outputs.output-file }} | ${{ steps.export-ims.outputs.file-size }} bytes | ✅ |" >> $GITHUB_STEP_SUMMARY
+        echo "| xAPI Package | ${{ steps.export-xapi.outputs.output-file }} | ${{ steps.export-xapi.outputs.file-size }} bytes | ✅ |" >> $GITHUB_STEP_SUMMARY
+        echo "| RDF JSON-LD | ${{ steps.export-rdf-jsonld.outputs.output-file }} | ${{ steps.export-rdf-jsonld.outputs.file-size }} bytes | ✅ |" >> $GITHUB_STEP_SUMMARY
+        echo "| RDF N-Quads | ${{ steps.export-rdf-nquads.outputs.output-file }} | ${{ steps.export-rdf-nquads.outputs.file-size }} bytes | ✅ |" >> $GITHUB_STEP_SUMMARY
+        echo "| JSON Export | ${{ steps.export-json.outputs.output-file }} | ${{ steps.export-json.outputs.file-size }} bytes | ✅ |" >> $GITHUB_STEP_SUMMARY
+        echo "| Styled Export | ${{ steps.export-styled.outputs.output-file }} | ${{ steps.export-styled.outputs.file-size }} bytes | ✅ |" >> $GITHUB_STEP_SUMMARY
+        echo "| Course Path Test | ${{ steps.export-course-path.outputs.output-file }} | ${{ steps.export-course-path.outputs.file-size }} bytes | ✅ |" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "**Total Tests Completed: 11**" >> $GITHUB_STEP_SUMMARY

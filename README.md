@@ -48,7 +48,7 @@ sudo npm install -g --verbose https://github.com/liaScript/LiaScript-Exporter
 
 On Windows you might need to run the terminal with administrator-privileges.
 
-## Basic usage
+## Basic CLI usage
 
 If you have installed the package, you can now use `liaex` or
 `liascript-exporter`. If you type one of the following commands, you will get
@@ -204,7 +204,7 @@ overview page, based on a provided yaml description.
 Learn more: https://www.npmjs.com/package/@liascript/exporter#project 
 
 Example:
-- Input:  https://github.com/LiaBooks/liabooks.github.com/blob/main/project.yaml
+- Input:  https://github.com/LiaBooks/liabooks.github.com/blob/main/project.yml
 - Output: https://liabooks.github.io
 
 --project-no-meta           Disable the generation of meta information
@@ -957,6 +957,43 @@ This will be translated to:
 }
 ```
 
+## GitHub Action
+
+Export your LiaScript courses directly in GitHub workflows with this GitHub Action.
+
+### Quick Start
+
+Add to your `.github/workflows/export.yml`:
+
+```yaml
+name: Export Course
+on: [push]
+
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Export to SCORM
+      uses: ./
+      with:
+        input-file: 'README.md'
+        format: 'scorm1.2'
+        output-name: 'my-course'
+        scorm-organization: 'My Organization'
+    
+    - name: Upload SCORM package
+      uses: actions/upload-artifact@v4
+      with:
+        name: scorm-package
+        path: '*.zip'
+```
+
+### Documentation
+
+For complete GitHub Action documentation, inputs, outputs, and more examples, see: [`action/README.md`](action/README.md)
+
 ## TODOs & Contributions
 
 * Further exporter
@@ -966,8 +1003,6 @@ This will be translated to:
   * ePub
 
 * Integration into the Atom IDE
-
-* GitHub actions to automate building during push ...
 
 ### Custom extensions
 

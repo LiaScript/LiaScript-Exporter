@@ -1,0 +1,39 @@
+name: Multi-Course Export
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        course: 
+          - { path: 'course1/README.md', name: 'basic-course' }
+          - { path: 'course2/README.md', name: 'advanced-course' }
+          - { path: 'course3/README.md', name: 'expert-course' }
+        format: ['scorm1.2', 'pdf', 'web']
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+    
+    - name: Export ${{ matrix.course.name }} to ${{ matrix.format }}
+      id: export
+      uses: LiaScript/LiaScript-Exporter@master
+      with:
+        input-file: ${{ matrix.course.path }}
+        format: ${{ matrix.format }}
+        output-name: '${{ matrix.course.name }}-${{ matrix.format }}'
+        scorm-organization: 'LiaScript Courses'
+        pdf-theme: 'default'
+        web-zip: true
+    
+    - name: Upload ${{ matrix.course.name }}-${{ matrix.format }}
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ matrix.course.name }}-${{ matrix.format }}
+        path: ${{ steps.export.outputs.output-file }}
