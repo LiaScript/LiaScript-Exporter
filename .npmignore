@@ -1,12 +1,13 @@
-LiaScript
-.cache
 .git
+.github
 .gitmodules
 .parcel-cache
 .custom.css
 .vscode
+action
 docker
 ignore
-*.zip
+LiaScript
 node_modules
 scripts
+*.zip
