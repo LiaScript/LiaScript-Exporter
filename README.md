@@ -1,3 +1,22 @@
+> ## 🚧 Under Construction / Im Umbau 🚧
+>
+> <marquee>**We are excited to announce that the LiaScript-Exporter has received funding through the [OE_Sprints](https://www.oer-strategie.de/foerdern/foerderrichtlinien/oe_sprints/) program!**</marquee>
+>
+> ![](https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExaWdxeGVzcXlyaHMyZmJzODA2OXRvazB1bjk3ZWZtMXpoMXRmd2p2aSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/hV1dkT2u1gqTUpKdKy/giphy.gif)
+>
+> This project (**LiaEx - OER Exporter für LiaScript**) is funded by the German Federal Ministry for Family Affairs, Senior Citizens, Women and Youth (BMBFSFJ) as part of the federal government's OER strategy from October 15, 2025 to April 14, 2026 (funding code: 01PZ25002).
+>
+> ### What's happening?
+>
+> We are currently restructuring and extending the LiaScript-Exporter to:
+>
+> - Improve export capabilities for various Learning Management Systems (LMS)
+> - Develop a bridge function for conversion to H5P systems
+> - Create modern desktop and web applications
+> - Enhance OER-friendly infrastructure based on open standards and open source software
+>
+> The goal is to reduce barriers, increase the likelihood of cross-educational use, and enable the OER and LiaScript communities to maintain and develop the software further.
+
 # LiaScript-Exporter
 
 This shall be a generic LiaScript-Exporter that can export educational content
