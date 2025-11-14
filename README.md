@@ -661,12 +661,12 @@ You have to be aware, that the PDF generation can be quite time consuming
 especially for large courses with a lot of scripts and code-snippets to be
 executed and multimedia to be loaded. `puppeteer` thus sometimes does not know
 when the course is ready. If the generation fails, you should try to increase
-this value, the default is 30000, which means 30 seconds.
+this value, the default is 60000, which means 60 seconds.
 
 ``` bash
 $ liaex --format pdf \
   -o example \
-  --pdf-timeout 50000 \
+  --pdf-timeout 60000 \
   -i https://github.com/TUBAF-IfI-LiaScript/VL_ProzeduraleProgrammierung/blob/master/08_Objekte.md
 
 depending on the size of the course, this can take a while, please be patient...

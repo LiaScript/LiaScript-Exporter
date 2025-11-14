@@ -263,7 +263,7 @@ export async function exporter(
   console.warn(argument)
   */
   if (!argument['pdf-preview']) {
-    await helper.sleep(argument['pdf-timeout'] || 30000)
+    await helper.sleep(argument['pdf-timeout'] || 60000)
     await toPDF(argument, browser, page)
   }
 }

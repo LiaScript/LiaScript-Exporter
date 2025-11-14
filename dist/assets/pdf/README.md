@@ -7,6 +7,10 @@ version:  1.0.0
 
 language: en
 
+@onload
+window.LIA.debug = true
+@end
+
 -->
 
 # Demo-LiaScript
@@ -15,6 +19,17 @@ language: en
 <div style="width:100%;height:0;padding-bottom:56%;position:relative;"><iframe src="https://giphy.com/embed/StoU2izFCH9OhkHcpi" width="100%" height="100%" style="position:absolute" frameBorder="0" class="giphy-embed" allowFullScreen></iframe></div><p><a href="https://giphy.com/gifs/stellifymedia-itv-quiz-wwtbam-StoU2izFCH9OhkHcpi">via GIPHY</a></p>
 
 ### A Textquiz
+
+
+``` js
+let x = 10;
+let y = 32;
+```
+<script>
+  @input
+window.console.warn("x + y =", x + y);
+
+</script>
 
 What did the **fish** say when he hit a **concrete wall**?
 
