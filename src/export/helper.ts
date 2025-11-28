@@ -191,7 +191,7 @@ export function random(length: number = 16) {
 
 export function getRepository(raw_url: string) {
   const match = raw_url.match(
-    /raw\.githubusercontent\.com\/([^\/]+)\/([^\/]+)\/([^\/]+)\/(.*)/i
+    /raw\.githubusercontent\.com\/([^\/]+)\/([^\/]+)\/(?:refs\/heads\/)?([^\/]+)\/(.*)/i
   )
 
   if (match?.length === 5) {
