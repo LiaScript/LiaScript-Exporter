@@ -44,7 +44,7 @@ export async function exporter(
     tmpPath
   )
 
-  // await fs.copy(path.join(dirname, './assets/common'), tmpPath)
+  await fs.copy(path.join(dirname, './assets/common'), tmpPath)
 
   // copy base path or readme-directory into temp
   await fs.copy(argument.path, tmpPath)

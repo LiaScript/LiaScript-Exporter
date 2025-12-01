@@ -34,7 +34,7 @@ export async function exporter(
 
   // copy assets to temp
   await fs.copy(path.join(dirname, './assets/scorm2004'), tmpPath)
-  // await fs.copy(path.join(dirname, './assets/common'), tmpPath)
+  await fs.copy(path.join(dirname, './assets/common'), tmpPath)
 
   let index = fs.readFileSync(path.join(tmpPath, 'index.html'), 'utf8')
 
