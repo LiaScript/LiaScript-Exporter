@@ -67,11 +67,50 @@ sudo npm install -g --verbose https://github.com/liaScript/LiaScript-Exporter
 
 On Windows you might need to run the terminal with administrator-privileges.
 
+### Web Server Mode
+
+Instead of command-line exports, you can also start a web server with a user-friendly interface:
+
+``` bash
+$ liaex serve
+```
+
+This starts the LiaScript Export Server on port 3000 (default). You can specify a different port:
+
+``` bash
+$ liaex serve --port 8080
+```
+
+The web interface allows you to:
+
+- **Upload files** or specify a **Git repository** as your project source
+- Select an **export target** (Moodle, ILIAS, OPAL, Generic LMS, Web, PDF)
+- Configure **advanced settings** for your export
+- Queue export jobs and track their status
+
+All exports are processed asynchronously in a queue, with only one export running at a time. After submitting an export, you'll receive a job ID and can track the progress on a status page.
+
+**Features:**
+- Multi-user support with job queue
+- File upload (ZIP or multiple files)
+- Git repository support (with branch/subdirectory options)
+- Preset-based export targets for common LMS platforms
+- Manual format selection (SCORM 1.2, SCORM 2004, IMS, Web, PDF, Android, JSON)
+- Status tracking for export jobs
+
+The server mode is perfect for:
+- Non-technical users who prefer a GUI
+- Institutions that want to provide a self-service export solution
+- Batch processing of multiple courses
+- Testing different export configurations
+
 ## Basic CLI usage
 
 If you have installed the package, you can now use `liaex` or
 `liascript-exporter`. If you type one of the following commands, you will get
 the following output.
+
+### Command-line Export
 
 ``` shell
 $ liaex

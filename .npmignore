@@ -10,5 +10,6 @@ ignore
 LiaScript
 node_modules
 scripts
+server
 *.zip
 ignore

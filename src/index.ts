@@ -15,6 +15,7 @@ import minimist from 'minimist'
 import { displayHelp } from './cli'
 import { parseArguments, validateAndNormalize } from './parser'
 import { Exporter } from './exporter'
+import { startServer } from './server/server'
 
 // Setup global XMLHttpRequest for Node.js environment
 global.XMLHttpRequest = XMLHttpRequest
@@ -25,7 +26,13 @@ const argv = minimist(process.argv.slice(2))
  * Main execution flow
  */
 async function main(): Promise<void> {
-  if (argv.v || argv.version) {
+  // Check for serve command first (positional argument)
+  const command = argv._[0]
+
+  if (command === 'serve') {
+    const port = argv.port || argv.p || 3000
+    await startServer(port)
+  } else if (argv.v || argv.version) {
     console.log('version:', packageJson.version)
   } else if (argv.h || argv.help) {
     displayHelp()

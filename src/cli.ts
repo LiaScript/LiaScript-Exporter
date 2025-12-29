@@ -44,6 +44,14 @@ export function displayHelp(): void {
   )
   COLOR.command('-v', '--version', 'output the current version')
 
+  console.log('')
+  console.log(COLOR.heading('Commands:'))
+  COLOR.command(
+    'serve',
+    '[--port PORT]',
+    'Start the export server with web interface (default port: 3000)'
+  )
+
   COLOR.command('\n-k', '--key', 'responsive voice key ')
 
   SCORM12.help()

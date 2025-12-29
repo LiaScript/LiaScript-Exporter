@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LiaScript Export Server</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>LiaScript Export Server</h1>
+        <p class="subtitle">
+          Erstellen Sie Exporte für verschiedene LMS und Formate
+        </p>
+      </header>
+
+      <main>
+        <form id="exportForm" enctype="multipart/form-data">
+          <!-- Section 1: Project Source -->
+          <section class="card">
+            <h2>1. Projekt-Quelle</h2>
+
+            <!-- Upload Tab -->
+            <div class="source-tabs">
+              <button type="button" class="tab-button active" data-tab="upload">
+                Datei-Upload
+              </button>
+              <button type="button" class="tab-button" data-tab="git">
+                Git Repository
+              </button>
+            </div>
+
+            <!-- Upload Panel -->
+            <div class="tab-panel active" id="upload-panel">
+              <div class="upload-area" id="uploadArea">
+                <svg
+                  width="48"
+                  height="48"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                  <polyline points="17 8 12 3 7 8"></polyline>
+                  <line x1="12" y1="3" x2="12" y2="15"></line>
+                </svg>
+                <p>Dateien hier ablegen oder klicken zum Auswählen</p>
+                <p class="hint">
+                  ZIP-Dateien oder mehrere Dateien (max. 100MB)
+                </p>
+                <input
+                  type="file"
+                  id="fileInput"
+                  name="files"
+                  multiple
+                  accept=".zip,.md,.txt,.json,.yml,.yaml"
+                />
+              </div>
+              <div id="fileList" class="file-list"></div>
+            </div>
+
+            <!-- Git Panel -->
+            <div class="tab-panel" id="git-panel">
+              <div class="form-group">
+                <label for="gitUrl">Repository URL *</label>
+                <input
+                  type="text"
+                  id="gitUrl"
+                  name="gitUrl"
+                  placeholder="https://github.com/user/repo.git"
+                />
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="gitBranch">Branch / Tag</label>
+                  <input
+                    type="text"
+                    id="gitBranch"
+                    name="gitBranch"
+                    placeholder="main"
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="gitSubdir">Unterverzeichnis</label>
+                  <input
+                    type="text"
+                    id="gitSubdir"
+                    name="gitSubdir"
+                    placeholder="docs/"
+                  />
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- Section 2: Export Target -->
+          <section class="card">
+            <h2>2. Export-Ziel</h2>
+
+            <!-- Export Target Tabs -->
+            <div class="export-tabs">
+              <button
+                type="button"
+                class="export-tab-button active"
+                data-export-tab="presets"
+              >
+                Bekannte Konfigurationen
+              </button>
+              <button
+                type="button"
+                class="export-tab-button"
+                data-export-tab="formats"
+              >
+                Formate
+              </button>
+            </div>
+
+            <!-- Presets Panel -->
+            <div class="export-tab-panel active" id="presets-panel">
+              <div class="preset-grid">
+                <label class="preset-tile">
+                  <input type="radio" name="preset" value="moodle" checked />
+                  <div class="preset-content">
+                    <h3>Moodle</h3>
+                    <p>SCORM 2004</p>
+                  </div>
+                </label>
+
+                <label class="preset-tile">
+                  <input type="radio" name="preset" value="ilias" />
+                  <div class="preset-content">
+                    <h3>ILIAS</h3>
+                    <p>SCORM 1.2</p>
+                  </div>
+                </label>
+
+                <label class="preset-tile">
+                  <input type="radio" name="preset" value="opal" />
+                  <div class="preset-content">
+                    <h3>OPAL</h3>
+                    <p>SCORM 2004</p>
+                  </div>
+                </label>
+
+                <label class="preset-tile">
+                  <input type="radio" name="preset" value="generic" />
+                  <div class="preset-content">
+                    <h3>Generic LMS</h3>
+                    <p>SCORM 2004</p>
+                  </div>
+                </label>
+
+                <label class="preset-tile">
+                  <input type="radio" name="preset" value="openolat" />
+                  <div class="preset-content">
+                    <h3>OpenOlat</h3>
+                    <p>SCORM 2004</p>
+                  </div>
+                </label>
+
+                <label class="preset-tile">
+                  <input type="radio" name="preset" value="openedx" />
+                  <div class="preset-content">
+                    <h3>Open edX</h3>
+                    <p>SCORM 2004</p>
+                  </div>
+                </label>
+              </div>
+            </div>
+
+            <!-- Formats Panel -->
+            <div class="export-tab-panel" id="formats-panel">
+              <div class="preset-grid">
+                <label class="preset-tile">
+                  <input type="radio" name="format" value="scorm12" />
+                  <div class="preset-content">
+                    <h3>SCORM 1.2</h3>
+                    <p>Legacy Standard</p>
+                  </div>
+                </label>
+
+                <label class="preset-tile">
+                  <input type="radio" name="format" value="scorm2004" />
+                  <div class="preset-content">
+                    <h3>SCORM 2004</h3>
+                    <p>Modern Standard</p>
+                  </div>
+                </label>
+
+                <label class="preset-tile">
+                  <input type="radio" name="format" value="ims" />
+                  <div class="preset-content">
+                    <h3>IMS</h3>
+                    <p>Content Package</p>
+                  </div>
+                </label>
+
+                <label class="preset-tile">
+                  <input type="radio" name="format" value="web" />
+                  <div class="preset-content">
+                    <h3>Web</h3>
+                    <p>Standalone</p>
+                  </div>
+                </label>
+
+                <label class="preset-tile">
+                  <input type="radio" name="format" value="pdf" />
+                  <div class="preset-content">
+                    <h3>PDF</h3>
+                    <p>Dokument</p>
+                  </div>
+                </label>
+
+                <label class="preset-tile">
+                  <input type="radio" name="format" value="android" />
+                  <div class="preset-content">
+                    <h3>Android</h3>
+                    <p>App Package</p>
+                  </div>
+                </label>
+
+                <label class="preset-tile">
+                  <input type="radio" name="format" value="json" />
+                  <div class="preset-content">
+                    <h3>JSON</h3>
+                    <p>Data Export</p>
+                  </div>
+                </label>
+
+                <label class="preset-tile">
+                  <input type="radio" name="format" value="epub" />
+                  <div class="preset-content">
+                    <h3>EPUB</h3>
+                    <p>E-Book</p>
+                  </div>
+                </label>
+              </div>
+            </div>
+          </section>
+
+          <!-- Section 3: Advanced Settings -->
+          <section class="card">
+            <h2>
+              <button
+                type="button"
+                id="toggleAdvanced"
+                class="collapsible-toggle"
+              >
+                <span class="toggle-icon">▶</span>
+                3. Erweiterte Einstellungen (optional)
+              </button>
+            </h2>
+
+            <div id="advancedSettings" class="collapsible-content hidden">
+              <div class="form-group">
+                <label for="masteryScore">Mastery Score (SCORM)</label>
+                <input
+                  type="number"
+                  id="masteryScore"
+                  name="option_masteryScore"
+                  min="0"
+                  max="100"
+                  value="70"
+                />
+                <span class="hint">Mindestpunktzahl für Bestehen (0-100)</span>
+              </div>
+
+              <div class="form-group">
+                <label for="pageSize">Seitengröße (PDF)</label>
+                <select id="pageSize" name="option_pageSize">
+                  <option value="A4">A4</option>
+                  <option value="Letter">Letter</option>
+                  <option value="A3">A3</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="organization">Organisation</label>
+                <input
+                  type="text"
+                  id="organization"
+                  name="option_organization"
+                  placeholder="Meine Organisation"
+                  readonly
+                />
+                <span class="hint"
+                  >Institutionseinstellung (schreibgeschützt)</span
+                >
+              </div>
+            </div>
+          </section>
+
+          <!-- Submit Section -->
+          <section class="card submit-section">
+            <button type="submit" id="submitBtn" class="btn-primary">
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+              </svg>
+              Export starten
+            </button>
+            <p class="info-text">
+              Export-Aufträge werden in eine Warteschlange eingereiht.<br />
+              Es wird jeweils nur ein Export gleichzeitig verarbeitet.
+            </p>
+          </section>
+        </form>
+
+        <!-- Confirmation Modal -->
+        <div id="confirmationModal" class="modal hidden">
+          <div class="modal-content">
+            <h2>Export gestartet</h2>
+            <div id="confirmationDetails"></div>
+            <div class="modal-actions">
+              <a id="statusLink" href="#" class="btn-primary"
+                >Zur Status-Seite</a
+              >
+              <button type="button" id="closeModal" class="btn-secondary">
+                Schließen
+              </button>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <footer>
+        <p>&copy; 2025 LiaScript Export Server</p>
+      </footer>
+    </div>
+
+    <script src="/app.js"></script>
+  </body>
+</html>

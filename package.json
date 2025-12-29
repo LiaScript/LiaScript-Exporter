@@ -31,8 +31,9 @@
     "asset:xapi": "cd LiaScript && npm i && npm run build:xapi && cp -r dist ../dist/assets/xapi",
     "asset:capacitor": "cd LiaScript && git checkout feat/capacitor && rm -rf node_modules && npm i && npm run build:android && cp -r dist ../dist/assets/capacitor && git checkout development && rm -rf node_modules && npm i",
     "asset:deduplicate": "./scripts/deduplicate-assets.sh",
-    "build": "npx parcel build --no-cache --no-source-maps src/index.ts && npm run shebang",
+    "build": "npx parcel build --no-cache --no-source-maps src/index.ts && npm run shebang && npm run copy:public",
     "build:debug": "npx parcel build --target node --no-minify --log-level 5 src/index.ts",
+    "copy:public": "mkdir -p dist/server && cp -r src/server/public dist/server/",
     "run:moodle": "cd docker/moodle && docker-compose up",
     "run:ilias": "cd docker/ilias && docker-compose up",
     "fix:file": "find dist/ -type f -name \"*.js\" -exec sed -i -r 's/\\/\\(https\\?\\|file\\|ftp\\|\\(chrome\\|moz\\|safari-web\\)-extension\\):\\\\\\/\\\\\\/\\[/\\/(https?|file|ftp|(chrome|moz|safari-web)-extension):\\\\\\/\\\\\\/\\\\\\/?[/g' {} +",
@@ -63,13 +64,17 @@
     "temp": "^0.9.4",
     "typescript": "^5.9.3",
     "xhr2": "^0.2.1",
-    "yaml": "^2.8.2"
+    "yaml": "^2.8.2",
+    "fastify": "^4.26.0",
+    "@fastify/multipart": "^8.1.0",
+    "@fastify/static": "^7.0.1"
   },
   "devDependencies": {
     "@parcel/transformer-elm": "^2.16.3",
     "@types/temp": "^0.9.1",
     "elm": "^0.19.1-6",
-    "parcel": "^2.16.3"
+    "parcel": "^2.16.3",
+    "pino-pretty": "^13.0.0"
   },
   "engines": {
     "node": ">= 12"
