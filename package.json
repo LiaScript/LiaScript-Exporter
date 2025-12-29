@@ -65,10 +65,10 @@
     "yaml": "^2.8.2"
   },
   "devDependencies": {
-    "@parcel/transformer-elm": "^2.16.1",
+    "@parcel/transformer-elm": "^2.16.3",
     "@types/temp": "^0.9.1",
     "elm": "^0.19.1-6",
-    "parcel": "^2.16.1"
+    "parcel": "^2.16.3"
   },
   "engines": {
     "node": ">= 12"
