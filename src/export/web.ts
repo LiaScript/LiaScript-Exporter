@@ -1,155 +1,302 @@
 import * as helper from './helper'
 import * as RDF from './rdf'
+import * as path from 'path'
+import * as fs from 'fs-extra'
 
-const path = require('path')
-const fs = require('fs-extra')
+// Constants
+const HTML_FILE = 'index.html'
+const START_HTML_FILE = 'start.html'
+const DEFAULT_TITLE_TAG = '<title>Lia</title>'
+const DEFAULT_DESCRIPTION_META =
+  '<meta name="description" content="LiaScript is a service for running free and interactive online courses, build with its own Markup-language. So check out the following course ;-)">'
+const TEMP_FOLDER_NAME = 'pro'
 
+// Type definitions
+export interface WebExportArguments {
+  input: string
+  readme: string
+  output: string
+  format: string
+  path: string
+  key?: string
+  style?: string
+  'web-iframe'?: boolean
+  'web-indexeddb'?: boolean | string
+  'web-zip'?: boolean
+  'rdf-format'?: string
+  'rdf-preview'?: string
+  'rdf-url'?: string
+  'rdf-type'?: string
+  'rdf-template'?: string
+  'rdf-license'?: string
+  'rdf-educationalLevel'?: string
+}
+
+interface LiaDefinition {
+  macro?: {
+    comment?: string
+  }
+  logo?: string
+}
+
+interface LiaJson {
+  lia: {
+    str_title: string
+    definition: LiaDefinition
+  }
+}
+
+interface ExportError {
+  step: string
+  error: Error | unknown
+  critical: boolean
+}
+
+export const format = 'web'
+
+/**
+ * Exports a LiaScript course as a web application
+ * @param argument - Export configuration parameters
+ * @param json - Parsed LiaScript JSON data
+ * @throws {Error} If critical operations fail
+ */
 export async function exporter(
-  argument: {
-    input: string
-    readme: string
-    output: string
-    format: string
-    path: string
-    key?: string
-    style?: string
+  argument: WebExportArguments,
+  json: LiaJson
+): Promise<void> {
+  const errors: ExportError[] = []
+  let tempPath: string | null = null
 
-    'web-iframe'?: boolean
-    'web-indexeddb'?: boolean
-    'web-zip'?: boolean
+  try {
+    // make temp folder
+    const tmp = (await helper.tmpDir()) as string
+    const dirname = helper.dirname()
+    tempPath = path.join(tmp, TEMP_FOLDER_NAME)
 
-    // special cases for RDF
-    'rdf-format'?: string
-    'rdf-preview'?: string
-    'rdf-url'?: string
-    'rdf-type'?: string
-    'rdf-template'?: string
-    'rdf-license'?: string
-    'rdf-educationalLevel'?: string
-  },
-  json: any
-) {
-  // make temp folder
-  let tmp = await helper.tmpDir()
-  const dirname = helper.dirname()
+    // Copy assets to temp
+    await copyAssets(dirname, tempPath, argument['web-indexeddb'])
 
-  let tmpPath = path.join(tmp, 'pro')
+    // Copy base path or readme-directory into temp
+    await fs.copy(argument.path, tempPath)
 
-  // copy assets to temp
-  await fs.copy(
-    path.join(
-      dirname,
-      argument['web-indexeddb'] ? './assets/indexeddb' : './assets/web'
-    ),
-    tmpPath
-  )
-
-  await fs.copy(path.join(dirname, './assets/common'), tmpPath)
-
-  // copy base path or readme-directory into temp
-  await fs.copy(argument.path, tmpPath)
-
-  // rename the readme if necessary
-  if (argument['web-indexeddb'] !== undefined) {
-    let newReadme =
-      (typeof argument['web-indexeddb'] === 'string'
-        ? argument['web-indexeddb']
-        : helper.random(20)) + '.md'
-
-    let old_ = path.join(tmpPath, argument.readme)
-    let new_ = path.join(path.dirname(old_), newReadme)
-
-    argument.readme = argument.readme.replace(
-      path.basename(argument.readme),
-      newReadme
+    // Rename the readme if necessary and update argument
+    const readmePath = await handleReadmeRename(
+      tempPath,
+      argument.readme,
+      argument['web-indexeddb']
     )
 
-    await fs.move(old_, new_)
+    // Read and process index.html
+    let indexContent = await fs.readFile(path.join(tempPath, HTML_FILE), 'utf8')
+
+    // Inject ResponsiveVoice key if provided
+    if (argument.key) {
+      indexContent = helper.injectResponsivevoice(argument.key, indexContent)
+    }
+
+    // Add default course URL
+    indexContent = injectDefaultCourse(indexContent, readmePath)
+
+    // Update metadata (title, description, logo)
+    indexContent = updateMetadata(indexContent, json, errors)
+
+    // Generate RDF metadata
+    const jsonLD = await RDF.script(argument, json)
+
+    // Write final output
+    await writeOutput(
+      tempPath,
+      indexContent,
+      readmePath,
+      jsonLD,
+      argument,
+      errors
+    )
+
+    // Move or zip the output
+    await finalizeOutput(tempPath, argument)
+
+    // Report any non-critical errors
+    if (errors.length > 0) {
+      console.warn(`Export completed with ${errors.length} warning(s):`)
+      errors.forEach((err) => {
+        console.warn(`  - ${err.step}: ${err.error}`)
+      })
+    }
+  } catch (error) {
+    // Clean up temp directory on critical error
+    if (tempPath) {
+      try {
+        await fs.remove(tempPath)
+      } catch (cleanupError) {
+        console.warn('Failed to clean up temporary directory:', cleanupError)
+      }
+    }
+    throw new Error(
+      `Web export failed: ${
+        error instanceof Error ? error.message : String(error)
+      }`
+    )
+  }
+}
+
+/**
+ * Copy required assets to the temporary directory
+ */
+async function copyAssets(
+  dirname: string,
+  tmpPath: string,
+  useIndexedDB?: boolean | string
+): Promise<void> {
+  const assetsDir = useIndexedDB ? './assets/indexeddb' : './assets/web'
+
+  await fs.copy(path.join(dirname, assetsDir), tmpPath)
+  await fs.copy(path.join(dirname, './assets/common'), tmpPath)
+}
+
+/**
+ * Handle readme file renaming for IndexedDB mode
+ * @returns The final readme path (relative or renamed)
+ */
+async function handleReadmeRename(
+  tmpPath: string,
+  readmePath: string,
+  webIndexedDB?: boolean | string
+): Promise<string> {
+  if (webIndexedDB === undefined) {
+    return readmePath
   }
 
-  let index = fs.readFileSync(path.join(tmpPath, 'index.html'), 'utf8')
+  const newReadmeName =
+    (typeof webIndexedDB === 'string' ? webIndexedDB : helper.random(20)) +
+    '.md'
 
-  // change responsive key
-  if (argument.key) {
-    index = helper.injectResponsivevoice(argument.key, index)
-  }
+  const oldPath = path.join(tmpPath, readmePath)
+  const newPath = path.join(path.dirname(oldPath), newReadmeName)
 
-  // add default course
-  index = helper.inject(
-    `<script>
+  await fs.move(oldPath, newPath)
+
+  // Return the updated readme path (replace basename)
+  return readmePath.replace(path.basename(readmePath), newReadmeName)
+}
+
+/**
+ * Inject default course URL into index.html
+ */
+function injectDefaultCourse(indexContent: string, readmePath: string): string {
+  const script = `<script>
   if (!window.LIA) {
     window.LIA = {}
   }
-   window.LIA.defaultCourseURL = "${path.basename(argument.readme)}"
-  </script>`,
-    index
-  )
+   window.LIA.defaultCourseURL = "${path.basename(readmePath)}"
+  </script>`
 
+  return helper.inject(script, indexContent)
+}
+
+/**
+ * Update HTML metadata (title, description, logo)
+ */
+function updateMetadata(
+  indexContent: string,
+  json: LiaJson,
+  errors: ExportError[]
+): string {
+  let updatedContent = indexContent
+
+  // Update title
   try {
-    index = index.replace(
-      '<title>Lia</title>',
-      `<title>${json.lia.str_title}</title><meta property="og:title" content="${json.lia.str_title}"> <meta name="twitter:title" content="${json.lia.str_title}">`
-    )
-    console.log('updating title ...')
-  } catch (e) {
-    console.warn('could not add title')
+    const title = json.lia?.str_title
+    if (title) {
+      updatedContent = updatedContent.replace(
+        DEFAULT_TITLE_TAG,
+        `<title>${title}</title><meta property="og:title" content="${title}"> <meta name="twitter:title" content="${title}">`
+      )
+      console.log('updating title ...')
+    }
+  } catch (error) {
+    errors.push({ step: 'Update title', error, critical: false })
   }
 
-  // add description
+  // Update description
   try {
-    let description = json.lia.definition.macro.comment
-
-    index = index.replace(
-      '<meta name="description" content="LiaScript is a service for running free and interactive online courses, build with its own Markup-language. So check out the following course ;-)">',
-      `<meta name="description" content="${description}"><meta property="og:description" content="${description}"><meta name="twitter:description" content="${description}">`
-    )
-
-    console.log('updating description ...')
-  } catch (e) {
-    console.warn('could not add description')
+    const description = json.lia?.definition?.macro?.comment
+    if (description) {
+      updatedContent = updatedContent.replace(
+        DEFAULT_DESCRIPTION_META,
+        `<meta name="description" content="${description}"><meta property="og:description" content="${description}"><meta name="twitter:description" content="${description}">`
+      )
+      console.log('updating description ...')
+    }
+  } catch (error) {
+    errors.push({ step: 'Update description', error, critical: false })
   }
 
+  // Update logo
   try {
-    let logo = json.lia.definition.logo
-    index = helper.inject(
-      `<meta property="og:image" content="${logo}"><meta name="twitter:image" content="${logo}">`,
-      index
-    )
-
-    console.log('updating logo ...')
-  } catch (e) {
-    console.warn('could not add image')
+    const logo = json.lia?.definition?.logo
+    if (logo) {
+      updatedContent = helper.inject(
+        `<meta property="og:image" content="${logo}"><meta name="twitter:image" content="${logo}">`,
+        updatedContent
+      )
+      console.log('updating logo ...')
+    }
+  } catch (error) {
+    errors.push({ step: 'Update logo', error, critical: false })
   }
 
-  const jsonLD = await RDF.script(argument, json)
+  return updatedContent
+}
 
+/**
+ * Write the final output (iframe or regular)
+ */
+async function writeOutput(
+  tmpPath: string,
+  indexContent: string,
+  readmePath: string,
+  jsonLD: string,
+  argument: WebExportArguments,
+  errors: ExportError[]
+): Promise<void> {
   try {
     if (argument['web-iframe']) {
-      await helper.writeFile(path.join(tmpPath, 'start.html'), index)
+      await helper.writeFile(path.join(tmpPath, START_HTML_FILE), indexContent)
       await helper.iframe(
         tmpPath,
-        'index.html',
-        argument.readme,
+        HTML_FILE,
+        readmePath,
         jsonLD,
         argument.style,
-        'start.html'
+        START_HTML_FILE
       )
     } else {
-      index = helper.inject(jsonLD, index)
-      index = helper.prettify(index)
+      indexContent = helper.inject(jsonLD, indexContent)
+      indexContent = helper.prettify(indexContent)
 
-      await helper.writeFile(path.join(tmpPath, 'index.html'), index)
+      await helper.writeFile(path.join(tmpPath, HTML_FILE), indexContent)
     }
-  } catch (e) {
-    console.warn(e)
-    return
+  } catch (error) {
+    errors.push({ step: 'Write output', error, critical: true })
+    throw error
   }
+}
 
+/**
+ * Finalize output by creating zip or moving directory
+ */
+async function finalizeOutput(
+  tmpPath: string,
+  argument: WebExportArguments
+): Promise<void> {
   if (argument['web-zip']) {
-    helper.zip(tmpPath, argument.output)
+    await helper.zip(tmpPath, argument.output)
   } else {
-    await fs.move(tmpPath, argument.output, {
+    // Copy with filter, then remove temp
+    await fs.copy(tmpPath, argument.output, {
       filter: helper.filterHidden(argument.path),
     })
+    await fs.remove(tmpPath)
   }
 }

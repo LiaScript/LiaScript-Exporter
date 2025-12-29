@@ -55,25 +55,25 @@ export function help() {
   )
 }
 
-export async function exporter(
-  argument: {
-    input: string
-    readme: string
-    output: string
-    format: string
-    path: string
-    key?: string
+export interface AndroidExportArguments {
+  input: string
+  readme: string
+  output: string
+  format: string
+  path: string
+  key?: string
+  'android-sdk'?: string
+  'android-appId'?: string
+  'android-appName'?: string
+  'android-icon'?: string
+  'android-splash'?: string
+  'android-splashDuration'?: number
+  'android-preview'?: boolean
+}
 
-    'android-sdk'?: string
-    'android-appId'?: string
-    'android-appName'?: string
-    'android-icon'?: string
-    'android-splash'?: string
-    'android-splashDuration'?: number
-    'android-preview'?: boolean
-  },
-  json: any
-) {
+export const format = 'android'
+
+export async function exporter(argument: AndroidExportArguments, json: any) {
   // make temp folder
   let tmp = await helper.tmpDir()
   const dirname = helper.dirname()
@@ -228,22 +228,26 @@ async function sdk(tmpPath: string, uri?: string) {
   }
 }
 
-function execute(cmds: string[], cwd: string, callback) {
+function execute(cmds: string[], cwd: string, callback: () => void) {
   const cmd = cmds.shift()
 
   if (cmd) {
     console.log('exec:', cmd)
-    exec(cmd, { cwd: cwd }, async (error, stdout, stderr) => {
-      if (error) {
-        console.warn(`error: ${error.message}`)
-      }
-      if (stderr) {
-        console.warn(`stderr: ${stderr}`)
-      }
-      console.log(`stdout: ${stdout}`)
+    exec(
+      cmd,
+      { cwd: cwd },
+      async (error: Error | null, stdout: string, stderr: string) => {
+        if (error) {
+          console.warn(`error: ${error.message}`)
+        }
+        if (stderr) {
+          console.warn(`stderr: ${stderr}`)
+        }
+        console.log(`stdout: ${stdout}`)
 
-      execute(cmds, cwd, callback)
-    })
+        execute(cmds, cwd, callback)
+      }
+    )
   } else {
     callback()
   }

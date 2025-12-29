@@ -144,7 +144,7 @@ export function help() {
 /**
  * Configuration options for PDF export.
  */
-interface PdfExportArguments {
+export interface PdfExportArguments {
   input: string
   output: string
 
@@ -171,6 +171,8 @@ interface PdfExportArguments {
   'pdf-stylesheet'?: string
   'pdf-theme'?: string
 }
+
+export const format = 'pdf'
 
 /**
  * Exports a LiaScript course to PDF format using Puppeteer.

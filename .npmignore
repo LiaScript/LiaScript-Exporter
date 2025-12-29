@@ -11,3 +11,4 @@ LiaScript
 node_modules
 scripts
 *.zip
+ignore

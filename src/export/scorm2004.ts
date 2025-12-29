@@ -6,26 +6,25 @@ const scormPackager = require('@liascript/simple-scorm-packager')
 const path = require('path')
 const fs = require('fs-extra')
 
-export async function exporter(
-  argument: {
-    input: string
-    readme: string
-    output: string
-    format: string
-    path: string
-    key?: string
-    style?: string
+export interface Scorm2004ExportArguments {
+  input: string
+  readme: string
+  output: string
+  format: string
+  path: string
+  key?: string
+  style?: string
+  'scorm-organization'?: string
+  'scorm-masteryScore'?: string
+  'scorm-typicalDuration'?: string
+  'scorm-iframe'?: boolean
+  'scorm-embed'?: string | boolean
+  'scorm-alwaysActive'?: boolean
+}
 
-    // special cases for SCORM
-    'scorm-organization'?: string
-    'scorm-masteryScore'?: string
-    'scorm-typicalDuration'?: string
-    'scorm-iframe'?: boolean
-    'scorm-embed'?: string
-    'scorm-alwaysActive'?: boolean
-  },
-  json
-) {
+export const format = 'scorm2004'
+
+export async function exporter(argument: Scorm2004ExportArguments, json: any) {
   // make temp folder
   let tmp = await helper.tmpDir()
   const dirname = helper.dirname()
@@ -107,7 +106,7 @@ export async function exporter(
     masteryScore: argument['scorm-masteryScore'] || 0,
     startingPage: argument['scorm-iframe'] ? 'start.html' : 'index.html',
     startingParameters:
-      argument['scorm-iframe'] || argument['embed']
+      argument['scorm-iframe'] || argument['scorm-embed']
         ? undefined
         : argument.readme,
     source: path.join(tmp, 'pro'),
@@ -135,7 +134,7 @@ export async function exporter(
     },
   }
 
-  await scormPackager(config, function (msg) {
+  await scormPackager(config, function (msg: string) {
     console.log(msg)
     process.exit(0)
   })

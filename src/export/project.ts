@@ -128,25 +128,29 @@ export function help() {
   )
 }
 
-export async function exporter(
-  argument: {
-    input: string
-    readme: string
-    output: string
-    format: string
-    path: string
-    key?: string
-    style?: string
+export interface ProjectExportArguments {
+  input: string
+  readme: string
+  output: string
+  format: string
+  path: string
+  key?: string
+  style?: string
+  'project-no-meta'?: boolean
+  'project-no-rdf'?: boolean
+  'project-no-categories'?: boolean
+  'project-category-blur'?: number
+  'project-generate-pdf'?: boolean
+  'project-generate-ims'?: boolean
+  'project-generate-scorm12'?: boolean
+  'project-generate-scorm2004'?: boolean
+  'project-generate-android'?: boolean
+  'project-generate-cache'?: boolean
+}
 
-    // special project settings
-    'project-no-meta'?: boolean
-    'project-no-categories'?: boolean
-    'project-category-blur'?: boolean
-    'project-generate-pdf'?: boolean
-    'project-generate-cache'?: boolean
-  },
-  json
-) {
+export const format = 'project'
+
+export async function exporter(argument: ProjectExportArguments, json: any) {
   // make temp folder
 
   let cards = ''

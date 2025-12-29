@@ -28,6 +28,8 @@ export function help() {
   console.log('--xapi-zip             Package the output as a zip file')
 }
 
+export const format = 'xapi'
+
 /**
  * Generate tincan.xml file for xAPI package
  * @param courseTitle The title of the course
@@ -64,25 +66,24 @@ ${resourceElements}
 </tincan>`
 }
 
-export async function exporter(
-  argument: {
-    input: string
-    readme: string
-    output: string
-    format: string
-    path: string
-    key?: string
-    style?: string
-    'xapi-endpoint'?: string
-    'xapi-auth'?: string
-    'xapi-actor'?: string
-    'xapi-course-id'?: string
-    'xapi-course-title'?: string
-    'xapi-debug'?: boolean
-    'xapi-zip'?: boolean
-  },
-  json: any
-) {
+export interface XapiExportArguments {
+  input: string
+  readme: string
+  output: string
+  format: string
+  path: string
+  key?: string
+  style?: string
+  'xapi-endpoint'?: string
+  'xapi-auth'?: string
+  'xapi-actor'?: string
+  'xapi-course-id'?: string
+  'xapi-course-title'?: string
+  'xapi-debug'?: boolean
+  'xapi-zip'?: boolean
+}
+
+export async function exporter(argument: XapiExportArguments, json: any) {
   // make temp folder
   let tmp = await helper.tmpDir()
   const dirname = helper.dirname()
@@ -290,12 +291,14 @@ export async function exporter(
   const getAllFiles = function (dirPath: string, arrayOfFiles: string[] = []) {
     const files = fs.readdirSync(dirPath)
 
-    files.forEach(function (file) {
-      if (fs.statSync(path.join(dirPath, file)).isDirectory()) {
-        arrayOfFiles = getAllFiles(path.join(dirPath, file), arrayOfFiles)
+    files.forEach(function (file: string) {
+      const filePath: string = path.join(dirPath, file)
+      const stat = fs.statSync(filePath)
+      if (stat.isDirectory()) {
+        arrayOfFiles = getAllFiles(filePath, arrayOfFiles)
       } else {
         // Get path relative to tmpPath
-        const relativePath = path.relative(tmpPath, path.join(dirPath, file))
+        const relativePath: string = path.relative(tmpPath, filePath)
         // Only include files, not directories, and exclude tincan.xml itself
         if (relativePath && relativePath !== 'tincan.xml') {
           arrayOfFiles.push(relativePath)

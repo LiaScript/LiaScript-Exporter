@@ -47,25 +47,25 @@ export function help() {
   )
 }
 
-export async function exporter(
-  argument: {
-    input: string
-    readme: string
-    output: string
-    format: string
-    path: string
-    key?: string
-    style?: string
+export interface Scorm12ExportArguments {
+  input: string
+  readme: string
+  output: string
+  format: string
+  path: string
+  key?: string
+  style?: string
+  'scorm-organization'?: string
+  'scorm-masteryScore'?: string
+  'scorm-typicalDuration'?: string
+  'scorm-iframe'?: boolean
+  'scorm-embed'?: string | boolean
+  'scorm-alwaysActive'?: boolean
+}
 
-    // special cases for SCORM
-    'scorm-organization'?: string
-    'scorm-masteryScore'?: string
-    'scorm-typicalDuration'?: string
-    'scorm-iframe'?: boolean
-    'scorm-embed'?: string
-  },
-  json
-) {
+export const format = 'scorm1.2'
+
+export async function exporter(argument: Scorm12ExportArguments, json: any) {
   // make temp folder
   let tmp = await helper.tmpDir()
   const dirname = helper.dirname()
@@ -136,7 +136,7 @@ export async function exporter(
     masteryScore: argument['scorm-masteryScore'] || 0,
     startingPage: argument['scorm-iframe'] ? 'start.html' : 'index.html',
     startingParameters:
-      argument['scorm-iframe'] || argument['embed']
+      argument['scorm-iframe'] || argument['scorm-embed']
         ? undefined
         : argument.readme,
     source: path.join(tmp, 'pro'),

@@ -48,21 +48,20 @@ export function help() {
   )
 }
 
-export async function exporter(
-  argument: {
-    input: string
-    readme: string
-    output: string
-    format: string
-    path: string
-    key?: string
-    style?: string
+export interface ImsExportArguments {
+  input: string
+  readme: string
+  output: string
+  format: string
+  path: string
+  key?: string
+  style?: string
+  'ims-indexeddb'?: boolean
+}
 
-    // special cases for IMS
-    'ims-indexeddb'?: boolean
-  },
-  json: any
-) {
+export const format = 'ims'
+
+export async function exporter(argument: ImsExportArguments, json: any) {
   const dirname = helper.dirname()
 
   // make temp folder

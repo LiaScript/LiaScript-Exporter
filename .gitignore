@@ -3,3 +3,4 @@
 dist/index.js.map
 node_modules
 build
+ignore
