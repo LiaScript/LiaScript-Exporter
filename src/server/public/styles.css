@@ -237,19 +237,29 @@ header h1 {
 }
 
 .form-group input,
-.form-group select {
+.form-group select,
+.form-group textarea {
   width: 100%;
   padding: 0.75rem;
   border: 1px solid var(--border);
   border-radius: 6px;
   font-size: 1rem;
   transition: border-color 0.2s;
+  font-family: inherit;
 }
 
 .form-group input:focus,
-.form-group select:focus {
+.form-group select:focus,
+.form-group textarea:focus {
   outline: none;
   border-color: var(--primary);
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 80px;
+  font-family: 'Monaco', 'Courier New', monospace;
+  font-size: 0.875rem;
 }
 
 .form-group input[readonly] {
@@ -345,6 +355,46 @@ header h1 {
 
 .hidden {
   display: none;
+}
+
+/* Settings Groups */
+.settings-group {
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.settings-group:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.settings-heading {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 1rem;
+}
+
+.settings-group .form-group {
+  margin-bottom: 1rem;
+}
+
+.settings-group .form-group:last-child {
+  margin-bottom: 0;
+}
+
+.settings-group.no-settings {
+  border-bottom: none;
+  text-align: center;
+  padding: 2rem 0;
+}
+
+.form-group label input[type='checkbox'] {
+  width: auto;
+  margin-right: 0.5rem;
+  cursor: pointer;
 }
 
 /* Buttons */

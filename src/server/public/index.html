@@ -254,40 +254,469 @@
             </h2>
 
             <div id="advancedSettings" class="collapsible-content hidden">
-              <div class="form-group">
-                <label for="masteryScore">Mastery Score (SCORM)</label>
-                <input
-                  type="number"
-                  id="masteryScore"
-                  name="option_masteryScore"
-                  min="0"
-                  max="100"
-                  value="70"
-                />
-                <span class="hint">Mindestpunktzahl für Bestehen (0-100)</span>
+              <!-- SCORM Settings -->
+              <div
+                class="settings-group"
+                data-formats="scorm12,scorm2004,moodle,ilias,opal,generic,openolat,openedx"
+              >
+                <h3 class="settings-heading">SCORM Einstellungen</h3>
+
+                <div class="form-group">
+                  <label for="masteryScore">Mastery Score</label>
+                  <input
+                    type="number"
+                    id="masteryScore"
+                    name="option_masteryScore"
+                    min="0"
+                    max="100"
+                    value="70"
+                  />
+                  <span class="hint"
+                    >Mindestpunktzahl für Bestehen (0-100)</span
+                  >
+                </div>
+
+                <div class="form-group">
+                  <label for="scormOrganization">Organisation</label>
+                  <input
+                    type="text"
+                    id="scormOrganization"
+                    name="option_scormOrganization"
+                    placeholder="Meine Organisation"
+                  />
+                  <span class="hint"
+                    >Titel der Organisation im SCORM-Paket</span
+                  >
+                </div>
+
+                <div class="form-group">
+                  <label for="typicalDuration">Typische Dauer</label>
+                  <input
+                    type="text"
+                    id="typicalDuration"
+                    name="option_typicalDuration"
+                    placeholder="PT0H5M0S"
+                    value="PT0H5M0S"
+                  />
+                  <span class="hint">Format: PT0H5M0S (5 Minuten)</span>
+                </div>
+
+                <div class="form-group">
+                  <label>
+                    <input
+                      type="checkbox"
+                      id="scormIframe"
+                      name="option_scormIframe"
+                    />
+                    iFrame verwenden
+                  </label>
+                  <span class="hint"
+                    >Für bessere Kompatibilität in manchen LMS</span
+                  >
+                </div>
+
+                <div class="form-group">
+                  <label>
+                    <input
+                      type="checkbox"
+                      id="scormEmbed"
+                      name="option_scormEmbed"
+                    />
+                    Markdown einbetten
+                  </label>
+                  <span class="hint">Empfohlen für Moodle 4</span>
+                </div>
               </div>
 
-              <div class="form-group">
-                <label for="pageSize">Seitengröße (PDF)</label>
-                <select id="pageSize" name="option_pageSize">
-                  <option value="A4">A4</option>
-                  <option value="Letter">Letter</option>
-                  <option value="A3">A3</option>
-                </select>
+              <!-- IMS Settings -->
+              <div class="settings-group" data-formats="ims">
+                <h3 class="settings-heading">IMS Einstellungen</h3>
+
+                <div class="form-group">
+                  <label>
+                    <input
+                      type="checkbox"
+                      id="imsIndexeddb"
+                      name="option_imsIndexeddb"
+                    />
+                    IndexedDB verwenden
+                  </label>
+                  <span class="hint">Persistente Speicherung im Browser</span>
+                </div>
               </div>
 
-              <div class="form-group">
-                <label for="organization">Organisation</label>
-                <input
-                  type="text"
-                  id="organization"
-                  name="option_organization"
-                  placeholder="Meine Organisation"
-                  readonly
-                />
-                <span class="hint"
-                  >Institutionseinstellung (schreibgeschützt)</span
+              <!-- Web Settings -->
+              <div class="settings-group" data-formats="web">
+                <h3 class="settings-heading">Web Einstellungen</h3>
+
+                <div class="form-group">
+                  <label>
+                    <input
+                      type="checkbox"
+                      id="webIframe"
+                      name="option_webIframe"
+                    />
+                    iFrame Version
+                  </label>
+                  <span class="hint">Versteckt die Kurs-URL</span>
+                </div>
+
+                <div class="form-group">
+                  <label>
+                    <input
+                      type="checkbox"
+                      id="webIndexeddb"
+                      name="option_webIndexeddb"
+                    />
+                    IndexedDB verwenden
+                  </label>
+                  <span class="hint">Daten im Browser speichern</span>
+                </div>
+
+                <div class="form-group">
+                  <label>
+                    <input
+                      type="checkbox"
+                      id="webZip"
+                      name="option_webZip"
+                      checked
+                    />
+                    Als ZIP verpacken
+                  </label>
+                  <span class="hint">Erstellt eine ZIP-Datei</span>
+                </div>
+              </div>
+
+              <!-- PDF Settings -->
+              <div class="settings-group" data-formats="pdf">
+                <h3 class="settings-heading">PDF Einstellungen</h3>
+
+                <!-- Layout & Format -->
+                <div class="form-group">
+                  <label for="pdfFormat">Seitenformat</label>
+                  <select id="pdfFormat" name="option_pdf-format">
+                    <option value="A4" selected>A4</option>
+                    <option value="A3">A3</option>
+                    <option value="A5">A5</option>
+                    <option value="Letter">Letter</option>
+                    <option value="Legal">Legal</option>
+                    <option value="Tabloid">Tabloid</option>
+                    <option value="Ledger">Ledger</option>
+                  </select>
+                  <span class="hint">Standardgröße des Papiers</span>
+                </div>
+
+                <div class="form-group">
+                  <label>
+                    <input
+                      type="checkbox"
+                      id="pdfLandscape"
+                      name="option_pdf-landscape"
+                    />
+                    Querformat (Landscape)
+                  </label>
+                  <span class="hint">Seite im Querformat drucken</span>
+                </div>
+
+                <!-- Scale & Background -->
+                <div class="form-group">
+                  <label for="pdfScale">Skalierung</label>
+                  <input
+                    type="number"
+                    id="pdfScale"
+                    name="option_pdf-scale"
+                    min="0.1"
+                    max="2"
+                    step="0.1"
+                    value="1"
+                    placeholder="1.0"
+                  />
+                  <span class="hint">Skalierung der Seite (0.1 - 2.0)</span>
+                </div>
+
+                <div class="form-group">
+                  <label>
+                    <input
+                      type="checkbox"
+                      id="pdfPrintBackground"
+                      name="option_pdf-printBackground"
+                      checked
+                    />
+                    Hintergrundgrafiken drucken
+                  </label>
+                  <span class="hint">Druckt Hintergrundfarben und -bilder</span>
+                </div>
+
+                <!-- Margins -->
+                <div class="form-group">
+                  <label for="pdfMarginTop">Rand Oben</label>
+                  <input
+                    type="text"
+                    id="pdfMarginTop"
+                    name="option_pdf-margin-top"
+                    placeholder="80"
+                    value="80"
+                  />
+                  <span class="hint"
+                    >Oberer Rand in Pixel oder mit Einheit (z.B. "2cm")</span
+                  >
+                </div>
+
+                <div class="form-group">
+                  <label for="pdfMarginBottom">Rand Unten</label>
+                  <input
+                    type="text"
+                    id="pdfMarginBottom"
+                    name="option_pdf-margin-bottom"
+                    placeholder="80"
+                    value="80"
+                  />
+                  <span class="hint"
+                    >Unterer Rand in Pixel oder mit Einheit</span
+                  >
+                </div>
+
+                <div class="form-group">
+                  <label for="pdfMarginLeft">Rand Links</label>
+                  <input
+                    type="text"
+                    id="pdfMarginLeft"
+                    name="option_pdf-margin-left"
+                    placeholder="30"
+                    value="30"
+                  />
+                  <span class="hint"
+                    >Linker Rand in Pixel oder mit Einheit</span
+                  >
+                </div>
+
+                <div class="form-group">
+                  <label for="pdfMarginRight">Rand Rechts</label>
+                  <input
+                    type="text"
+                    id="pdfMarginRight"
+                    name="option_pdf-margin-right"
+                    placeholder="30"
+                    value="30"
+                  />
+                  <span class="hint"
+                    >Rechter Rand in Pixel oder mit Einheit</span
+                  >
+                </div>
+
+                <!-- Header & Footer -->
+                <div class="form-group">
+                  <label>
+                    <input
+                      type="checkbox"
+                      id="pdfDisplayHeaderFooter"
+                      name="option_pdf-displayHeaderFooter"
+                    />
+                    Kopf- und Fußzeile anzeigen
+                  </label>
+                  <span class="hint"
+                    >Zeigt Kopf- und Fußzeile auf jeder Seite</span
+                  >
+                </div>
+
+                <div
+                  class="form-group"
+                  id="pdfHeaderGroup"
+                  style="display: none"
                 >
+                  <label for="pdfHeaderTemplate"
+                    >Kopfzeilen-Template (HTML)</label
+                  >
+                  <textarea
+                    id="pdfHeaderTemplate"
+                    name="option_pdf-headerTemplate"
+                    rows="3"
+                    placeholder="<div style='font-size: 10px; text-align: center; width: 100%;'><span class='title'></span></div>"
+                  ></textarea>
+                  <span class="hint"
+                    >HTML-Template mit Klassen: date, title, url, pageNumber,
+                    totalPages</span
+                  >
+                </div>
+
+                <div
+                  class="form-group"
+                  id="pdfFooterGroup"
+                  style="display: none"
+                >
+                  <label for="pdfFooterTemplate"
+                    >Fußzeilen-Template (HTML)</label
+                  >
+                  <textarea
+                    id="pdfFooterTemplate"
+                    name="option_pdf-footerTemplate"
+                    rows="3"
+                    placeholder="<div style='font-size: 10px; text-align: center; width: 100%;'><span class='pageNumber'></span> / <span class='totalPages'></span></div>"
+                  ></textarea>
+                  <span class="hint">HTML-Template für die Fußzeile</span>
+                </div>
+
+                <!-- Page Ranges -->
+                <div class="form-group">
+                  <label for="pdfPageRanges">Seitenbereiche</label>
+                  <input
+                    type="text"
+                    id="pdfPageRanges"
+                    name="option_pdf-pageRanges"
+                    placeholder="z.B. 1-5, 8, 11-13"
+                  />
+                  <span class="hint"
+                    >Nur bestimmte Seiten drucken (optional)</span
+                  >
+                </div>
+
+                <!-- LiaScript Specific -->
+                <div class="form-group">
+                  <label for="pdfTheme">LiaScript Theme</label>
+                  <select id="pdfTheme" name="option_pdf-theme">
+                    <option value="">Standard</option>
+                    <option value="default">Default</option>
+                    <option value="turquoise">Türkis</option>
+                    <option value="blue">Blau</option>
+                    <option value="red">Rot</option>
+                    <option value="yellow">Gelb</option>
+                  </select>
+                  <span class="hint">Farbschema für das PDF</span>
+                </div>
+
+                <div class="form-group">
+                  <label for="pdfTimeout">Timeout (ms)</label>
+                  <input
+                    type="number"
+                    id="pdfTimeout"
+                    name="option_pdf-timeout"
+                    min="1000"
+                    step="1000"
+                    value="60000"
+                    placeholder="60000"
+                  />
+                  <span class="hint"
+                    >Wartezeit für vollständiges Laden (60000 = 60
+                    Sekunden)</span
+                  >
+                </div>
+
+                <!-- Advanced Options -->
+                <div class="form-group">
+                  <label>
+                    <input
+                      type="checkbox"
+                      id="pdfPreferCSSPageSize"
+                      name="option_pdf-preferCSSPageSize"
+                    />
+                    CSS @page Größe bevorzugen
+                  </label>
+                  <span class="hint">CSS-Seitengröße hat Vorrang</span>
+                </div>
+
+                <div class="form-group">
+                  <label>
+                    <input
+                      type="checkbox"
+                      id="pdfOmitBackground"
+                      name="option_pdf-omitBackground"
+                    />
+                    Transparenten Hintergrund
+                  </label>
+                  <span class="hint">Weißer Hintergrund wird weggelassen</span>
+                </div>
+              </div>
+
+              <!-- Android Settings -->
+              <div class="settings-group" data-formats="android">
+                <h3 class="settings-heading">Android Einstellungen</h3>
+
+                <div class="form-group">
+                  <label for="appName">App Name</label>
+                  <input
+                    type="text"
+                    id="appName"
+                    name="option_appName"
+                    placeholder="Meine App"
+                  />
+                  <span class="hint">Name der Android-App</span>
+                </div>
+
+                <div class="form-group">
+                  <label for="packageId">Package ID</label>
+                  <input
+                    type="text"
+                    id="packageId"
+                    name="option_packageId"
+                    placeholder="com.example.app"
+                  />
+                  <span class="hint">Eindeutige Package-Identifier</span>
+                </div>
+              </div>
+
+              <!-- EPUB Settings -->
+              <div class="settings-group" data-formats="epub">
+                <h3 class="settings-heading">EPUB Einstellungen</h3>
+
+                <div class="form-group">
+                  <label for="epubAuthor">Autor</label>
+                  <input
+                    type="text"
+                    id="epubAuthor"
+                    name="option_epubAuthor"
+                    placeholder="Max Mustermann"
+                  />
+                  <span class="hint">Autor des E-Books</span>
+                </div>
+
+                <div class="form-group">
+                  <label for="epubPublisher">Verlag</label>
+                  <input
+                    type="text"
+                    id="epubPublisher"
+                    name="option_epubPublisher"
+                    placeholder="Mein Verlag"
+                  />
+                  <span class="hint">Publisher/Verlag</span>
+                </div>
+              </div>
+
+              <!-- JSON Settings -->
+              <div class="settings-group" data-formats="json">
+                <h3 class="settings-heading">JSON Einstellungen</h3>
+
+                <div class="form-group">
+                  <label>
+                    <input
+                      type="checkbox"
+                      id="jsonFull"
+                      name="option_jsonFull"
+                    />
+                    Vollständiges JSON
+                  </label>
+                  <span class="hint">Exportiert alle Details</span>
+                </div>
+
+                <div class="form-group">
+                  <label>
+                    <input
+                      type="checkbox"
+                      id="jsonPretty"
+                      name="option_jsonPretty"
+                      checked
+                    />
+                    Formatiert (Pretty Print)
+                  </label>
+                  <span class="hint">Lesbar formatiertes JSON</span>
+                </div>
+              </div>
+
+              <!-- No settings message -->
+              <div class="settings-group no-settings" style="display: none">
+                <p class="hint">
+                  Für dieses Format sind keine zusätzlichen Einstellungen
+                  verfügbar.
+                </p>
               </div>
             </div>
           </section>

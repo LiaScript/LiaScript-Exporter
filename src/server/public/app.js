@@ -170,27 +170,78 @@ function initializeExportSelection() {
   const presetRadios = document.querySelectorAll('input[name="preset"]')
   const formatRadios = document.querySelectorAll('input[name="format"]')
 
-  // When preset is selected, deselect formats
+  // When preset is selected, deselect formats and update settings
   presetRadios.forEach((radio) => {
     radio.addEventListener('change', () => {
       if (radio.checked) {
         formatRadios.forEach((formatRadio) => {
           formatRadio.checked = false
         })
+        updateAdvancedSettings(radio.value)
       }
     })
   })
 
-  // When format is selected, deselect presets
+  // When format is selected, deselect presets and update settings
   formatRadios.forEach((radio) => {
     radio.addEventListener('change', () => {
       if (radio.checked) {
         presetRadios.forEach((presetRadio) => {
           presetRadio.checked = false
         })
+        updateAdvancedSettings(radio.value)
       }
     })
   })
+
+  // Initialize with default selection (Moodle)
+  updateAdvancedSettings('moodle')
+
+  // PDF-specific: Toggle header/footer template fields
+  initializePdfHeaderFooter()
+}
+
+// Initialize PDF header/footer toggle
+function initializePdfHeaderFooter() {
+  const displayHeaderFooter = document.getElementById('pdfDisplayHeaderFooter')
+  const headerGroup = document.getElementById('pdfHeaderGroup')
+  const footerGroup = document.getElementById('pdfFooterGroup')
+
+  if (displayHeaderFooter && headerGroup && footerGroup) {
+    displayHeaderFooter.addEventListener('change', () => {
+      if (displayHeaderFooter.checked) {
+        headerGroup.style.display = 'block'
+        footerGroup.style.display = 'block'
+      } else {
+        headerGroup.style.display = 'none'
+        footerGroup.style.display = 'none'
+      }
+    })
+  }
+}
+
+// Update advanced settings based on selected format
+function updateAdvancedSettings(selectedValue) {
+  const settingsGroups = document.querySelectorAll('.settings-group')
+  const noSettings = document.querySelector('.settings-group.no-settings')
+  let hasVisibleSettings = false
+
+  settingsGroups.forEach((group) => {
+    if (group.classList.contains('no-settings')) return
+
+    const formats = group.dataset.formats
+    if (formats && formats.split(',').includes(selectedValue)) {
+      group.style.display = 'block'
+      hasVisibleSettings = true
+    } else {
+      group.style.display = 'none'
+    }
+  })
+
+  // Show "no settings" message if no specific settings available
+  if (noSettings) {
+    noSettings.style.display = hasVisibleSettings ? 'none' : 'block'
+  }
 }
 
 // Advanced settings
