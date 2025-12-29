@@ -1,9 +1,25 @@
 import * as helper from './helper'
-
 import * as COLOR from '../colorize'
-const path = require('path')
-import puppeteer from 'puppeteer'
+import * as path from 'path'
+import puppeteer, { Browser, Page } from 'puppeteer'
 
+// Default PDF generation settings
+const DEFAULT_TIMEOUT_MS = 60000 // 60 seconds
+const DEFAULT_MARGIN_TOP = 80
+const DEFAULT_MARGIN_BOTTOM = 80
+const DEFAULT_MARGIN_LEFT = 30
+const DEFAULT_MARGIN_RIGHT = 30
+const DEFAULT_SCALE = 1
+const DEFAULT_FORMAT = 'a4'
+const DEFAULT_PRINT_BACKGROUND = true
+const DEFAULT_DISPLAY_HEADER_FOOTER = false
+const DEFAULT_LANDSCAPE = false
+const DEFAULT_OMIT_BACKGROUND = false
+
+/**
+ * Displays help information about PDF export options and settings.
+ * Shows both LiaScript-specific settings and Puppeteer PDF options.
+ */
 export function help() {
   console.log('')
   console.log(COLOR.heading('PDF settings:'), '\n')
@@ -27,7 +43,7 @@ export function help() {
   COLOR.command(
     null,
     '--pdf-timeout',
-    '             Set an additional time horizon to wait until finished.'
+    `             Set an additional time horizon to wait until finished (default ${DEFAULT_TIMEOUT_MS} ms)`
   )
   COLOR.command(
     null,
@@ -125,18 +141,17 @@ export function help() {
   )
 }
 
-export async function exporter(argument: {
+/**
+ * Configuration options for PDF export.
+ */
+interface PdfExportArguments {
   input: string
-  readme: string
   output: string
-  format: string
-  path: string
-  key?: string
 
-  // special cases for PDF
+  // PDF-specific settings
   'pdf-preview'?: boolean
   'pdf-scale'?: number
-  'pdf-displayHeaderFooter'?: string
+  'pdf-displayHeaderFooter'?: boolean
   'pdf-headerTemplate'?: string
   'pdf-footerTemplate'?: string
   'pdf-printBackground'?: boolean
@@ -151,10 +166,32 @@ export async function exporter(argument: {
   'pdf-preferCSSPageSize'?: boolean
   'pdf-omitBackground'?: boolean
   'pdf-timeout'?: number
+  'pdf-pageRanges'?: string
 
   'pdf-stylesheet'?: string
   'pdf-theme'?: string
-}) {
+}
+
+/**
+ * Exports a LiaScript course to PDF format using Puppeteer.
+ *
+ * This function launches a headless Chrome browser, loads the LiaScript content,
+ * applies any custom styling or themes, and generates a PDF file.
+ *
+ * @param argument - Configuration options for the PDF export
+ * @throws {Error} If browser launch fails, page navigation fails, or PDF generation fails
+ *
+ * @example
+ * ```typescript
+ * await exporter({
+ *   input: './course.md',
+ *   output: './output',
+ *   'pdf-format': 'a4',
+ *   'pdf-printBackground': true
+ * })
+ * ```
+ */
+export async function exporter(argument: PdfExportArguments) {
   const dirname = helper.dirname()
 
   let url = `file://${dirname}/assets/pdf/index.html?`
@@ -165,132 +202,179 @@ export async function exporter(argument: {
     url += 'file://' + path.resolve(argument.input)
   }
 
-  const browser = await puppeteer.launch({
-    pipe: true,
-    args: [
-      '--no-sandbox',
-      '--disable-web-security',
-      '--disable-features=IsolateOrigins',
-      '--disable-site-isolation-trials',
-      '--unhandled-rejections=strict',
-      '--disable-features=BlockInsecurePrivateNetworkRequests',
-      '--allow-file-access-from-files',
-      '--enable-local-file-accesses',
-      '--enable-features=ExperimentalJavaScript',
-    ],
-    headless: argument['pdf-preview'] ? false : true,
-    // Try to use the system Chrome if available
-    executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || undefined,
-    // Add this to use the installed browser if no executable path is provided
-    channel: process.env.PUPPETEER_EXECUTABLE_PATH ? undefined : 'chrome',
-  })
-  const page = await browser.newPage()
-
-  console.warn(
-    'depending on the size of the course, this can take a while, please be patient...'
-  )
-
-  // this handle the alert - boxes, so that these are not blocking
-  page.on('dialog', async (dialog) => {
-    console.log(dialog.type())
-    console.log(dialog.message())
-    await dialog.accept()
-  })
+  let browser: Browser | null = null
+  let page: Page | null = null
 
   try {
+    // Configure browser launch options
+    const launchOptions: any = {
+      pipe: true,
+      args: [
+        '--no-sandbox',
+        '--disable-web-security',
+        '--disable-features=IsolateOrigins',
+        '--disable-site-isolation-trials',
+        '--unhandled-rejections=strict',
+        '--disable-features=BlockInsecurePrivateNetworkRequests',
+        '--allow-file-access-from-files',
+        '--enable-local-file-accesses',
+        '--enable-features=ExperimentalJavaScript',
+      ],
+      headless: !argument['pdf-preview'],
+    }
+
+    // Use custom executable path if provided, otherwise use Chrome channel
+    if (process.env.PUPPETEER_EXECUTABLE_PATH) {
+      launchOptions.executablePath = process.env.PUPPETEER_EXECUTABLE_PATH
+    } else {
+      launchOptions.channel = 'chrome'
+    }
+
+    try {
+      browser = await puppeteer.launch(launchOptions)
+    } catch (launchError) {
+      throw new Error(
+        `Failed to launch browser. Make sure Chrome is installed. ${launchError}`
+      )
+    }
+    page = await browser.newPage()
+
+    console.log(
+      'Loading course content... This may take a while for large courses.'
+    )
+
+    // Handle alert dialogs automatically to prevent blocking
+    page.on('dialog', async (dialog) => {
+      console.log(`[Dialog ${dialog.type()}]: ${dialog.message()}`)
+      await dialog.accept()
+    })
+
+    // Wait for page to load completely
+    // Using 'networkidle2' ensures all network requests are complete
+    // Timeout set to 0 (unlimited) to handle large courses
     await page.goto(url, {
       waitUntil: 'networkidle2',
-      // remove timeout
-      timeout: 0,
+      timeout: DEFAULT_TIMEOUT_MS,
     })
-  } catch (e) {
-    console.warn('pdf generation failed:', e)
-  }
 
-  if (argument['pdf-stylesheet']) {
-    const href = path.resolve(dirname + '/../', argument['pdf-stylesheet'])
+    if (argument['pdf-stylesheet']) {
+      const href = path.resolve(dirname + '/../', argument['pdf-stylesheet'])
 
-    await page.evaluate(async (href) => {
-      const link = document.createElement('link')
-      link.rel = 'stylesheet'
-      link.href = href
+      try {
+        await page.evaluate(async (href) => {
+          const link = document.createElement('link')
+          link.rel = 'stylesheet'
+          link.href = href
 
-      const promise = new Promise((resolve, reject) => {
-        link.onload = resolve
-        link.onerror = reject
-      })
-      document.head.appendChild(link)
-      await promise
-    }, href)
-  }
-
-  if (argument['pdf-theme']) {
-    await page.evaluate(async (theme) => {
-      document.documentElement.classList.remove('lia-theme-default')
-      document.documentElement.classList.add('lia-theme-' + theme)
-    }, argument['pdf-theme'])
-  }
-
-  /*
-  await page.evaluate(async () => {
-    const style = document.createElement('style')
-    style.type = 'text/css'
-    const content = `
-    :root {
-  
-      --color-highlight: 2,255,0;
-  --color-background: 122,122,122;
-  --color-border: 0,0,0;
-  --color-highlight-dark: 0,0,0;
-  --color-highlight-menu: 0,0,0;
-  --color-text: 0,0,255;
-  --global-font-size: 1rem;
-  --font-size-multiplier: 2;
+          const promise = new Promise((resolve, reject) => {
+            link.onload = resolve
+            link.onerror = reject
+          })
+          document.head.appendChild(link)
+          await promise
+        }, href)
+      } catch (e) {
+        throw new Error(
+          `Failed to load custom stylesheet from '${argument['pdf-stylesheet']}': ${e}`
+        )
+      }
     }
-    `
-    style.appendChild(document.createTextNode(content))
-    const promise = new Promise((resolve, reject) => {
-      style.onload = resolve
-      style.onerror = reject
-    })
-    document.head.appendChild(style)
-    await promise
-  })
 
-  console.warn(argument)
-  */
-  if (!argument['pdf-preview']) {
-    await helper.sleep(argument['pdf-timeout'] || 60000)
-    await toPDF(argument, browser, page)
+    if (argument['pdf-theme']) {
+      try {
+        await page.evaluate(async (theme) => {
+          document.documentElement.classList.remove('lia-theme-default')
+          document.documentElement.classList.add('lia-theme-' + theme)
+        }, argument['pdf-theme'])
+      } catch (e) {
+        throw new Error(
+          `Failed to apply theme '${argument['pdf-theme']}': ${e}`
+        )
+      }
+    }
+
+    if (!argument['pdf-preview']) {
+      await helper.sleep(argument['pdf-timeout'] || DEFAULT_TIMEOUT_MS)
+      await toPDF(argument, page)
+    } else {
+      console.log('Preview mode enabled - browser will remain open')
+    }
+  } catch (e) {
+    const error = e as Error
+    console.error('PDF export failed:', error.message)
+    throw new Error(`Failed to export PDF: ${error.message}`)
+  } finally {
+    // Clean up resources based on mode
+    if (argument['pdf-preview']) {
+      // In preview mode, keep browser open but inform user
+      console.log('Browser kept open for preview. Close manually when done.')
+    } else {
+      // In normal mode, always close browser and page
+      if (page) {
+        try {
+          await page.close()
+        } catch (closeError) {
+          console.error('Failed to close page:', closeError)
+        }
+      }
+
+      if (browser) {
+        try {
+          await browser.close()
+        } catch (closeError) {
+          console.error('Failed to close browser:', closeError)
+        }
+      }
+    }
   }
 }
 
-async function toPDF(argument: any, browser: any, page: any) {
+/**
+ * Generates a PDF file from a Puppeteer page.
+ *
+ * Emulates screen media type for proper rendering and applies all PDF-specific
+ * settings like margins, format, scaling, etc.
+ *
+ * @param argument - PDF export configuration options
+ * @param page - Puppeteer page instance containing the rendered content
+ * @throws {Error} If PDF generation fails or media type emulation fails
+ */
+async function toPDF(argument: PdfExportArguments, page: Page) {
   try {
     await page.emulateMediaType('screen')
-    await page.pdf({
-      path: argument.output + '.pdf',
-      format: argument['pdf-format'] || 'a4',
-      printBackground: argument['pdf-printBackground'] || true,
-      displayHeaderFooter: argument['pdf-displayHeaderFooter'] || false,
-      margin: {
-        top: argument['pdf-margin-top'] || 80,
-        bottom: argument['pdf-margin-bottom'] || 80,
-        left: argument['pdf-margin-left'] || 30,
-        right: argument['pdf-margin-right'] || 30,
-      },
-      scale: argument['pdf-scale'] || 1,
-      headerTemplate: argument['pdf-headerTemplate'],
-      footerTemplate: argument['pdf-footerTemplate'] || '',
-      landscape: argument['pdf-landscape'] || false,
-      width: argument['pdf-width'] || '',
-      height: argument['pdf-height'] || '',
-      //preferCSSPageSize: argument['pdf-preferCSSPageSize'] || '',
-      omitBackground: argument['pdf-omitBackground'] || false,
-    })
   } catch (e) {
-    console.warn('failed to print to pdf', e)
+    throw new Error(`Failed to emulate media type: ${e}`)
   }
 
-  await browser.close()
+  try {
+    await page.pdf({
+      path: argument.output + '.pdf',
+      format: (argument['pdf-format'] as any) || DEFAULT_FORMAT,
+      printBackground:
+        argument['pdf-printBackground'] ?? DEFAULT_PRINT_BACKGROUND,
+      displayHeaderFooter:
+        argument['pdf-displayHeaderFooter'] ?? DEFAULT_DISPLAY_HEADER_FOOTER,
+      margin: {
+        top: argument['pdf-margin-top'] || DEFAULT_MARGIN_TOP,
+        bottom: argument['pdf-margin-bottom'] || DEFAULT_MARGIN_BOTTOM,
+        left: argument['pdf-margin-left'] || DEFAULT_MARGIN_LEFT,
+        right: argument['pdf-margin-right'] || DEFAULT_MARGIN_RIGHT,
+      },
+      scale: argument['pdf-scale'] ?? DEFAULT_SCALE,
+      headerTemplate: argument['pdf-headerTemplate'],
+      footerTemplate: argument['pdf-footerTemplate'] ?? '',
+      landscape: argument['pdf-landscape'] ?? DEFAULT_LANDSCAPE,
+      width: argument['pdf-width'] ?? '',
+      height: argument['pdf-height'] ?? '',
+      pageRanges: argument['pdf-pageRanges'],
+      preferCSSPageSize: argument['pdf-preferCSSPageSize'],
+      omitBackground: argument['pdf-omitBackground'] ?? DEFAULT_OMIT_BACKGROUND,
+    })
+    console.log(`PDF successfully generated: ${argument.output}.pdf`)
+  } catch (e) {
+    const error = e as Error
+    throw new Error(
+      `Failed to generate PDF at '${argument.output}.pdf': ${error.message}`
+    )
+  }
 }
