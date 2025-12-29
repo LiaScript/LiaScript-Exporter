@@ -3,6 +3,7 @@
 # Create a directory for common assets
 ASSETS_DIR="dist/assets"
 COMMON_DIR="$ASSETS_DIR/common"
+PDF_DIR="$ASSETS_DIR/pdf"
 mkdir -p "$COMMON_DIR"
 
 echo "Searching for duplicate files across asset folders..."
@@ -14,7 +15,10 @@ DUPES_LIST="$TEMP_DIR/duplicates.txt"
 DIR_LIST="$TEMP_DIR/dirs.txt"
 
 # Find all asset directories (excluding the common directory)
-ASSET_DIRS=$(find "$ASSETS_DIR" -maxdepth 1 -type d -not -path "$COMMON_DIR" -not -path "$ASSETS_DIR")
+ASSET_DIRS=$(find "$ASSETS_DIR" -maxdepth 1 -type d \
+  -not -path "$COMMON_DIR" \
+  -not -path "$ASSETS_DIR" \
+  -not -path "$PDF_DIR")
 echo "$ASSET_DIRS" > "$DIR_LIST"
 TOTAL_DIRS=$(cat "$DIR_LIST" | wc -l)
 
@@ -22,7 +26,8 @@ echo "Found $TOTAL_DIRS asset directories"
 echo "Asset directories: $ASSET_DIRS"
 
 # Create a file with filename, directory, and path for all files
-find $ASSET_DIRS -type f | while read file; do
+find $ASSET_DIRS -type f \
+  -not -path "$PDF_DIR/*" | while read file; do
   # Get file size
   size=$(stat -c%s "$file")
   
@@ -112,8 +117,8 @@ cat "$DUPES_LIST" | while read line; do
   filename=$(echo "$line" | cut -d'|' -f1)
   rel_path=$(echo "$line" | cut -d'|' -f2)
   
-  # Get all files with this name
-  files=$(grep "^$filename|" "$FILE_LIST" | cut -d'|' -f3)
+  # Get all files with this name, excluding pdf directory
+  files=$(grep "^$filename|" "$FILE_LIST" | cut -d'|' -f3 | grep -v "^$PDF_DIR/")
   file_count=$(echo "$files" | wc -l)
   
   # Get first file as source

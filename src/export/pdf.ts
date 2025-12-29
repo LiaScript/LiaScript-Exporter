@@ -125,39 +125,36 @@ export function help() {
   )
 }
 
-export async function exporter(
-  argument: {
-    input: string
-    readme: string
-    output: string
-    format: string
-    path: string
-    key?: string
+export async function exporter(argument: {
+  input: string
+  readme: string
+  output: string
+  format: string
+  path: string
+  key?: string
 
-    // special cases for PDF
-    'pdf-preview'?: boolean
-    'pdf-scale'?: number
-    'pdf-displayHeaderFooter'?: string
-    'pdf-headerTemplate'?: string
-    'pdf-footerTemplate'?: string
-    'pdf-printBackground'?: boolean
-    'pdf-landscape'?: boolean
-    'pdf-format'?: string
-    'pdf-width'?: string | number
-    'pdf-height'?: string | number
-    'pdf-margin-top'?: string | number
-    'pdf-margin-bottom'?: string | number
-    'pdf-margin-right'?: string | number
-    'pdf-margin-left'?: string | number
-    'pdf-preferCSSPageSize'?: boolean
-    'pdf-omitBackground'?: boolean
-    'pdf-timeout'?: number
+  // special cases for PDF
+  'pdf-preview'?: boolean
+  'pdf-scale'?: number
+  'pdf-displayHeaderFooter'?: string
+  'pdf-headerTemplate'?: string
+  'pdf-footerTemplate'?: string
+  'pdf-printBackground'?: boolean
+  'pdf-landscape'?: boolean
+  'pdf-format'?: string
+  'pdf-width'?: string | number
+  'pdf-height'?: string | number
+  'pdf-margin-top'?: string | number
+  'pdf-margin-bottom'?: string | number
+  'pdf-margin-right'?: string | number
+  'pdf-margin-left'?: string | number
+  'pdf-preferCSSPageSize'?: boolean
+  'pdf-omitBackground'?: boolean
+  'pdf-timeout'?: number
 
-    'pdf-stylesheet'?: string
-    'pdf-theme'?: string
-  },
-  json
-) {
+  'pdf-stylesheet'?: string
+  'pdf-theme'?: string
+}) {
   const dirname = helper.dirname()
 
   let url = `file://${dirname}/assets/pdf/index.html?`
@@ -181,7 +178,7 @@ export async function exporter(
       '--enable-local-file-accesses',
       '--enable-features=ExperimentalJavaScript',
     ],
-    headless: argument['pdf-preview'] ? false : 'new',
+    headless: argument['pdf-preview'] ? false : true,
     // Try to use the system Chrome if available
     executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || undefined,
     // Add this to use the installed browser if no executable path is provided
