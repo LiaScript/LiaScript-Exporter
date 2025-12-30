@@ -236,6 +236,14 @@
                     <p>E-Book</p>
                   </div>
                 </label>
+
+                <label class="preset-tile">
+                  <input type="radio" name="format" value="rdf" />
+                  <div class="preset-content">
+                    <h3>RDF</h3>
+                    <p>Metadaten</p>
+                  </div>
+                </label>
               </div>
             </div>
           </section>
@@ -708,6 +716,99 @@
                     Formatiert (Pretty Print)
                   </label>
                   <span class="hint">Lesbar formatiertes JSON</span>
+                </div>
+              </div>
+
+              <!-- RDF Settings -->
+              <div class="settings-group" data-formats="rdf">
+                <h3 class="settings-heading">RDF Einstellungen</h3>
+
+                <div class="form-group">
+                  <label for="rdfFormat">Ausgabeformat</label>
+                  <select id="rdfFormat" name="option_rdf-format">
+                    <option value="json-ld" selected>JSON-LD</option>
+                    <option value="n-quads">N-Quads</option>
+                  </select>
+                  <span class="hint"
+                    >Format für die RDF-Ausgabe (Standard: JSON-LD)</span
+                  >
+                </div>
+
+                <div class="form-group">
+                  <label>
+                    <input
+                      type="checkbox"
+                      id="rdfPreview"
+                      name="option_rdf-preview"
+                    />
+                    Preview in Konsole
+                  </label>
+                  <span class="hint">Ausgabe in der Konsole anzeigen</span>
+                </div>
+
+                <div class="form-group">
+                  <label for="rdfUrl">Externe URL</label>
+                  <input
+                    type="url"
+                    id="rdfUrl"
+                    name="option_rdf-url"
+                    placeholder="https://example.com/course"
+                  />
+                  <span class="hint"
+                    >Externe URL für lokale Projekte (optional)</span
+                  >
+                </div>
+
+                <div class="form-group">
+                  <label for="rdfType">Schema.org Type</label>
+                  <input
+                    type="text"
+                    id="rdfType"
+                    name="option_rdf-type"
+                    placeholder="Course"
+                  />
+                  <span class="hint"
+                    >Schema.org-Typ (Standard: Course, z.B.
+                    EducationalResource)</span
+                  >
+                </div>
+
+                <div class="form-group">
+                  <label for="rdfTemplate">Template URL/Datei</label>
+                  <input
+                    type="text"
+                    id="rdfTemplate"
+                    name="option_rdf-template"
+                    placeholder="template.json"
+                  />
+                  <span class="hint"
+                    >URL oder JSON-Datei als Template (optional)</span
+                  >
+                </div>
+
+                <div class="form-group">
+                  <label for="rdfLicense">Lizenz-URL</label>
+                  <input
+                    type="url"
+                    id="rdfLicense"
+                    name="option_rdf-license"
+                    placeholder="https://creativecommons.org/licenses/by/4.0/"
+                  />
+                  <span class="hint">URL zur Lizenz des Kurses (optional)</span>
+                </div>
+
+                <div class="form-group">
+                  <label for="rdfEducationalLevel">Bildungsniveau</label>
+                  <input
+                    type="text"
+                    id="rdfEducationalLevel"
+                    name="option_rdf-educationalLevel"
+                    placeholder="beginner, intermediate, advanced"
+                  />
+                  <span class="hint"
+                    >Bildungsniveau (z.B. beginner, intermediate,
+                    advanced)</span
+                  >
                 </div>
               </div>
 

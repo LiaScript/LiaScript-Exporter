@@ -316,14 +316,20 @@ function initializeForm() {
         return
       }
 
-      // Add options
-      const masteryScore = document.getElementById('masteryScore').value
-      const pageSize = document.getElementById('pageSize').value
-      const organization = document.getElementById('organization').value
-
-      if (masteryScore) formData.append('option_masteryScore', masteryScore)
-      if (pageSize) formData.append('option_pageSize', pageSize)
-      if (organization) formData.append('option_organization', organization)
+      // Add all options from form elements with name starting with 'option_'
+      const formElements = form.elements
+      for (let i = 0; i < formElements.length; i++) {
+        const element = formElements[i]
+        if (element.name && element.name.startsWith('option_')) {
+          if (element.type === 'checkbox') {
+            if (element.checked) {
+              formData.append(element.name, 'true')
+            }
+          } else if (element.value) {
+            formData.append(element.name, element.value)
+          }
+        }
+      }
 
       // Submit to API
       const response = await fetch('/api/export', {

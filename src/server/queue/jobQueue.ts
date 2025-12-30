@@ -1,5 +1,9 @@
 import { EventEmitter } from 'events'
 import { randomUUID } from 'crypto'
+import { spawn } from 'child_process'
+import * as path from 'path'
+import * as fs from 'fs-extra'
+import { tmpdir } from 'os'
 
 export interface ExportJob {
   id: string
@@ -26,7 +30,9 @@ export interface ExportJob {
 export class JobQueue extends EventEmitter {
   private queue: ExportJob[] = []
   private currentJob: ExportJob | null = null
+  private completedJobs: Map<string, ExportJob> = new Map()
   private isProcessing = false
+  private maxCompletedJobs = 100 // Keep last 100 completed jobs
 
   addJob(jobData: Omit<ExportJob, 'id' | 'status' | 'createdAt'>): {
     jobId: string
@@ -59,7 +65,11 @@ export class JobQueue extends EventEmitter {
     if (this.currentJob?.id === jobId) {
       return this.currentJob
     }
-    return this.queue.find((job) => job.id === jobId)
+    const queuedJob = this.queue.find((job) => job.id === jobId)
+    if (queuedJob) {
+      return queuedJob
+    }
+    return this.completedJobs.get(jobId)
   }
 
   getQueuePosition(jobId: string): number {
@@ -95,6 +105,17 @@ export class JobQueue extends EventEmitter {
       this.currentJob.completedAt = new Date()
       this.emit('job-failed', this.currentJob)
     } finally {
+      // Store completed job
+      if (this.currentJob) {
+        this.completedJobs.set(this.currentJob.id, this.currentJob)
+
+        // Cleanup old completed jobs if limit exceeded
+        if (this.completedJobs.size > this.maxCompletedJobs) {
+          const firstKey = this.completedJobs.keys().next().value
+          this.completedJobs.delete(firstKey)
+        }
+      }
+
       this.currentJob = null
       this.isProcessing = false
 
@@ -106,17 +127,163 @@ export class JobQueue extends EventEmitter {
   }
 
   private async performExport(job: ExportJob): Promise<void> {
-    // This is where the actual export logic would go
-    // For now, simulate processing time
-    return new Promise((resolve) => {
-      setTimeout(() => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        // Determine input file
+        let inputFile: string
+        if (
+          job.source.type === 'upload' &&
+          job.source.files &&
+          job.source.files.length > 0
+        ) {
+          // Use the first file (README.md or similar)
+          const readmeFile = job.source.files.find(
+            (f) =>
+              f.filename === 'README.md' ||
+              f.filename.toLowerCase().endsWith('.md')
+          )
+          inputFile = readmeFile ? readmeFile.path : job.source.files[0].path
+        } else if (job.source.type === 'git' && job.source.gitUrl) {
+          // For git repos, we'd need to clone first - not implemented yet
+          throw new Error('Git repository export not yet implemented')
+        } else {
+          throw new Error('No valid input source')
+        }
+
+        // Determine format based on preset or format
+        let format: string
+        if (job.target.preset) {
+          // Map presets to formats
+          const presetMap: Record<string, string> = {
+            moodle: 'scorm2004',
+            ilias: 'scorm2004',
+            opal: 'scorm2004',
+            generic: 'scorm2004',
+            openolat: 'scorm2004',
+            openedx: 'scorm2004',
+          }
+          format = presetMap[job.target.preset] || 'scorm2004'
+        } else {
+          format = job.target.format || 'web'
+        }
+
+        // Create output directory
+        const outputDir = path.join(tmpdir(), 'liaex-exports', job.id)
+        await fs.ensureDir(outputDir)
+
+        const outputFile = path.join(outputDir, 'export')
+
+        // Convert options to proper types and build CLI arguments
+        const args: string[] = [
+          '--input',
+          inputFile,
+          '--format',
+          format,
+          '--output',
+          outputFile,
+        ]
+
+        for (const [key, value] of Object.entries(job.options || {})) {
+          // Convert option keys back to CLI format (e.g., 'scorm-masteryScore' -> '--scorm-masteryScore')
+          const cliKey = `--${key.replace(/_/g, '-')}`
+
+          // Convert string booleans to actual booleans
+          if (value === 'true') {
+            args.push(cliKey)
+          } else if (value === 'false') {
+            // Don't add false flags
+          } else if (value) {
+            args.push(cliKey, String(value))
+          }
+        }
+
+        // Run export in separate process using the CLI
+        // Use the current process's argv[1] which is the path to dist/index.js
+        const cliPath = process.argv[1]
         console.log(
-          `Exporting job ${job.id} with target ${
-            job.target.preset || job.target.format
-          }`
+          `Starting export process for job ${
+            job.id
+          }: node ${cliPath} ${args.join(' ')}`
         )
-        resolve()
-      }, 5000) // 5 second delay to simulate export
+
+        const exportProcess = spawn('node', [cliPath, ...args], {
+          stdio: ['ignore', 'pipe', 'pipe'],
+          detached: false,
+        })
+
+        let stdout = ''
+        let stderr = ''
+
+        exportProcess.stdout?.on('data', (data) => {
+          stdout += data.toString()
+          console.log(`[Job ${job.id}] ${data.toString().trim()}`)
+        })
+
+        exportProcess.stderr?.on('data', (data) => {
+          stderr += data.toString()
+          console.error(`[Job ${job.id}] ${data.toString().trim()}`)
+        })
+
+        exportProcess.on('error', (error) => {
+          console.error(`Export process error for job ${job.id}:`, error)
+          reject(error)
+        })
+
+        exportProcess.on('close', async (code) => {
+          if (code !== 0) {
+            reject(
+              new Error(
+                `Export process exited with code ${code}. stderr: ${stderr}`
+              )
+            )
+            return
+          }
+
+          try {
+            // Give the export process a moment to finish writing files
+            await new Promise((resolveTimeout) =>
+              setTimeout(resolveTimeout, 1000)
+            )
+
+            // Find the generated output file
+            const files = await fs.readdir(outputDir)
+            console.log(`Files in output directory: ${files.join(', ')}`)
+
+            const outputFileName = files.find(
+              (f) =>
+                f.startsWith('export') &&
+                (f.endsWith('.zip') ||
+                  f.endsWith('.html') ||
+                  f.endsWith('.pdf') ||
+                  f.endsWith('.epub'))
+            )
+
+            if (!outputFileName) {
+              throw new Error(
+                `Export completed but no output file was generated. Found files: ${files.join(
+                  ', '
+                )}`
+              )
+            }
+
+            const outputPath = path.join(outputDir, outputFileName)
+
+            // Store result
+            job.result = {
+              outputPath: outputPath,
+              filename: outputFileName,
+            }
+
+            console.log(`Export completed: ${job.id} -> ${outputPath}`)
+            resolve()
+          } catch (error) {
+            reject(error)
+          }
+        })
+      } catch (error) {
+        console.error(`Export failed for job ${job.id}:`, error)
+        reject(error)
+      }
     })
   }
 

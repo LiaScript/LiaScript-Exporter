@@ -136,6 +136,5 @@ export async function exporter(argument: Scorm2004ExportArguments, json: any) {
 
   await scormPackager(config, function (msg: string) {
     console.log(msg)
-    process.exit(0)
   })
 }

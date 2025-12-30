@@ -1,7 +1,7 @@
 import { FastifyPluginAsync } from 'fastify'
 import { jobQueue } from '../server'
-import { writeFile, mkdir } from 'fs/promises'
-import { join } from 'path'
+import { writeFile, mkdir, readFile } from 'fs/promises'
+import { join, basename } from 'path'
 import { randomUUID } from 'crypto'
 import { tmpdir } from 'os'
 
@@ -122,5 +122,38 @@ export const exportRouter: FastifyPluginAsync = async (fastify) => {
   // GET /api/queue - Get queue status
   fastify.get('/queue', async (request, reply) => {
     return reply.send(jobQueue.getQueueStatus())
+  })
+
+  // GET /api/download/:jobId - Download export result
+  fastify.get('/download/:jobId', async (request, reply) => {
+    const { jobId } = request.params as { jobId: string }
+
+    const job = jobQueue.getJob(jobId)
+    if (!job) {
+      return reply.code(404).send({ error: 'Job not found' })
+    }
+
+    if (job.status !== 'completed') {
+      return reply.code(400).send({ error: 'Job not completed yet' })
+    }
+
+    if (!job.result || !job.result.outputPath) {
+      return reply.code(404).send({ error: 'Export file not found' })
+    }
+
+    try {
+      const fileBuffer = await readFile(job.result.outputPath)
+      const filename = job.result.filename || basename(job.result.outputPath)
+
+      reply.header('Content-Disposition', `attachment; filename="${filename}"`)
+      reply.type('application/zip')
+      return reply.send(fileBuffer)
+    } catch (error: any) {
+      fastify.log.error(error)
+      return reply.code(500).send({
+        error: 'Failed to download file',
+        message: error.message,
+      })
+    }
   })
 }
