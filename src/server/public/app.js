@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initializeAdvancedSettings()
   initializeForm()
   initializeExportSelection()
+  initializeFormatDescription()
 })
 
 // Tab switching
@@ -390,5 +391,24 @@ function showConfirmation(result) {
     if (e.target === modal) {
       modal.classList.add('hidden')
     }
+  })
+}
+
+// Format description display
+function initializeFormatDescription() {
+  const formatRadios = document.querySelectorAll('input[name="format"]')
+  const descriptionBox = document.getElementById('format-description')
+  const descriptionText = descriptionBox.querySelector('p')
+
+  formatRadios.forEach((radio) => {
+    radio.addEventListener('change', () => {
+      const description = radio.dataset.description
+      if (description) {
+        descriptionText.innerHTML = description
+        descriptionBox.style.display = 'block'
+      } else {
+        descriptionBox.style.display = 'none'
+      }
+    })
   })
 }

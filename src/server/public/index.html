@@ -174,7 +174,12 @@
             <div class="export-tab-panel" id="formats-panel">
               <div class="preset-grid">
                 <label class="preset-tile">
-                  <input type="radio" name="format" value="scorm12" />
+                  <input
+                    type="radio"
+                    name="format"
+                    value="scorm12"
+                    data-description="E-Learning-Standard für Lernmanagementsysteme. Weit verbreitet, aber älter. Geeignet für ältere LMS-Plattformen. <a href='https://de.wikipedia.org/wiki/Sharable_Content_Object_Reference_Model' target='_blank'>Mehr erfahren</a>"
+                  />
                   <div class="preset-content">
                     <h3>SCORM 1.2</h3>
                     <p>Legacy Standard</p>
@@ -182,7 +187,12 @@
                 </label>
 
                 <label class="preset-tile">
-                  <input type="radio" name="format" value="scorm2004" />
+                  <input
+                    type="radio"
+                    name="format"
+                    value="scorm2004"
+                    data-description="Moderne Version des SCORM-Standards mit erweiterten Funktionen für Lernpfade und Bewertungen. Empfohlen für aktuelle LMS-Systeme. <a href='https://de.wikipedia.org/wiki/Sharable_Content_Object_Reference_Model' target='_blank'>Mehr erfahren</a>"
+                  />
                   <div class="preset-content">
                     <h3>SCORM 2004</h3>
                     <p>Modern Standard</p>
@@ -190,7 +200,12 @@
                 </label>
 
                 <label class="preset-tile">
-                  <input type="radio" name="format" value="ims" />
+                  <input
+                    type="radio"
+                    name="format"
+                    value="ims"
+                    data-description="IMS Content Packaging für Austausch von Lerninhalten zwischen verschiedenen Plattformen. Standard für plattformübergreifende Kompatibilität. <a href='https://en.wikipedia.org/wiki/IMS_Content_Packaging' target='_blank'>Mehr erfahren</a>"
+                  />
                   <div class="preset-content">
                     <h3>IMS</h3>
                     <p>Content Package</p>
@@ -198,7 +213,12 @@
                 </label>
 
                 <label class="preset-tile">
-                  <input type="radio" name="format" value="web" />
+                  <input
+                    type="radio"
+                    name="format"
+                    value="web"
+                    data-description="Eigenständige HTML-Website zum Hosten auf beliebigen Webservern. Funktioniert offline und online. Perfekt für eigenes Hosting."
+                  />
                   <div class="preset-content">
                     <h3>Web</h3>
                     <p>Standalone</p>
@@ -206,7 +226,12 @@
                 </label>
 
                 <label class="preset-tile">
-                  <input type="radio" name="format" value="pdf" />
+                  <input
+                    type="radio"
+                    name="format"
+                    value="pdf"
+                    data-description="Portables Dokumentenformat zum Drucken und Archivieren. Ideal für statische Inhalte und Offline-Lektüre. <a href='https://de.wikipedia.org/wiki/Portable_Document_Format' target='_blank'>Mehr erfahren</a>"
+                  />
                   <div class="preset-content">
                     <h3>PDF</h3>
                     <p>Dokument</p>
@@ -214,7 +239,12 @@
                 </label>
 
                 <label class="preset-tile">
-                  <input type="radio" name="format" value="android" />
+                  <input
+                    type="radio"
+                    name="format"
+                    value="android"
+                    data-description="Android-App-Paket (APK) für Installation auf Android-Geräten. Ermöglicht Offline-Zugriff und native App-Erfahrung."
+                  />
                   <div class="preset-content">
                     <h3>Android</h3>
                     <p>App Package</p>
@@ -222,7 +252,12 @@
                 </label>
 
                 <label class="preset-tile">
-                  <input type="radio" name="format" value="json" />
+                  <input
+                    type="radio"
+                    name="format"
+                    value="json"
+                    data-description="Strukturiertes Datenformat für programmatische Weiterverarbeitung und API-Integration. Perfekt für Entwickler und automatisierte Workflows. <a href='https://de.wikipedia.org/wiki/JavaScript_Object_Notation' target='_blank'>Mehr erfahren</a>"
+                  />
                   <div class="preset-content">
                     <h3>JSON</h3>
                     <p>Data Export</p>
@@ -230,7 +265,12 @@
                 </label>
 
                 <label class="preset-tile">
-                  <input type="radio" name="format" value="epub" />
+                  <input
+                    type="radio"
+                    name="format"
+                    value="epub"
+                    data-description="Offenes E-Book-Format für E-Reader und mobile Geräte. Unterstützt reflowable Layouts und ist kompatibel mit den meisten E-Readern. <a href='https://de.wikipedia.org/wiki/EPUB' target='_blank'>Mehr erfahren</a>"
+                  />
                   <div class="preset-content">
                     <h3>EPUB</h3>
                     <p>E-Book</p>
@@ -238,12 +278,37 @@
                 </label>
 
                 <label class="preset-tile">
-                  <input type="radio" name="format" value="rdf" />
+                  <input
+                    type="radio"
+                    name="format"
+                    value="rdf"
+                    data-description="Resource Description Framework für strukturierte Metadaten und Linked Data. Für semantische Web-Anwendungen und Metadaten-Export. <a href='https://de.wikipedia.org/wiki/Resource_Description_Framework' target='_blank'>Mehr erfahren</a>"
+                  />
                   <div class="preset-content">
                     <h3>RDF</h3>
                     <p>Metadaten</p>
                   </div>
                 </label>
+              </div>
+
+              <hr
+                style="
+                  margin: 2rem 0 1rem 0;
+                  border: none;
+                  border-top: 1px solid #e0e0e0;
+                "
+              />
+
+              <div
+                id="format-description"
+                style="
+                  padding: 1rem;
+                  background-color: #f8f9fa;
+                  border-radius: 8px;
+                  display: none;
+                "
+              >
+                <p style="margin: 0; color: #555; line-height: 1.6"></p>
               </div>
             </div>
           </section>
