@@ -2,9 +2,11 @@
 let selectedFiles = []
 let currentSourceType = 'upload'
 let currentExportTab = 'presets'
+let presetsConfig = null
 
 // Initialize app
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+  await loadPresets()
   initializeTabs()
   initializeExportTabs()
   initializeUpload()
@@ -12,7 +14,58 @@ document.addEventListener('DOMContentLoaded', () => {
   initializeForm()
   initializeExportSelection()
   initializeFormatDescription()
+  initializePresetDescription()
 })
+
+// Load presets from server
+async function loadPresets() {
+  try {
+    const response = await fetch('/api/presets')
+    const data = await response.json()
+    presetsConfig = data.presets
+
+    const presetsGrid = document.getElementById('presets-grid')
+    presetsGrid.innerHTML = ''
+
+    presetsConfig.forEach((preset, index) => {
+      const label = document.createElement('label')
+      label.className = 'preset-tile'
+
+      const input = document.createElement('input')
+      input.type = 'radio'
+      input.name = 'preset'
+      input.value = preset.id
+      input.dataset.description = preset.description
+      input.dataset.presetOptions = JSON.stringify(preset.options)
+      if (index === 0) input.checked = true
+
+      const content = document.createElement('div')
+      content.className = 'preset-content'
+
+      const logo = document.createElement('div')
+      logo.style.fontSize = '2rem'
+      logo.style.marginBottom = '0.5rem'
+      logo.textContent = preset.logo
+
+      const title = document.createElement('h3')
+      title.textContent = preset.name
+
+      const subtitle = document.createElement('p')
+      subtitle.textContent = preset.subtitle
+
+      content.appendChild(logo)
+      content.appendChild(title)
+      content.appendChild(subtitle)
+
+      label.appendChild(input)
+      label.appendChild(content)
+
+      presetsGrid.appendChild(label)
+    })
+  } catch (error) {
+    console.error('Failed to load presets:', error)
+  }
+}
 
 // Tab switching
 function initializeTabs() {
@@ -168,25 +221,33 @@ function escapeHtml(text) {
 
 // Export selection handling
 function initializeExportSelection() {
-  const presetRadios = document.querySelectorAll('input[name="preset"]')
-  const formatRadios = document.querySelectorAll('input[name="format"]')
+  // Use event delegation for dynamically loaded presets
+  document.getElementById('presets-grid').addEventListener('change', (e) => {
+    if (e.target.name === 'preset' && e.target.checked) {
+      // Deselect all formats
+      const formatRadios = document.querySelectorAll('input[name="format"]')
+      formatRadios.forEach((radio) => {
+        radio.checked = false
+      })
 
-  // When preset is selected, deselect formats and update settings
-  presetRadios.forEach((radio) => {
-    radio.addEventListener('change', () => {
-      if (radio.checked) {
-        formatRadios.forEach((formatRadio) => {
-          formatRadio.checked = false
-        })
-        updateAdvancedSettings(radio.value)
-      }
-    })
+      // Apply preset options to the form
+      applyPresetOptions(e.target)
+
+      // Get the preset configuration to determine the format
+      const presetOptions = JSON.parse(e.target.dataset.presetOptions || '{}')
+      const format = presetOptions.format || e.target.value
+
+      updateAdvancedSettings(format)
+    }
   })
+
+  const formatRadios = document.querySelectorAll('input[name="format"]')
 
   // When format is selected, deselect presets and update settings
   formatRadios.forEach((radio) => {
     radio.addEventListener('change', () => {
       if (radio.checked) {
+        const presetRadios = document.querySelectorAll('input[name="preset"]')
         presetRadios.forEach((presetRadio) => {
           presetRadio.checked = false
         })
@@ -195,11 +256,49 @@ function initializeExportSelection() {
     })
   })
 
-  // Initialize with default selection (Moodle)
-  updateAdvancedSettings('moodle')
+  // Initialize with default selection
+  setTimeout(() => {
+    const checkedPreset = document.querySelector('input[name="preset"]:checked')
+    if (checkedPreset) {
+      const presetOptions = JSON.parse(
+        checkedPreset.dataset.presetOptions || '{}'
+      )
+      const format = presetOptions.format || checkedPreset.value
+      applyPresetOptions(checkedPreset)
+      updateAdvancedSettings(format)
+    }
+  }, 100)
 
   // PDF-specific: Toggle header/footer template fields
   initializePdfHeaderFooter()
+}
+
+// Apply preset options to form fields
+function applyPresetOptions(presetInput) {
+  try {
+    const options = JSON.parse(presetInput.dataset.presetOptions || '{}')
+
+    // Apply each option to the corresponding form field
+    Object.keys(options).forEach((key) => {
+      const value = options[key]
+      const fieldName = `option_${key}`
+
+      // Try to find the field by name
+      const field = document.querySelector(`[name="${fieldName}"]`)
+
+      if (field) {
+        if (field.type === 'checkbox') {
+          field.checked = Boolean(value)
+        } else if (field.type === 'number') {
+          field.value = value
+        } else {
+          field.value = value || ''
+        }
+      }
+    })
+  } catch (error) {
+    console.error('Failed to apply preset options:', error)
+  }
 }
 
 // Initialize PDF header/footer toggle
@@ -411,4 +510,33 @@ function initializeFormatDescription() {
       }
     })
   })
+}
+// Preset description display
+function initializePresetDescription() {
+  // Use event delegation since presets are loaded dynamically
+  document.getElementById('presets-grid').addEventListener('change', (e) => {
+    if (e.target.name === 'preset') {
+      const descriptionBox = document.getElementById('preset-description')
+      const descriptionText = descriptionBox.querySelector('p')
+      const description = e.target.dataset.description
+
+      if (description) {
+        descriptionText.innerHTML = description
+        descriptionBox.style.display = 'block'
+      } else {
+        descriptionBox.style.display = 'none'
+      }
+    }
+  })
+
+  // Show description for initially checked preset
+  setTimeout(() => {
+    const checkedPreset = document.querySelector('input[name="preset"]:checked')
+    if (checkedPreset && checkedPreset.dataset.description) {
+      const descriptionBox = document.getElementById('preset-description')
+      const descriptionText = descriptionBox.querySelector('p')
+      descriptionText.innerHTML = checkedPreset.dataset.description
+      descriptionBox.style.display = 'block'
+    }
+  }, 100)
 }

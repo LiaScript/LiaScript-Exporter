@@ -119,54 +119,28 @@
 
             <!-- Presets Panel -->
             <div class="export-tab-panel active" id="presets-panel">
-              <div class="preset-grid">
-                <label class="preset-tile">
-                  <input type="radio" name="preset" value="moodle" checked />
-                  <div class="preset-content">
-                    <h3>Moodle</h3>
-                    <p>SCORM 2004</p>
-                  </div>
-                </label>
+              <div class="preset-grid" id="presets-grid">
+                <!-- Presets will be loaded dynamically -->
+              </div>
 
-                <label class="preset-tile">
-                  <input type="radio" name="preset" value="ilias" />
-                  <div class="preset-content">
-                    <h3>ILIAS</h3>
-                    <p>SCORM 1.2</p>
-                  </div>
-                </label>
+              <hr
+                style="
+                  margin: 2rem 0 1rem 0;
+                  border: none;
+                  border-top: 1px solid #e0e0e0;
+                "
+              />
 
-                <label class="preset-tile">
-                  <input type="radio" name="preset" value="opal" />
-                  <div class="preset-content">
-                    <h3>OPAL</h3>
-                    <p>SCORM 2004</p>
-                  </div>
-                </label>
-
-                <label class="preset-tile">
-                  <input type="radio" name="preset" value="generic" />
-                  <div class="preset-content">
-                    <h3>Generic LMS</h3>
-                    <p>SCORM 2004</p>
-                  </div>
-                </label>
-
-                <label class="preset-tile">
-                  <input type="radio" name="preset" value="openolat" />
-                  <div class="preset-content">
-                    <h3>OpenOlat</h3>
-                    <p>SCORM 2004</p>
-                  </div>
-                </label>
-
-                <label class="preset-tile">
-                  <input type="radio" name="preset" value="openedx" />
-                  <div class="preset-content">
-                    <h3>Open edX</h3>
-                    <p>SCORM 2004</p>
-                  </div>
-                </label>
+              <div
+                id="preset-description"
+                style="
+                  padding: 1rem;
+                  background-color: #f8f9fa;
+                  border-radius: 8px;
+                  display: none;
+                "
+              >
+                <p style="margin: 0; color: #555; line-height: 1.6"></p>
               </div>
             </div>
 

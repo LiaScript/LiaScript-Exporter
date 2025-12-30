@@ -4,8 +4,38 @@ import { writeFile, mkdir, readFile } from 'fs/promises'
 import { join, basename } from 'path'
 import { randomUUID } from 'crypto'
 import { tmpdir } from 'os'
+import { fileURLToPath } from 'url'
+import { dirname } from 'path'
+import * as YAML from 'yaml'
 
 export const exportRouter: FastifyPluginAsync = async (fastify) => {
+  // GET /api/presets - Get available presets configuration
+  fastify.get('/presets', async (request, reply) => {
+    try {
+      // Find presets.yaml relative to the dist directory
+      // When bundled by Parcel, __dirname points to the src directory
+      // We need to go up and find the dist/server directory
+      const distServerPath = join(__dirname, '..', '..', 'dist', 'server')
+      let presetsPath = join(distServerPath, 'presets.yaml')
+
+      // Fallback: try relative to the current working directory
+      try {
+        await readFile(presetsPath, 'utf-8')
+      } catch {
+        presetsPath = join(process.cwd(), 'dist', 'server', 'presets.yaml')
+      }
+
+      const presetsContent = await readFile(presetsPath, 'utf-8')
+      const presets = YAML.parse(presetsContent)
+      return { presets: presets.presets }
+    } catch (error) {
+      console.error('Failed to load presets:', error)
+      return reply
+        .code(500)
+        .send({ error: 'Failed to load presets configuration' })
+    }
+  })
+
   // POST /api/export - Create new export job
   fastify.post('/export', async (request, reply) => {
     try {
