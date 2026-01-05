@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Export Status - LiaScript Export Server</title>
+    <link rel="stylesheet" href="/styles.css" />
+    <style>
+      .status-badge {
+        display: inline-block;
+        padding: 0.25rem 0.75rem;
+        border-radius: 4px;
+        font-size: 0.875rem;
+        font-weight: 500;
+      }
+      .status-queued {
+        background: #dbeafe;
+        color: #1e40af;
+      }
+      .status-processing {
+        background: #fef3c7;
+        color: #92400e;
+      }
+      .status-completed {
+        background: #d1fae5;
+        color: #065f46;
+      }
+      .status-failed {
+        background: #fee2e2;
+        color: #991b1b;
+      }
+      .progress-bar {
+        width: 100%;
+        height: 8px;
+        background: var(--border);
+        border-radius: 4px;
+        overflow: hidden;
+        margin: 1rem 0;
+      }
+      .progress-fill {
+        height: 100%;
+        background: var(--primary);
+        transition: width 0.3s;
+      }
+      .refresh-info {
+        text-align: center;
+        color: var(--text-muted);
+        font-size: 0.875rem;
+        margin-top: 1rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>Export Status</h1>
+        <p class="subtitle">Verfolgen Sie den Status Ihres Export-Auftrags</p>
+      </header>
+
+      <main>
+        <section class="card">
+          <div id="statusContent">
+            <p>Lade Status...</p>
+          </div>
+          <div class="refresh-info">
+            Seite wird automatisch alle 3 Sekunden aktualisiert
+          </div>
+        </section>
+
+        <div style="text-align: center; margin-top: 2rem">
+          <a href="/" class="btn-secondary">Zurück zur Startseite</a>
+        </div>
+      </main>
+
+      <footer>
+        <p>&copy; 2025 LiaScript Export Server</p>
+      </footer>
+    </div>
+
+    <script>
+      const urlParams = new URLSearchParams(window.location.search)
+      const jobId = urlParams.get('jobId')
+      let refreshInterval
+
+      if (!jobId) {
+        document.getElementById('statusContent').innerHTML = `
+        <p class="error-message">Keine Job-ID angegeben.</p>
+      `
+      } else {
+        loadStatus()
+        refreshInterval = setInterval(loadStatus, 3000)
+      }
+
+      async function loadStatus() {
+        try {
+          const response = await fetch(`/api/job/${jobId}`)
+
+          if (!response.ok) {
+            throw new Error('Job nicht gefunden')
+          }
+
+          const data = await response.json()
+          displayStatus(data)
+
+          // Stop refreshing if job is completed or failed
+          if (data.job.status === 'completed' || data.job.status === 'failed') {
+            clearInterval(refreshInterval)
+          }
+        } catch (error) {
+          document.getElementById('statusContent').innerHTML = `
+          <p class="error-message">Fehler beim Laden des Status: ${error.message}</p>
+        `
+          clearInterval(refreshInterval)
+        }
+      }
+
+      function displayStatus(data) {
+        const { job, queuePosition } = data
+        const statusClass = `status-${job.status}`
+
+        let statusText = {
+          queued: 'In Warteschlange',
+          processing: 'Wird verarbeitet',
+          completed: 'Abgeschlossen',
+          failed: 'Fehlgeschlagen',
+        }[job.status]
+
+        let progressPercent = 0
+        if (job.status === 'processing') progressPercent = 50
+        if (job.status === 'completed') progressPercent = 100
+
+        let content = `
+        <h2>Job-ID: ${job.id}</h2>
+        <div style="margin: 1.5rem 0;">
+          <span class="status-badge ${statusClass}">${statusText}</span>
+        </div>
+        
+        ${
+          queuePosition > 0
+            ? `
+          <p><strong>Position in Warteschlange:</strong> ${queuePosition}</p>
+        `
+            : ''
+        }
+
+        <div class="progress-bar">
+          <div class="progress-fill" style="width: ${progressPercent}%"></div>
+        </div>
+
+        <div style="margin-top: 1.5rem;">
+          <p><strong>Quelle:</strong> ${
+            job.source.type === 'upload' ? 'Datei-Upload' : 'Git Repository'
+          }</p>
+          ${
+            job.source.gitUrl
+              ? `<p><strong>Repository:</strong> ${job.source.gitUrl}</p>`
+              : ''
+          }
+          ${
+            job.source.files
+              ? `<p><strong>Dateien:</strong> ${job.source.files.length} Datei(en)</p>`
+              : ''
+          }
+          <p><strong>Ziel:</strong> ${
+            job.target.preset || job.target.format
+          }</p>
+          <p><strong>Erstellt am:</strong> ${new Date(
+            job.createdAt
+          ).toLocaleString('de-DE')}</p>
+          ${
+            job.startedAt
+              ? `<p><strong>Gestartet am:</strong> ${new Date(
+                  job.startedAt
+                ).toLocaleString('de-DE')}</p>`
+              : ''
+          }
+          ${
+            job.completedAt
+              ? `<p><strong>Abgeschlossen am:</strong> ${new Date(
+                  job.completedAt
+                ).toLocaleString('de-DE')}</p>`
+              : ''
+          }
+        </div>
+
+        ${
+          job.status === 'failed' && job.error
+            ? `
+          <div style="margin-top: 1.5rem; padding: 1rem; background: #fee2e2; border-radius: 6px;">
+            <strong>Fehler:</strong> ${job.error}
+          </div>
+        `
+            : ''
+        }
+
+        ${
+          job.status === 'completed'
+            ? `
+          <div style="margin-top: 1.5rem;">
+            <button class="btn-primary" onclick="downloadResult()">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+              </svg>
+              Download Export
+            </button>
+          </div>
+        `
+            : ''
+        }
+      `
+
+        document.getElementById('statusContent').innerHTML = content
+      }
+
+      function downloadResult() {
+        window.location.href = `/api/download/${jobId}`
+      }
+    </script>
+  </body>
+</html>

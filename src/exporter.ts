@@ -102,10 +102,10 @@ export class Exporter {
         RDF.exporter(argument, JSON.parse(string))
         break
       case SCORM12.format:
-        this.exportScorm12(argument, string)
+        this.exportScorm12(argument, JSON.parse(string))
         break
       case SCORM2004.format:
-        this.exportScorm2004(argument, string)
+        this.exportScorm2004(argument, JSON.parse(string))
         break
       case IMS.format:
         IMS.exporter(argument, JSON.parse(string))

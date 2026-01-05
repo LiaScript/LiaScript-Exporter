@@ -104,6 +104,18 @@ export async function exporter(argument: XapiExportArguments, json: any) {
     index = helper.injectResponsivevoice(argument.key, index)
   }
 
+  index = helper.inject('<script src="config.js"></script>', index)
+  await helper.writeFile(
+    path.join(tmpPath, 'config.js'),
+    'window.config_ = ' +
+      JSON.stringify({
+        task: json.task,
+        quiz: json.quiz,
+        survey: json.survey,
+      }) +
+      ';'
+  )
+
   // Add default course
   index = helper.inject(
     `<script>
