@@ -24,6 +24,12 @@ export function help() {
   console.log(
     '--xapi-course-title    Custom title for the course (default: from document)'
   )
+  console.log(
+    '--xapi-mastery-threshold  Score threshold for mastery (default: 0.8)'
+  )
+  console.log(
+    '--xapi-progress-threshold Score threshold for progress (default: 0.9)'
+  )
   console.log('--xapi-debug           Enable debug logging for xAPI statements')
   console.log('--xapi-zip             Package the output as a zip file')
 }
@@ -81,6 +87,8 @@ export interface XapiExportArguments {
   'xapi-course-title'?: string
   'xapi-debug'?: boolean
   'xapi-zip'?: boolean
+  'xapi-mastery-threshold'?: number
+  'xapi-progress-threshold'?: number
 }
 
 export async function exporter(argument: XapiExportArguments, json: any) {
@@ -104,6 +112,8 @@ export async function exporter(argument: XapiExportArguments, json: any) {
     index = helper.injectResponsivevoice(argument.key, index)
   }
 
+  console.log('Adding xAPI configuration ...', json.lia.sections.length)
+
   index = helper.inject('<script src="config.js"></script>', index)
   await helper.writeFile(
     path.join(tmpPath, 'config.js'),
@@ -112,6 +122,9 @@ export async function exporter(argument: XapiExportArguments, json: any) {
         task: json.task,
         quiz: json.quiz,
         survey: json.survey,
+        masteryThreshold: argument['xapi-mastery-threshold'] || 0.8,
+        progressThreshold: argument['xapi-progress-threshold'] || 0.9,
+        totalSlides: json.lia.sections.length,
       }) +
       ';'
   )
@@ -142,6 +155,8 @@ export async function exporter(argument: XapiExportArguments, json: any) {
     courseTitle:
       argument['xapi-course-title'] || json.lia.str_title || 'LiaScript Course',
     debug: argument['xapi-debug'] || false,
+    masteryThreshold: argument['xapi-mastery-threshold'] || 0.8,
+    progressThreshold: argument['xapi-progress-threshold'] || 0.9,
   }
 
   // Add config UI if endpoint wasn't provided
@@ -153,6 +168,8 @@ export async function exporter(argument: XapiExportArguments, json: any) {
         const endpoint = document.getElementById('xapi-endpoint').value;
         const auth = document.getElementById('xapi-auth').value;
         const actor = document.getElementById('xapi-actor').value;
+        const masteryThreshold = parseFloat(document.getElementById('xapi-mastery-threshold').value) || 0.8;
+        const progressThreshold = parseFloat(document.getElementById('xapi-progress-threshold').value) || 0.9;
         
         try {
           // Validate actor as JSON
@@ -162,7 +179,9 @@ export async function exporter(argument: XapiExportArguments, json: any) {
           localStorage.setItem('xapi-config', JSON.stringify({
             endpoint,
             auth,
-            actor: JSON.parse(actor)
+            actor: JSON.parse(actor),
+            masteryThreshold,
+            progressThreshold
           }));
           
           // Reload to apply settings
@@ -193,6 +212,8 @@ export async function exporter(argument: XapiExportArguments, json: any) {
             document.getElementById('xapi-endpoint').value = config.endpoint || '';
             document.getElementById('xapi-auth').value = config.auth || '';
             document.getElementById('xapi-actor').value = JSON.stringify(config.actor || {}, null, 2);
+            document.getElementById('xapi-mastery-threshold').value = config.masteryThreshold || 0.8;
+            document.getElementById('xapi-progress-threshold').value = config.progressThreshold || 0.9;
           }
         }
       });
@@ -231,6 +252,14 @@ export async function exporter(argument: XapiExportArguments, json: any) {
         <div style="margin-top: 10px">
           <label for="xapi-auth">Authentication (e.g., Basic dXNlcm5hbWU6cGFzc3dvcmQ=)</label><br>
           <input type="text" id="xapi-auth" style="width: 100%" placeholder="Basic dXNlcm5hbWU6cGFzc3dvcmQ=" value="">
+        </div>
+        <div style="margin-top: 10px">
+          <label for="xapi-mastery-threshold">Mastery Threshold (0.0-1.0, default: 0.8)</label><br>
+          <input type="number" id="xapi-mastery-threshold" style="width: 100%" placeholder="0.8" min="0" max="1" step="0.01" value="0.8">
+        </div>
+        <div style="margin-top: 10px">
+          <label for="xapi-progress-threshold">Progress Threshold (0.0-1.0, default: 0.9)</label><br>
+          <input type="number" id="xapi-progress-threshold" style="width: 100%" placeholder="0.9" min="0" max="1" step="0.01" value="0.9">
         </div>
         <div style="margin-top: 10px">
           <label for="xapi-actor">Actor (JSON format)</label><br>

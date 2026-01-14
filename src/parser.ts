@@ -145,6 +145,8 @@ export function parseArguments(): Arguments {
     'xapi-actor': argv['xapi-actor'],
     'xapi-course-id': argv['xapi-course-id'],
     'xapi-course-title': argv['xapi-course-title'],
+    'xapi-mastery-threshold': argv['xapi-mastery-threshold'],
+    'xapi-progress-threshold': argv['xapi-progress-threshold'],
     'xapi-debug': argv['xapi-debug'],
     'xapi-zip': argv['xapi-zip'],
   }
