@@ -112,7 +112,9 @@ export class JobQueue extends EventEmitter {
         // Cleanup old completed jobs if limit exceeded
         if (this.completedJobs.size > this.maxCompletedJobs) {
           const firstKey = this.completedJobs.keys().next().value
-          this.completedJobs.delete(firstKey)
+          if (firstKey) {
+            this.completedJobs.delete(firstKey)
+          }
         }
       }
 
@@ -183,9 +185,96 @@ export class JobQueue extends EventEmitter {
           outputFile,
         ]
 
+        // Define which option prefixes are valid for each format
+        const formatOptionPrefixes: Record<string, string[]> = {
+          scorm12: [
+            'scorm',
+            'mastery',
+            'typical',
+            'responsi',
+            'translate',
+            'debugging',
+            'remove',
+          ],
+          scorm2004: [
+            'scorm',
+            'mastery',
+            'typical',
+            'responsi',
+            'translate',
+            'debugging',
+            'remove',
+          ],
+          xapi: ['xapi'],
+          ims: ['ims'],
+          web: ['web'],
+          pdf: ['pdf'],
+          android: ['app', 'package'],
+          ios: ['ios'],
+          epub: ['epub'],
+          json: ['json'],
+          rdf: ['rdf'],
+          h5p: ['h5p'],
+        }
+
+        // Map option names to their CLI equivalents for each format
+        const optionMapping: Record<string, (key: string) => string> = {
+          scorm12: (key: string) => {
+            // Convert camelCase to kebab-case
+            const kebabKey = key.replace(/([A-Z])/g, '-$1').toLowerCase()
+            // Add scorm- prefix if not already present and not a general option
+            if (
+              !key.startsWith('scorm') &&
+              !['mastery-score', 'typical-duration'].includes(kebabKey)
+            ) {
+              return key.startsWith('scorm') ? kebabKey : `scorm-${kebabKey}`
+            }
+            // Handle special cases
+            if (key === 'masteryScore') return 'scorm-masteryScore'
+            if (key === 'typicalDuration') return 'scorm-typicalDuration'
+            if (key === 'scormOrganization') return 'scorm-organization'
+            if (key === 'scormIframe') return 'scorm-iframe'
+            if (key === 'scormEmbed') return 'scorm-embed'
+            if (key === 'scormAlwaysActive') return 'scorm-alwaysActive'
+            return kebabKey
+          },
+          scorm2004: (key: string) => {
+            // Same as scorm12
+            const kebabKey = key.replace(/([A-Z])/g, '-$1').toLowerCase()
+            if (key === 'masteryScore') return 'scorm-masteryScore'
+            if (key === 'typicalDuration') return 'scorm-typicalDuration'
+            if (key === 'scormOrganization') return 'scorm-organization'
+            if (key === 'scormIframe') return 'scorm-iframe'
+            if (key === 'scormEmbed') return 'scorm-embed'
+            if (key === 'scormAlwaysActive') return 'scorm-alwaysActive'
+            return kebabKey
+          },
+        }
+
+        // Default mapper for formats without special mapping
+        const defaultMapper = (key: string) =>
+          key.replace(/([A-Z])/g, '-$1').toLowerCase()
+
+        // Get valid prefixes for the current format
+        const validPrefixes = formatOptionPrefixes[format] || []
+        const mapper = optionMapping[format] || defaultMapper
+
         for (const [key, value] of Object.entries(job.options || {})) {
-          // Convert option keys back to CLI format (e.g., 'scorm-masteryScore' -> '--scorm-masteryScore')
-          const cliKey = `--${key.replace(/_/g, '-')}`
+          // Convert option name to CLI format
+          const mappedKey = mapper(key)
+
+          // Skip if this option doesn't match any valid prefix for this format
+          if (validPrefixes.length > 0) {
+            const isValid = validPrefixes.some((prefix) =>
+              mappedKey.startsWith(prefix)
+            )
+            if (!isValid) {
+              continue
+            }
+          }
+
+          // Convert to CLI argument
+          const cliKey = `--${mappedKey}`
 
           // Convert string booleans to actual booleans
           if (value === 'true') {
