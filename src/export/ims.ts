@@ -10,23 +10,23 @@ export function help() {
   console.log(COLOR.heading('IMS settings:'), '\n')
 
   COLOR.info(
-    'IMS (Instructional Management Systems) Content Package is an interoperable standard format for packaging learning content between different LMSes.'
+    'IMS (Instructional Management Systems) Content Package is an interoperable standard format for packaging learning content between different LMSes.',
   )
   console.log(
-    '\nLearn more: https://www.imsglobal.org/content/packaging/index.html\n'
+    '\nLearn more: https://www.imsglobal.org/content/packaging/index.html\n',
   )
 
   COLOR.command(
     null,
     '--ims-indexeddb',
-    '           Use IndexedDB to store data persistently'
+    '           Use IndexedDB to store data persistently',
   )
 
   console.log('')
   console.log(COLOR.heading('WEB settings:'), '\n')
 
   COLOR.info(
-    'Pack the project into a self contained web project that can be hosted everywhere.'
+    'Pack the project into a self contained web project that can be hosted everywhere.',
   )
 
   console.log('')
@@ -34,17 +34,17 @@ export function help() {
   COLOR.command(
     null,
     '--web-iframe',
-    '              Use an iframed version to hide the course URL.'
+    '              Use an iframed version to hide the course URL.',
   )
   COLOR.command(
     null,
     '--web-indexeddb',
-    '           This will allow to store data within the browser using indexeddb, you can optionally pass a unique key (by default one is generated randomly).'
+    '           This will allow to store data within the browser using indexeddb, you can optionally pass a unique key (by default one is generated randomly).',
   )
   COLOR.command(
     null,
     '--web-zip',
-    '                 By default the result is not zipped, you can change this with this parameter.'
+    '                 By default the result is not zipped, you can change this with this parameter.',
   )
 }
 
@@ -62,6 +62,10 @@ export interface ImsExportArguments {
 export const format = 'ims'
 
 export async function exporter(argument: ImsExportArguments, json: any) {
+  if (typeof json === 'string') {
+    json = JSON.parse(json)
+  }
+
   const dirname = helper.dirname()
 
   // make temp folder
@@ -73,9 +77,9 @@ export async function exporter(argument: ImsExportArguments, json: any) {
   await fs.copy(
     path.join(
       dirname,
-      argument['ims-indexeddb'] ? './assets/indexeddb' : './assets/web'
+      argument['ims-indexeddb'] ? './assets/indexeddb' : './assets/web',
     ),
-    tmpPath
+    tmpPath,
   )
   await fs.copy(path.join(dirname, './assets/common'), tmpPath)
 
@@ -108,7 +112,7 @@ export async function exporter(argument: ImsExportArguments, json: any) {
 
     argument.readme = argument.readme.replace(
       path.basename(argument.readme),
-      newReadme
+      newReadme,
     )
 
     await fs.move(old_, new_)
@@ -121,7 +125,7 @@ export async function exporter(argument: ImsExportArguments, json: any) {
     'start.html',
     argument.readme,
     jsonLD,
-    argument.style
+    argument.style,
   )
 
   await helper.zip(tmpPath, argument.output)
@@ -182,6 +186,6 @@ async function manifest(tmpPath: any, meta: any) {
             <file href="start.html" />
         </resource>
     </resources>
-</manifest>`
+</manifest>`,
   )
 }
