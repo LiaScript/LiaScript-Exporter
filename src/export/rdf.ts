@@ -349,9 +349,6 @@ export async function parse(
   json: string,
 ): Promise<SchemaDoc> {
   try {
-    // fix: sometimes json is string
-    if (typeof json === 'string') json = JSON.parse(json)
-
     // Load template if provided
     let doc = await loadTemplate(argument['rdf-template'])
 

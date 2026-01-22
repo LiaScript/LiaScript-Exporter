@@ -99,35 +99,34 @@ export class Exporter {
         this.exportJson(argument, json)
         break
       case RDF.format:
-        console.warn('exporting RDF...', typeof json)
-        RDF.exporter(argument, json)
+        RDF.exporter(argument, JSON.parse(json))
         break
       case SCORM12.format:
-        this.exportScorm12(argument, json)
+        this.exportScorm12(argument, JSON.parse(json))
         break
       case SCORM2004.format:
-        this.exportScorm2004(argument, json)
+        this.exportScorm2004(argument, JSON.parse(json))
         break
       case IMS.format:
-        IMS.exporter(argument, json)
+        IMS.exporter(argument, JSON.parse(json))
         break
       case WEB.format:
-        WEB.exporter(argument, json)
+        WEB.exporter(argument, JSON.parse(json))
         break
       case PDF.format:
         PDF.exporter(argument)
         break
       case EPUB.format:
-        EPUB.exporter(argument, json)
+        EPUB.exporter(argument, JSON.parse(json))
         break
       case ANDROID.format:
-        ANDROID.exporter(argument, json)
+        ANDROID.exporter(argument, JSON.parse(json))
         break
       case XAPI.format:
-        XAPI.exporter(argument, json)
+        XAPI.exporter(argument, JSON.parse(json))
         break
       case PROJECT.format:
-        this.handleProjectExport(argument, json, app)
+        this.handleProjectExport(argument, JSON.parse(json), app)
         break
       default:
         console.warn('unknown output format', argument.format)
@@ -146,21 +145,21 @@ export class Exporter {
   /**
    * Exports to SCORM 1.2 format with embedded content if configured
    */
-  private exportScorm12(argument: Arguments, string: string): void {
+  private exportScorm12(argument: Arguments, json: any): void {
     if (argument['scorm-embed']) {
       argument['scorm-embed'] = this.embed
     }
-    SCORM12.exporter(argument, JSON.parse(string))
+    SCORM12.exporter(argument, json)
   }
 
   /**
    * Exports to SCORM 2004 format with embedded content if configured
    */
-  private exportScorm2004(argument: Arguments, string: string): void {
+  private exportScorm2004(argument: Arguments, json: any): void {
     if (argument['scorm-embed']) {
       argument['scorm-embed'] = this.embed
     }
-    SCORM2004.exporter(argument, JSON.parse(string))
+    SCORM2004.exporter(argument, json)
   }
 
   /**
