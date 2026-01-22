@@ -169,13 +169,19 @@ export class JobQueue extends EventEmitter {
           job.source.files &&
           job.source.files.length > 0
         ) {
-          // Use the first file (README.md or similar)
-          const readmeFile = job.source.files.find(
-            (f) =>
-              f.filename === 'README.md' ||
-              f.filename.toLowerCase().endsWith('.md'),
-          )
-          inputFile = readmeFile ? readmeFile.path : job.source.files[0].path
+          // Check if we have a main file from ZIP extraction
+          if ((job.source as any).mainFile) {
+            inputFile = (job.source as any).mainFile
+            console.log(`Using main markdown from ZIP: ${inputFile}`)
+          } else {
+            // Use the first markdown file or fallback to first file
+            const readmeFile = job.source.files.find(
+              (f) =>
+                f.filename === 'README.md' ||
+                f.filename.toLowerCase().endsWith('.md'),
+            )
+            inputFile = readmeFile ? readmeFile.path : job.source.files[0].path
+          }
         } else if (job.source.type === 'git' && job.source.gitUrl) {
           // For git repos, we'd need to clone first - not implemented yet
           throw new Error('Git repository export not yet implemented')

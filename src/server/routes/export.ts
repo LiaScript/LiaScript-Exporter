@@ -7,6 +7,7 @@ import { tmpdir } from 'os'
 import { fileURLToPath } from 'url'
 import { dirname } from 'path'
 import * as YAML from 'yaml'
+import { extractZip, findMainMarkdown, isZipFile } from '../utils/zipExtractor'
 
 export const exportRouter: FastifyPluginAsync = async (fastify) => {
   // GET /api/presets - Get available presets configuration
@@ -51,14 +52,13 @@ export const exportRouter: FastifyPluginAsync = async (fastify) => {
       if (request.isMultipart()) {
         const parts = request.parts()
         const files: any[] = []
+        const uploadId = randomUUID()
+        const uploadDir = join(tmpdir(), 'liaex-uploads', uploadId)
+        await mkdir(uploadDir, { recursive: true })
 
         for await (const part of parts) {
           if (part.type === 'file') {
             // Save file temporarily
-            const uploadId = randomUUID()
-            const uploadDir = join(tmpdir(), 'liaex-uploads', uploadId)
-            await mkdir(uploadDir, { recursive: true })
-
             const filepath = join(uploadDir, part.filename)
             const buffer = await part.toBuffer()
             await writeFile(filepath, buffer)
@@ -93,6 +93,36 @@ export const exportRouter: FastifyPluginAsync = async (fastify) => {
         if (files.length > 0) {
           jobData.source.type = 'upload'
           jobData.source.files = files
+          jobData.source.uploadDir = uploadDir
+
+          // Check if any file is a ZIP - extract it
+          const zipFile = files.find((f) => isZipFile(f.filename))
+          if (zipFile) {
+            fastify.log.info(`Extracting ZIP file: ${zipFile.filename}`)
+
+            // Create extraction directory
+            const extractDir = join(uploadDir, 'extracted')
+            await mkdir(extractDir, { recursive: true })
+
+            // Extract ZIP
+            await extractZip(zipFile.path, extractDir)
+            fastify.log.info(`ZIP extracted to: ${extractDir}`)
+
+            // Find main markdown file
+            const mainMarkdown = await findMainMarkdown(extractDir)
+            if (!mainMarkdown) {
+              return reply.code(400).send({
+                error:
+                  'No markdown file found in ZIP archive. Please include a README.md or any .md file.',
+              })
+            }
+
+            fastify.log.info(`Found main markdown: ${mainMarkdown}`)
+
+            // Update job data with extracted markdown
+            jobData.source.mainFile = mainMarkdown
+            jobData.source.extractedFrom = zipFile.filename
+          }
         } else if (jobData.source.gitUrl) {
           jobData.source.type = 'git'
         } else {
