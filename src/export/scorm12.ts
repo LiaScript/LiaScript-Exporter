@@ -11,39 +11,39 @@ export function help() {
   console.log(COLOR.heading('SCORM settings:'), '\n')
 
   COLOR.info(
-    'SCORM (Sharable Content Object Reference Model) 1.2 & 2004 are standards for e-learning content that can be imported into LMS platforms like Moodle, Blackboard, and others.'
+    'SCORM (Sharable Content Object Reference Model) 1.2 & 2004 are standards for e-learning content that can be imported into LMS platforms like Moodle, Blackboard, and others.',
   )
 
   console.log('\nLearn more: https://scorm.com/scorm-explained/\n')
 
   console.log(
-    'Known SCORM configurations per LMS:\n  https://www.npmjs.com/package/@liascript/exporter#scorm-examples\n'
+    'Known SCORM configurations per LMS:\n  https://www.npmjs.com/package/@liascript/exporter#scorm-examples\n',
   )
 
   https: COLOR.command(
     null,
     '--scorm-organization',
-    '      set the organization title'
+    '      set the organization title',
   )
   COLOR.command(
     null,
     '--scorm-masteryScore',
-    '      set the scorm masteryScore (a value between 0 -- 100), default is 0'
+    '      set the scorm masteryScore (a value between 0 -- 100), default is 0',
   )
   COLOR.command(
     null,
     '--scorm-typicalDuration',
-    '   set the scorm duration, default is PT0H5M0S'
+    '   set the scorm duration, default is PT0H5M0S',
   )
   COLOR.command(
     null,
     '--scorm-iframe',
-    '            use an iframe, when a SCORM starting parameter is not working'
+    '            use an iframe, when a SCORM starting parameter is not working',
   )
   COLOR.command(
     null,
     '--scorm-embed',
-    '             embed the Markdown into the JS code, use in Moodle 4 to handle restrictions with dynamic loading'
+    '             embed the Markdown into the JS code, use in Moodle 4 to handle restrictions with dynamic loading',
   )
 }
 
@@ -92,7 +92,7 @@ export async function exporter(argument: Scorm12ExportArguments, json: any) {
         quiz: json.quiz,
         survey: json.survey,
       }) +
-      ';'
+      ';',
   )
 
   const jsonLD = await RDF.script(argument, json)
@@ -103,7 +103,7 @@ export async function exporter(argument: Scorm12ExportArguments, json: any) {
       'start.html',
       argument.readme,
       jsonLD,
-      argument.style
+      argument.style,
     )
   }
 
@@ -111,7 +111,7 @@ export async function exporter(argument: Scorm12ExportArguments, json: any) {
     index = helper.inject('<script src="course.js"></script>', index, true)
     await helper.writeFile(
       path.join(tmpPath, 'course.js'),
-      'window["liascript_course"] = ' + JSON.stringify(argument['scorm-embed'])
+      'window["liascript_course"] = ' + JSON.stringify(argument['scorm-embed']),
     )
   }
 

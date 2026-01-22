@@ -74,14 +74,14 @@ export class Exporter {
    */
   private setupOutputPort(app: ElmApp, argument: Arguments): void {
     app.ports.output.subscribe((event) => {
-      const [ok, string] = event
+      let [ok, json] = event
 
       if (!ok) {
-        console.warn(string)
+        console.warn('Export failed:', json)
         return
       }
 
-      this.handleExportOutput(argument, string, app)
+      this.handleExportOutput(argument, json, app)
     })
   }
 
@@ -90,43 +90,44 @@ export class Exporter {
    */
   private handleExportOutput(
     argument: Arguments,
-    string: string,
-    app: ElmApp
+    json: any,
+    app: ElmApp,
   ): void {
     switch (argument.format) {
       case ExportFormat.JSON:
       case ExportFormat.FULL_JSON:
-        this.exportJson(argument, string)
+        this.exportJson(argument, json)
         break
       case RDF.format:
-        RDF.exporter(argument, JSON.parse(string))
+        console.warn('exporting RDF...', typeof json)
+        RDF.exporter(argument, json)
         break
       case SCORM12.format:
-        this.exportScorm12(argument, JSON.parse(string))
+        this.exportScorm12(argument, json)
         break
       case SCORM2004.format:
-        this.exportScorm2004(argument, JSON.parse(string))
+        this.exportScorm2004(argument, json)
         break
       case IMS.format:
-        IMS.exporter(argument, JSON.parse(string))
+        IMS.exporter(argument, json)
         break
       case WEB.format:
-        WEB.exporter(argument, JSON.parse(string))
+        WEB.exporter(argument, json)
         break
       case PDF.format:
         PDF.exporter(argument)
         break
       case EPUB.format:
-        EPUB.exporter(argument, JSON.parse(string))
+        EPUB.exporter(argument, json)
         break
       case ANDROID.format:
-        ANDROID.exporter(argument, JSON.parse(string))
+        ANDROID.exporter(argument, json)
         break
       case XAPI.format:
-        XAPI.exporter(argument, JSON.parse(string))
+        XAPI.exporter(argument, json)
         break
       case PROJECT.format:
-        this.handleProjectExport(argument, string, app)
+        this.handleProjectExport(argument, json, app)
         break
       default:
         console.warn('unknown output format', argument.format)
@@ -168,7 +169,7 @@ export class Exporter {
   private handleProjectExport(
     argument: Arguments,
     string: string,
-    app: ElmApp
+    app: ElmApp,
   ): void {
     if (this.collection) {
       try {
@@ -193,7 +194,7 @@ export class Exporter {
    */
   private async initiateExport(
     app: ElmApp,
-    argument: Arguments
+    argument: Arguments,
   ): Promise<void> {
     try {
       const format = this.determineInternalFormat(argument.format)
@@ -240,7 +241,7 @@ export class Exporter {
   private async handleProjectInput(
     app: ElmApp,
     argument: Arguments,
-    format: string
+    format: string,
   ): Promise<void> {
     const file = fs.readFileSync(argument.input, 'utf8')
     this.collection = YAML.parse(file)
@@ -263,7 +264,7 @@ export class Exporter {
   private async handleFileInput(
     app: ElmApp,
     argument: Arguments,
-    format: string
+    format: string,
   ): Promise<void> {
     const data = fs.readFileSync(argument.input, 'utf8')
     this.embed = data
@@ -276,7 +277,7 @@ export class Exporter {
   private async handleUrlInput(
     app: ElmApp,
     argument: Arguments,
-    format: string
+    format: string,
   ): Promise<void> {
     const resp = await fetch(argument.input, {})
     const data = await resp.text()

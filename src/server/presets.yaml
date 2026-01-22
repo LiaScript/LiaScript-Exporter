@@ -23,7 +23,7 @@ presets:
   - id: ilias
     name: ILIAS
     logo: 📚
-    format: scorm12
+    format: scorm1.2
     subtitle: SCORM 1.2
     description: >
       ILIAS ist ein leistungsstarkes Open-Source-LMS aus Deutschland.
@@ -38,7 +38,7 @@ presets:
       typicalDuration: "PT0H5M0S"
       scormIframe: true  # Oft besser für ILIAS
       scormEmbed: false
-      format: scorm12
+      format: scorm1.2
 
   - id: opal
     name: OPAL

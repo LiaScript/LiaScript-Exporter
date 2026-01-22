@@ -4,6 +4,7 @@ import { spawn } from 'child_process'
 import * as path from 'path'
 import * as fs from 'fs-extra'
 import { tmpdir } from 'os'
+import * as YAML from 'yaml'
 
 export interface ExportJob {
   id: string
@@ -33,6 +34,7 @@ export class JobQueue extends EventEmitter {
   private completedJobs: Map<string, ExportJob> = new Map()
   private isProcessing = false
   private maxCompletedJobs = 100 // Keep last 100 completed jobs
+  private presetsConfig: any = null
 
   addJob(jobData: Omit<ExportJob, 'id' | 'status' | 'createdAt'>): {
     jobId: string
@@ -128,9 +130,38 @@ export class JobQueue extends EventEmitter {
     }
   }
 
+  private async loadPresets(): Promise<void> {
+    if (this.presetsConfig) {
+      return // Already loaded
+    }
+
+    try {
+      // Find presets.yaml relative to the dist directory
+      const distServerPath = path.join(__dirname, '..', '..', 'dist', 'server')
+      let presetsPath = path.join(distServerPath, 'presets.yaml')
+
+      // Fallback: try relative to the current working directory
+      try {
+        await fs.readFile(presetsPath, 'utf-8')
+      } catch {
+        presetsPath = path.join(process.cwd(), 'dist', 'server', 'presets.yaml')
+      }
+
+      const presetsContent = await fs.readFile(presetsPath, 'utf-8')
+      this.presetsConfig = YAML.parse(presetsContent)
+      console.log('Loaded presets configuration')
+    } catch (error) {
+      console.error('Failed to load presets:', error)
+      this.presetsConfig = { presets: [] }
+    }
+  }
+
   private async performExport(job: ExportJob): Promise<void> {
     return new Promise(async (resolve, reject) => {
       try {
+        // Load presets if needed
+        await this.loadPresets()
+
         // Determine input file
         let inputFile: string
         if (
@@ -142,7 +173,7 @@ export class JobQueue extends EventEmitter {
           const readmeFile = job.source.files.find(
             (f) =>
               f.filename === 'README.md' ||
-              f.filename.toLowerCase().endsWith('.md')
+              f.filename.toLowerCase().endsWith('.md'),
           )
           inputFile = readmeFile ? readmeFile.path : job.source.files[0].path
         } else if (job.source.type === 'git' && job.source.gitUrl) {
@@ -152,22 +183,38 @@ export class JobQueue extends EventEmitter {
           throw new Error('No valid input source')
         }
 
-        // Determine format based on preset or format
+        // Determine format and options based on preset or format
         let format: string
+        let presetOptions: Record<string, any> = {}
+
         if (job.target.preset) {
-          // Map presets to formats
-          const presetMap: Record<string, string> = {
-            moodle: 'scorm2004',
-            ilias: 'scorm2004',
-            opal: 'scorm2004',
-            generic: 'scorm2004',
-            openolat: 'scorm2004',
-            openedx: 'scorm2004',
+          // Find the preset configuration
+          const preset = this.presetsConfig.presets?.find(
+            (p: any) => p.id === job.target.preset,
+          )
+
+          if (preset) {
+            format = preset.format || 'scorm2004'
+            presetOptions = preset.options || {}
+            console.log(
+              `Using preset '${job.target.preset}' with format '${format}' and options:`,
+              presetOptions,
+            )
+          } else {
+            console.warn(
+              `Preset '${job.target.preset}' not found, using default format`,
+            )
+            format = 'scorm2004'
           }
-          format = presetMap[job.target.preset] || 'scorm2004'
         } else {
           format = job.target.format || 'web'
         }
+
+        // Merge preset options with user-provided options (user options take precedence)
+        const mergedOptions = { ...presetOptions, ...(job.options || {}) }
+
+        // Remove 'format' from options as it's already used to set the --format parameter
+        delete mergedOptions.format
 
         // Create output directory
         const outputDir = path.join(tmpdir(), 'liaex-exports', job.id)
@@ -175,7 +222,7 @@ export class JobQueue extends EventEmitter {
 
         const outputFile = path.join(outputDir, 'export')
 
-        // Convert options to proper types and build CLI arguments
+        // Convert merged options to proper types and build CLI arguments
         const args: string[] = [
           '--input',
           inputFile,
@@ -187,7 +234,7 @@ export class JobQueue extends EventEmitter {
 
         // Define which option prefixes are valid for each format
         const formatOptionPrefixes: Record<string, string[]> = {
-          scorm12: [
+          'scorm1.2': [
             'scorm',
             'mastery',
             'typical',
@@ -219,7 +266,7 @@ export class JobQueue extends EventEmitter {
 
         // Map option names to their CLI equivalents for each format
         const optionMapping: Record<string, (key: string) => string> = {
-          scorm12: (key: string) => {
+          'scorm1.2': (key: string) => {
             // Convert camelCase to kebab-case
             const kebabKey = key.replace(/([A-Z])/g, '-$1').toLowerCase()
             // Add scorm- prefix if not already present and not a general option
@@ -239,7 +286,7 @@ export class JobQueue extends EventEmitter {
             return kebabKey
           },
           scorm2004: (key: string) => {
-            // Same as scorm12
+            // Same as scorm1.2
             const kebabKey = key.replace(/([A-Z])/g, '-$1').toLowerCase()
             if (key === 'masteryScore') return 'scorm-masteryScore'
             if (key === 'typicalDuration') return 'scorm-typicalDuration'
@@ -259,29 +306,54 @@ export class JobQueue extends EventEmitter {
         const validPrefixes = formatOptionPrefixes[format] || []
         const mapper = optionMapping[format] || defaultMapper
 
-        for (const [key, value] of Object.entries(job.options || {})) {
-          // Convert option name to CLI format
-          const mappedKey = mapper(key)
+        for (const [key, value] of Object.entries(mergedOptions)) {
+          // First check if this option is relevant for the current format
+          // by checking the original key name before mapping
+          const lowerKey = key.toLowerCase()
 
-          // Skip if this option doesn't match any valid prefix for this format
+          // Skip options that clearly belong to other formats
           if (validPrefixes.length > 0) {
-            const isValid = validPrefixes.some((prefix) =>
-              mappedKey.startsWith(prefix)
+            const belongsToThisFormat = validPrefixes.some((prefix) =>
+              lowerKey.startsWith(prefix),
             )
-            if (!isValid) {
+
+            // Also check if it's a format-specific option we don't want
+            const belongsToOtherFormat = [
+              'xapi',
+              'web',
+              'pdf',
+              'epub',
+              'android',
+              'ios',
+              'ims',
+              'json',
+              'rdf',
+              'h5p',
+              'app',
+              'package',
+            ].some(
+              (otherPrefix) =>
+                !validPrefixes.includes(otherPrefix) &&
+                lowerKey.startsWith(otherPrefix),
+            )
+
+            if (!belongsToThisFormat || belongsToOtherFormat) {
               continue
             }
           }
 
+          // Convert option name to CLI format
+          const mappedKey = mapper(key)
+
           // Convert to CLI argument
           const cliKey = `--${mappedKey}`
 
-          // Convert string booleans to actual booleans
-          if (value === 'true') {
+          // Handle boolean values (both actual booleans and string booleans)
+          if (value === true || value === 'true') {
             args.push(cliKey)
-          } else if (value === 'false') {
+          } else if (value === false || value === 'false') {
             // Don't add false flags
-          } else if (value) {
+          } else if (value !== undefined && value !== null && value !== '') {
             args.push(cliKey, String(value))
           }
         }
@@ -292,12 +364,13 @@ export class JobQueue extends EventEmitter {
         console.log(
           `Starting export process for job ${
             job.id
-          }: node ${cliPath} ${args.join(' ')}`
+          }: node ${cliPath} ${args.join(' ')}`,
         )
 
         const exportProcess = spawn('node', [cliPath, ...args], {
           stdio: ['ignore', 'pipe', 'pipe'],
           detached: false,
+          cwd: outputDir, // Set working directory to output directory
         })
 
         let stdout = ''
@@ -322,8 +395,8 @@ export class JobQueue extends EventEmitter {
           if (code !== 0) {
             reject(
               new Error(
-                `Export process exited with code ${code}. stderr: ${stderr}`
-              )
+                `Export process exited with code ${code}. stderr: ${stderr}`,
+              ),
             )
             return
           }
@@ -331,27 +404,29 @@ export class JobQueue extends EventEmitter {
           try {
             // Give the export process a moment to finish writing files
             await new Promise((resolveTimeout) =>
-              setTimeout(resolveTimeout, 1000)
+              setTimeout(resolveTimeout, 1000),
             )
 
             // Find the generated output file
+            console.log(`Looking for output files in: ${outputDir}`)
             const files = await fs.readdir(outputDir)
             console.log(`Files in output directory: ${files.join(', ')}`)
 
+            // Look for any output file with the expected extensions
+            // (the exporter may create filenames based on course title/version)
             const outputFileName = files.find(
               (f) =>
-                f.startsWith('export') &&
-                (f.endsWith('.zip') ||
-                  f.endsWith('.html') ||
-                  f.endsWith('.pdf') ||
-                  f.endsWith('.epub'))
+                f.endsWith('.zip') ||
+                f.endsWith('.html') ||
+                f.endsWith('.pdf') ||
+                f.endsWith('.epub'),
             )
 
             if (!outputFileName) {
               throw new Error(
                 `Export completed but no output file was generated. Found files: ${files.join(
-                  ', '
-                )}`
+                  ', ',
+                )} in directory: ${outputDir}`,
               )
             }
 

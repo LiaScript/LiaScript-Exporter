@@ -62,7 +62,7 @@ export const format = 'web'
  */
 export async function exporter(
   argument: WebExportArguments,
-  json: LiaJson
+  json: LiaJson,
 ): Promise<void> {
   const errors: ExportError[] = []
   let tempPath: string | null = null
@@ -83,7 +83,7 @@ export async function exporter(
     const readmePath = await handleReadmeRename(
       tempPath,
       argument.readme,
-      argument['web-indexeddb']
+      argument['web-indexeddb'],
     )
 
     // Read and process index.html
@@ -110,7 +110,7 @@ export async function exporter(
       readmePath,
       jsonLD,
       argument,
-      errors
+      errors,
     )
 
     // Move or zip the output
@@ -135,7 +135,7 @@ export async function exporter(
     throw new Error(
       `Web export failed: ${
         error instanceof Error ? error.message : String(error)
-      }`
+      }`,
     )
   }
 }
@@ -146,7 +146,7 @@ export async function exporter(
 async function copyAssets(
   dirname: string,
   tmpPath: string,
-  useIndexedDB?: boolean | string
+  useIndexedDB?: boolean | string,
 ): Promise<void> {
   const assetsDir = useIndexedDB ? './assets/indexeddb' : './assets/web'
 
@@ -161,7 +161,7 @@ async function copyAssets(
 async function handleReadmeRename(
   tmpPath: string,
   readmePath: string,
-  webIndexedDB?: boolean | string
+  webIndexedDB?: boolean | string,
 ): Promise<string> {
   if (webIndexedDB === undefined) {
     return readmePath
@@ -200,7 +200,7 @@ function injectDefaultCourse(indexContent: string, readmePath: string): string {
 function updateMetadata(
   indexContent: string,
   json: LiaJson,
-  errors: ExportError[]
+  errors: ExportError[],
 ): string {
   let updatedContent = indexContent
 
@@ -210,7 +210,7 @@ function updateMetadata(
     if (title) {
       updatedContent = updatedContent.replace(
         DEFAULT_TITLE_TAG,
-        `<title>${title}</title><meta property="og:title" content="${title}"> <meta name="twitter:title" content="${title}">`
+        `<title>${title}</title><meta property="og:title" content="${title}"> <meta name="twitter:title" content="${title}">`,
       )
       console.log('updating title ...')
     }
@@ -224,7 +224,7 @@ function updateMetadata(
     if (description) {
       updatedContent = updatedContent.replace(
         DEFAULT_DESCRIPTION_META,
-        `<meta name="description" content="${description}"><meta property="og:description" content="${description}"><meta name="twitter:description" content="${description}">`
+        `<meta name="description" content="${description}"><meta property="og:description" content="${description}"><meta name="twitter:description" content="${description}">`,
       )
       console.log('updating description ...')
     }
@@ -238,7 +238,7 @@ function updateMetadata(
     if (logo) {
       updatedContent = helper.inject(
         `<meta property="og:image" content="${logo}"><meta name="twitter:image" content="${logo}">`,
-        updatedContent
+        updatedContent,
       )
       console.log('updating logo ...')
     }
@@ -258,7 +258,7 @@ async function writeOutput(
   readmePath: string,
   jsonLD: string,
   argument: WebExportArguments,
-  errors: ExportError[]
+  errors: ExportError[],
 ): Promise<void> {
   try {
     if (argument['web-iframe']) {
@@ -269,7 +269,7 @@ async function writeOutput(
         readmePath,
         jsonLD,
         argument.style,
-        START_HTML_FILE
+        START_HTML_FILE,
       )
     } else {
       indexContent = helper.inject(jsonLD, indexContent)
@@ -288,14 +288,18 @@ async function writeOutput(
  */
 async function finalizeOutput(
   tmpPath: string,
-  argument: WebExportArguments
+  argument: WebExportArguments,
 ): Promise<void> {
   if (argument['web-zip']) {
     await helper.zip(tmpPath, argument.output)
   } else {
+    // Ensure output directory exists before copying
+    await fs.ensureDir(argument.output)
+
     // Copy with filter, then remove temp
     await fs.copy(tmpPath, argument.output, {
       filter: helper.filterHidden(argument.path),
+      overwrite: true,
     })
     await fs.remove(tmpPath)
   }

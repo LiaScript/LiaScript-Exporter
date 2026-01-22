@@ -35,13 +35,6 @@ interface LiaDefinition {
   }
 }
 
-interface LiaJSON {
-  lia: {
-    str_title: string
-    definition: LiaDefinition
-  }
-}
-
 interface SchemaDoc {
   [key: string]: any
 }
@@ -82,7 +75,7 @@ export function help() {
   console.log(COLOR.heading('RDF settings:'), '\n')
 
   COLOR.info(
-    'RDF (Resource Description Framework) export generates structured metadata for your LiaScript course or your project-yaml in standard linked data formats. This helps with course discovery and enables semantic web applications to understand your content. Available output formats are n-quads and JSON-LD.'
+    'RDF (Resource Description Framework) export generates structured metadata for your LiaScript course or your project-yaml in standard linked data formats. This helps with course discovery and enables semantic web applications to understand your content. Available output formats are n-quads and JSON-LD.',
   )
 
   console.log('\nLearn more:')
@@ -94,37 +87,37 @@ export function help() {
   COLOR.command(
     null,
     '--rdf-format',
-    '              Output format n-quads, json-ld (defaults to json-ld).'
+    '              Output format n-quads, json-ld (defaults to json-ld).',
   )
   COLOR.command(
     null,
     '--rdf-preview',
-    '             Output the result to the console.'
+    '             Output the result to the console.',
   )
   COLOR.command(
     null,
     '--rdf-url',
-    '                 Refer to an external URL when parsing a local project.'
+    '                 Refer to an external URL when parsing a local project.',
   )
   COLOR.command(
     null,
     '--rdf-type',
-    '                Course from schema.org is applied as default, overwrite this with EducationalResource, etc.'
+    '                Course from schema.org is applied as default, overwrite this with EducationalResource, etc.',
   )
   COLOR.command(
     null,
     '--rdf-license',
-    '             Add a license-URL, otherwise if url was provided as input, this will check for an existing LICENSE file.'
+    '             Add a license-URL, otherwise if url was provided as input, this will check for an existing LICENSE file.',
   )
   COLOR.command(
     null,
     '--rdf-educationalLevel',
-    '    Typically beginner, intermediate or advanced, and formal sets of level indicators.'
+    '    Typically beginner, intermediate or advanced, and formal sets of level indicators.',
   )
   COLOR.command(
     null,
     '--rdf-template',
-    '            Use a URL or json-file as a template.'
+    '            Use a URL or json-file as a template.',
   )
 }
 
@@ -147,7 +140,7 @@ export const format = 'rdf'
  */
 export async function exporter(
   argument: RDFArguments,
-  json: LiaJSON
+  json: any,
 ): Promise<void> {
   try {
     let doc = await parse(argument, json)
@@ -166,7 +159,7 @@ export async function exporter(
       } else {
         await fs.writeFile(
           argument.output + '.jsonld',
-          JSON.stringify(doc, null, 2)
+          JSON.stringify(doc, null, 2),
         )
       }
     }
@@ -191,10 +184,11 @@ export async function exporter(
  */
 export async function script(
   argument: RDFArguments,
-  json: LiaJSON
+  json: LiaJSON,
 ): Promise<string> {
   try {
     let doc = await parse(argument, json)
+
     doc = await jsonld.compact(doc, SCHEMA_ORG_CONTEXT)
     doc = clean(doc)
 
@@ -266,11 +260,7 @@ async function loadTemplate(templatePath?: string): Promise<SchemaDoc> {
  * @param json LiaScript JSON data
  * @param rdfType Optional type override from arguments
  */
-function setCoreProperties(
-  doc: SchemaDoc,
-  json: LiaJSON,
-  rdfType?: string
-): void {
+function setCoreProperties(doc: SchemaDoc, json: any, rdfType?: string): void {
   doc[SCHEMA_ORG_PROPS.NAME] = json.lia.str_title
   doc[SCHEMA_ORG_PROPS.TYPE] =
     doc[SCHEMA_ORG_PROPS.TYPE] || rdfType || SCHEMA_TYPES.COURSE
@@ -299,7 +289,7 @@ function resolveBaseURL(input: string, rdfUrl?: string): string | null {
 function setURLProperties(
   doc: SchemaDoc,
   input: string,
-  rdfUrl?: string
+  rdfUrl?: string,
 ): string | null {
   if (helper.isURL(input) || rdfUrl) {
     const urlValue = rdfUrl || input
@@ -323,7 +313,7 @@ async function enrichMetadata(
   doc: SchemaDoc,
   definition: LiaDefinition,
   baseURL: string | null,
-  argument: RDFArguments
+  argument: RDFArguments,
 ): Promise<SchemaDoc> {
   doc = baseInformation(doc, definition)
   doc = langInformation(doc, definition)
@@ -356,9 +346,12 @@ async function enrichMetadata(
  */
 export async function parse(
   argument: RDFArguments,
-  json: LiaJSON
+  json: string,
 ): Promise<SchemaDoc> {
   try {
+    // fix: sometimes json is string
+    if (typeof json === 'string') json = JSON.parse(json)
+
     // Load template if provided
     let doc = await loadTemplate(argument['rdf-template'])
 
@@ -467,7 +460,7 @@ function langInformation(doc: SchemaDoc, definition: LiaDefinition): SchemaDoc {
 function logoInformation(
   doc: SchemaDoc,
   definition: LiaDefinition,
-  baseURL: null | string
+  baseURL: null | string,
 ): SchemaDoc {
   if (definition?.logo) {
     let imageUrl: string | null = null
@@ -503,7 +496,7 @@ function logoInformation(
 async function licenseInformation(
   doc: SchemaDoc,
   argument: RDFArguments,
-  baseURL: null | string
+  baseURL: null | string,
 ): Promise<SchemaDoc> {
   let licenseUrl: string | null = null
 
@@ -515,7 +508,7 @@ async function licenseInformation(
     } catch (error) {
       console.warn(
         'Could not create a URL for the LICENSE file, using base URL as license URL.',
-        baseURL
+        baseURL,
       )
     }
   }
@@ -546,13 +539,16 @@ function clean(obj: any): any {
   if (Array.isArray(obj)) {
     return obj.map((item: any) => clean(item))
   }
-  return Object.keys(obj).reduce((acc: Record<string, any>, key: string) => {
-    const value = obj[key]
-    if (key.startsWith('schema:')) {
-      acc[key.split(':').pop() || key] = value
-    } else {
-      acc[key] = clean(value)
-    }
-    return acc
-  }, {} as Record<string, any>)
+  return Object.keys(obj).reduce(
+    (acc: Record<string, any>, key: string) => {
+      const value = obj[key]
+      if (key.startsWith('schema:')) {
+        acc[key.split(':').pop() || key] = value
+      } else {
+        acc[key] = clean(value)
+      }
+      return acc
+    },
+    {} as Record<string, any>,
+  )
 }
