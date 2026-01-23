@@ -6,7 +6,12 @@ import { randomUUID } from 'crypto'
 import { tmpdir } from 'os'
 import { fileURLToPath } from 'url'
 import * as YAML from 'yaml'
-import { extractZip, findMainMarkdown, isZipFile } from '../utils/zipExtractor'
+import {
+  extractZip,
+  findMainMarkdown,
+  isZipFile,
+  cloneGitRepo,
+} from '../utils/zipExtractor'
 import { dirname } from '../../export/helper'
 
 export const exportRouter: FastifyPluginAsync = async (fastify) => {
@@ -54,7 +59,7 @@ export const exportRouter: FastifyPluginAsync = async (fastify) => {
             // Save file temporarily
             const filepath = join(uploadDir, part.filename)
             const buffer = await part.toBuffer()
-            await writeFile(filepath, buffer)
+            await writeFile(filepath, new Uint8Array(buffer))
 
             files.push({
               filename: part.filename,
@@ -117,7 +122,50 @@ export const exportRouter: FastifyPluginAsync = async (fastify) => {
             jobData.source.extractedFrom = zipFile.filename
           }
         } else if (jobData.source.gitUrl) {
+          // Handle git repository cloning
           jobData.source.type = 'git'
+
+          fastify.log.info(`Cloning git repository: ${jobData.source.gitUrl}`)
+
+          // Create clone directory
+          const cloneId = randomUUID()
+          const cloneDir = join(tmpdir(), 'liaex-git', cloneId)
+          await mkdir(cloneDir, { recursive: true })
+
+          try {
+            // Clone the repository
+            const repoPath = await cloneGitRepo(
+              jobData.source.gitUrl,
+              cloneDir,
+              jobData.source.gitBranch,
+              jobData.source.gitSubdir,
+            )
+
+            fastify.log.info(`Git repository cloned to: ${repoPath}`)
+
+            // Find main markdown file
+            const mainMarkdown = await findMainMarkdown(repoPath)
+            if (!mainMarkdown) {
+              return reply.code(400).send({
+                error:
+                  'No markdown file found in Git repository. Please include a README.md or any .md file.',
+              })
+            }
+
+            fastify.log.info(`Found main markdown: ${mainMarkdown}`)
+
+            // Update job data with cloned repo information
+            jobData.source.mainFile = mainMarkdown
+            jobData.source.cloneDir = cloneDir
+            jobData.source.repoPath = repoPath
+          } catch (error: any) {
+            fastify.log.error(
+              `Failed to clone git repository: ${error.message}`,
+            )
+            return reply.code(400).send({
+              error: `Failed to clone git repository: ${error.message}`,
+            })
+          }
         } else {
           return reply.code(400).send({
             error: 'No files uploaded and no git URL provided',

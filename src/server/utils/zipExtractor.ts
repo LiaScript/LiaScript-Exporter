@@ -1,7 +1,11 @@
 import { createReadStream } from 'fs'
-import { readdir, stat } from 'fs/promises'
+import { readdir, stat, rm } from 'fs/promises'
 import { join, extname } from 'path'
 import unzipper from 'unzipper'
+import { exec } from 'child_process'
+import { promisify } from 'util'
+
+const execAsync = promisify(exec)
 
 /**
  * Extracts a ZIP file to a target directory
@@ -90,4 +94,62 @@ export async function findMainMarkdown(dir: string): Promise<string | null> {
  */
 export function isZipFile(filename: string): boolean {
   return extname(filename).toLowerCase() === '.zip'
+}
+
+/**
+ * Clones a Git repository to a target directory
+ * @param gitUrl Git repository URL
+ * @param cloneDir Directory where to clone the repository
+ * @param branch Optional branch or tag to checkout (defaults to 'main')
+ * @param subdir Optional subdirectory within the repo to use as root
+ * @returns Path to the cloned directory (including subdir if specified)
+ */
+export async function cloneGitRepo(
+  gitUrl: string,
+  cloneDir: string,
+  branch?: string,
+  subdir?: string,
+): Promise<string> {
+  try {
+    // Build git clone command
+    const branchArg = branch ? `--branch ${branch}` : ''
+    const cmd = `git clone --depth 1 ${branchArg} "${gitUrl}" "${cloneDir}"`
+
+    console.log(`Cloning git repository: ${cmd}`)
+    const { stdout, stderr } = await execAsync(cmd)
+
+    if (stderr && !stderr.includes('Cloning into')) {
+      console.warn('Git clone warnings:', stderr)
+    }
+    if (stdout) {
+      console.log('Git clone output:', stdout)
+    }
+
+    // If subdirectory specified, return the full path to it
+    const finalPath = subdir ? join(cloneDir, subdir) : cloneDir
+
+    // Verify the path exists
+    try {
+      await stat(finalPath)
+    } catch (error) {
+      throw new Error(`Subdirectory '${subdir}' not found in cloned repository`)
+    }
+
+    return finalPath
+  } catch (error: any) {
+    console.error('Git clone failed:', error)
+    throw new Error(`Failed to clone git repository: ${error.message}`)
+  }
+}
+
+/**
+ * Removes a directory and all its contents
+ * @param dir Directory to remove
+ */
+export async function removeDirectory(dir: string): Promise<void> {
+  try {
+    await rm(dir, { recursive: true, force: true })
+  } catch (error) {
+    console.warn(`Failed to remove directory ${dir}:`, error)
+  }
 }

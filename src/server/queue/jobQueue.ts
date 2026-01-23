@@ -5,6 +5,7 @@ import * as path from 'path'
 import * as fs from 'fs-extra'
 import { tmpdir } from 'os'
 import * as YAML from 'yaml'
+import { removeDirectory } from '../utils/zipExtractor'
 
 export interface ExportJob {
   id: string
@@ -183,8 +184,13 @@ export class JobQueue extends EventEmitter {
             inputFile = readmeFile ? readmeFile.path : job.source.files[0].path
           }
         } else if (job.source.type === 'git' && job.source.gitUrl) {
-          // For git repos, we'd need to clone first - not implemented yet
-          throw new Error('Git repository export not yet implemented')
+          // Use main file from cloned git repository
+          if ((job.source as any).mainFile) {
+            inputFile = (job.source as any).mainFile
+            console.log(`Using main markdown from Git: ${inputFile}`)
+          } else {
+            throw new Error('No main file found in Git repository')
+          }
         } else {
           throw new Error('No valid input source')
         }
@@ -445,6 +451,32 @@ export class JobQueue extends EventEmitter {
             }
 
             console.log(`Export completed: ${job.id} -> ${outputPath}`)
+
+            // Cleanup temporary directories
+            try {
+              // Clean up git clone directory if it exists
+              if (job.source.type === 'git' && (job.source as any).cloneDir) {
+                console.log(
+                  `Cleaning up git clone: ${(job.source as any).cloneDir}`,
+                )
+                await removeDirectory((job.source as any).cloneDir)
+              }
+
+              // Clean up upload directory if it exists
+              if (
+                job.source.type === 'upload' &&
+                (job.source as any).uploadDir
+              ) {
+                console.log(
+                  `Cleaning up upload directory: ${(job.source as any).uploadDir}`,
+                )
+                await removeDirectory((job.source as any).uploadDir)
+              }
+            } catch (cleanupError) {
+              console.warn(`Cleanup warning for job ${job.id}:`, cleanupError)
+              // Don't fail the job if cleanup fails
+            }
+
             resolve()
           } catch (error) {
             reject(error)
@@ -452,6 +484,22 @@ export class JobQueue extends EventEmitter {
         })
       } catch (error) {
         console.error(`Export failed for job ${job.id}:`, error)
+
+        // Cleanup on error as well
+        try {
+          if (job.source.type === 'git' && (job.source as any).cloneDir) {
+            await removeDirectory((job.source as any).cloneDir)
+          }
+          if (job.source.type === 'upload' && (job.source as any).uploadDir) {
+            await removeDirectory((job.source as any).uploadDir)
+          }
+        } catch (cleanupError) {
+          console.warn(
+            `Cleanup error after failed job ${job.id}:`,
+            cleanupError,
+          )
+        }
+
         reject(error)
       }
     })
