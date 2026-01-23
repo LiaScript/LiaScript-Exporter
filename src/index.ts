@@ -13,9 +13,14 @@ import XMLHttpRequest from 'xhr2'
 import minimist from 'minimist'
 
 import { displayHelp } from './cli'
-import { parseArguments, validateAndNormalize } from './parser'
+import {
+  parseArguments,
+  validateAndNormalize,
+  parsePresetsArguments,
+} from './parser'
 import { Exporter } from './exporter'
 import { startServer } from './server/server'
+import * as PRESETS from './export/presets'
 
 // Setup global XMLHttpRequest for Node.js environment
 global.XMLHttpRequest = XMLHttpRequest
@@ -36,6 +41,9 @@ async function main(): Promise<void> {
     console.log('version:', packageJson.version)
   } else if (argv.h || argv.help) {
     displayHelp()
+  } else if ((argv.f || argv.format) === 'presets') {
+    // Handle presets mode
+    handlePresetsMode()
   } else if (argv.i || argv.input) {
     const args = parseArguments()
     const validatedArgs = validateAndNormalize(args)
@@ -44,6 +52,40 @@ async function main(): Promise<void> {
   } else {
     console.warn('No input defined')
     displayHelp()
+  }
+}
+
+/**
+ * Handle preset mode operations
+ */
+async function handlePresetsMode(): Promise<void> {
+  // Get all remaining arguments as potential preset IDs
+  const presetFlags = Object.keys(argv).filter(
+    (key) =>
+      key !== '_' &&
+      key !== 'f' &&
+      key !== 'format' &&
+      key !== 'o' &&
+      key !== 'output' &&
+      key !== 'i' &&
+      key !== 'input',
+  )
+
+  // Check if a preset ID is specified (as a flag like --moodle4x-scorm2004)
+  const presetId = presetFlags.length > 0 ? presetFlags[0] : null
+
+  if (!presetId) {
+    // No preset specified, list all presets
+    PRESETS.listPresets()
+  } else if (!argv.i && !argv.input) {
+    // Preset specified but no input file, show preset configuration
+    PRESETS.showPresetConfig(presetId)
+  } else {
+    // Preset specified with input file, execute export with preset
+    const args = parsePresetsArguments(presetId)
+    const validatedArgs = validateAndNormalize(args)
+    const exporter = new Exporter()
+    await exporter.run(validatedArgs)
   }
 }
 

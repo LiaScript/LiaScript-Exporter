@@ -7,6 +7,7 @@ import * as EPUB from './export/epub'
 import * as PROJECT from './export/project'
 import * as RDF from './export/rdf'
 import * as XAPI from './export/xapi'
+import * as PRESETS from './export/presets'
 
 /**
  * Displays comprehensive help information for all export formats
@@ -15,7 +16,7 @@ export function displayHelp(): void {
   console.log(COLOR.heading('LiaScript-Exporter'))
   console.log('')
   COLOR.info(
-    'Export your LiaScript Markdown files to different formats. The following commandline options are available. Based on the selected output format, additional options can be used.'
+    'Export your LiaScript Markdown files to different formats. The following commandline options are available. Based on the selected output format, additional options can be used.',
   )
   console.log('')
 
@@ -25,22 +26,22 @@ export function displayHelp(): void {
   COLOR.command(
     '-p',
     '--path',
-    'path to be packed, if not set, the path of the input file is used'
+    'path to be packed, if not set, the path of the input file is used',
   )
   COLOR.command(
     '-o',
     '--output',
-    'output file name (default is output), the ending is define by the format'
+    'output file name (default is output), the ending is define by the format',
   )
   COLOR.command(
     '-s',
     '--style',
-    'additional styling to passed to the export, can be used for fixes, such as "height: 100vh; width: 100%; border: 2px;"'
+    'additional styling to passed to the export, can be used for fixes, such as "height: 100vh; width: 100%; border: 2px;"',
   )
   COLOR.command(
     '-f',
     '--format',
-    'scorm1.2, scorm2004, json, fullJson, web, ims, pdf, epub, android, linkedData (default is json)'
+    'scorm1.2, scorm2004, json, fullJson, web, ims, pdf, epub, android, linkedData, presets (default is json)',
   )
   COLOR.command('-v', '--version', 'output the current version')
 
@@ -49,11 +50,12 @@ export function displayHelp(): void {
   COLOR.command(
     'serve',
     '[--port PORT]',
-    'Start the export server with web interface (default port: 3000)'
+    'Start the export server with web interface (default port: 3000)',
   )
 
   COLOR.command('\n-k', '--key', 'responsive voice key ')
 
+  PRESETS.help()
   SCORM12.help()
   IMS.help()
   ANDROID.help()

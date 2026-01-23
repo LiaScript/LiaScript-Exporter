@@ -50,3 +50,33 @@ export interface ElmPorts {
 export interface ProjectCollection {
   [key: string]: unknown
 }
+
+/**
+ * Preset configuration structure
+ */
+export interface PresetOptions {
+  format?: string
+  responsiveVoice?: boolean
+  translateWithGoogle?: boolean
+  debugging?: boolean
+  removeBase?: boolean
+  scormOrganization?: string
+  typicalDuration?: string
+  scormIframe?: boolean
+  scormEmbed?: boolean
+  [key: string]: any
+}
+
+export interface Preset {
+  id: string
+  name: string
+  logo: string
+  format: string
+  subtitle: string
+  description: string
+  options: PresetOptions
+}
+
+export interface PresetsConfig {
+  presets: Preset[]
+}
