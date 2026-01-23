@@ -5,9 +5,9 @@ import { join, basename } from 'path'
 import { randomUUID } from 'crypto'
 import { tmpdir } from 'os'
 import { fileURLToPath } from 'url'
-import { dirname } from 'path'
 import * as YAML from 'yaml'
 import { extractZip, findMainMarkdown, isZipFile } from '../utils/zipExtractor'
+import { dirname } from '../../export/helper'
 
 export const exportRouter: FastifyPluginAsync = async (fastify) => {
   // GET /api/presets - Get available presets configuration
@@ -16,15 +16,8 @@ export const exportRouter: FastifyPluginAsync = async (fastify) => {
       // Find presets.yaml relative to the dist directory
       // When bundled by Parcel, __dirname points to the src directory
       // We need to go up and find the dist/server directory
-      const distServerPath = join(__dirname, '..', '..', 'dist', 'server')
+      const distServerPath = join(dirname(), 'server')
       let presetsPath = join(distServerPath, 'presets.yaml')
-
-      // Fallback: try relative to the current working directory
-      try {
-        await readFile(presetsPath, 'utf-8')
-      } catch {
-        presetsPath = join(process.cwd(), 'dist', 'server', 'presets.yaml')
-      }
 
       const presetsContent = await readFile(presetsPath, 'utf-8')
       const presets = YAML.parse(presetsContent)

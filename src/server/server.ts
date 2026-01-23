@@ -5,6 +5,7 @@ import { join, dirname } from 'path'
 import { fileURLToPath } from 'url'
 import { exportRouter } from './routes/export'
 import { JobQueue } from './queue/jobQueue'
+import { existsSync } from 'fs'
 
 export const jobQueue = new JobQueue()
 
@@ -32,7 +33,20 @@ export async function startServer(port: number = 3000): Promise<void> {
   // Serve static files (HTML, CSS, JS)
   // In development, public is in src/server/public
   // In production (built), it will be in dist/server/public
-  const publicDir = join(__dirname, 'public')
+  // In Docker/production, public is in liascript-exporter/server/public
+  // In development, fallback to src/server/public
+  const distPublicDir = join(
+    process.cwd(),
+    'liascript-exporter',
+    'server',
+    'public',
+  )
+  const fallbackPublicDir = join(__dirname, 'public')
+  const publicDir = existsSync(distPublicDir)
+    ? distPublicDir
+    : fallbackPublicDir
+
+  console.log('Serving static files from:', publicDir)
 
   await fastify.register(fastifyStatic, {
     root: publicDir,

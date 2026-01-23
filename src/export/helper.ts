@@ -36,10 +36,14 @@ export function tmpDir(): Promise<string> {
 
 /**
  * Returns the absolute path to the distribution directory.
- * @returns The path to the dist directory
+ * @returns The path to the dist directory (where index.js is located)
  */
 export function dirname(): string {
-  return path.join(__dirname, DIST_DIR_RELATIVE_PATH)
+  // Get the directory where the main entry point (index.js) is located
+  // This works both in Docker and locally because it's relative to the actual running file
+  const mainFile = require.main?.filename || process.argv[1]
+
+  return path.dirname(mainFile)
 }
 
 /**
@@ -72,7 +76,7 @@ export function writeFile(filename: string, content: string): Promise<string> {
  * @returns A filter function that returns false for hidden folders and node_modules
  */
 export function filterHidden(
-  sourceDir: string
+  sourceDir: string,
 ): (src: string, dest: string) => boolean {
   return function (src: string, dest: string): boolean {
     // Get the relative path of the source folder being copied
@@ -107,7 +111,7 @@ export function filterHidden(
 export function injectResponsivevoice(key: string, into: string): string {
   return inject(
     `<script src="https://code.responsivevoice.org/responsivevoice.js?key=${key}"></script>`,
-    into
+    into,
   )
 }
 
@@ -120,7 +124,7 @@ export function injectResponsivevoice(key: string, into: string): string {
 export function inject(
   element: string,
   into: string,
-  head: boolean = false
+  head: boolean = false,
 ): string {
   return head
     ? into.replace('<head>', '<head>' + element)
@@ -156,7 +160,7 @@ export async function iframe(
   readme: string,
   jsonLD: string,
   style?: string,
-  index?: string
+  index?: string,
 ): Promise<string> {
   await writeFile(
     path.join(tmpPath, filename),
@@ -185,7 +189,7 @@ export async function iframe(
 
     </body>
     </html> 
-    `)
+    `),
   )
 
   return 'ok'
@@ -200,7 +204,7 @@ export async function iframe(
 export async function zip(dir: string, filename: string): Promise<void> {
   return new Promise((resolve, reject) => {
     const output = fs.createWriteStream(
-      path.dirname(filename) + '/' + path.basename(filename + '.zip')
+      path.dirname(filename) + '/' + path.basename(filename + '.zip'),
     )
 
     const archive = archiver('zip', {
@@ -212,7 +216,7 @@ export async function zip(dir: string, filename: string): Promise<void> {
     output.on('close', function () {
       console.log(archive.pointer() + ' total bytes')
       console.log(
-        'archiver has been finalized and the output file descriptor has closed.'
+        'archiver has been finalized and the output file descriptor has closed.',
       )
       resolve()
     })
@@ -275,7 +279,7 @@ export function getRepository(raw_url: string): {
   cmd: string
 } | null {
   const match = raw_url.match(
-    /raw\.githubusercontent\.com\/([^\/]+)\/([^\/]+)\/(?:refs\/heads\/)?([^\/]+)\/(.*)/i
+    /raw\.githubusercontent\.com\/([^\/]+)\/([^\/]+)\/(?:refs\/heads\/)?([^\/]+)\/(.*)/i,
   )
 
   if (match?.length === 5) {
