@@ -69,13 +69,14 @@ RUN CHROME_PATH=$(find /root/.cache/puppeteer -name chrome -type f | head -n 1) 
 
 COPY dist/ liascript-exporter/
 
-EXPOSE 4000
-
 # Create entrypoint script that sources the environment
 RUN echo '#!/bin/sh\n\
     export PUPPETEER_EXECUTABLE_PATH=$(find /root/.cache/puppeteer -name chrome -type f | head -n 1)\n\
     exec node liascript-exporter/index.js "$@"' > /entrypoint.sh && \
     chmod +x /entrypoint.sh
 
+EXPOSE 4000
+
 ENTRYPOINT ["/entrypoint.sh"]
+
 CMD ["serve", "--port", "4000"]
