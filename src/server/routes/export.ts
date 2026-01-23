@@ -19,10 +19,9 @@ export const exportRouter: FastifyPluginAsync = async (fastify) => {
   fastify.get('/presets', async (request, reply) => {
     try {
       // Find presets.yaml relative to the dist directory
-      // When bundled by Parcel, __dirname points to the src directory
-      // We need to go up and find the dist/server directory
-      const distServerPath = join(dirname(), 'server')
-      let presetsPath = join(distServerPath, 'presets.yaml')
+      // The file is in src/ and gets copied to dist/ during build
+      const distPath = dirname()
+      let presetsPath = join(distPath, 'presets.yaml')
 
       const presetsContent = await readFile(presetsPath, 'utf-8')
       const presets = YAML.parse(presetsContent)

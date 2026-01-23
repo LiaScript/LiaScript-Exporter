@@ -138,14 +138,15 @@ export class JobQueue extends EventEmitter {
 
     try {
       // Find presets.yaml relative to the dist directory
-      const distServerPath = path.join(__dirname, '..', '..', 'dist', 'server')
-      let presetsPath = path.join(distServerPath, 'presets.yaml')
+      // The file is in src/ and gets copied to dist/ during build
+      const distPath = path.join(__dirname, '..', '..', 'dist')
+      let presetsPath = path.join(distPath, 'presets.yaml')
 
       // Fallback: try relative to the current working directory
       try {
         await fs.readFile(presetsPath, 'utf-8')
       } catch {
-        presetsPath = path.join(process.cwd(), 'dist', 'server', 'presets.yaml')
+        presetsPath = path.join(process.cwd(), 'dist', 'presets.yaml')
       }
 
       const presetsContent = await fs.readFile(presetsPath, 'utf-8')
