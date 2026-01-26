@@ -1,0 +1,17 @@
+# Electron build artifacts
+release/
+dist-electron/
+
+# macOS specific
+*.icns.tmp
+build/*.icns
+
+# Windows specific  
+build/*.ico
+
+# Linux icons generated
+build/icons/
+
+# Temporary files
+*.log
+.DS_Store

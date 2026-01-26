@@ -9,18 +9,23 @@ import { existsSync } from 'fs'
 
 export const jobQueue = new JobQueue()
 
-export async function startServer(port: number = 3000): Promise<void> {
-  const fastify = Fastify({
-    logger: {
-      level: 'info',
-      transport: {
-        target: 'pino-pretty',
-        options: {
-          translateTime: 'HH:MM:ss Z',
-          ignore: 'pid,hostname',
+export async function startServer(port: number = 3000, returnInstance: boolean = false): Promise<any> {
+  // Use pretty logging only in development when pino-pretty is available
+  const loggerConfig = process.env.NODE_ENV === 'development' 
+    ? {
+        level: 'info',
+        transport: {
+          target: 'pino-pretty',
+          options: {
+            translateTime: 'HH:MM:ss Z',
+            ignore: 'pid,hostname',
+          },
         },
-      },
-    },
+      }
+    : { level: 'info' };
+
+  const fastify = Fastify({
+    logger: loggerConfig,
   })
 
   // Register plugins
@@ -68,12 +73,22 @@ export async function startServer(port: number = 3000): Promise<void> {
 
   try {
     await fastify.listen({ port, host: '0.0.0.0' })
+    
+    // Get the actual port (important when port is 0 for auto-assignment)
+    const actualPort = (fastify.server.address() as any).port
+    
+    // Return the instance if requested (for Electron), otherwise just log
+    if (returnInstance) {
+      console.log(`Server started on http://localhost:${actualPort}`)
+      return fastify
+    }
+    
     console.log(`
 ╔═══════════════════════════════════════════════════════╗
 ║                                                       ║
 ║   🚀 LiaScript Export Server                         ║
 ║                                                       ║
-║   📍 http://localhost:${port.toString().padEnd(4)}                         ║
+║   📍 http://localhost:${actualPort.toString().padEnd(4)}                         ║
 ║                                                       ║
 ║   Press Ctrl+C to stop the server                    ║
 ║                                                       ║

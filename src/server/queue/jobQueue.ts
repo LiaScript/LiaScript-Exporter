@@ -372,8 +372,17 @@ export class JobQueue extends EventEmitter {
         }
 
         // Run export in separate process using the CLI
-        // Use the current process's argv[1] which is the path to dist/index.js
-        const cliPath = process.argv[1]
+        let cliPath: string
+        if (process.versions.electron) {
+          // In Electron, CLI is in app.asar.unpacked/dist/index.js
+          const appPath = (process as any).resourcesPath || path.join(__dirname, '../..')
+          cliPath = path.join(appPath, 'app.asar.unpacked', 'dist', 'index.js')
+          console.log(`Electron CLI path: ${cliPath}`)
+        } else {
+          // Standalone Node.js server
+          cliPath = process.argv[1]
+        }
+        
         console.log(
           `Starting export process for job ${
             job.id
@@ -384,6 +393,11 @@ export class JobQueue extends EventEmitter {
           stdio: ['ignore', 'pipe', 'pipe'],
           detached: false,
           cwd: outputDir, // Set working directory to output directory
+          env: {
+            ...process.env,
+            // Ensure we don't pass Electron-specific env vars
+            ELECTRON_RUN_AS_NODE: undefined,
+          }
         })
 
         let stdout = ''

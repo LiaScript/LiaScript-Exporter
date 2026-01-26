@@ -19,15 +19,38 @@ export const exportRouter: FastifyPluginAsync = async (fastify) => {
   fastify.get('/presets', async (request, reply) => {
     try {
       // Find presets.yaml relative to the dist directory
-      // The file is in src/ and gets copied to dist/ during build
-      const distPath = dirname()
-      let presetsPath = join(distPath, 'presets.yaml')
+      let presetsPath: string
+      
+      if (process.versions.electron) {
+        // In Electron, presets are in app.asar.unpacked/dist/server/
+        const resourcesPath = (process as any).resourcesPath || join(__dirname, '../..')
+        presetsPath = join(resourcesPath, 'app.asar.unpacked', 'dist', 'server', 'presets.yaml')
+      } else {
+        // Normal Node.js server mode - dist/server/presets.yaml
+        const distServerPath = join(__dirname, '..', '..', 'dist', 'server')
+        presetsPath = join(distServerPath, 'presets.yaml')
+
+        // Fallback: try relative to __dirname (when already in dist/server)
+        try {
+          await readFile(presetsPath, 'utf-8')
+        } catch {
+          presetsPath = join(__dirname, 'presets.yaml')
+        }
+
+        // Final fallback: try relative to the current working directory
+        try {
+          await readFile(presetsPath, 'utf-8')
+        } catch {
+          presetsPath = join(process.cwd(), 'dist', 'server', 'presets.yaml')
+        }
+      }
 
       const presetsContent = await readFile(presetsPath, 'utf-8')
       const presets = YAML.parse(presetsContent)
       return { presets: presets.presets }
     } catch (error) {
       console.error('Failed to load presets:', error)
+      console.error('Attempted path:', (error as any).path)
       return reply
         .code(500)
         .send({ error: 'Failed to load presets configuration' })

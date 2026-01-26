@@ -4,3 +4,17 @@ dist/index.js.map
 node_modules
 build
 ignore
+
+# Electron build artifacts
+release/
+dist-electron/
+electron/build/*.icns
+electron/build/*.ico
+electron/build/icons/*.png
+electron/build/*.bmp
+
+# Electron debug logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
