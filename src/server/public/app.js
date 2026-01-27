@@ -130,21 +130,53 @@ function initializeExportTabs() {
 // File upload handling
 function initializeUpload() {
   const uploadArea = document.getElementById('uploadArea')
-  const fileInput = document.getElementById('fileInput')
+
+  // Check if running in Electron
+  const isElectron = window.electronAPI !== undefined
 
   // Click to select files
-  uploadArea.addEventListener('click', (e) => {
-    if (e.target !== fileInput) {
+  uploadArea.addEventListener('click', async (e) => {
+    if (isElectron) {
+      // Use Electron's native file dialog
+      try {
+        const result = await window.electronAPI.openFileDialog()
+        if (!result.canceled && result.files && result.files.length > 0) {
+          // Convert base64 content back to File objects
+          const files = result.files.map(fileData => {
+            // Decode base64 to binary
+            const binaryString = atob(fileData.content)
+            const bytes = new Uint8Array(binaryString.length)
+            for (let i = 0; i < binaryString.length; i++) {
+              bytes[i] = binaryString.charCodeAt(i)
+            }
+            // Create File object
+            return new File([bytes], fileData.name, {
+              type: fileData.type,
+              lastModified: fileData.lastModified
+            })
+          })
+          handleFiles(files)
+        }
+      } catch (error) {
+        console.error('Error opening file dialog:', error)
+        alert('Fehler beim Öffnen des Dateiauswahl-Dialogs')
+      }
+    } else {
+      // Fallback: create temporary file input for browser mode
+      const fileInput = document.createElement('input')
+      fileInput.type = 'file'
+      fileInput.multiple = true
+      fileInput.style.display = 'none'
+      fileInput.addEventListener('change', (e) => {
+        handleFiles(e.target.files)
+        document.body.removeChild(fileInput)
+      })
+      document.body.appendChild(fileInput)
       fileInput.click()
     }
   })
 
-  // File selection
-  fileInput.addEventListener('change', (e) => {
-    handleFiles(e.target.files)
-  })
-
-  // Drag and drop
+  // Drag and drop (works in both Electron and browser)
   uploadArea.addEventListener('dragover', (e) => {
     e.preventDefault()
     uploadArea.classList.add('drag-over')

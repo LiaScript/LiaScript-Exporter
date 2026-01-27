@@ -147,10 +147,10 @@
   "compression": "normal",
   "asar": true,
   "asarUnpack": [
-    "dist/**/*",
-    "electron/**/*",
+    "node_modules/**/*",
     "src/**/*",
     "tsconfig.json",
-    "node_modules/**/*"
+    "dist/**/*",
+    "electron/**/*"
   ]
 }

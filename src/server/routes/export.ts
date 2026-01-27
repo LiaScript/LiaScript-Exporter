@@ -18,39 +18,56 @@ export const exportRouter: FastifyPluginAsync = async (fastify) => {
   // GET /api/presets - Get available presets configuration
   fastify.get('/presets', async (request, reply) => {
     try {
-      // Find presets.yaml relative to the dist directory
-      let presetsPath: string
+      let presetsPath: string = ''
       
       if (process.versions.electron) {
-        // In Electron, presets are in app.asar.unpacked/dist/server/
-        const resourcesPath = (process as any).resourcesPath || join(__dirname, '../..')
-        presetsPath = join(resourcesPath, 'app.asar.unpacked', 'dist', 'server', 'presets.yaml')
-      } else {
-        // Normal Node.js server mode - dist/server/presets.yaml
-        const distServerPath = join(__dirname, '..', '..', 'dist', 'server')
-        presetsPath = join(distServerPath, 'presets.yaml')
-
-        // Fallback: try relative to __dirname (when already in dist/server)
-        try {
-          await readFile(presetsPath, 'utf-8')
-        } catch {
-          presetsPath = join(__dirname, 'presets.yaml')
+        // In Electron, check if we're in dev or production
+        // In dev mode (ts-node), __dirname will be src/server/routes
+        // In production, __dirname will be app.asar/dist
+        const isDev = __dirname.includes('src/server')
+        
+        if (isDev) {
+          // Development mode: use source file
+          presetsPath = join(__dirname, '..', '..', 'presets.yaml')
+        } else {
+          // Production mode: use unpacked file
+          const resourcesPath = (process as any).resourcesPath || join(__dirname, '../..')
+          presetsPath = join(resourcesPath, 'app.asar.unpacked', 'dist', 'presets.yaml')
         }
-
-        // Final fallback: try relative to the current working directory
-        try {
-          await readFile(presetsPath, 'utf-8')
-        } catch {
-          presetsPath = join(process.cwd(), 'dist', 'server', 'presets.yaml')
+      } else {
+        // Standalone Node.js mode - try multiple locations
+        const possiblePaths = [
+          join(__dirname, 'presets.yaml'), // Production: dist/
+          join(__dirname, '..', '..', 'presets.yaml'), // Development: src/server/routes/
+          join(process.cwd(), 'dist', 'presets.yaml'), // Fallback
+          join(process.cwd(), 'src', 'presets.yaml'), // Fallback
+        ]
+        
+        for (const path of possiblePaths) {
+          try {
+            await readFile(path, 'utf-8')
+            presetsPath = path
+            break
+          } catch {
+            // Try next path
+          }
+        }
+        
+        if (!presetsPath) {
+          presetsPath = possiblePaths[0]
         }
       }
 
       const presetsContent = await readFile(presetsPath, 'utf-8')
       const presets = YAML.parse(presetsContent)
+      
+      if (!presets || !presets.presets) {
+        throw new Error('Invalid presets file structure')
+      }
+      
       return { presets: presets.presets }
     } catch (error) {
       console.error('Failed to load presets:', error)
-      console.error('Attempted path:', (error as any).path)
       return reply
         .code(500)
         .send({ error: 'Failed to load presets configuration' })

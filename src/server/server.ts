@@ -36,20 +36,27 @@ export async function startServer(port: number = 3000, returnInstance: boolean =
   })
 
   // Serve static files (HTML, CSS, JS)
-  // In development, public is in src/server/public
-  // In production (built), it will be in dist/server/public
-  // In Docker/production, public is in liascript-exporter/server/public
-  // In development, fallback to src/server/public
-  const distPublicDir = join(
-    process.cwd(),
-    'liascript-exporter',
-    'server',
-    'public',
-  )
-  const fallbackPublicDir = join(__dirname, 'public')
-  const publicDir = existsSync(distPublicDir)
-    ? distPublicDir
-    : fallbackPublicDir
+  // Handle ASAR unpacked files for Electron builds
+  let publicDir: string
+  
+  // Check if running from ASAR
+  if (__dirname.includes('app.asar')) {
+    // Replace app.asar with app.asar.unpacked for unpacked files
+    publicDir = __dirname.replace('app.asar', 'app.asar.unpacked') + '/public'
+    console.log('Running from ASAR, using unpacked path:', publicDir)
+  } else {
+    // Not in ASAR, try multiple locations
+    const possibleDirs = [
+      // For development
+      join(__dirname, 'public'),
+      // For production Docker/standalone
+      join(process.cwd(), 'liascript-exporter', 'server', 'public'),
+      // Fallback
+      join(process.cwd(), 'server', 'public')
+    ]
+    
+    publicDir = possibleDirs.find(dir => existsSync(dir)) || join(__dirname, 'public')
+  }
 
   console.log('Serving static files from:', publicDir)
 

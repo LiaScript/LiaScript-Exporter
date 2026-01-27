@@ -19,6 +19,9 @@ contextBridge.exposeInMainWorld('electronAPI', {
     chrome: process.versions.chrome,
     electron: process.versions.electron,
   },
+  
+  // File dialog
+  openFileDialog: () => ipcRenderer.invoke('dialog:openFile'),
 });
 
 // Log that the preload script has loaded

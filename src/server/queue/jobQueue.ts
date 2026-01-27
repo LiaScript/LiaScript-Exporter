@@ -374,10 +374,32 @@ export class JobQueue extends EventEmitter {
         // Run export in separate process using the CLI
         let cliPath: string
         if (process.versions.electron) {
-          // In Electron, CLI is in app.asar.unpacked/dist/index.js
-          const appPath = (process as any).resourcesPath || path.join(__dirname, '../..')
-          cliPath = path.join(appPath, 'app.asar.unpacked', 'dist', 'index.js')
-          console.log(`Electron CLI path: ${cliPath}`)
+          // In Electron, check if we're in dev or production
+          const isDev = (__dirname.includes('src/server') || __dirname.includes('src\\server')) && 
+                        !__dirname.includes('app.asar')
+          
+          if (isDev) {
+            // Development mode: use built CLI from dist
+            cliPath = path.join(process.cwd(), 'dist', 'index.js')
+          } else {
+            // Production mode: running from ASAR
+            // Find the resources directory and build path to unpacked dist/index.js
+            let basePath = __dirname.replace(/app\.asar([/\\]|$)/, 'app.asar.unpacked$1')
+            const resourcesIndex = basePath.indexOf('resources')
+            
+            if (resourcesIndex >= 0) {
+              const resourcesPath = basePath.substring(0, resourcesIndex + 'resources'.length)
+              cliPath = path.join(resourcesPath, 'app.asar.unpacked', 'dist', 'index.js')
+            } else {
+              // Fallback: find unpacked directory
+              const parts = basePath.split(path.sep)
+              const unpackedIndex = parts.indexOf('app.asar.unpacked')
+              const unpackedPath = unpackedIndex >= 0 
+                ? parts.slice(0, unpackedIndex + 1).join(path.sep)
+                : basePath
+              cliPath = path.join(unpackedPath, 'dist', 'index.js')
+            }
+          }
         } else {
           // Standalone Node.js server
           cliPath = process.argv[1]

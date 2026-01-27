@@ -1,18 +1,6 @@
-// Set environment variables BEFORE importing electron
-if (process.platform === 'linux') {
-  // Force GTK file chooser instead of portal to avoid filter issues
-  process.env.GTK_USE_PORTAL = '0';
-  process.env.ELECTRON_TRASH = 'gio';
-}
-
-const { app, BrowserWindow } = require('electron');
+const { app, BrowserWindow, ipcMain, dialog } = require('electron');
 const path = require('path');
-
-// Disable sandbox for Linux (required for AppImage)
-if (process.platform === 'linux') {
-  app.commandLine.appendSwitch('no-sandbox');
-  app.commandLine.appendSwitch('disable-features', 'WebRtcHideLocalIpsWithMdns');
-}
+const fs = require('fs');
 
 let mainWindow;
 let serverInstance;
@@ -24,7 +12,8 @@ function createWindow() {
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
-      preload: path.join(__dirname, 'preload.js')
+      preload: path.join(__dirname, 'preload.js'),
+      devTools: true
     },
     icon: path.join(__dirname, 'build', 'icons', '512x512.png')
   });
@@ -45,17 +34,51 @@ function createWindow() {
       app.quit();
     });
 
-  // Open DevTools in development
-  if (process.env.NODE_ENV === 'development') {
-    mainWindow.webContents.openDevTools();
-  }
-
   mainWindow.on('closed', () => {
     mainWindow = null;
   });
 }
 
-app.on('ready', createWindow);
+app.on('ready', () => {
+  createWindow();
+  
+  // Register IPC handler for file dialog
+  ipcMain.handle('dialog:openFile', async () => {
+    const result = await dialog.showOpenDialog(mainWindow, {
+      properties: ['openFile', 'multiSelections'],
+      filters: [
+        { name: 'Supported Files', extensions: ['zip', 'md', 'txt', 'json', 'yml', 'yaml'] },
+        { name: 'ZIP Archives', extensions: ['zip'] },
+        { name: 'Markdown', extensions: ['md', 'markdown'] },
+        { name: 'Text Files', extensions: ['txt'] },
+        { name: 'Config Files', extensions: ['json', 'yml', 'yaml'] }
+      ]
+    });
+    
+    if (result.canceled) {
+      return { canceled: true, filePaths: [] };
+    }
+    
+    // Read file contents and return as File-like objects
+    const files = await Promise.all(
+      result.filePaths.map(async (filePath) => {
+        const content = await fs.promises.readFile(filePath);
+        const stat = await fs.promises.stat(filePath);
+        return {
+          name: path.basename(filePath),
+          path: filePath,
+          size: stat.size,
+          type: '', // Browser will determine type
+          lastModified: stat.mtimeMs,
+          // Send as base64 to transfer binary data safely
+          content: content.toString('base64')
+        };
+      })
+    );
+    
+    return { canceled: false, files };
+  });
+});
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
