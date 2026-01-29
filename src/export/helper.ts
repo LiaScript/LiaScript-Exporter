@@ -116,19 +116,34 @@ export function injectResponsivevoice(key: string, into: string): string {
 }
 
 /**
- * Inject an arbitrary tag directly to the end of the html-head tag.
+ * Inject an arbitrary tag into HTML content.
  * @param element - new tag to be added
  * @param into - old index.html content
+ * @param tag - Tag to inject at. Can be:
+ *   - boolean: true for after `<head>`, false for before `</head>` (backward compatibility)
+ *   - string: opening tag like `<body>` (injects after) or closing tag like `</body>` (injects before)
  * @returns - new index.html content
  */
 export function inject(
   element: string,
   into: string,
-  head: boolean = false,
+  tag: string | boolean = false,
 ): string {
-  return head
-    ? into.replace('<head>', '<head>' + element)
-    : into.replace('</head>', element + '</head>')
+  // Backward compatibility: handle boolean parameter
+  if (typeof tag === 'boolean') {
+    return tag
+      ? into.replace('<head>', '<head>' + element)
+      : into.replace('</head>', element + '</head>')
+  }
+
+  // New string-based tag injection
+  if (tag.startsWith('</')) {
+    // Closing tag: inject before it
+    return into.replace(tag, element + tag)
+  } else {
+    // Opening tag: inject after it
+    return into.replace(tag, tag + element)
+  }
 }
 
 /**
