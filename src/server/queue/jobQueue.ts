@@ -405,20 +405,25 @@ export class JobQueue extends EventEmitter {
           cliPath = process.argv[1]
         }
         
+        // Use process.execPath instead of 'node'
+        // In Electron, this points to the electron binary which includes Node.js
+        // In standalone Node.js, this points to the node binary
+        const nodePath = process.execPath
+        
         console.log(
           `Starting export process for job ${
             job.id
-          }: node ${cliPath} ${args.join(' ')}`,
+          }: ${nodePath} ${cliPath} ${args.join(' ')}`,
         )
 
-        const exportProcess = spawn('node', [cliPath, ...args], {
+        const exportProcess = spawn(nodePath, [cliPath, ...args], {
           stdio: ['ignore', 'pipe', 'pipe'],
           detached: false,
           cwd: outputDir, // Set working directory to output directory
           env: {
             ...process.env,
-            // Ensure we don't pass Electron-specific env vars
-            ELECTRON_RUN_AS_NODE: undefined,
+            // Enable ELECTRON_RUN_AS_NODE so Electron runs the script as Node.js
+            ELECTRON_RUN_AS_NODE: '1',
           }
         })
 
