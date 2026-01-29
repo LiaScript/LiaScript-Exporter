@@ -12,6 +12,7 @@ function createWindow() {
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
+      sandbox: false,
       preload: path.join(__dirname, 'preload.js'),
       devTools: true
     },
@@ -25,8 +26,6 @@ function createWindow() {
       serverInstance = instance;
       const port = instance.server.address().port;
       console.log(`Server started on port ${port}`);
-      
-      // Load the app
       mainWindow.loadURL(`http://localhost:${port}`);
     })
     .catch((error) => {
@@ -39,7 +38,7 @@ function createWindow() {
   });
 }
 
-app.on('ready', () => {
+app.whenReady().then(() => {
   createWindow();
   
   // Register IPC handler for file dialog
@@ -54,12 +53,11 @@ app.on('ready', () => {
         { name: 'Config Files', extensions: ['json', 'yml', 'yaml'] }
       ]
     });
-    
+
     if (result.canceled) {
       return { canceled: true, filePaths: [] };
     }
-    
-    // Read file contents and return as File-like objects
+
     const files = await Promise.all(
       result.filePaths.map(async (filePath) => {
         const content = await fs.promises.readFile(filePath);
@@ -68,14 +66,13 @@ app.on('ready', () => {
           name: path.basename(filePath),
           path: filePath,
           size: stat.size,
-          type: '', // Browser will determine type
+          type: '',
           lastModified: stat.mtimeMs,
-          // Send as base64 to transfer binary data safely
           content: content.toString('base64')
         };
       })
     );
-    
+
     return { canceled: false, files };
   });
 });
@@ -103,7 +100,6 @@ app.on('before-quit', async () => {
   }
 });
 
-// Handle uncaught exceptions
 process.on('uncaughtException', (error) => {
   console.error('Uncaught exception:', error);
 });
