@@ -115,8 +115,8 @@ export function parseArguments(): Arguments {
     'android-appId': argv['android-appId'],
     'android-appName': argv['android-appName'],
     'android-icon': escapeBackslash(argv['android-icon']),
-    'android-splash': escapeBackslash(argv['android-splash']),
-    'android-splashDuration': argv['android-splashDuration'],
+    'android-iconBackgroundColor': argv['android-iconBackgroundColor'],
+    'android-iconBackgroundColorDark': argv['android-iconBackgroundColorDark'],
     'android-preview': argv['android-preview'],
 
     // project settings
@@ -230,8 +230,8 @@ export function parsePresetsArguments(presetId: string): Arguments {
     'android-appId': argv['android-appId'],
     'android-appName': argv['android-appName'],
     'android-icon': escapeBackslash(argv['android-icon']),
-    'android-splash': escapeBackslash(argv['android-splash']),
-    'android-splashDuration': argv['android-splashDuration'],
+    'android-iconBackgroundColor': argv['android-iconBackgroundColor'],
+    'android-iconBackgroundColorDark': argv['android-iconBackgroundColorDark'],
     'android-preview': argv['android-preview'],
 
     // project settings
@@ -277,9 +277,17 @@ export function validateAndNormalize(argument: Arguments): Arguments {
   argument.format = argument.format.toLowerCase()
 
   if (argument.format == ANDROID.format) {
+    argument['android-sdk'] =
+      argument['android-sdk'] ||
+      process.env.ANDROID_SDK_ROOT ||
+      process.env.ANDROID_HOME
+
     if (!argument['android-sdk']) {
       console.warn('Path to SDK has to be defined, you will have to install:')
       console.warn('https://developer.android.com/studio/')
+      console.warn(
+        'Or set the ANDROID_SDK_ROOT or ANDROID_HOME environment variable.',
+      )
       process.exit(1)
     }
 
