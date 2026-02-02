@@ -176,7 +176,7 @@ export default config`,
       'npm i',
       'npx cap add android',
       'npx cap sync',
-      `npx @capacitor/assets generate --iconBackgroundColor '${argument['android-iconBackgroundColor'] || '#eeeeee'}' --iconBackgroundColorDark '${argument['android-iconBackgroundColorDark'] || '#222222'}'`,
+      `npx @capacitor/assets generate --iconBackgroundColor '${argument['android-iconBackgroundColor'] || '#bbbbbb'}' --iconBackgroundColorDark '${argument['android-iconBackgroundColorDark'] || '#555555'}'`,
     ],
     tmp,
     async function () {
