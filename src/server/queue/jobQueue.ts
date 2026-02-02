@@ -439,7 +439,8 @@ export class JobQueue extends EventEmitter {
                 f.endsWith('.zip') ||
                 f.endsWith('.html') ||
                 f.endsWith('.pdf') ||
-                f.endsWith('.epub'),
+                f.endsWith('.epub') ||
+                f.endsWith('.apk'),
             )
 
             if (!outputFileName) {

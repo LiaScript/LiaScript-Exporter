@@ -168,8 +168,6 @@ export default config`,
     return
   }
 
-  console.warn('XXXXXXXXXXXXXXXXXXXXXXXxx Prepared project in ' + tmp)
-
   execute(
     [
       'npm i',
@@ -260,7 +258,7 @@ function execute(cmds: string[], cwd: string, callback: () => void) {
   const cmd = cmds.shift()
 
   if (cmd) {
-    console.warn('XXXXXXXXXXXXXx exec:', cmd)
+    console.log('exec:', cmd)
     exec(
       cmd,
       { cwd: cwd },

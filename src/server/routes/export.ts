@@ -245,8 +245,22 @@ export const exportRouter: FastifyPluginAsync = async (fastify) => {
       const fileBuffer = await readFile(job.result.outputPath)
       const filename = job.result.filename || basename(job.result.outputPath)
 
+      // Determine MIME type based on file extension
+      let mimeType = 'application/octet-stream'
+      if (filename.endsWith('.zip')) {
+        mimeType = 'application/zip'
+      } else if (filename.endsWith('.pdf')) {
+        mimeType = 'application/pdf'
+      } else if (filename.endsWith('.apk')) {
+        mimeType = 'application/vnd.android.package-archive'
+      } else if (filename.endsWith('.epub')) {
+        mimeType = 'application/epub+zip'
+      } else if (filename.endsWith('.html')) {
+        mimeType = 'text/html'
+      }
+
       reply.header('Content-Disposition', `attachment; filename="${filename}"`)
-      reply.type('application/zip')
+      reply.type(mimeType)
       return reply.send(fileBuffer)
     } catch (error: any) {
       fastify.log.error(error)
