@@ -269,7 +269,7 @@ export class JobQueue extends EventEmitter {
           ims: ['ims'],
           web: ['web'],
           pdf: ['pdf'],
-          android: ['app', 'package'],
+          android: ['android'],
           ios: ['ios'],
           epub: ['epub'],
           json: ['json'],
@@ -312,8 +312,14 @@ export class JobQueue extends EventEmitter {
         }
 
         // Default mapper for formats without special mapping
-        const defaultMapper = (key: string) =>
-          key.replace(/([A-Z])/g, '-$1').toLowerCase()
+        const defaultMapper = (key: string) => {
+          // If the key already contains hyphens (kebab-case), return as-is
+          if (key.includes('-')) {
+            return key
+          }
+          // Otherwise convert camelCase to kebab-case
+          return key.replace(/([A-Z])/g, '-$1').toLowerCase()
+        }
 
         // Get valid prefixes for the current format
         const validPrefixes = formatOptionPrefixes[format] || []
@@ -351,6 +357,7 @@ export class JobQueue extends EventEmitter {
             )
 
             if (!belongsToThisFormat || belongsToOtherFormat) {
+              console.log(`[DEBUG]   SKIPPING option: ${key}`)
               continue
             }
           }

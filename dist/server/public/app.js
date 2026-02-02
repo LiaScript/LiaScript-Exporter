@@ -193,7 +193,7 @@ function updateFileList() {
       <span class="file-size">${formatFileSize(file.size)}</span>
       <button type="button" class="remove-file" data-index="${index}" title="Entfernen">×</button>
     </div>
-  `
+  `,
     )
     .join('')
 
@@ -261,7 +261,7 @@ function initializeExportSelection() {
     const checkedPreset = document.querySelector('input[name="preset"]:checked')
     if (checkedPreset) {
       const presetOptions = JSON.parse(
-        checkedPreset.dataset.presetOptions || '{}'
+        checkedPreset.dataset.presetOptions || '{}',
       )
       const format = presetOptions.format || checkedPreset.value
       applyPresetOptions(checkedPreset)
@@ -330,11 +330,25 @@ function updateAdvancedSettings(selectedValue) {
     if (group.classList.contains('no-settings')) return
 
     const formats = group.dataset.formats
-    if (formats && formats.split(',').includes(selectedValue)) {
+    const isVisible = formats && formats.split(',').includes(selectedValue)
+
+    if (isVisible) {
       group.style.display = 'block'
       hasVisibleSettings = true
+      // Enable required fields in visible groups
+      group
+        .querySelectorAll('input[data-required], select[data-required]')
+        .forEach((field) => {
+          field.required = true
+        })
     } else {
       group.style.display = 'none'
+      // Disable required fields in hidden groups to prevent validation errors
+      group
+        .querySelectorAll('input[required], select[required]')
+        .forEach((field) => {
+          field.required = false
+        })
     }
   })
 
@@ -401,10 +415,10 @@ function initializeForm() {
 
       // Add export target
       const selectedPreset = document.querySelector(
-        'input[name="preset"]:checked'
+        'input[name="preset"]:checked',
       )
       const selectedFormat = document.querySelector(
-        'input[name="format"]:checked'
+        'input[name="format"]:checked',
       )
 
       if (selectedPreset) {
