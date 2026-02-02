@@ -10,7 +10,7 @@ export function help() {
   console.log(COLOR.heading('Android settings:'), '\n')
 
   COLOR.info(
-    'Android export generates a native Android application (.apk) from your LiaScript course using Capacitor. This requires the Android SDK to be installed on your system.\n'
+    'Android export generates a native Android application (.apk) from your LiaScript course using Capacitor. This requires the Android SDK to be installed on your system.\n',
   )
 
   console.log('\nLearn more:')
@@ -21,37 +21,37 @@ export function help() {
   COLOR.command(
     null,
     '--android-sdk',
-    '             Specify sdk.dir which is required for building.'
+    '             Specify sdk.dir which is required for building.',
   )
   COLOR.command(
     null,
     '--android-appName',
-    '         Name of the App (Main-title is used as default).'
+    '         Name of the App (Main-title is used as default).',
   )
   COLOR.command(
     null,
     '--android-appId',
-    '           Required to identify your App reverse url such as io.github.liascript'
+    '           Required to identify your App reverse url such as io.github.liascript',
   )
   COLOR.command(
     null,
     '--android-icon',
-    '            Optional icon with 1024x1024 px'
+    '            Optional icon with 1024x1024 px',
   )
   COLOR.command(
     null,
     '--android-splash',
-    '          Optional splash image with 2732x2732 px'
+    '          Optional splash image with 2732x2732 px',
   )
   COLOR.command(
     null,
     '--android-splashDuration',
-    '  Duration for splash-screen default 0 milliseconds'
+    '  Duration for splash-screen default 0 milliseconds',
   )
   COLOR.command(
     null,
     '--android-preview',
-    '         Open course in Android-Studio'
+    '         Open course in Android-Studio',
   )
 }
 
@@ -78,153 +78,161 @@ export async function exporter(argument: AndroidExportArguments, json: any) {
   let tmp = await helper.tmpDir()
   const dirname = helper.dirname()
 
-  let tmpPath = path.join(tmp, 'pro')
-
   // copy assets to temp/dist
   await fs.copy(
     path.join(dirname, './assets/capacitor'),
-    path.join(tmpPath, './dist')
+    path.join(tmp, './dist'),
   )
 
-  await fs.copy(
-    path.join(dirname, './assets/common'),
-    path.join(tmpPath, './dist')
-  )
+  await fs.copy(path.join(dirname, './assets/common'), path.join(tmp, './dist'))
+
+  console.log('Copying resources...', tmp)
 
   // copy logo and splash
   await fs.copy(
     path.join(dirname, './resources'),
-    path.join(tmpPath, '../resources')
+    path.join(tmp, '../resources'),
   )
 
   if (argument['android-preview']) {
     // create a link, this way, the app can be updated interactively
     await fs.symlink(
       path.resolve(argument.path),
-      path.join(tmpPath, './dist/res'),
-      'dir'
+      path.join(tmp, './dist/res'),
+      'dir',
     )
   } else {
     // copy base path or readme-directory into temp
-    await fs.copy(
-      path.resolve(argument.path),
-      path.join(tmpPath, './dist/res'),
-      {
-        filter: helper.filterHidden(argument.path),
-      }
-    )
+    await fs.copy(path.resolve(argument.path), path.join(tmp, './dist/res'), {
+      filter: helper.filterHidden(argument.path),
+    })
   }
 
   await helper.writeFile(
-    path.join(tmpPath, '../capacitor.config.json'),
-    `{
-      "appId": "${argument['android-appId']}",
-      "appName": "${argument['android-appName'] || json.lia.str_title}",
-      "bundledWebRuntime": true,
-      "webDir": "pro/dist",
-      "linuxAndroidStudioPath": "${argument['android-sdk']}",
-      "windowsAndroidStudioPath": "${argument['android-sdk']}",
-      "plugins": {
-        "SplashScreen": {
-          "launchShowDuration": ${argument['android-splashDuration'] || 0}
-        }
-      }
-    }`
-  )
-
-  await helper.writeFile(
-    path.join(tmpPath, '../package.json'),
+    path.join(tmp, 'package.json'),
     `{
     "scripts": {
-      "build": "npx cap add android"
+      "build": "npx cap sync android"
     },
     "dependencies": {
-      "@capacitor-community/text-to-speech": "^1.1.3",
-      "@capacitor/android": "^3.5.1",
-      "@capacitor/cli": "^3.5.1",
-      "capacitor-resources": "^2.0.5"
+      "@capacitor/cli": "^8.0.0",
+      "@capacitor-community/text-to-speech": "git+https://github.com/capacitor-community/text-to-speech.git#v8.0.0",
+      "@capacitor/android": "^8.0.0",
+      "@capacitor/core": "^8.0.0"
+    },
+    "devDependencies": {
+      "typescript": "^5.7.3"
     },
     "engines": {
       "node": ">= 12"
     }
-  }`
+  }`,
   )
 
-  let index = fs.readFileSync(path.join(tmpPath, 'dist/index.html'), 'utf8')
+  await helper.writeFile(
+    path.join(tmp, 'capacitor.config.ts'),
+    `import { CapacitorConfig } from '@capacitor/cli'
+
+const config: CapacitorConfig = {
+  appId: "${argument['android-appId']}",
+  appName: "${argument['android-appName'] || json.lia.str_title}",
+  webDir: 'dist',
+  server: { androidScheme: 'http' },
+  plugins: {
+    SystemBars: {
+      insetsHandling: 'css',
+      style: 'light',
+      overlaysWebView: true,
+      backgroundColor: '#00000000',
+    },
+  },
+}
+
+export default config`,
+  )
+
+  let index = fs.readFileSync(path.join(tmp, 'dist/index.html'), 'utf8')
 
   index = helper.inject(
     `<script> if (!window.LIA) { window.LIA = {} } window.LIA.defaultCourseURL = "./res/${path.basename(
-      argument.readme
+      argument.readme,
     )}"</script>`,
-    index
+    index,
+    '<body>',
   )
 
+  console.log('Writing index.html...', index)
+
   try {
-    await helper.writeFile(path.join(tmpPath, 'dist/index.html'), index)
+    await helper.writeFile(path.join(tmp, 'dist/index.html'), index)
   } catch (e) {
     console.warn(e)
     return
   }
 
   execute(
-    [
-      'npm i',
-      'npm update',
-      'npx cap add android',
-      `npx capacitor-resources -p "android" ${
-        argument['android-icon']
-          ? '--icon ' + path.resolve(argument['android-icon'])
-          : ''
-      } ${
-        argument['android-splash']
-          ? '--splash ' + path.resolve(argument['android-splash'])
-          : ''
-      }`,
-    ],
-    path.join(tmpPath, '..'),
+    ['npm i', 'npx cap add android', 'npx cap sync'],
+    tmp,
     async function () {
-      await sdk(tmpPath, argument['android-sdk'])
+      await sdk(tmp, argument['android-sdk'])
 
       if (argument['android-preview']) {
         execute(
           ['npx cap open android'],
-          path.join(tmpPath, '..'),
+          tmp,
 
           () => {
             console.log('ready')
-          }
+          },
         )
       } else {
         execute(
           ['./gradlew assembleDebug'],
-          path.join(tmpPath, '../android'),
+          path.join(tmp, 'android'),
           function () {
             console.warn('DONE')
             fs.copy(
               path.join(
-                tmpPath,
-                '../android/app/build/outputs/apk/debug/app-debug.apk'
+                tmp,
+                'android/app/build/outputs/apk/debug/app-debug.apk',
               ),
-              argument.output + '.apk'
+              argument.output + '.apk',
             )
-          }
+          },
         )
       }
-    }
+    },
   )
 }
 
 async function sdk(tmpPath: string, uri?: string) {
-  if (!uri) return
+  const androidPath = path.join(tmpPath, 'android')
 
+  // Always create gradle.properties with Java home
   try {
-    helper.writeFile(
-      path.join(tmpPath, '../android/local.properties'),
-      `sdk.dir=${uri}`
+    const javaHome =
+      process.env.JAVA_HOME || '/usr/lib/jvm/java-21-openjdk-amd64'
+    await helper.writeFile(
+      path.join(androidPath, 'gradle.properties'),
+      `# Project-wide Gradle settings.
+org.gradle.java.home=${javaHome}
+org.gradle.jvmargs=-Xmx1536m
+android.useAndroidX=true`,
     )
   } catch (e) {
-    console.warn(e)
-    return
+    console.warn('Warning: Could not write gradle.properties:', e)
+  }
+
+  // Create local.properties if SDK path is provided
+  if (uri) {
+    try {
+      await helper.writeFile(
+        path.join(androidPath, 'local.properties'),
+        `sdk.dir=${uri}`,
+      )
+    } catch (e) {
+      console.warn('Warning: Could not write local.properties:', e)
+    }
   }
 }
 
@@ -246,7 +254,7 @@ function execute(cmds: string[], cwd: string, callback: () => void) {
         console.log(`stdout: ${stdout}`)
 
         execute(cmds, cwd, callback)
-      }
+      },
     )
   } else {
     callback()

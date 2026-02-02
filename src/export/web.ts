@@ -298,7 +298,7 @@ async function finalizeOutput(
 
     // Copy with filter, then remove temp
     await fs.copy(tmpPath, argument.output, {
-      filter: helper.filterHidden(argument.path),
+      filter: helper.filterHidden(tmpPath),
       overwrite: true,
     })
     await fs.remove(tmpPath)

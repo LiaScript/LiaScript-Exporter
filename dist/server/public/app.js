@@ -130,6 +130,7 @@ function initializeExportTabs() {
 // File upload handling
 function initializeUpload() {
   const uploadArea = document.getElementById('uploadArea')
+<<<<<<< HEAD
 
   // Check if running in Electron
   const isElectron = window.electronAPI !== undefined
@@ -172,11 +173,27 @@ function initializeUpload() {
         document.body.removeChild(fileInput)
       })
       document.body.appendChild(fileInput)
+=======
+  const fileInput = document.getElementById('fileInput')
+
+  // Click to select files
+  uploadArea.addEventListener('click', (e) => {
+    if (e.target !== fileInput) {
+>>>>>>> 8f9acf39b4f105ba5845dbd5f01b4c03cc8a3b7c
       fileInput.click()
     }
   })
 
+<<<<<<< HEAD
   // Drag and drop (works in both Electron and browser)
+=======
+  // File selection
+  fileInput.addEventListener('change', (e) => {
+    handleFiles(e.target.files)
+  })
+
+  // Drag and drop
+>>>>>>> 8f9acf39b4f105ba5845dbd5f01b4c03cc8a3b7c
   uploadArea.addEventListener('dragover', (e) => {
     e.preventDefault()
     uploadArea.classList.add('drag-over')
