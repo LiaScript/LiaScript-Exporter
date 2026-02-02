@@ -86,8 +86,6 @@ export async function exporter(argument: AndroidExportArguments, json: any) {
 
   await fs.copy(path.join(dirname, './assets/common'), path.join(tmp, './dist'))
 
-  console.log('Copying resources...', tmp)
-
   // copy logo and splash
   await fs.copy(
     path.join(dirname, './resources'),
@@ -160,8 +158,6 @@ export default config`,
     index,
     '<body>',
   )
-
-  console.log('Writing index.html...', index)
 
   try {
     await helper.writeFile(path.join(tmp, 'dist/index.html'), index)
