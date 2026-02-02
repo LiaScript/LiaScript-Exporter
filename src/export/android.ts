@@ -123,9 +123,6 @@ export async function exporter(argument: AndroidExportArguments, json: any) {
       "@capacitor/assets": "^3.0.5",
       "@capacitor/core": "^8.0.0"
     },
-    "devDependencies": {
-      "typescript": "^5.7.3"
-    },
     "engines": {
       "node": ">= 12"
     }
