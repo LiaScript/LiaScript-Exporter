@@ -1,5 +1,5 @@
 # Android builds currently work well with JDK 17 for modern AGP
-FROM eclipse-temurin:17-jdk-jammy
+FROM eclipse-temurin:21-jdk-jammy
 
 ARG ANDROID_SDK_ROOT=/opt/android-sdk
 ENV ANDROID_SDK_ROOT=${ANDROID_SDK_ROOT}
