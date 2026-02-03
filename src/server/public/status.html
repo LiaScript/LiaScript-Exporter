@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Export Status - LiaScript Export Server</title>
+    <title>Export Status - LiaScript Exporter</title>
     <link rel="stylesheet" href="/styles.css" />
     <style>
       .status-badge {
@@ -57,7 +57,7 @@
           <img src="./assets/icon.svg" alt="LiaScript" />
         </a>
         <ul class="navbar-menu">
-          <li><a href="/" class="navbar-link">Home</a></li>
+          <li><a href="/" class="navbar-link">Startseite</a></li>
           <li><a href="/status.html" class="navbar-link active">Status</a></li>
         </ul>
       </div>
@@ -85,22 +85,36 @@
       </main>
 
       <footer>
-        <p>&copy; 2025 LiaScript Export Server</p>
+        <p>&copy; 2026 LiaScript Exporter</p>
       </footer>
     </div>
 
     <script>
       const urlParams = new URLSearchParams(window.location.search)
-      const jobId = urlParams.get('jobId')
+      let jobId = urlParams.get('jobId')
       let refreshInterval
 
-      if (!jobId) {
-        document.getElementById('statusContent').innerHTML = `
-        <p class="error-message">Keine Job-ID angegeben.</p>
-      `
-      } else {
+      if (jobId) {
         loadStatus()
         refreshInterval = setInterval(loadStatus, 3000)
+      } else {
+        // Try to get the last job ID from localStorage
+        const lastJobId = localStorage.getItem('lastJobId')
+        if (lastJobId) {
+          jobId = lastJobId
+          window.history.replaceState({}, '', `/status.html?jobId=${jobId}`)
+          loadStatus()
+          refreshInterval = setInterval(loadStatus, 3000)
+        } else {
+          // No job found
+          document.getElementById('statusContent').innerHTML = `
+            <div style="text-align: center; padding: 3rem 1rem;">
+              <p style="color: var(--text-muted); margin-bottom: 1rem;">Kein Export gefunden.</p>
+              <p style="color: var(--text-muted); font-size: 0.9rem;">Starten Sie einen neuen Export auf der Startseite.</p>
+            </div>
+          `
+          document.querySelector('.refresh-info').style.display = 'none'
+        }
       }
 
       async function loadStatus() {

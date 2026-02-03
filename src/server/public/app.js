@@ -513,6 +513,9 @@ function initializeForm() {
 
 // Show confirmation modal
 function showConfirmation(result) {
+  // Save job ID to localStorage
+  localStorage.setItem('lastJobId', result.jobId)
+  
   const modal = document.getElementById('confirmationModal')
   const details = document.getElementById('confirmationDetails')
   const statusLink = document.getElementById('statusLink')
