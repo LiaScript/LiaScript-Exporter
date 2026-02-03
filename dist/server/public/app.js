@@ -89,8 +89,6 @@ function initializeTabs() {
         document.getElementById('gitUrl').removeAttribute('required')
       } else {
         document.getElementById('gitUrl').setAttribute('required', 'required')
-        selectedFiles = []
-        updateFileList()
       }
     })
   })
@@ -513,6 +511,9 @@ function initializeForm() {
 
 // Show confirmation modal
 function showConfirmation(result) {
+  // Save job ID to localStorage
+  localStorage.setItem('lastJobId', result.jobId)
+  
   const modal = document.getElementById('confirmationModal')
   const details = document.getElementById('confirmationDetails')
   const statusLink = document.getElementById('statusLink')

@@ -89,8 +89,6 @@ function initializeTabs() {
         document.getElementById('gitUrl').removeAttribute('required')
       } else {
         document.getElementById('gitUrl').setAttribute('required', 'required')
-        selectedFiles = []
-        updateFileList()
       }
     })
   })
