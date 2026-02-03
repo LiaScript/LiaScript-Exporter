@@ -329,6 +329,11 @@ header h1 {
   margin-bottom: 0.5rem;
 }
 
+.format-icon {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
 /* Collapsible */
 .collapsible-toggle {
   background: none;
