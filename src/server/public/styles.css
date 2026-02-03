@@ -1,6 +1,12 @@
 :root {
-  --primary: #2563eb;
-  --primary-hover: #1d4ed8;
+  /* LiaScript Brand Colors */
+  --turquoise-darker: rgb(15, 54, 69);
+  --turquoise-dark: rgb(16, 116, 117);
+  --turquoise: rgb(20, 115, 117);
+  
+  /* Theme Colors */
+  --primary: var(--turquoise);
+  --primary-light: rgba(20, 115, 117, 0.1);
   --secondary: #64748b;
   --success: #22c55e;
   --error: #ef4444;
@@ -10,8 +16,8 @@
   --text: #1e293b;
   --text-muted: #64748b;
   --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
-    0 4px 6px -4px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+  --transition: all 0.2s ease;
 }
 
 * {
@@ -38,16 +44,22 @@ body {
 header {
   text-align: center;
   margin-bottom: 3rem;
+  padding: 2rem 1rem;
+  background: var(--turquoise);
+  border-radius: 12px;
+  color: white;
+  box-shadow: var(--shadow);
 }
 
 header h1 {
   font-size: 2rem;
   margin-bottom: 0.5rem;
-  color: var(--text);
+  color: white;
+  font-weight: 600;
 }
 
 .subtitle {
-  color: var(--text-muted);
+  color: rgba(255, 255, 255, 0.9);
   font-size: 1rem;
 }
 
@@ -55,55 +67,26 @@ header h1 {
 .card {
   background: var(--card-bg);
   border: 1px solid var(--border);
-  border-radius: 8px;
+  border-radius: 12px;
   padding: 2rem;
   margin-bottom: 1.5rem;
   box-shadow: var(--shadow);
+  transition: var(--transition);
+}
+
+.card:hover {
+  box-shadow: var(--shadow-lg);
 }
 
 .card h2 {
   font-size: 1.25rem;
   margin-bottom: 1.5rem;
-  color: var(--text);
+  color: var(--turquoise-darker);
+  font-weight: 700;
 }
 
 /* Tabs */
-.source-tabs {
-  display: flex;
-  gap: 0.5rem;
-  margin-bottom: 1.5rem;
-  border-bottom: 1px solid var(--border);
-}
-
-.tab-button {
-  background: none;
-  border: none;
-  padding: 0.75rem 1.5rem;
-  cursor: pointer;
-  font-size: 0.95rem;
-  color: var(--text-muted);
-  border-bottom: 2px solid transparent;
-  transition: all 0.2s;
-}
-
-.tab-button:hover {
-  color: var(--text);
-}
-
-.tab-button.active {
-  color: var(--primary);
-  border-bottom-color: var(--primary);
-}
-
-.tab-panel {
-  display: none;
-}
-
-.tab-panel.active {
-  display: block;
-}
-
-/* Export Target Tabs */
+.source-tabs,
 .export-tabs {
   display: flex;
   gap: 0.5rem;
@@ -111,6 +94,7 @@ header h1 {
   border-bottom: 1px solid var(--border);
 }
 
+.tab-button,
 .export-tab-button {
   background: none;
   border: none;
@@ -122,19 +106,23 @@ header h1 {
   transition: all 0.2s;
 }
 
+.tab-button:hover,
 .export-tab-button:hover {
   color: var(--text);
 }
 
+.tab-button.active,
 .export-tab-button.active {
   color: var(--primary);
   border-bottom-color: var(--primary);
 }
 
+.tab-panel,
 .export-tab-panel {
   display: none;
 }
 
+.tab-panel.active,
 .export-tab-panel.active {
   display: block;
 }
@@ -142,31 +130,34 @@ header h1 {
 /* Upload Area */
 .upload-area {
   border: 2px dashed var(--border);
-  border-radius: 8px;
+  border-radius: 12px;
   padding: 3rem 2rem;
   text-align: center;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: var(--transition);
+  background: var(--bg);
 }
 
 .upload-area:hover {
-  border-color: var(--primary);
-  background: #f0f7ff;
+  border-color: var(--turquoise);
+  background: var(--primary-light);
 }
 
 .upload-area.drag-over {
-  border-color: var(--primary);
-  background: #f0f7ff;
+  border-color: var(--turquoise);
+  background: var(--primary-light);
+  border-style: solid;
 }
 
 .upload-area svg {
-  color: var(--text-muted);
+  color: var(--turquoise);
   margin-bottom: 1rem;
 }
 
 .upload-area p {
   color: var(--text);
   margin-bottom: 0.5rem;
+  font-weight: 500;
 }
 
 .upload-area .hint {
@@ -190,8 +181,14 @@ header h1 {
   padding: 0.75rem;
   background: var(--bg);
   border: 1px solid var(--border);
-  border-radius: 6px;
+  border-radius: 8px;
   margin-bottom: 0.5rem;
+  transition: var(--transition);
+}
+
+.file-item:hover {
+  border-color: var(--turquoise);
+  background: var(--primary-light);
 }
 
 .file-name {
@@ -252,7 +249,8 @@ header h1 {
 .form-group select:focus,
 .form-group textarea:focus {
   outline: none;
-  border-color: var(--primary);
+  border-color: var(--turquoise);
+  box-shadow: 0 0 0 3px var(--primary-light);
 }
 
 .form-group textarea {
@@ -300,53 +298,35 @@ header h1 {
 
 .preset-content {
   border: 2px solid var(--border);
-  border-radius: 8px;
+  border-radius: 12px;
   padding: 1.5rem 1rem;
   text-align: center;
-  transition: all 0.2s;
+  transition: var(--transition);
+  background: white;
 }
 
 .preset-tile:hover .preset-content {
-  border-color: var(--primary);
-  background: #f0f7ff;
+  border-color: var(--turquoise);
+  background: var(--primary-light);
 }
 
 .preset-tile input:checked + .preset-content {
-  border-color: var(--primary);
-  background: #f0f7ff;
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+  border-color: var(--turquoise);
+  background: var(--primary-light);
+  box-shadow: 0 0 0 3px rgba(20, 115, 117, 0.1);
 }
 
 .preset-content h3 {
   font-size: 1rem;
   margin-bottom: 0.25rem;
-  color: var(--text);
+  color: var(--turquoise-darker);
+  font-weight: 600;
 }
 
 .preset-content p {
   font-size: 0.875rem;
   color: var(--text-muted);
   margin-bottom: 0.5rem;
-}
-
-.format-description {
-  display: block;
-  font-size: 0.8rem;
-  line-height: 1.4;
-  color: var(--text-muted);
-  margin-top: 0.5rem;
-  padding-top: 0.5rem;
-  border-top: 1px solid var(--border);
-}
-
-.format-description a {
-  color: var(--primary);
-  text-decoration: none;
-  font-weight: 500;
-}
-
-.format-description a:hover {
-  text-decoration: underline;
 }
 
 /* Collapsible */
@@ -394,7 +374,7 @@ header h1 {
 .settings-heading {
   font-size: 1rem;
   font-weight: 600;
-  color: var(--text);
+  color: var(--turquoise-darker);
   margin-bottom: 1rem;
 }
 
@@ -420,15 +400,15 @@ header h1 {
 
 /* Buttons */
 .btn-primary {
-  background: var(--primary);
+  background: var(--turquoise);
   color: white;
   border: none;
   padding: 0.875rem 2rem;
   font-size: 1rem;
   font-weight: 500;
-  border-radius: 6px;
+  border-radius: 8px;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: var(--transition);
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
@@ -436,7 +416,7 @@ header h1 {
 }
 
 .btn-primary:hover {
-  background: var(--primary-hover);
+  background: var(--turquoise-dark);
 }
 
 .btn-primary:disabled {
@@ -496,16 +476,29 @@ header h1 {
 
 .modal-content {
   background: var(--card-bg);
-  border-radius: 8px;
+  border-radius: 12px;
   padding: 2rem;
   max-width: 500px;
   width: 100%;
   box-shadow: var(--shadow-lg);
+  animation: modalSlideIn 0.3s ease;
+}
+
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .modal-content h2 {
   margin-bottom: 1.5rem;
-  color: var(--text);
+  color: var(--turquoise-darker);
+  font-weight: 600;
 }
 
 .modal-content p {
