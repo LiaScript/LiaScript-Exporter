@@ -816,25 +816,28 @@
                 <h3 class="settings-heading">Android Einstellungen</h3>
 
                 <div class="form-group">
-                  <label for="appName">App Name</label>
+                  <label for="androidAppName">App Name</label>
                   <input
                     type="text"
-                    id="appName"
-                    name="option_appName"
+                    id="androidAppName"
+                    name="option_android-appName"
                     placeholder="Meine App"
                   />
                   <span class="hint">Name der Android-App</span>
                 </div>
 
                 <div class="form-group">
-                  <label for="packageId">Package ID</label>
+                  <label for="androidAppId">App ID *</label>
                   <input
                     type="text"
-                    id="packageId"
-                    name="option_packageId"
-                    placeholder="com.example.app"
+                    id="androidAppId"
+                    name="option_android-appId"
+                    placeholder="io.github.liascript"
+                    data-required="true"
                   />
-                  <span class="hint">Eindeutige Package-Identifier</span>
+                  <span class="hint"
+                    >Eindeutiger App-Identifier (z.B. io.github.liascript)</span
+                  >
                 </div>
               </div>
 

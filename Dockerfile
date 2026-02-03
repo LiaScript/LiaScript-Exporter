@@ -1,5 +1,5 @@
 # Android builds currently work well with JDK 17 for modern AGP
-FROM eclipse-temurin:17-jdk-jammy
+FROM eclipse-temurin:21-jdk-jammy
 
 ARG ANDROID_SDK_ROOT=/opt/android-sdk
 ENV ANDROID_SDK_ROOT=${ANDROID_SDK_ROOT}
@@ -54,9 +54,27 @@ RUN apt-get update && apt-get install -y \
     xdg-utils \
     && rm -rf /var/lib/apt/lists/*
 
-# Install prod deps
+# Set working directory
+WORKDIR /app
+
+# Install production dependencies
 COPY package.json package-lock.json* ./
 RUN npm ci --omit=dev
+
+# Pre-cache Capacitor dependencies for Android builds
+RUN mkdir -p /tmp/capacitor-cache && \
+    cd /tmp/capacitor-cache && \
+    echo '{"dependencies":{"@capacitor/cli":"^8.0.0","@capacitor-community/text-to-speech":"git+https://github.com/capacitor-community/text-to-speech.git#v8.0.0","@capacitor/android":"^8.0.0","@capacitor/assets":"^3.0.5","@capacitor/core":"^8.0.0"}}' > package.json && \
+    npm install && \
+    cd / && \
+    rm -rf /tmp/capacitor-cache
+
+# Copy the dist folder
+COPY dist/ ./dist/
+
+# Create symlink for server public folder at expected path
+RUN mkdir -p /app/liascript-exporter/server && \
+    ln -s /app/dist/server/public /app/liascript-exporter/server/public
 
 # Install Puppeteer's Chrome explicitly
 RUN npx puppeteer browsers install chrome
@@ -67,12 +85,10 @@ RUN CHROME_PATH=$(find /root/.cache/puppeteer -name chrome -type f | head -n 1) 
     echo "Chrome installed at: $CHROME_PATH" && \
     chmod +x /etc/profile.d/puppeteer.sh
 
-COPY dist/ liascript-exporter/
-
 # Create entrypoint script that sources the environment
 RUN echo '#!/bin/sh\n\
     export PUPPETEER_EXECUTABLE_PATH=$(find /root/.cache/puppeteer -name chrome -type f | head -n 1)\n\
-    exec node liascript-exporter/index.js "$@"' > /entrypoint.sh && \
+    exec node /app/dist/index.js "$@"' > /entrypoint.sh && \
     chmod +x /entrypoint.sh
 
 EXPOSE 4000

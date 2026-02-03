@@ -40,14 +40,20 @@ export function help() {
   )
   COLOR.command(
     null,
-    '--android-splash',
-    '          Optional splash image with 2732x2732 px',
+    '--android-iconBackgroundColor',
+    '  Optional background color for the icon',
   )
   COLOR.command(
     null,
-    '--android-splashDuration',
-    '  Duration for splash-screen default 0 milliseconds',
+    '--android-iconBackgroundColorDark',
+    '  Optional background color for the icon in dark mode',
   )
+  COLOR.command(
+    null,
+    '--android-release',
+    '         Create release build (requires signing setup)',
+  )
+
   COLOR.command(
     null,
     '--android-preview',
@@ -66,9 +72,10 @@ export interface AndroidExportArguments {
   'android-appId'?: string
   'android-appName'?: string
   'android-icon'?: string
-  'android-splash'?: string
-  'android-splashDuration'?: number
+  'android-iconBackgroundColor'?: string
+  'android-iconBackgroundColorDark'?: string
   'android-preview'?: boolean
+  'android-release'?: boolean
 }
 
 export const format = 'android'
@@ -81,29 +88,24 @@ export async function exporter(argument: AndroidExportArguments, json: any) {
   // copy assets to temp/dist
   await fs.copy(
     path.join(dirname, './assets/capacitor'),
-    path.join(tmp, './dist'),
+    path.join(tmp, './www'),
   )
 
-  await fs.copy(path.join(dirname, './assets/common'), path.join(tmp, './dist'))
-
-  console.log('Copying resources...', tmp)
+  await fs.copy(path.join(dirname, './assets/common'), path.join(tmp, './www'))
 
   // copy logo and splash
-  await fs.copy(
-    path.join(dirname, './resources'),
-    path.join(tmp, '../resources'),
-  )
+  await fs.copy(path.join(dirname, './resources'), path.join(tmp, './assets'))
 
   if (argument['android-preview']) {
     // create a link, this way, the app can be updated interactively
     await fs.symlink(
       path.resolve(argument.path),
-      path.join(tmp, './dist/res'),
+      path.join(tmp, './www/res'),
       'dir',
     )
   } else {
     // copy base path or readme-directory into temp
-    await fs.copy(path.resolve(argument.path), path.join(tmp, './dist/res'), {
+    await fs.copy(path.resolve(argument.path), path.join(tmp, './www/res'), {
       filter: helper.filterHidden(argument.path),
     })
   }
@@ -118,10 +120,8 @@ export async function exporter(argument: AndroidExportArguments, json: any) {
       "@capacitor/cli": "^8.0.0",
       "@capacitor-community/text-to-speech": "git+https://github.com/capacitor-community/text-to-speech.git#v8.0.0",
       "@capacitor/android": "^8.0.0",
+      "@capacitor/assets": "^3.0.5",
       "@capacitor/core": "^8.0.0"
-    },
-    "devDependencies": {
-      "typescript": "^5.7.3"
     },
     "engines": {
       "node": ">= 12"
@@ -136,7 +136,7 @@ export async function exporter(argument: AndroidExportArguments, json: any) {
 const config: CapacitorConfig = {
   appId: "${argument['android-appId']}",
   appName: "${argument['android-appName'] || json.lia.str_title}",
-  webDir: 'dist',
+  webDir: 'www',
   server: { androidScheme: 'http' },
   plugins: {
     SystemBars: {
@@ -151,7 +151,7 @@ const config: CapacitorConfig = {
 export default config`,
   )
 
-  let index = fs.readFileSync(path.join(tmp, 'dist/index.html'), 'utf8')
+  let index = fs.readFileSync(path.join(tmp, 'www/index.html'), 'utf8')
 
   index = helper.inject(
     `<script> if (!window.LIA) { window.LIA = {} } window.LIA.defaultCourseURL = "./res/${path.basename(
@@ -161,17 +161,20 @@ export default config`,
     '<body>',
   )
 
-  console.log('Writing index.html...', index)
-
   try {
-    await helper.writeFile(path.join(tmp, 'dist/index.html'), index)
+    await helper.writeFile(path.join(tmp, 'www/index.html'), index)
   } catch (e) {
     console.warn(e)
     return
   }
 
   execute(
-    ['npm i', 'npx cap add android', 'npx cap sync'],
+    [
+      'npm i',
+      'npx cap add android',
+      'npx cap sync',
+      `npx @capacitor/assets generate --iconBackgroundColor '${argument['android-iconBackgroundColor'] || '#bbbbbb'}' --iconBackgroundColorDark '${argument['android-iconBackgroundColorDark'] || '#555555'}'`,
+    ],
     tmp,
     async function () {
       await sdk(tmp, argument['android-sdk'])
@@ -183,6 +186,21 @@ export default config`,
 
           () => {
             console.log('ready')
+          },
+        )
+      } else if (argument['android-release']) {
+        execute(
+          ['./gradlew assembleRelease'],
+          path.join(tmp, 'android'),
+          function () {
+            console.warn('DONE')
+            fs.copy(
+              path.join(
+                tmp,
+                'android/app/build/outputs/apk/release/app-release.apk',
+              ),
+              argument.output + '.apk',
+            )
           },
         )
       } else {
