@@ -22,7 +22,9 @@ RUN yes | sdkmanager --licenses
 RUN sdkmanager \
     "platform-tools" \
     "platforms;android-34" \
-    "build-tools;34.0.0"
+    "platforms;android-36" \
+    "build-tools;34.0.0" \
+    "build-tools;35.0.0"
 
 # ---- Install Node.js 24.x (NodeSource) ----
 RUN curl -fsSL https://deb.nodesource.com/setup_24.x | bash - \
