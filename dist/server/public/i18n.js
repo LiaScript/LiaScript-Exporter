@@ -39,6 +39,7 @@ class I18n {
     localStorage.setItem('language', lang)
     this.updatePageTranslations()
     this.updateLanguageSelector()
+    this.updateDynamicContent()
   }
 
   t(key, fallback = '') {
@@ -49,8 +50,8 @@ class I18n {
     return translation
   }
 
+  // Update all elements with data-i18n attribute
   updatePageTranslations() {
-    // Update all elements with data-i18n attribute
     document.querySelectorAll('[data-i18n]').forEach(element => {
       const key = element.getAttribute('data-i18n')
       const translation = this.t(key)
@@ -82,6 +83,43 @@ class I18n {
       const translation = this.t(key)
       element.setAttribute('data-description', translation)
     })
+  }
+
+  updateDynamicContent() {
+    // Update preset description if one is currently selected
+    const checkedPreset = document.querySelector('input[name="preset"]:checked')
+    if (checkedPreset && checkedPreset.dataset.descriptionKey) {
+      const descriptionBox = document.getElementById('preset-description')
+      if (descriptionBox && descriptionBox.style.display !== 'none') {
+        const descriptionText = descriptionBox.querySelector('p')
+        if (descriptionText) {
+          const description = this.t(checkedPreset.dataset.descriptionKey)
+          descriptionText.innerHTML = description
+        }
+      }
+    }
+
+    // Update format description if one is currently selected
+    const checkedFormat = document.querySelector('input[name="format"]:checked')
+    if (checkedFormat && checkedFormat.dataset.description) {
+      const descriptionBox = document.getElementById('format-description')
+      if (descriptionBox && descriptionBox.style.display !== 'none') {
+        const descriptionText = descriptionBox.querySelector('p')
+        if (descriptionText) {
+          const description = checkedFormat.dataset.description
+          descriptionText.innerHTML = description
+        }
+      }
+    }
+
+    // Update file list remove button titles
+    const removeButtons = document.querySelectorAll('.remove-file')
+    if (removeButtons.length > 0) {
+      const removeTitle = this.t('files.remove')
+      removeButtons.forEach(btn => {
+        btn.title = removeTitle
+      })
+    }
   }
 
   updateLanguageSelector() {

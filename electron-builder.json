@@ -73,10 +73,6 @@
         "arch": ["x64", "ia32"]
       },
       {
-        "target": "portable",
-        "arch": ["x64"]
-      },
-      {
         "target": "zip",
         "arch": ["x64"]
       }
@@ -94,9 +90,6 @@
     "deleteAppDataOnUninstall": false,
     "installerIcon": "electron/build/icons/win/icon.ico",
     "uninstallerIcon": "electron/build/icons/win/icon.ico"
-  },
-  "portable": {
-    "artifactName": "${productName}-${version}-portable.${ext}"
   },
   "linux": {
     "icon": "electron/build/icons",

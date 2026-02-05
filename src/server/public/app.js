@@ -4,8 +4,70 @@ let currentSourceType = 'upload'
 let currentExportTab = 'presets'
 let presetsConfig = null
 
+// Initialize number inputs with validation (for Windows Electron compatibility)
+// Using type="text" with inputmode instead of type="number"
+function initializeNumberInputs() {
+  const numberInputs = [
+    { id: 'masteryScore', min: 0, max: 100, isInteger: true, value: 70 },
+    { id: 'xapiMasteryScore', min: 0, max: 1, isInteger: false, value: null },
+    { id: 'xapiProgressThreshold', min: 0, max: 1, isInteger: false, value: null },
+    { id: 'pdfScale', min: 0.1, max: 2, isInteger: false, value: 1 },
+    { id: 'pdfTimeout', min: 1000, max: null, isInteger: true, value: 60000 }
+  ]
+
+  numberInputs.forEach(config => {
+    const input = document.getElementById(config.id)
+    if (input) {
+      if (config.value !== null) {
+        input.value = config.value
+      }
+
+      input.addEventListener('blur', () => {
+        let value = input.value.trim()
+        if (value === '') return 
+
+        const num = config.isInteger ? parseInt(value, 10) : parseFloat(value)
+
+        if (isNaN(num)) {
+          input.value = config.value !== null ? config.value : ''
+          return
+        }
+
+        let clampedValue = num
+        if (config.min !== null && num < config.min) {
+          clampedValue = config.min
+        }
+        if (config.max !== null && num > config.max) {
+          clampedValue = config.max
+        }
+
+        input.value = clampedValue
+      })
+
+      // Prevent non-numeric input
+      input.addEventListener('beforeinput', (e) => {      
+        const data = e.data
+        if (!data) return
+        
+        const currentValue = input.value
+        
+        // Allow digits
+        if (/^\d+$/.test(data)) return
+        
+        // Allow decimal point for non-integer fields (only one)
+        if (!config.isInteger && data === '.' && !currentValue.includes('.')) {
+          return
+        }
+        
+        e.preventDefault()
+      })
+    }
+  })
+}
+
 // Initialize app
 document.addEventListener('DOMContentLoaded', async () => {
+  initializeNumberInputs()
   await loadPresets()
   initializeTabs()
   initializeExportTabs()

@@ -12,7 +12,6 @@ Download from [GitHub Releases](https://github.com/LiaScript/LiaScript-Exporter/
 
 **Windows:**
 - `.exe` - NSIS installer with start menu shortcuts
-- `-portable.exe` - Portable executable (no installation)
 - `-win.zip` - Portable archive
 
 **macOS:**

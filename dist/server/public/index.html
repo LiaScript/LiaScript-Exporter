@@ -360,12 +360,10 @@
                 <div class="form-group">
                   <label for="masteryScore" data-i18n="settings.scorm.masteryScore">Mastery Score</label>
                   <input
-                    type="number"
+                    type="text"
+                    inputmode="numeric"
                     id="masteryScore"
                     name="option_masteryScore"
-                    min="0"
-                    max="100"
-                    value="70"
                     placeholder="70"
                   />
                   <span class="hint" data-i18n="settings.scorm.masteryScoreHint"
@@ -500,13 +498,11 @@
                 <div class="form-group">
                   <label for="xapiMasteryScore" data-i18n="settings.xapi.masteryScore">Mastery Score</label>
                   <input
-                    type="number"
+                    type="text"
+                    inputmode="decimal"
                     id="xapiMasteryScore"
                     name="option_xapi-mastery-threshold"
                     placeholder="0.8"
-                    min="0"
-                    max="1"
-                    step="0.01"
                   />
                   <span class="hint" data-i18n="settings.xapi.masteryScoreHint"
                     >Required score to pass (0.0-1.0, default: 0.8)</span
@@ -516,13 +512,11 @@
                 <div class="form-group">
                   <label for="xapiProgressThreshold" data-i18n="settings.xapi.progressThreshold">Progress Threshold</label>
                   <input
-                    type="number"
+                    type="text"
+                    inputmode="decimal"
                     id="xapiProgressThreshold"
                     name="option_xapi-progress-threshold"
                     placeholder="0.9"
-                    min="0"
-                    max="1"
-                    step="0.01"
                   />
                   <span class="hint" data-i18n="settings.xapi.progressThresholdHint"
                     >Required slide progress for completion (0.0-1.0, default: 0.9)</span
@@ -649,13 +643,10 @@
                 <div class="form-group">
                   <label for="pdfScale" data-i18n="settings.pdf.scale">Scale</label>
                   <input
-                    type="number"
+                    type="text"
+                    inputmode="decimal"
                     id="pdfScale"
                     name="option_pdf-scale"
-                    min="0.1"
-                    max="2"
-                    step="0.1"
-                    value="1"
                     placeholder="1.0"
                   />
                   <span class="hint" data-i18n="settings.pdf.scaleHint">Page scale (0.1 - 2.0)</span>
@@ -816,12 +807,10 @@
                 <div class="form-group">
                   <label for="pdfTimeout" data-i18n="settings.pdf.timeout">Timeout (ms)</label>
                   <input
-                    type="number"
+                    type="text"
+                    inputmode="numeric"
                     id="pdfTimeout"
                     name="option_pdf-timeout"
-                    min="1000"
-                    step="1000"
-                    value="60000"
                     placeholder="60000"
                   />
                   <span class="hint" data-i18n="settings.pdf.timeoutHint"

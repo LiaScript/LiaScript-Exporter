@@ -108,7 +108,7 @@ body {
   background: var(--card-bg);
   border: 2px solid var(--border);
   border-radius: 6px;
-  padding: 0.5rem;
+  padding: 0.3rem;
   font-size: 0.8rem;
   font-weight: 600;
   color: var(--turquoise-darker);
