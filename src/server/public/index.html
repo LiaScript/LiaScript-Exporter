@@ -1,10 +1,11 @@
 <!doctype html>
-<html lang="de">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>LiaScript Exporter</title>
     <link rel="stylesheet" href="/styles.css" />
+    <script src="/i18n.js"></script>
   </head>
   <body>
     <nav class="navbar">
@@ -13,17 +14,23 @@
           <img src="./assets/icon.svg" alt="LiaScript" />
         </a>
         <ul class="navbar-menu">
-          <li><a href="/" class="navbar-link active">Startseite</a></li>
-          <li><a href="/status.html" class="navbar-link">Status</a></li>
+          <li><a href="/" class="navbar-link active" data-i18n="nav.home">Home</a></li>
+          <li><a href="/status.html" class="navbar-link" data-i18n="nav.status">Status</a></li>
+          <li class="language-selector-container">
+            <select id="language-selector" class="language-selector">
+              <option value="en">EN</option>
+              <option value="de">DE</option>
+            </select>
+          </li>
         </ul>
       </div>
     </nav>
     
     <div class="container">
       <header>
-        <h1>LiaScript Exporter</h1>
-        <p class="subtitle">
-          Erstellen Sie Exporte für verschiedene LMS und Formate
+        <h1 data-i18n="header.title">LiaScript Exporter</h1>
+        <p class="subtitle" data-i18n="header.subtitle">
+          Create exports for various LMS and formats
         </p>
       </header>
 
@@ -31,14 +38,14 @@
         <form id="exportForm" enctype="multipart/form-data">
           <!-- Section 1: Project Source -->
           <section class="card">
-            <h2>1. Projekt-Quelle</h2>
+            <h2 data-i18n="sections.projectSource">1. Project Source</h2>
 
             <!-- Upload Tab -->
             <div class="source-tabs">
-              <button type="button" class="tab-button active" data-tab="upload">
-                Datei-Upload
+              <button type="button" class="tab-button active" data-tab="upload" data-i18n="tabs.fileUpload">
+                File Upload
               </button>
-              <button type="button" class="tab-button" data-tab="git">
+              <button type="button" class="tab-button" data-tab="git" data-i18n="tabs.gitRepository">
                 Git Repository
               </button>
             </div>
@@ -58,9 +65,9 @@
                   <polyline points="17 8 12 3 7 8"></polyline>
                   <line x1="12" y1="3" x2="12" y2="15"></line>
                 </svg>
-                <p>Dateien hier ablegen oder klicken zum Auswählen</p>
-                <p class="hint">
-                  ZIP-Dateien oder mehrere Dateien (max. 100MB)
+                <p data-i18n="upload.dropzone">Drop files here or click to select</p>
+                <p class="hint" data-i18n="upload.hint">
+                  ZIP files or multiple files (max. 100MB)
                 </p>
               </div>
               <div id="fileList" class="file-list"></div>
@@ -69,7 +76,7 @@
             <!-- Git Panel -->
             <div class="tab-panel" id="git-panel">
               <div class="form-group">
-                <label for="gitUrl">Repository URL *</label>
+                <label for="gitUrl" data-i18n="git.repoUrlRequired">Repository URL *</label>
                 <input
                   type="text"
                   id="gitUrl"
@@ -79,20 +86,22 @@
               </div>
               <div class="form-row">
                 <div class="form-group">
-                  <label for="gitBranch">Branch / Tag</label>
+                  <label for="gitBranch" data-i18n="git.branch">Branch / Tag</label>
                   <input
                     type="text"
                     id="gitBranch"
                     name="gitBranch"
+                    data-i18n-placeholder="git.branchPlaceholder"
                     placeholder="main"
                   />
                 </div>
                 <div class="form-group">
-                  <label for="gitSubdir">Unterverzeichnis</label>
+                  <label for="gitSubdir" data-i18n="git.subdirectory">Subdirectory</label>
                   <input
                     type="text"
                     id="gitSubdir"
                     name="gitSubdir"
+                    data-i18n-placeholder="git.subdirPlaceholder"
                     placeholder="docs/"
                   />
                 </div>
@@ -102,7 +111,7 @@
 
           <!-- Section 2: Export Target -->
           <section class="card">
-            <h2>2. Export-Ziel</h2>
+            <h2 data-i18n="sections.exportTarget">2. Export Target</h2>
 
             <!-- Export Target Tabs -->
             <div class="export-tabs">
@@ -110,15 +119,17 @@
                 type="button"
                 class="export-tab-button active"
                 data-export-tab="presets"
+                data-i18n="exportTabs.presets"
               >
-                Bekannte Konfigurationen
+                Known Configurations
               </button>
               <button
                 type="button"
                 class="export-tab-button"
                 data-export-tab="formats"
+                data-i18n="exportTabs.formats"
               >
-                Formate
+                Formats
               </button>
             </div>
 
@@ -157,12 +168,13 @@
                     type="radio"
                     name="format"
                     value="scorm1.2"
-                    data-description="E-Learning-Standard für Lernmanagementsysteme. Weit verbreitet, aber älter. Geeignet für ältere LMS-Plattformen. <a href='https://de.wikipedia.org/wiki/Sharable_Content_Object_Reference_Model' target='_blank'>Mehr erfahren</a>"
+                    data-i18n-description="formats.scorm12.description"
+                    data-description="E-learning standard for learning management systems. Widely used, but older. Suitable for legacy LMS platforms. <a href='https://en.wikipedia.org/wiki/Sharable_Content_Object_Reference_Model' target='_blank'>Learn more</a>"
                   />
                   <div class="preset-content">
                     <div class="format-icon">📚</div>
-                    <h3>SCORM 1.2</h3>
-                    <p>Legacy Standard</p>
+                    <h3 data-i18n="formats.scorm12.title">SCORM 1.2</h3>
+                    <p data-i18n="formats.scorm12.subtitle">Legacy Standard</p>
                   </div>
                 </label>
 
@@ -171,12 +183,13 @@
                     type="radio"
                     name="format"
                     value="scorm2004"
-                    data-description="Moderne Version des SCORM-Standards mit erweiterten Funktionen für Lernpfade und Bewertungen. Empfohlen für aktuelle LMS-Systeme. <a href='https://de.wikipedia.org/wiki/Sharable_Content_Object_Reference_Model' target='_blank'>Mehr erfahren</a>"
+                    data-i18n-description="formats.scorm2004.description"
+                    data-description="Modern version of the SCORM standard with advanced features for learning paths and assessments. Recommended for current LMS systems. <a href='https://en.wikipedia.org/wiki/Sharable_Content_Object_Reference_Model' target='_blank'>Learn more</a>"
                   />
                   <div class="preset-content">
                     <div class="format-icon">📦</div>
-                    <h3>SCORM 2004</h3>
-                    <p>Modern Standard</p>
+                    <h3 data-i18n="formats.scorm2004.title">SCORM 2004</h3>
+                    <p data-i18n="formats.scorm2004.subtitle">Modern Standard</p>
                   </div>
                 </label>
 
@@ -185,12 +198,13 @@
                     type="radio"
                     name="format"
                     value="ims"
-                    data-description="IMS Content Packaging für Austausch von Lerninhalten zwischen verschiedenen Plattformen. Standard für plattformübergreifende Kompatibilität. <a href='https://en.wikipedia.org/wiki/IMS_Content_Packaging' target='_blank'>Mehr erfahren</a>"
+                    data-i18n-description="formats.ims.description"
+                    data-description="IMS Content Packaging for exchanging learning content between different platforms. Standard for cross-platform compatibility. <a href='https://en.wikipedia.org/wiki/IMS_Content_Packaging' target='_blank'>Learn more</a>"
                   />
                   <div class="preset-content">
                     <div class="format-icon">🔄</div>
-                    <h3>IMS</h3>
-                    <p>Content Package</p>
+                    <h3 data-i18n="formats.ims.title">IMS</h3>
+                    <p data-i18n="formats.ims.subtitle">Content Package</p>
                   </div>
                 </label>
 
@@ -199,12 +213,13 @@
                     type="radio"
                     name="format"
                     value="web"
-                    data-description="Eigenständige HTML-Website zum Hosten auf beliebigen Webservern. Funktioniert offline und online. Perfekt für eigenes Hosting."
+                    data-i18n-description="formats.web.description"
+                    data-description="Standalone HTML website for hosting on any web server. Works offline and online. Perfect for self-hosting."
                   />
                   <div class="preset-content">
                     <div class="format-icon">🌐</div>
-                    <h3>Web</h3>
-                    <p>Standalone</p>
+                    <h3 data-i18n="formats.web.title">Web</h3>
+                    <p data-i18n="formats.web.subtitle">Standalone</p>
                   </div>
                 </label>
 
@@ -213,12 +228,13 @@
                     type="radio"
                     name="format"
                     value="pdf"
-                    data-description="Portables Dokumentenformat zum Drucken und Archivieren. Ideal für statische Inhalte und Offline-Lektüre. <a href='https://de.wikipedia.org/wiki/Portable_Document_Format' target='_blank'>Mehr erfahren</a>"
+                    data-i18n-description="formats.pdf.description"
+                    data-description="Portable Document Format for printing and archiving. Ideal for static content and offline reading. <a href='https://en.wikipedia.org/wiki/PDF' target='_blank'>Learn more</a>"
                   />
                   <div class="preset-content">
                     <div class="format-icon">📄</div>
-                    <h3>PDF</h3>
-                    <p>Dokument</p>
+                    <h3 data-i18n="formats.pdf.title">PDF</h3>
+                    <p data-i18n="formats.pdf.subtitle">Document</p>
                   </div>
                 </label>
 
@@ -227,12 +243,13 @@
                     type="radio"
                     name="format"
                     value="android"
-                    data-description="Android-App-Paket (APK) für Installation auf Android-Geräten. Ermöglicht Offline-Zugriff und native App-Erfahrung."
+                    data-i18n-description="formats.android.description"
+                    data-description="Android app package (APK) for installation on Android devices. Enables offline access and native app experience."
                   />
                   <div class="preset-content">
                     <div class="format-icon">🤖</div>
-                    <h3>Android</h3>
-                    <p>App Package</p>
+                    <h3 data-i18n="formats.android.title">Android</h3>
+                    <p data-i18n="formats.android.subtitle">App Package</p>
                   </div>
                 </label>
 
@@ -241,12 +258,13 @@
                     type="radio"
                     name="format"
                     value="json"
-                    data-description="Strukturiertes Datenformat für programmatische Weiterverarbeitung und API-Integration. Perfekt für Entwickler und automatisierte Workflows. <a href='https://de.wikipedia.org/wiki/JavaScript_Object_Notation' target='_blank'>Mehr erfahren</a>"
+                    data-i18n-description="formats.json.description"
+                    data-description="Structured data format for programmatic processing and API integration. Perfect for developers and automated workflows. <a href='https://en.wikipedia.org/wiki/JSON' target='_blank'>Learn more</a>"
                   />
                   <div class="preset-content">
                     <div class="format-icon">{ }</div>
-                    <h3>JSON</h3>
-                    <p>Data Export</p>
+                    <h3 data-i18n="formats.json.title">JSON</h3>
+                    <p data-i18n="formats.json.subtitle">Data Export</p>
                   </div>
                 </label>
 
@@ -255,12 +273,13 @@
                     type="radio"
                     name="format"
                     value="epub"
-                    data-description="Offenes E-Book-Format für E-Reader und mobile Geräte. Unterstützt reflowable Layouts und ist kompatibel mit den meisten E-Readern. <a href='https://de.wikipedia.org/wiki/EPUB' target='_blank'>Mehr erfahren</a>"
+                    data-i18n-description="formats.epub.description"
+                    data-description="Open e-book format for e-readers and mobile devices. Supports reflowable layouts and is compatible with most e-readers. <a href='https://en.wikipedia.org/wiki/EPUB' target='_blank'>Learn more</a>"
                   />
                   <div class="preset-content">
                     <div class="format-icon">📖</div>
-                    <h3>EPUB</h3>
-                    <p>E-Book</p>
+                    <h3 data-i18n="formats.epub.title">EPUB</h3>
+                    <p data-i18n="formats.epub.subtitle">E-Book</p>
                   </div>
                 </label>
 
@@ -269,12 +288,13 @@
                     type="radio"
                     name="format"
                     value="rdf"
-                    data-description="Resource Description Framework für strukturierte Metadaten und Linked Data. Für semantische Web-Anwendungen und Metadaten-Export. <a href='https://de.wikipedia.org/wiki/Resource_Description_Framework' target='_blank'>Mehr erfahren</a>"
+                    data-i18n-description="formats.rdf.description"
+                    data-description="Resource Description Framework for structured metadata and Linked Data. For semantic web applications and metadata export. <a href='https://en.wikipedia.org/wiki/Resource_Description_Framework' target='_blank'>Learn more</a>"
                   />
                   <div class="preset-content">
                     <div class="format-icon">🔗</div>
-                    <h3>RDF</h3>
-                    <p>Metadaten</p>
+                    <h3 data-i18n="formats.rdf.title">RDF</h3>
+                    <p data-i18n="formats.rdf.subtitle">Metadata</p>
                   </div>
                 </label>
 
@@ -283,12 +303,13 @@
                     type="radio"
                     name="format"
                     value="xapi"
-                    data-description="Experience API (xAPI) für Learning Analytics und detailliertes Tracking von Lernaktivitäten. Ermöglicht erweiterte Auswertungen über einen Learning Record Store (LRS). <a href='https://de.wikipedia.org/wiki/Experience_API' target='_blank'>Mehr erfahren</a>"
+                    data-i18n-description="formats.xapi.description"
+                    data-description="Experience API (xAPI) for Learning Analytics and detailed tracking of learning activities. Enables advanced analytics through a Learning Record Store (LRS). <a href='https://en.wikipedia.org/wiki/Experience_API' target='_blank'>Learn more</a>"
                   />
                   <div class="preset-content">
                     <div class="format-icon">📊</div>
-                    <h3>xAPI</h3>
-                    <p>Learning Analytics</p>
+                    <h3 data-i18n="formats.xapi.title">xAPI</h3>
+                    <p data-i18n="formats.xapi.subtitle">Learning Analytics</p>
                   </div>
                 </label>
               </div>
@@ -324,7 +345,7 @@
                 class="collapsible-toggle"
               >
                 <span class="toggle-icon">▶</span>
-                3. Erweiterte Einstellungen (optional)
+                <span data-i18n="sections.advancedSettings">3. Advanced Settings (optional)</span>
               </button>
             </h2>
 
@@ -334,10 +355,10 @@
                 class="settings-group"
                 data-formats="scorm1.2,scorm2004,moodle,ilias,opal,generic,openolat,openedx"
               >
-                <h3 class="settings-heading">SCORM Einstellungen</h3>
+                <h3 class="settings-heading" data-i18n="settings.scorm.title">SCORM Settings</h3>
 
                 <div class="form-group">
-                  <label for="masteryScore">Mastery Score</label>
+                  <label for="masteryScore" data-i18n="settings.scorm.masteryScore">Mastery Score</label>
                   <input
                     type="number"
                     id="masteryScore"
@@ -345,27 +366,29 @@
                     min="0"
                     max="100"
                     value="70"
+                    placeholder="70"
                   />
-                  <span class="hint"
-                    >Mindestpunktzahl für Bestehen (0-100)</span
+                  <span class="hint" data-i18n="settings.scorm.masteryScoreHint"
+                    >Minimum score to pass (0-100)</span
                   >
                 </div>
 
                 <div class="form-group">
-                  <label for="scormOrganization">Organisation</label>
+                  <label for="scormOrganization" data-i18n="settings.scorm.organization">Organization</label>
                   <input
                     type="text"
                     id="scormOrganization"
                     name="option_scormOrganization"
-                    placeholder="Meine Organisation"
+                    data-i18n-placeholder="settings.scorm.organizationHint"
+                    placeholder="My Organization"
                   />
-                  <span class="hint"
-                    >Titel der Organisation im SCORM-Paket</span
+                  <span class="hint" data-i18n="settings.scorm.organizationHint"
+                    >Organization title in SCORM package</span
                   >
                 </div>
 
                 <div class="form-group">
-                  <label for="typicalDuration">Typische Dauer</label>
+                  <label for="typicalDuration" data-i18n="settings.scorm.typicalDuration">Typical Duration</label>
                   <input
                     type="text"
                     id="typicalDuration"
@@ -373,7 +396,7 @@
                     placeholder="PT0H5M0S"
                     value="PT0H5M0S"
                   />
-                  <span class="hint">Format: PT0H5M0S (5 Minuten)</span>
+                  <span class="hint" data-i18n="settings.scorm.typicalDurationHint">Format: PT0H5M0S (5 minutes)</span>
                 </div>
 
                 <div class="form-group">
@@ -383,10 +406,10 @@
                       id="scormIframe"
                       name="option_scormIframe"
                     />
-                    iFrame verwenden
+                    <span data-i18n="settings.scorm.useIframe">Use iFrame</span>
                   </label>
-                  <span class="hint"
-                    >Für bessere Kompatibilität in manchen LMS</span
+                  <span class="hint" data-i18n="settings.scorm.useIframeHint"
+                    >For better compatibility in some LMS</span
                   >
                 </div>
 
@@ -397,85 +420,85 @@
                       id="scormEmbed"
                       name="option_scormEmbed"
                     />
-                    Markdown einbetten
+                    <span data-i18n="settings.scorm.embedMarkdown">Embed Markdown</span>
                   </label>
-                  <span class="hint">Empfohlen für Moodle 4</span>
+                  <span class="hint" data-i18n="settings.scorm.embedMarkdownHint">Recommended for Moodle 4</span>
                 </div>
               </div>
 
               <!-- xAPI Settings -->
               <div class="settings-group" data-formats="xapi">
-                <h3 class="settings-heading">xAPI Einstellungen</h3>
+                <h3 class="settings-heading" data-i18n="settings.xapi.title">xAPI Settings</h3>
 
                 <div class="form-group">
-                  <label for="xapiEndpoint">LRS Endpoint</label>
+                  <label for="xapiEndpoint" data-i18n="settings.xapi.lrsEndpoint">LRS Endpoint</label>
                   <input
                     type="text"
                     id="xapiEndpoint"
                     name="option_xapi-endpoint"
                     placeholder="https://lrs.example.com/xAPI/statements"
                   />
-                  <span class="hint"
-                    >URL des Learning Record Store (LRS) Endpoints</span
+                  <span class="hint" data-i18n="settings.xapi.lrsEndpointHint"
+                    >URL of the Learning Record Store (LRS) endpoint</span
                   >
                 </div>
 
                 <div class="form-group">
-                  <label for="xapiAuth">Authentifizierung</label>
+                  <label for="xapiAuth" data-i18n="settings.xapi.authentication">Authentication</label>
                   <input
                     type="text"
                     id="xapiAuth"
                     name="option_xapi-auth"
                     placeholder="Basic dXNlcm5hbWU6cGFzc3dvcmQ="
                   />
-                  <span class="hint"
-                    >Basic Auth String für LRS (z.B. "Basic
-                    base64encodedcredentials")</span
+                  <span class="hint" data-i18n="settings.xapi.authenticationHint"
+                    >Basic Auth String for LRS (e.g. "Basic base64encodedcredentials")</span
                   >
                 </div>
 
                 <div class="form-group">
-                  <label for="xapiActor">Actor (JSON)</label>
+                  <label for="xapiActor" data-i18n="settings.xapi.actor">Actor (JSON)</label>
                   <textarea
                     id="xapiActor"
                     name="option_xapi-actor"
                     rows="4"
+                    data-i18n-placeholder="settings.xapi.actorPlaceholder"
                     placeholder='{"objectType":"Agent","name":"Anonymous","mbox":"mailto:anonymous@example.com"}'
                   ></textarea>
-                  <span class="hint"
-                    >xAPI Actor im JSON-Format (Standard: anonymous)</span
+                  <span class="hint" data-i18n="settings.xapi.actorHint"
+                    >xAPI Actor in JSON format (default: anonymous)</span
                   >
                 </div>
 
                 <div class="form-group">
-                  <label for="xapiCourseId">Kurs-ID</label>
+                  <label for="xapiCourseId" data-i18n="settings.xapi.courseId">Course ID</label>
                   <input
                     type="text"
                     id="xapiCourseId"
                     name="option_xapi-course-id"
                     placeholder="https://example.com/course/123"
                   />
-                  <span class="hint"
-                    >Eindeutiger Identifier für den Kurs (Standard:
-                    Kurs-URL)</span
+                  <span class="hint" data-i18n="settings.xapi.courseIdHint"
+                    >Unique identifier for the course (default: course URL)</span
                   >
                 </div>
 
                 <div class="form-group">
-                  <label for="xapiCourseTitle">Kurs-Titel</label>
+                  <label for="xapiCourseTitle" data-i18n="settings.xapi.courseTitle">Course Title</label>
                   <input
                     type="text"
                     id="xapiCourseTitle"
                     name="option_xapi-course-title"
-                    placeholder="Mein LiaScript Kurs"
+                    data-i18n-placeholder="settings.xapi.courseTitleHint"
+                    placeholder="My LiaScript Course"
                   />
-                  <span class="hint"
-                    >Angezeigter Titel des Kurses (Standard: aus Dokument)</span
+                  <span class="hint" data-i18n="settings.xapi.courseTitleHint"
+                    >Displayed course title (default: from document)</span
                   >
                 </div>
 
                 <div class="form-group">
-                  <label for="xapiMasteryScore">Mastery Score</label>
+                  <label for="xapiMasteryScore" data-i18n="settings.xapi.masteryScore">Mastery Score</label>
                   <input
                     type="number"
                     id="xapiMasteryScore"
@@ -485,14 +508,13 @@
                     max="1"
                     step="0.01"
                   />
-                  <span class="hint"
-                    >Erforderliche Quote zum Bestehen (0.0-1.0, Standard:
-                    0.8)</span
+                  <span class="hint" data-i18n="settings.xapi.masteryScoreHint"
+                    >Required score to pass (0.0-1.0, default: 0.8)</span
                   >
                 </div>
 
                 <div class="form-group">
-                  <label for="xapiProgressThreshold">Progress Threshold</label>
+                  <label for="xapiProgressThreshold" data-i18n="settings.xapi.progressThreshold">Progress Threshold</label>
                   <input
                     type="number"
                     id="xapiProgressThreshold"
@@ -502,9 +524,8 @@
                     max="1"
                     step="0.01"
                   />
-                  <span class="hint"
-                    >Erforderliche Folienprogress für Abschluss (0.0-1.0,
-                    Standard: 0.9)</span
+                  <span class="hint" data-i18n="settings.xapi.progressThresholdHint"
+                    >Required slide progress for completion (0.0-1.0, default: 0.9)</span
                   >
                 </div>
 
@@ -515,9 +536,9 @@
                       id="xapiDebug"
                       name="option_xapi-debug"
                     />
-                    Debug-Modus
+                    <span data-i18n="settings.xapi.debugMode">Debug Mode</span>
                   </label>
-                  <span class="hint">xAPI Statements in Konsole ausgeben</span>
+                  <span class="hint" data-i18n="settings.xapi.debugModeHint">Output xAPI statements to console</span>
                 </div>
 
                 <div class="form-group">
@@ -528,15 +549,15 @@
                       name="option_xapi-zip"
                       checked
                     />
-                    Als ZIP verpacken
+                    <span data-i18n="settings.xapi.zipPackage">Package as ZIP</span>
                   </label>
-                  <span class="hint">Ausgabe als ZIP-Datei</span>
+                  <span class="hint" data-i18n="settings.xapi.zipPackageHint">Output as ZIP file</span>
                 </div>
               </div>
 
               <!-- IMS Settings -->
               <div class="settings-group" data-formats="ims">
-                <h3 class="settings-heading">IMS Einstellungen</h3>
+                <h3 class="settings-heading" data-i18n="settings.ims.title">IMS Settings</h3>
 
                 <div class="form-group">
                   <label>
@@ -545,15 +566,15 @@
                       id="imsIndexeddb"
                       name="option_imsIndexeddb"
                     />
-                    IndexedDB verwenden
+                    <span data-i18n="settings.ims.useIndexedDB">Use IndexedDB</span>
                   </label>
-                  <span class="hint">Persistente Speicherung im Browser</span>
+                  <span class="hint" data-i18n="settings.ims.useIndexedDBHint">Persistent storage in browser</span>
                 </div>
               </div>
 
               <!-- Web Settings -->
               <div class="settings-group" data-formats="web">
-                <h3 class="settings-heading">Web Einstellungen</h3>
+                <h3 class="settings-heading" data-i18n="settings.web.title">Web Settings</h3>
 
                 <div class="form-group">
                   <label>
@@ -562,9 +583,9 @@
                       id="webIframe"
                       name="option_webIframe"
                     />
-                    iFrame Version
+                    <span data-i18n="settings.web.iframeVersion">iFrame Version</span>
                   </label>
-                  <span class="hint">Versteckt die Kurs-URL</span>
+                  <span class="hint" data-i18n="settings.web.iframeVersionHint">Hides the course URL</span>
                 </div>
 
                 <div class="form-group">
@@ -574,9 +595,9 @@
                       id="webIndexeddb"
                       name="option_webIndexeddb"
                     />
-                    IndexedDB verwenden
+                    <span data-i18n="settings.web.useIndexedDB">Use IndexedDB</span>
                   </label>
-                  <span class="hint">Daten im Browser speichern</span>
+                  <span class="hint" data-i18n="settings.web.useIndexedDBHint">Store data in browser</span>
                 </div>
 
                 <div class="form-group">
@@ -587,19 +608,19 @@
                       name="option_webZip"
                       checked
                     />
-                    Als ZIP verpacken
+                    <span data-i18n="settings.web.zipPackage">Package as ZIP</span>
                   </label>
-                  <span class="hint">Erstellt eine ZIP-Datei</span>
+                  <span class="hint" data-i18n="settings.web.zipPackageHint">Creates a ZIP file</span>
                 </div>
               </div>
 
               <!-- PDF Settings -->
               <div class="settings-group" data-formats="pdf">
-                <h3 class="settings-heading">PDF Einstellungen</h3>
+                <h3 class="settings-heading" data-i18n="settings.pdf.title">PDF Settings</h3>
 
                 <!-- Layout & Format -->
                 <div class="form-group">
-                  <label for="pdfFormat">Seitenformat</label>
+                  <label for="pdfFormat" data-i18n="settings.pdf.pageFormat">Page Format</label>
                   <select id="pdfFormat" name="option_pdf-format">
                     <option value="A4" selected>A4</option>
                     <option value="A3">A3</option>
@@ -609,7 +630,7 @@
                     <option value="Tabloid">Tabloid</option>
                     <option value="Ledger">Ledger</option>
                   </select>
-                  <span class="hint">Standardgröße des Papiers</span>
+                  <span class="hint" data-i18n="settings.pdf.pageFormatHint">Standard paper size</span>
                 </div>
 
                 <div class="form-group">
@@ -619,14 +640,14 @@
                       id="pdfLandscape"
                       name="option_pdf-landscape"
                     />
-                    Querformat (Landscape)
+                    <span data-i18n="settings.pdf.landscape">Landscape</span>
                   </label>
-                  <span class="hint">Seite im Querformat drucken</span>
+                  <span class="hint" data-i18n="settings.pdf.landscapeHint">Print page in landscape orientation</span>
                 </div>
 
                 <!-- Scale & Background -->
                 <div class="form-group">
-                  <label for="pdfScale">Skalierung</label>
+                  <label for="pdfScale" data-i18n="settings.pdf.scale">Scale</label>
                   <input
                     type="number"
                     id="pdfScale"
@@ -637,7 +658,7 @@
                     value="1"
                     placeholder="1.0"
                   />
-                  <span class="hint">Skalierung der Seite (0.1 - 2.0)</span>
+                  <span class="hint" data-i18n="settings.pdf.scaleHint">Page scale (0.1 - 2.0)</span>
                 </div>
 
                 <div class="form-group">
@@ -648,14 +669,14 @@
                       name="option_pdf-printBackground"
                       checked
                     />
-                    Hintergrundgrafiken drucken
+                    <span data-i18n="settings.pdf.printBackground">Print Background Graphics</span>
                   </label>
-                  <span class="hint">Druckt Hintergrundfarben und -bilder</span>
+                  <span class="hint" data-i18n="settings.pdf.printBackgroundHint">Prints background colors and images</span>
                 </div>
 
                 <!-- Margins -->
                 <div class="form-group">
-                  <label for="pdfMarginTop">Rand Oben</label>
+                  <label for="pdfMarginTop" data-i18n="settings.pdf.marginTop">Top Margin</label>
                   <input
                     type="text"
                     id="pdfMarginTop"
@@ -663,13 +684,13 @@
                     placeholder="80"
                     value="80"
                   />
-                  <span class="hint"
-                    >Oberer Rand in Pixel oder mit Einheit (z.B. "2cm")</span
+                  <span class="hint" data-i18n="settings.pdf.marginTopHint"
+                    >Top margin in pixels or with unit (e.g. "2cm")</span
                   >
                 </div>
 
                 <div class="form-group">
-                  <label for="pdfMarginBottom">Rand Unten</label>
+                  <label for="pdfMarginBottom" data-i18n="settings.pdf.marginBottom">Bottom Margin</label>
                   <input
                     type="text"
                     id="pdfMarginBottom"
@@ -677,13 +698,13 @@
                     placeholder="80"
                     value="80"
                   />
-                  <span class="hint"
-                    >Unterer Rand in Pixel oder mit Einheit</span
+                  <span class="hint" data-i18n="settings.pdf.marginBottomHint"
+                    >Bottom margin in pixels or with unit</span
                   >
                 </div>
 
                 <div class="form-group">
-                  <label for="pdfMarginLeft">Rand Links</label>
+                  <label for="pdfMarginLeft" data-i18n="settings.pdf.marginLeft">Left Margin</label>
                   <input
                     type="text"
                     id="pdfMarginLeft"
@@ -691,13 +712,13 @@
                     placeholder="30"
                     value="30"
                   />
-                  <span class="hint"
-                    >Linker Rand in Pixel oder mit Einheit</span
+                  <span class="hint" data-i18n="settings.pdf.marginLeftHint"
+                    >Left margin in pixels or with unit</span
                   >
                 </div>
 
                 <div class="form-group">
-                  <label for="pdfMarginRight">Rand Rechts</label>
+                  <label for="pdfMarginRight" data-i18n="settings.pdf.marginRight">Right Margin</label>
                   <input
                     type="text"
                     id="pdfMarginRight"
@@ -705,8 +726,8 @@
                     placeholder="30"
                     value="30"
                   />
-                  <span class="hint"
-                    >Rechter Rand in Pixel oder mit Einheit</span
+                  <span class="hint" data-i18n="settings.pdf.marginRightHint"
+                    >Right margin in pixels or with unit</span
                   >
                 </div>
 
@@ -718,10 +739,10 @@
                       id="pdfDisplayHeaderFooter"
                       name="option_pdf-displayHeaderFooter"
                     />
-                    Kopf- und Fußzeile anzeigen
+                    <span data-i18n="settings.pdf.displayHeaderFooter">Display Header & Footer</span>
                   </label>
-                  <span class="hint"
-                    >Zeigt Kopf- und Fußzeile auf jeder Seite</span
+                  <span class="hint" data-i18n="settings.pdf.displayHeaderFooterHint"
+                    >Shows header and footer on each page</span
                   >
                 </div>
 
@@ -730,18 +751,18 @@
                   id="pdfHeaderGroup"
                   style="display: none"
                 >
-                  <label for="pdfHeaderTemplate"
-                    >Kopfzeilen-Template (HTML)</label
+                  <label for="pdfHeaderTemplate" data-i18n="settings.pdf.headerTemplate"
+                    >Header Template (HTML)</label
                   >
                   <textarea
                     id="pdfHeaderTemplate"
                     name="option_pdf-headerTemplate"
                     rows="3"
+                    data-i18n-placeholder="settings.pdf.headerTemplatePlaceholder"
                     placeholder="<div style='font-size: 10px; text-align: center; width: 100%;'><span class='title'></span></div>"
                   ></textarea>
-                  <span class="hint"
-                    >HTML-Template mit Klassen: date, title, url, pageNumber,
-                    totalPages</span
+                  <span class="hint" data-i18n="settings.pdf.headerTemplateHint"
+                    >HTML template with classes: date, title, url, pageNumber, totalPages</span
                   >
                 </div>
 
@@ -750,48 +771,50 @@
                   id="pdfFooterGroup"
                   style="display: none"
                 >
-                  <label for="pdfFooterTemplate"
-                    >Fußzeilen-Template (HTML)</label
+                  <label for="pdfFooterTemplate" data-i18n="settings.pdf.footerTemplate"
+                    >Footer Template (HTML)</label
                   >
                   <textarea
                     id="pdfFooterTemplate"
                     name="option_pdf-footerTemplate"
                     rows="3"
+                    data-i18n-placeholder="settings.pdf.footerTemplatePlaceholder"
                     placeholder="<div style='font-size: 10px; text-align: center; width: 100%;'><span class='pageNumber'></span> / <span class='totalPages'></span></div>"
                   ></textarea>
-                  <span class="hint">HTML-Template für die Fußzeile</span>
+                  <span class="hint" data-i18n="settings.pdf.footerTemplateHint">HTML template for footer</span>
                 </div>
 
                 <!-- Page Ranges -->
                 <div class="form-group">
-                  <label for="pdfPageRanges">Seitenbereiche</label>
+                  <label for="pdfPageRanges" data-i18n="settings.pdf.pageRanges">Page Ranges</label>
                   <input
                     type="text"
                     id="pdfPageRanges"
                     name="option_pdf-pageRanges"
-                    placeholder="z.B. 1-5, 8, 11-13"
+                    data-i18n-placeholder="settings.pdf.pageRangesPlaceholder"
+                    placeholder="e.g. 1-5, 8, 11-13"
                   />
-                  <span class="hint"
-                    >Nur bestimmte Seiten drucken (optional)</span
+                  <span class="hint" data-i18n="settings.pdf.pageRangesHint"
+                    >Print only specific pages (optional)</span
                   >
                 </div>
 
                 <!-- LiaScript Specific -->
                 <div class="form-group">
-                  <label for="pdfTheme">LiaScript Theme</label>
+                  <label for="pdfTheme" data-i18n="settings.pdf.theme">LiaScript Theme</label>
                   <select id="pdfTheme" name="option_pdf-theme">
                     <option value="">Standard</option>
-                    <option value="default">Default</option>
-                    <option value="turquoise">Türkis</option>
-                    <option value="blue">Blau</option>
-                    <option value="red">Rot</option>
-                    <option value="yellow">Gelb</option>
+                    <option value="default" data-i18n="settings.pdf.themeDefault">Default</option>
+                    <option value="turquoise" data-i18n="settings.pdf.themeTurquoise">Turquoise</option>
+                    <option value="blue" data-i18n="settings.pdf.themeBlue">Blue</option>
+                    <option value="red" data-i18n="settings.pdf.themeRed">Red</option>
+                    <option value="yellow" data-i18n="settings.pdf.themeYellow">Yellow</option>
                   </select>
-                  <span class="hint">Farbschema für das PDF</span>
+                  <span class="hint" data-i18n="settings.pdf.themeHint">Color scheme for PDF</span>
                 </div>
 
                 <div class="form-group">
-                  <label for="pdfTimeout">Timeout (ms)</label>
+                  <label for="pdfTimeout" data-i18n="settings.pdf.timeout">Timeout (ms)</label>
                   <input
                     type="number"
                     id="pdfTimeout"
@@ -801,9 +824,8 @@
                     value="60000"
                     placeholder="60000"
                   />
-                  <span class="hint"
-                    >Wartezeit für vollständiges Laden (60000 = 60
-                    Sekunden)</span
+                  <span class="hint" data-i18n="settings.pdf.timeoutHint"
+                    >Wait time for complete loading (60000 = 60 seconds)</span
                   >
                 </div>
 
@@ -815,9 +837,9 @@
                       id="pdfPreferCSSPageSize"
                       name="option_pdf-preferCSSPageSize"
                     />
-                    CSS @page Größe bevorzugen
+                    <span data-i18n="settings.pdf.preferCSSPageSize">Prefer CSS @page Size</span>
                   </label>
-                  <span class="hint">CSS-Seitengröße hat Vorrang</span>
+                  <span class="hint" data-i18n="settings.pdf.preferCSSPageSizeHint">CSS page size takes precedence</span>
                 </div>
 
                 <div class="form-group">
@@ -827,72 +849,76 @@
                       id="pdfOmitBackground"
                       name="option_pdf-omitBackground"
                     />
-                    Transparenten Hintergrund
+                    <span data-i18n="settings.pdf.omitBackground">Transparent Background</span>
                   </label>
-                  <span class="hint">Weißer Hintergrund wird weggelassen</span>
+                  <span class="hint" data-i18n="settings.pdf.omitBackgroundHint">White background is omitted</span>
                 </div>
               </div>
 
               <!-- Android Settings -->
               <div class="settings-group" data-formats="android">
-                <h3 class="settings-heading">Android Einstellungen</h3>
+                <h3 class="settings-heading" data-i18n="settings.android.title">Android Settings</h3>
 
                 <div class="form-group">
-                  <label for="androidAppName">App Name</label>
+                  <label for="androidAppName" data-i18n="settings.android.appName">App Name</label>
                   <input
                     type="text"
                     id="androidAppName"
                     name="option_android-appName"
-                    placeholder="Meine App"
+                    data-i18n-placeholder="settings.android.appNameHint"
+                    placeholder="My App"
                   />
-                  <span class="hint">Name der Android-App</span>
+                  <span class="hint" data-i18n="settings.android.appNameHint">Name of the Android app</span>
                 </div>
 
                 <div class="form-group">
-                  <label for="androidAppId">App ID *</label>
+                  <label for="androidAppId" data-i18n="settings.android.appId">App ID *</label>
                   <input
                     type="text"
                     id="androidAppId"
                     name="option_android-appId"
+                    data-i18n-placeholder="settings.android.appIdPlaceholder"
                     placeholder="io.github.liascript"
                     data-required="true"
                   />
-                  <span class="hint"
-                    >Eindeutiger App-Identifier (z.B. io.github.liascript)</span
+                  <span class="hint" data-i18n="settings.android.appIdHint"
+                    >Unique app identifier (e.g. io.github.liascript)</span
                   >
                 </div>
               </div>
 
               <!-- EPUB Settings -->
               <div class="settings-group" data-formats="epub">
-                <h3 class="settings-heading">EPUB Einstellungen</h3>
+                <h3 class="settings-heading" data-i18n="settings.epub.title">EPUB Settings</h3>
 
                 <div class="form-group">
-                  <label for="epubAuthor">Autor</label>
+                  <label for="epubAuthor" data-i18n="settings.epub.author">Author</label>
                   <input
                     type="text"
                     id="epubAuthor"
                     name="option_epubAuthor"
-                    placeholder="Max Mustermann"
+                    data-i18n-placeholder="settings.epub.authorPlaceholder"
+                    placeholder="John Doe"
                   />
-                  <span class="hint">Autor des E-Books</span>
+                  <span class="hint" data-i18n="settings.epub.authorHint">Author of the e-book</span>
                 </div>
 
                 <div class="form-group">
-                  <label for="epubPublisher">Verlag</label>
+                  <label for="epubPublisher" data-i18n="settings.epub.publisher">Publisher</label>
                   <input
                     type="text"
                     id="epubPublisher"
                     name="option_epubPublisher"
-                    placeholder="Mein Verlag"
+                    data-i18n-placeholder="settings.epub.publisherHint"
+                    placeholder="My Publisher"
                   />
-                  <span class="hint">Publisher/Verlag</span>
+                  <span class="hint" data-i18n="settings.epub.publisherHint">Publisher/Publisher house</span>
                 </div>
               </div>
 
               <!-- JSON Settings -->
               <div class="settings-group" data-formats="json">
-                <h3 class="settings-heading">JSON Einstellungen</h3>
+                <h3 class="settings-heading" data-i18n="settings.json.title">JSON Settings</h3>
 
                 <div class="form-group">
                   <label>
@@ -901,9 +927,9 @@
                       id="jsonFull"
                       name="option_jsonFull"
                     />
-                    Vollständiges JSON
+                    <span data-i18n="settings.json.fullJSON">Full JSON</span>
                   </label>
-                  <span class="hint">Exportiert alle Details</span>
+                  <span class="hint" data-i18n="settings.json.fullJSONHint">Exports all details</span>
                 </div>
 
                 <div class="form-group">
@@ -914,24 +940,24 @@
                       name="option_jsonPretty"
                       checked
                     />
-                    Formatiert (Pretty Print)
+                    <span data-i18n="settings.json.prettyPrint">Formatted (Pretty Print)</span>
                   </label>
-                  <span class="hint">Lesbar formatiertes JSON</span>
+                  <span class="hint" data-i18n="settings.json.prettyPrintHint">Readable formatted JSON</span>
                 </div>
               </div>
 
               <!-- RDF Settings -->
               <div class="settings-group" data-formats="rdf">
-                <h3 class="settings-heading">RDF Einstellungen</h3>
+                <h3 class="settings-heading" data-i18n="settings.rdf.title">RDF Settings</h3>
 
                 <div class="form-group">
-                  <label for="rdfFormat">Ausgabeformat</label>
+                  <label for="rdfFormat" data-i18n="settings.rdf.outputFormat">Output Format</label>
                   <select id="rdfFormat" name="option_rdf-format">
                     <option value="json-ld" selected>JSON-LD</option>
                     <option value="n-quads">N-Quads</option>
                   </select>
-                  <span class="hint"
-                    >Format für die RDF-Ausgabe (Standard: JSON-LD)</span
+                  <span class="hint" data-i18n="settings.rdf.outputFormatHint"
+                    >Format for RDF output (default: JSON-LD)</span
                   >
                 </div>
 
@@ -942,82 +968,79 @@
                       id="rdfPreview"
                       name="option_rdf-preview"
                     />
-                    Preview in Konsole
+                    <span data-i18n="settings.rdf.previewConsole">Preview in Console</span>
                   </label>
-                  <span class="hint">Ausgabe in der Konsole anzeigen</span>
+                  <span class="hint" data-i18n="settings.rdf.previewConsoleHint">Display output in console</span>
                 </div>
 
                 <div class="form-group">
-                  <label for="rdfUrl">Externe URL</label>
+                  <label for="rdfUrl" data-i18n="settings.rdf.externalUrl">External URL</label>
                   <input
                     type="url"
                     id="rdfUrl"
                     name="option_rdf-url"
                     placeholder="https://example.com/course"
                   />
-                  <span class="hint"
-                    >Externe URL für lokale Projekte (optional)</span
+                  <span class="hint" data-i18n="settings.rdf.externalUrlHint"
+                    >External URL for local projects (optional)</span
                   >
                 </div>
 
                 <div class="form-group">
-                  <label for="rdfType">Schema.org Type</label>
+                  <label for="rdfType" data-i18n="settings.rdf.schemaType">Schema.org Type</label>
                   <input
                     type="text"
                     id="rdfType"
                     name="option_rdf-type"
                     placeholder="Course"
                   />
-                  <span class="hint"
-                    >Schema.org-Typ (Standard: Course, z.B.
-                    EducationalResource)</span
+                  <span class="hint" data-i18n="settings.rdf.schemaTypeHint"
+                    >Schema.org type (default: Course, e.g. EducationalResource)</span
                   >
                 </div>
 
                 <div class="form-group">
-                  <label for="rdfTemplate">Template URL/Datei</label>
+                  <label for="rdfTemplate" data-i18n="settings.rdf.templateUrl">Template URL/File</label>
                   <input
                     type="text"
                     id="rdfTemplate"
                     name="option_rdf-template"
                     placeholder="template.json"
                   />
-                  <span class="hint"
-                    >URL oder JSON-Datei als Template (optional)</span
+                  <span class="hint" data-i18n="settings.rdf.templateUrlHint"
+                    >URL or JSON file as template (optional)</span
                   >
                 </div>
 
                 <div class="form-group">
-                  <label for="rdfLicense">Lizenz-URL</label>
+                  <label for="rdfLicense" data-i18n="settings.rdf.licenseUrl">License URL</label>
                   <input
                     type="url"
                     id="rdfLicense"
                     name="option_rdf-license"
                     placeholder="https://creativecommons.org/licenses/by/4.0/"
                   />
-                  <span class="hint">URL zur Lizenz des Kurses (optional)</span>
+                  <span class="hint" data-i18n="settings.rdf.licenseUrlHint">URL to course license (optional)</span>
                 </div>
 
                 <div class="form-group">
-                  <label for="rdfEducationalLevel">Bildungsniveau</label>
+                  <label for="rdfEducationalLevel" data-i18n="settings.rdf.educationalLevel">Educational Level</label>
                   <input
                     type="text"
                     id="rdfEducationalLevel"
                     name="option_rdf-educationalLevel"
                     placeholder="beginner, intermediate, advanced"
                   />
-                  <span class="hint"
-                    >Bildungsniveau (z.B. beginner, intermediate,
-                    advanced)</span
+                  <span class="hint" data-i18n="settings.rdf.educationalLevelHint"
+                    >Educational level (e.g. beginner, intermediate, advanced)</span
                   >
                 </div>
               </div>
 
               <!-- No settings message -->
               <div class="settings-group no-settings" style="display: none">
-                <p class="hint">
-                  Für dieses Format sind keine zusätzlichen Einstellungen
-                  verfügbar.
+                <p class="hint" data-i18n="settings.noSettings">
+                  No additional settings available for this format.
                 </p>
               </div>
             </div>
@@ -1038,11 +1061,10 @@
                 <polyline points="7 10 12 15 17 10"></polyline>
                 <line x1="12" y1="15" x2="12" y2="3"></line>
               </svg>
-              Export starten
+              <span data-i18n="submit.button">Start Export</span>
             </button>
-            <p class="info-text">
-              Export-Aufträge werden in eine Warteschlange eingereiht.<br />
-              Es wird jeweils nur ein Export gleichzeitig verarbeitet.
+            <p class="info-text" data-i18n-html="submit.info">
+              Export jobs are queued.<br />Only one export is processed at a time.
             </p>
           </section>
         </form>
@@ -1050,14 +1072,14 @@
         <!-- Confirmation Modal -->
         <div id="confirmationModal" class="modal hidden">
           <div class="modal-content">
-            <h2>Export gestartet</h2>
+            <h2 data-i18n="modal.title">Export Started</h2>
             <div id="confirmationDetails"></div>
             <div class="modal-actions">
-              <a id="statusLink" href="#" class="btn-primary"
-                >Zur Status-Seite</a
+              <a id="statusLink" href="#" class="btn-primary" data-i18n="modal.statusLink"
+                >Go to Status Page</a
               >
-              <button type="button" id="closeModal" class="btn-secondary">
-                Schließen
+              <button type="button" id="closeModal" class="btn-secondary" data-i18n="modal.close">
+                Close
               </button>
             </div>
           </div>
@@ -1065,7 +1087,7 @@
       </main>
 
       <footer>
-        <p>&copy; 2026 LiaScript Exporter</p>
+        <p data-i18n="footer.copyright">&copy; 2026 LiaScript Exporter</p>
       </footer>
     </div>
 

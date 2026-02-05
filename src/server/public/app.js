@@ -23,48 +23,52 @@ async function loadPresets() {
     const response = await fetch('/api/presets')
     const data = await response.json()
     presetsConfig = data.presets
-
-    const presetsGrid = document.getElementById('presets-grid')
-    presetsGrid.innerHTML = ''
-
-    presetsConfig.forEach((preset, index) => {
-      const label = document.createElement('label')
-      label.className = 'preset-tile'
-
-      const input = document.createElement('input')
-      input.type = 'radio'
-      input.name = 'preset'
-      input.value = preset.id
-      input.dataset.description = preset.description
-      input.dataset.presetOptions = JSON.stringify(preset.options)
-      if (index === 0) input.checked = true
-
-      const content = document.createElement('div')
-      content.className = 'preset-content'
-
-      const logo = document.createElement('div')
-      logo.style.fontSize = '2rem'
-      logo.style.marginBottom = '0.5rem'
-      logo.textContent = preset.logo
-
-      const title = document.createElement('h3')
-      title.textContent = preset.name
-
-      const subtitle = document.createElement('p')
-      subtitle.textContent = preset.subtitle
-
-      content.appendChild(logo)
-      content.appendChild(title)
-      content.appendChild(subtitle)
-
-      label.appendChild(input)
-      label.appendChild(content)
-
-      presetsGrid.appendChild(label)
-    })
+    renderPresets()
   } catch (error) {
     console.error('Failed to load presets:', error)
   }
+}
+
+// Render presets with current language
+function renderPresets() {
+  const presetsGrid = document.getElementById('presets-grid')
+  presetsGrid.innerHTML = ''
+
+  presetsConfig.forEach((preset, index) => {
+    const label = document.createElement('label')
+    label.className = 'preset-tile'
+
+    const input = document.createElement('input')
+    input.type = 'radio'
+    input.name = 'preset'
+    input.value = preset.id
+    input.dataset.descriptionKey = `presets.${preset.id}.description`
+    input.dataset.presetOptions = JSON.stringify(preset.options)
+    if (index === 0) input.checked = true
+
+    const content = document.createElement('div')
+    content.className = 'preset-content'
+
+    const logo = document.createElement('div')
+    logo.style.fontSize = '2rem'
+    logo.style.marginBottom = '0.5rem'
+    logo.textContent = preset.logo
+
+    const title = document.createElement('h3')
+    title.textContent = preset.name
+
+    const subtitle = document.createElement('p')
+    subtitle.textContent = preset.subtitle
+
+    content.appendChild(logo)
+    content.appendChild(title)
+    content.appendChild(subtitle)
+
+    label.appendChild(input)
+    label.appendChild(content)
+
+    presetsGrid.appendChild(label)
+  })
 }
 
 // Tab switching
@@ -215,13 +219,15 @@ function updateFileList() {
     return
   }
 
+  const removeTitle = window.i18n ? window.i18n.t('files.remove') : 'Remove'
+
   fileList.innerHTML = selectedFiles
     .map(
       (file, index) => `
     <div class="file-item">
       <span class="file-name">${escapeHtml(file.name)}</span>
       <span class="file-size">${formatFileSize(file.size)}</span>
-      <button type="button" class="remove-file" data-index="${index}" title="Entfernen">×</button>
+      <button type="button" class="remove-file" data-index="${index}" title="${removeTitle}">×</button>
     </div>
   `,
     )
@@ -565,7 +571,10 @@ function initializePresetDescription() {
     if (e.target.name === 'preset') {
       const descriptionBox = document.getElementById('preset-description')
       const descriptionText = descriptionBox.querySelector('p')
-      const description = e.target.dataset.description
+      
+      // Get translation key and translate
+      const descriptionKey = e.target.dataset.descriptionKey
+      const description = window.i18n ? window.i18n.t(descriptionKey) : ''
 
       if (description) {
         descriptionText.innerHTML = description
@@ -579,11 +588,16 @@ function initializePresetDescription() {
   // Show description for initially checked preset
   setTimeout(() => {
     const checkedPreset = document.querySelector('input[name="preset"]:checked')
-    if (checkedPreset && checkedPreset.dataset.description) {
+    if (checkedPreset) {
       const descriptionBox = document.getElementById('preset-description')
       const descriptionText = descriptionBox.querySelector('p')
-      descriptionText.innerHTML = checkedPreset.dataset.description
-      descriptionBox.style.display = 'block'
+      const descriptionKey = checkedPreset.dataset.descriptionKey
+      const description = window.i18n ? window.i18n.t(descriptionKey) : ''
+      
+      if (description) {
+        descriptionText.innerHTML = description
+        descriptionBox.style.display = 'block'
+      }
     }
   }, 100)
 }

@@ -1,54 +1,13 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Export Status - LiaScript Exporter</title>
+
     <link rel="stylesheet" href="/styles.css" />
-    <style>
-      .status-badge {
-        display: inline-block;
-        padding: 0.25rem 0.75rem;
-        border-radius: 4px;
-        font-size: 0.875rem;
-        font-weight: 500;
-      }
-      .status-queued {
-        background: #dbeafe;
-        color: #1e40af;
-      }
-      .status-processing {
-        background: #fef3c7;
-        color: #92400e;
-      }
-      .status-completed {
-        background: #d1fae5;
-        color: #065f46;
-      }
-      .status-failed {
-        background: #fee2e2;
-        color: #991b1b;
-      }
-      .progress-bar {
-        width: 100%;
-        height: 8px;
-        background: var(--border);
-        border-radius: 4px;
-        overflow: hidden;
-        margin: 1rem 0;
-      }
-      .progress-fill {
-        height: 100%;
-        background: var(--primary);
-        transition: width 0.3s;
-      }
-      .refresh-info {
-        text-align: center;
-        color: var(--text-muted);
-        font-size: 0.875rem;
-        margin-top: 1rem;
-      }
-    </style>
+    
+    <script src="/i18n.js"></script>
   </head>
   <body>
     <nav class="navbar">
@@ -57,35 +16,41 @@
           <img src="./assets/icon.svg" alt="LiaScript" />
         </a>
         <ul class="navbar-menu">
-          <li><a href="/" class="navbar-link">Startseite</a></li>
-          <li><a href="/status.html" class="navbar-link active">Status</a></li>
+          <li><a href="/" class="navbar-link" data-i18n="nav.home">Home</a></li>
+          <li><a href="/status.html" class="navbar-link active" data-i18n="nav.status">Status</a></li>
+          <li class="language-selector-container">
+            <select id="language-selector" class="language-selector">
+              <option value="en">EN</option>
+              <option value="de">DE</option>
+            </select>
+          </li>
         </ul>
       </div>
     </nav>
     
     <div class="container">
       <header>
-        <h1>Export Status</h1>
-        <p class="subtitle">Verfolgen Sie den Status Ihres Export-Auftrags</p>
+        <h1 data-i18n="status.title">Export Status</h1>
+        <p class="subtitle" data-i18n="status.subtitle">Track the status of your export job</p>
       </header>
 
       <main>
         <section class="card">
           <div id="statusContent">
-            <p>Lade Status...</p>
+            <p data-i18n="status.loading">Loading status...</p>
           </div>
-          <div class="refresh-info">
-            Seite wird automatisch alle 3 Sekunden aktualisiert
+          <div class="refresh-info" id="refreshInfo">
+            <span data-i18n="status.autoRefresh">Page will refresh automatically</span>
           </div>
         </section>
 
         <div style="text-align: center; margin-top: 2rem">
-          <a href="/" class="btn-secondary">Zurück zur Startseite</a>
+          <a href="/" class="btn-secondary" data-i18n="status.backHome">Back to Home</a>
         </div>
       </main>
 
       <footer>
-        <p>&copy; 2026 LiaScript Exporter</p>
+        <p data-i18n="footer.copyright">&copy; 2026 LiaScript Exporter</p>
       </footer>
     </div>
 
@@ -94,38 +59,59 @@
       let jobId = urlParams.get('jobId')
       let refreshInterval
 
-      if (jobId) {
-        loadStatus()
-        refreshInterval = setInterval(loadStatus, 3000)
-      } else {
-        // Try to get the last job ID from localStorage
-        const lastJobId = localStorage.getItem('lastJobId')
-        if (lastJobId) {
-          jobId = lastJobId
-          window.history.replaceState({}, '', `/status.html?jobId=${jobId}`)
+      // Wait for i18n to be ready before loading status
+      async function initializeStatus() {
+        if (!window.i18n || !window.i18n.translations[window.i18n.currentLanguage]) {
+          await new Promise(resolve => {
+            const checkI18n = setInterval(() => {
+              if (window.i18n && window.i18n.translations[window.i18n.currentLanguage]) {
+                clearInterval(checkI18n)
+                resolve()
+              }
+            }, 50)
+          })
+        }
+
+        if (jobId) {
           loadStatus()
           refreshInterval = setInterval(loadStatus, 3000)
         } else {
-          // No job found
-          document.getElementById('statusContent').innerHTML = `
-            <div style="text-align: center; padding: 3rem 1rem;">
-              <p style="color: var(--text-muted); margin-bottom: 1rem;">Kein Export gefunden.</p>
-              <p style="color: var(--text-muted); font-size: 0.9rem;">Starten Sie einen neuen Export auf der Startseite.</p>
-            </div>
-          `
-          document.querySelector('.refresh-info').style.display = 'none'
+          // Try to get the last job ID from localStorage
+          const lastJobId = localStorage.getItem('lastJobId')
+          if (lastJobId) {
+            jobId = lastJobId
+            window.history.replaceState({}, '', `/status.html?jobId=${jobId}`)
+            loadStatus()
+            refreshInterval = setInterval(loadStatus, 3000)
+          } else {
+            // No job found
+            document.getElementById('statusContent').innerHTML = `
+              <div style="text-align: center; padding: 3rem 1rem;">
+                <p style="color: var(--text-muted); margin-bottom: 1rem;" data-i18n="status.noExport">No export found</p>
+                <p style="color: var(--text-muted); font-size: 0.9rem;" data-i18n="status.noExportMessage">Start a new export on the home page.</p>
+              </div>
+            `
+            // Re-translate the new content
+            if (window.i18n) {
+              window.i18n.updatePageTranslations()
+            }
+            document.getElementById('refreshInfo').style.display = 'none'
+          }
         }
       }
+
+      initializeStatus()
 
       async function loadStatus() {
         try {
           const response = await fetch(`/api/job/${jobId}`)
 
           if (!response.ok) {
-            throw new Error('Job nicht gefunden')
+            throw new Error(window.i18n ? window.i18n.t('status.error') : 'Job not found')
           }
 
           const data = await response.json()
+          window.lastJobData = data
           displayStatus(data)
 
           // Stop refreshing if job is completed or failed
@@ -133,10 +119,22 @@
             clearInterval(refreshInterval)
           }
         } catch (error) {
+          const errorMsg = window.i18n ? window.i18n.t('status.errorMessage') : 'Error loading status'
           document.getElementById('statusContent').innerHTML = `
-          <p class="error-message">Fehler beim Laden des Status: ${error.message}</p>
-        `
+            <p class="error-message">${errorMsg}: ${error.message}</p>
+          `
           clearInterval(refreshInterval)
+        }
+      }
+
+      // Listen for language changes and refresh display (for the card content)
+      if (window.i18n) {
+        const originalSetLanguage = window.i18n.setLanguage.bind(window.i18n)
+        window.i18n.setLanguage = async function(lang) {
+          await originalSetLanguage(lang)
+          if (jobId && window.lastJobData) {
+            displayStatus(window.lastJobData)
+          }
         }
       }
 
@@ -144,100 +142,105 @@
         const { job, queuePosition } = data
         const statusClass = `status-${job.status}`
 
+        // Get translations
+        const t = (key, fallback) => window.i18n ? window.i18n.t(key, fallback) : fallback
+
         let statusText = {
-          queued: 'In Warteschlange',
-          processing: 'Wird verarbeitet',
-          completed: 'Abgeschlossen',
-          failed: 'Fehlgeschlagen',
+          queued: t('status.statusQueued', 'Queued'),
+          processing: t('status.statusProcessing', 'Processing'),
+          completed: t('status.statusCompleted', 'Completed'),
+          failed: t('status.statusFailed', 'Failed'),
         }[job.status]
 
         let progressPercent = 0
         if (job.status === 'processing') progressPercent = 50
         if (job.status === 'completed') progressPercent = 100
 
+        const sourceText = job.source.type === 'upload' 
+          ? t('status.sourceUpload', 'File Upload')
+          : t('status.sourceGit', 'Git Repository')
+
         let content = `
-        <h2>Job-ID: ${job.id}</h2>
-        <div style="margin: 1.5rem 0;">
-          <span class="status-badge ${statusClass}">${statusText}</span>
-        </div>
-        
-        ${
-          queuePosition > 0
-            ? `
-          <p><strong>Position in Warteschlange:</strong> ${queuePosition}</p>
-        `
-            : ''
-        }
-
-        <div class="progress-bar">
-          <div class="progress-fill" style="width: ${progressPercent}%"></div>
-        </div>
-
-        <div style="margin-top: 1.5rem;">
-          <p><strong>Quelle:</strong> ${
-            job.source.type === 'upload' ? 'Datei-Upload' : 'Git Repository'
-          }</p>
-          ${
-            job.source.gitUrl
-              ? `<p><strong>Repository:</strong> ${job.source.gitUrl}</p>`
-              : ''
-          }
-          ${
-            job.source.files
-              ? `<p><strong>Dateien:</strong> ${job.source.files.length} Datei(en)</p>`
-              : ''
-          }
-          <p><strong>Ziel:</strong> ${
-            job.target.preset || job.target.format
-          }</p>
-          <p><strong>Erstellt am:</strong> ${new Date(
-            job.createdAt
-          ).toLocaleString('de-DE')}</p>
-          ${
-            job.startedAt
-              ? `<p><strong>Gestartet am:</strong> ${new Date(
-                  job.startedAt
-                ).toLocaleString('de-DE')}</p>`
-              : ''
-          }
-          ${
-            job.completedAt
-              ? `<p><strong>Abgeschlossen am:</strong> ${new Date(
-                  job.completedAt
-                ).toLocaleString('de-DE')}</p>`
-              : ''
-          }
-        </div>
-
-        ${
-          job.status === 'failed' && job.error
-            ? `
-          <div style="margin-top: 1.5rem; padding: 1rem; background: #fee2e2; border-radius: 6px;">
-            <strong>Fehler:</strong> ${job.error}
+          <h2>${t('status.jobId', 'Job ID')}: ${job.id}</h2>
+          <div style="margin: 1.5rem 0;">
+            <span class="status-badge ${statusClass}">${statusText}</span>
           </div>
-        `
-            : ''
-        }
+          
+          ${
+            queuePosition > 0
+              ? `
+            <p><strong>${t('status.queuePosition', 'Position in queue')}:</strong> ${queuePosition}</p>
+          `
+              : ''
+          }
 
-        ${
-          job.status === 'completed'
-            ? `
+          <div class="progress-bar">
+            <div class="progress-fill" style="width: ${progressPercent}%"></div>
+          </div>
+
           <div style="margin-top: 1.5rem;">
-            <button class="btn-primary" onclick="downloadResult()">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                <polyline points="7 10 12 15 17 10"></polyline>
-                <line x1="12" y1="15" x2="12" y2="3"></line>
-              </svg>
-              Download Export
-            </button>
+            <p><strong>${t('status.source', 'Source')}:</strong> ${sourceText}</p>
+            ${
+              job.source.gitUrl
+                ? `<p><strong>${t('status.repository', 'Repository')}:</strong> ${job.source.gitUrl}</p>`
+                : ''
+            }
+            ${
+              job.source.files
+                ? `<p><strong>${t('status.files', 'Files')}:</strong> ${job.source.files.length} ${t('status.filesCount', 'file(s)')}</p>`
+                : ''
+            }
+            <p><strong>${t('status.format', 'Format')}:</strong> ${
+              job.target.preset || job.target.format
+            }</p>
+            <p><strong>${t('status.createdAt', 'Created')}:</strong> ${new Date(
+              job.createdAt
+            ).toLocaleString()}</p>
+            ${
+              job.startedAt
+                ? `<p><strong>${t('status.startedAt', 'Started')}:</strong> ${new Date(
+                    job.startedAt
+                  ).toLocaleString()}</p>`
+                : ''
+            }
+            ${
+              job.completedAt
+                ? `<p><strong>${t('status.completedAt', 'Completed')}:</strong> ${new Date(
+                    job.completedAt
+                  ).toLocaleString()}</p>`
+                : ''
+            }
           </div>
-        `
-            : ''
-        }
-      `
 
-        document.getElementById('statusContent').innerHTML = content
+          ${
+            job.status === 'failed' && job.error
+              ? `
+            <div style="margin-top: 1.5rem; padding: 1rem; background: #fee2e2; border-radius: 6px;">
+              <strong>${t('status.error', 'Error')}:</strong> ${job.error}
+            </div>
+          `
+              : ''
+          }
+
+          ${
+            job.status === 'completed'
+              ? `
+            <div style="margin-top: 1.5rem;">
+              <button class="btn-primary" onclick="downloadResult()">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                  <polyline points="7 10 12 15 17 10"></polyline>
+                  <line x1="12" y1="15" x2="12" y2="3"></line>
+                </svg>
+                ${t('status.downloadButton', 'Download File')}
+              </button>
+            </div>
+          `
+              : ''
+          }
+        `
+
+        document.getElementById('statusContent').innerHTML = content    
       }
 
       function downloadResult() {

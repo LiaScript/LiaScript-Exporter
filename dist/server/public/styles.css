@@ -72,6 +72,7 @@ body {
 
 .navbar-menu {
   display: flex;
+  align-items: center;
   gap: 1rem;
   list-style: none;
   margin: 0;
@@ -95,6 +96,41 @@ body {
 .navbar-link.active {
   color: var(--turquoise);
   background: var(--primary-light);
+}
+
+/* Language Selector */
+.language-selector-container {
+  display: flex;
+  align-items: center;
+}
+
+.language-selector {
+  background: var(--card-bg);
+  border: 2px solid var(--border);
+  border-radius: 6px;
+  padding: 0.5rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--turquoise-darker);
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.language-selector:hover {
+  border-color: var(--turquoise);
+  background-color: var(--primary-light);
+}
+
+.language-selector:focus {
+  outline: none;
+  border-color: var(--turquoise);
+  box-shadow: 0 0 0 3px var(--primary-light);
+}
+
+.language-selector option {
+  background: var(--card-bg);
+  color: var(--turquoise-darker);
+  font-weight: 600;
 }
 
 .container {
@@ -629,4 +665,48 @@ footer {
   .modal-actions {
     flex-direction: column;
   }
+}
+
+/* Status Page */
+.status-badge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+.status-queued {
+  background: #dbeafe;
+  color: #1e40af;
+}
+.status-processing {
+  background: #fef3c7;
+  color: #92400e;
+}
+.status-completed {
+  background: #d1fae5;
+  color: #065f46;
+}
+.status-failed {
+  background: #fee2e2;
+  color: #991b1b;
+}
+.progress-bar {
+  width: 100%;
+  height: 8px;
+  background: var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+  margin: 1rem 0;
+}
+.progress-fill {
+  height: 100%;
+  background: var(--primary);
+  transition: width 0.3s;
+}
+.refresh-info {
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.875rem;
+  margin-top: 1rem;
 }
