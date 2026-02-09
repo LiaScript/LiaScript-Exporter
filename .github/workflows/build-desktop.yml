@@ -48,9 +48,9 @@ jobs:
       - name: Fix app-builder permissions (Linux)
         if: runner.os == 'Linux'
         run: |
-          find node_modules/app-builder-bin -type f -name 'app-builder' -exec chmod +x {} \;
-          ls -la node_modules/app-builder-bin/linux/x64/
-          ls -la node_modules/app-builder-bin/linux/arm64/
+          chmod +x node_modules/app-builder-bin/linux/x64/app-builder || true
+          chmod +x node_modules/app-builder-bin/linux/arm64/app-builder || true
+          ls -la node_modules/app-builder-bin/linux/x64/ || true
       
       - name: Build main application
         run: npm run build
