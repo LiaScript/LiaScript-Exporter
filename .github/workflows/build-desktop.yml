@@ -2,9 +2,6 @@ name: Build Desktop Applications
 
 on:
   push:
-    branches:
-      - 'master'
-      - 'feat/lib'
     tags:
       - 'v*.*.*'
   workflow_dispatch:
