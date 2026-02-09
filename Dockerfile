@@ -64,19 +64,22 @@ COPY package.json package-lock.json* ./
 RUN npm ci --omit=dev
 
 # Pre-cache Capacitor dependencies for Android builds
-RUN mkdir -p /tmp/capacitor-cache && \
-    cd /tmp/capacitor-cache && \
+RUN mkdir -p dist/capacitor-cache && \
+    cd dist/capacitor-cache && \
     echo '{"dependencies":{"@capacitor/cli":"^8.0.0","@capacitor-community/text-to-speech":"git+https://github.com/capacitor-community/text-to-speech.git#v8.0.0","@capacitor/android":"^8.0.0","@capacitor/assets":"^3.0.5","@capacitor/core":"^8.0.0"}}' > package.json && \
     npm install && \
-    cd / && \
-    rm -rf /tmp/capacitor-cache
+    echo "import type { CapacitorConfig } from '@capacitor/cli'; const config: CapacitorConfig = { appId: 'io.liascript.course', appName: 'App', webDir: 'www' }; export default config;" > capacitor.config.ts && \
+    mkdir -p www && \
+    touch www/index.html && \
+    npx cap add android && \
+    cd android && \
+    ./gradlew && \
+    cd .. && \
+    rm -rf www android capacitor.config.ts && \
+    cd ..
 
 # Copy the dist folder
 COPY dist/ ./dist/
-
-# Create symlink for server public folder at expected path
-RUN mkdir -p /app/liascript-exporter/server && \
-    ln -s /app/dist/server/public /app/liascript-exporter/server/public
 
 # Install Puppeteer's Chrome explicitly
 RUN npx puppeteer browsers install chrome

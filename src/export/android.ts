@@ -110,9 +110,16 @@ export async function exporter(argument: AndroidExportArguments, json: any) {
     })
   }
 
-  await helper.writeFile(
-    path.join(tmp, 'package.json'),
-    `{
+  let capacitorCachePath = path.join(dirname, './capacitor-cache')
+  if (fs.existsSync(capacitorCachePath)) {
+    console.log('Using cached Capacitor dependencies for Android export')
+    await fs.copy(capacitorCachePath, tmp)
+  } else {
+    capacitorCachePath = null
+
+    await helper.writeFile(
+      path.join(tmp, 'package.json'),
+      `{
     "scripts": {
       "build": "npx cap sync android"
     },
@@ -127,7 +134,8 @@ export async function exporter(argument: AndroidExportArguments, json: any) {
       "node": ">= 12"
     }
   }`,
-  )
+    )
+  }
 
   await helper.writeFile(
     path.join(tmp, 'capacitor.config.ts'),
@@ -170,7 +178,9 @@ export default config`,
 
   execute(
     [
-      'npm i',
+      capacitorCachePath
+        ? 'echo "Using cached Capacitor dependencies"'
+        : 'npm i',
       'npx cap add android',
       'npx cap sync',
       `npx @capacitor/assets generate --iconBackgroundColor '${argument['android-iconBackgroundColor'] || '#bbbbbb'}' --iconBackgroundColorDark '${argument['android-iconBackgroundColorDark'] || '#555555'}'`,

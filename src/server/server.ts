@@ -9,20 +9,24 @@ import { existsSync } from 'fs'
 
 export const jobQueue = new JobQueue()
 
-export async function startServer(port: number = 3000, returnInstance: boolean = false): Promise<any> {
+export async function startServer(
+  port: number = 3000,
+  returnInstance: boolean = false,
+): Promise<any> {
   // Use pretty logging only in development when pino-pretty is available
-  const loggerConfig = process.env.NODE_ENV === 'development' 
-    ? {
-        level: 'info',
-        transport: {
-          target: 'pino-pretty',
-          options: {
-            translateTime: 'HH:MM:ss Z',
-            ignore: 'pid,hostname',
+  const loggerConfig =
+    process.env.NODE_ENV === 'development'
+      ? {
+          level: 'info',
+          transport: {
+            target: 'pino-pretty',
+            options: {
+              translateTime: 'HH:MM:ss Z',
+              ignore: 'pid,hostname',
+            },
           },
-        },
-      }
-    : { level: 'info' };
+        }
+      : { level: 'info' }
 
   const fastify = Fastify({
     logger: loggerConfig,
@@ -38,24 +42,24 @@ export async function startServer(port: number = 3000, returnInstance: boolean =
   // Serve static files (HTML, CSS, JS)
   // Handle ASAR unpacked files for Electron builds
   let publicDir: string
-  
-  // Check if running from ASAR
+
+  // Check if running from ASAR (Electron packaged app)
   if (__dirname.includes('app.asar')) {
     // Replace app.asar with app.asar.unpacked for unpacked files
     publicDir = __dirname.replace('app.asar', 'app.asar.unpacked') + '/public'
     console.log('Running from ASAR, using unpacked path:', publicDir)
   } else {
-    // Not in ASAR, try multiple locations
+    // Not in ASAR - try multiple locations for Docker/standalone/development
     const possibleDirs = [
-      // For development
+      // Production Docker - relative to cwd
+      join(process.cwd(), 'dist', 'server', 'public'),
+      // Bundled production - relative to __dirname
       join(__dirname, 'public'),
-      // For production Docker/standalone
-      join(process.cwd(), 'liascript-exporter', 'server', 'public'),
-      // Fallback
-      join(process.cwd(), 'server', 'public')
+      // Development
+      join(process.cwd(), 'src', 'server', 'public'),
     ]
-    
-    publicDir = possibleDirs.find(dir => existsSync(dir)) || join(__dirname, 'public')
+
+    publicDir = possibleDirs.find((dir) => existsSync(dir)) || possibleDirs[0]
   }
 
   console.log('Serving static files from:', publicDir)
@@ -80,16 +84,16 @@ export async function startServer(port: number = 3000, returnInstance: boolean =
 
   try {
     await fastify.listen({ port, host: '0.0.0.0' })
-    
+
     // Get the actual port (important when port is 0 for auto-assignment)
     const actualPort = (fastify.server.address() as any).port
-    
+
     // Return the instance if requested (for Electron), otherwise just log
     if (returnInstance) {
       console.log(`Server started on http://localhost:${actualPort}`)
       return fastify
     }
-    
+
     console.log(`
 ╔═══════════════════════════════════════════════════════╗
 ║                                                       ║
