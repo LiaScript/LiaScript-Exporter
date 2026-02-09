@@ -45,15 +45,15 @@ jobs:
       - name: Install dependencies
         run: npm ci
       
-      - name: Build main application
-        run: npm run build
-      
       - name: Fix app-builder permissions (Linux)
         if: runner.os == 'Linux'
         run: |
-          chmod +x node_modules/app-builder-bin/linux/x64/app-builder
-          chmod +x node_modules/app-builder-bin/linux/arm64/app-builder
-        continue-on-error: true
+          find node_modules/app-builder-bin -type f -name 'app-builder' -exec chmod +x {} \;
+          ls -la node_modules/app-builder-bin/linux/x64/
+          ls -la node_modules/app-builder-bin/linux/arm64/
+      
+      - name: Build main application
+        run: npm run build
       
       - name: Install icon builder (Ubuntu/macOS)
         if: runner.os != 'Windows'
@@ -66,9 +66,9 @@ jobs:
       
       - name: Generate icons
         run: |
-          mkdir -p electron/build
+          mkdir -p electron/build/icons
           cd electron/build
-          electron-icon-builder --input=../../LiaScript/resources/icon.png --output=.
+          electron-icon-builder --flatten --input=../../LiaScript/resources/icon.png --output=.
         shell: bash
       
       - name: Build Electron app (Linux)
