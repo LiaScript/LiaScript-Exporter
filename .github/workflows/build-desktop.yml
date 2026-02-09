@@ -66,9 +66,10 @@ jobs:
       
       - name: Generate icons
         run: |
-          mkdir -p electron/build/icons
+          mkdir -p electron/build
           cd electron/build
-          electron-icon-builder --flatten --input=../../LiaScript/resources/icon.png --output=.
+          electron-icon-builder --input=../../LiaScript/resources/icon.png --output=.
+          ls -R icons/
         shell: bash
       
       - name: Build Electron app (Linux)
