@@ -48,6 +48,13 @@ jobs:
       - name: Build main application
         run: npm run build
       
+      - name: Fix app-builder permissions (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          chmod +x node_modules/app-builder-bin/linux/x64/app-builder
+          chmod +x node_modules/app-builder-bin/linux/arm64/app-builder
+        continue-on-error: true
+      
       - name: Install icon builder (Ubuntu/macOS)
         if: runner.os != 'Windows'
         run: npm install -g electron-icon-builder
@@ -72,7 +79,31 @@ jobs:
       
       - name: Build Electron app (macOS)
         if: matrix.platform == 'mac'
-        run: npm run electron:build:mac
+        run: |
+          # Retry logic for macOS DMG creation (disk busy issues)
+          max_attempts=3
+          attempt=0
+          until [ $attempt -ge $max_attempts ]
+          do
+            attempt=$((attempt+1))
+            echo "Build attempt $attempt of $max_attempts"
+            
+            if npm run electron:build:mac; then
+              echo "Build succeeded on attempt $attempt"
+              break
+            else
+              if [ $attempt -lt $max_attempts ]; then
+                echo "Build failed, waiting 10 seconds before retry..."
+                sleep 10
+                # Clean up any mounted disks
+                hdiutil detach /Volumes/LiaScript* 2>/dev/null || true
+                sleep 5
+              else
+                echo "Build failed after $max_attempts attempts"
+                exit 1
+              fi
+            fi
+          done
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           # For code signing (optional):
