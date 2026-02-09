@@ -43,36 +43,18 @@ jobs:
           cache: 'npm'
       
       - name: Install dependencies
-        run: |
-          npm ci
-          npm install app-builder-bin@latest
+        run: npm ci
       
       - name: Fix app-builder permissions (Linux)
         if: runner.os == 'Linux'
         run: |
-          chmod +x node_modules/app-builder-bin/linux/x64/app-builder || true
-          chmod +x node_modules/app-builder-bin/linux/arm64/app-builder || true
-          ls -la node_modules/app-builder-bin/linux/x64/ || true
+          # Fix all app-builder binaries regardless of location
+          find node_modules -type f -name 'app-builder' -exec chmod +x {} \;
+          echo "Fixed permissions for app-builder binaries:"
+          find node_modules -type f -name 'app-builder' -exec ls -la {} \;
       
       - name: Build main application
         run: npm run build
-      
-      - name: Install icon builder (Ubuntu/macOS)
-        if: runner.os != 'Windows'
-        run: npm install -g electron-icon-builder
-      
-      - name: Install icon builder (Windows)
-        if: runner.os == 'Windows'
-        run: npm install -g electron-icon-builder
-        shell: powershell
-      
-      - name: Generate icons
-        run: |
-          mkdir -p electron/build
-          cd electron/build
-          electron-icon-builder --input=../../LiaScript/resources/icon.png --output=.
-          ls -R icons/
-        shell: bash
       
       - name: Build Electron app (Linux)
         if: matrix.platform == 'linux'

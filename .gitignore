@@ -8,10 +8,6 @@ ignore
 # Electron build artifacts
 release/
 dist-electron/
-electron/build/*.icns
-electron/build/*.ico
-electron/build/icons/*.png
-electron/build/*.bmp
 
 # Electron debug logs
 *.log
