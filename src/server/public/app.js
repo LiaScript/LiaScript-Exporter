@@ -10,12 +10,18 @@ function initializeNumberInputs() {
   const numberInputs = [
     { id: 'masteryScore', min: 0, max: 100, isInteger: true, value: 70 },
     { id: 'xapiMasteryScore', min: 0, max: 1, isInteger: false, value: null },
-    { id: 'xapiProgressThreshold', min: 0, max: 1, isInteger: false, value: null },
+    {
+      id: 'xapiProgressThreshold',
+      min: 0,
+      max: 1,
+      isInteger: false,
+      value: null,
+    },
     { id: 'pdfScale', min: 0.1, max: 2, isInteger: false, value: 1 },
-    { id: 'pdfTimeout', min: 1000, max: null, isInteger: true, value: 60000 }
+    { id: 'pdfTimeout', min: 1000, max: null, isInteger: true, value: 15000 },
   ]
 
-  numberInputs.forEach(config => {
+  numberInputs.forEach((config) => {
     const input = document.getElementById(config.id)
     if (input) {
       if (config.value !== null) {
@@ -24,7 +30,7 @@ function initializeNumberInputs() {
 
       input.addEventListener('blur', () => {
         let value = input.value.trim()
-        if (value === '') return 
+        if (value === '') return
 
         const num = config.isInteger ? parseInt(value, 10) : parseFloat(value)
 
@@ -45,20 +51,20 @@ function initializeNumberInputs() {
       })
 
       // Prevent non-numeric input
-      input.addEventListener('beforeinput', (e) => {      
+      input.addEventListener('beforeinput', (e) => {
         const data = e.data
         if (!data) return
-        
+
         const currentValue = input.value
-        
+
         // Allow digits
         if (/^\d+$/.test(data)) return
-        
+
         // Allow decimal point for non-integer fields (only one)
         if (!config.isInteger && data === '.' && !currentValue.includes('.')) {
           return
         }
-        
+
         e.preventDefault()
       })
     }
@@ -206,7 +212,7 @@ function initializeUpload() {
         const result = await window.electronAPI.openFileDialog()
         if (!result.canceled && result.files && result.files.length > 0) {
           // Convert base64 content back to File objects
-          const files = result.files.map(fileData => {
+          const files = result.files.map((fileData) => {
             // Decode base64 to binary
             const binaryString = atob(fileData.content)
             const bytes = new Uint8Array(binaryString.length)
@@ -216,7 +222,7 @@ function initializeUpload() {
             // Create File object
             return new File([bytes], fileData.name, {
               type: fileData.type,
-              lastModified: fileData.lastModified
+              lastModified: fileData.lastModified,
             })
           })
           handleFiles(files)
@@ -581,7 +587,7 @@ function initializeForm() {
 function showConfirmation(result) {
   // Save job ID to localStorage
   localStorage.setItem('lastJobId', result.jobId)
-  
+
   const modal = document.getElementById('confirmationModal')
   const details = document.getElementById('confirmationDetails')
   const statusLink = document.getElementById('statusLink')
@@ -633,7 +639,7 @@ function initializePresetDescription() {
     if (e.target.name === 'preset') {
       const descriptionBox = document.getElementById('preset-description')
       const descriptionText = descriptionBox.querySelector('p')
-      
+
       // Get translation key and translate
       const descriptionKey = e.target.dataset.descriptionKey
       const description = window.i18n ? window.i18n.t(descriptionKey) : ''
@@ -655,7 +661,7 @@ function initializePresetDescription() {
       const descriptionText = descriptionBox.querySelector('p')
       const descriptionKey = checkedPreset.dataset.descriptionKey
       const description = window.i18n ? window.i18n.t(descriptionKey) : ''
-      
+
       if (description) {
         descriptionText.innerHTML = description
         descriptionBox.style.display = 'block'

@@ -4,7 +4,7 @@ import * as path from 'path'
 import puppeteer, { Browser, Page } from 'puppeteer'
 
 // Default PDF generation settings
-const DEFAULT_TIMEOUT_MS = 60000 // 60 seconds
+const DEFAULT_TIMEOUT_MS = 15000 // 15 seconds
 const DEFAULT_MARGIN_TOP = 80
 const DEFAULT_MARGIN_BOTTOM = 80
 const DEFAULT_MARGIN_LEFT = 30
@@ -25,7 +25,7 @@ export function help() {
   console.log(COLOR.heading('PDF settings:'), '\n')
 
   COLOR.info(
-    'PDF export generates printable documents from your LiaScript course using Puppeteer, a headless Chrome browser automation tool. This allows for high-quality rendering of all course elements including interactive content.'
+    'PDF export generates printable documents from your LiaScript course using Puppeteer, a headless Chrome browser automation tool. This allows for high-quality rendering of all course elements including interactive content.',
   )
 
   console.log('\nLearn more: https://pptr.dev/ \n')
@@ -33,111 +33,111 @@ export function help() {
   COLOR.command(
     null,
     '--pdf-stylesheet',
-    '          Inject an local CSS for changing the appearance.'
+    '          Inject an local CSS for changing the appearance.',
   )
   COLOR.command(
     null,
     '--pdf-theme',
-    '               LiaScript themes: default, turquoise, blue, red, yellow'
+    '               LiaScript themes: default, turquoise, blue, red, yellow',
   )
   COLOR.command(
     null,
     '--pdf-timeout',
-    `             Set an additional time horizon to wait until finished (default ${DEFAULT_TIMEOUT_MS} ms)`
+    `             Set an additional time horizon to wait until finished (default ${DEFAULT_TIMEOUT_MS} ms)`,
   )
   COLOR.command(
     null,
     '--pdf-preview',
-    '             Open preview-browser (default false), print not possible'
+    '             Open preview-browser (default false), print not possible',
   )
 
   console.log('')
   console.log(COLOR.italic('The following are puppeteer specific settings.'))
 
   console.log(
-    '\nLearn more:\n  https://github.com/puppeteer/puppeteer/blob/main/docs/api.md#pagepdfoptions\n'
+    '\nLearn more:\n  https://github.com/puppeteer/puppeteer/blob/main/docs/api.md#pagepdfoptions\n',
   )
 
   COLOR.command(
     null,
     '--pdf-scale',
-    '               Scale of the webpage rendering. Defaults to 1. Scale amount must be between 0.1 and 2.'
+    '               Scale of the webpage rendering. Defaults to 1. Scale amount must be between 0.1 and 2.',
   )
   COLOR.command(
     null,
     '--pdf-displayHeaderFooter',
-    ' Display header and footer. Defaults to false.'
+    ' Display header and footer. Defaults to false.',
   )
   COLOR.command(
     null,
     '--pdf-headerTemplate',
-    '      HTML template for the print header, inject classes date, title, url, pageNumber, totalPages'
+    '      HTML template for the print header, inject classes date, title, url, pageNumber, totalPages',
   )
 
   COLOR.command(
     null,
     '--pdf-footerTemplate',
-    '      HTML template for the print footer. Should use the same format as the headerTemplate'
+    '      HTML template for the print footer. Should use the same format as the headerTemplate',
   )
   COLOR.command(
     null,
     '--pdf-printBackground',
-    '     Print background graphics. Defaults to false'
+    '     Print background graphics. Defaults to false',
   )
   COLOR.command(
     null,
     '--pdf-landscape',
-    '           Paper orientation. Defaults to false.'
+    '           Paper orientation. Defaults to false.',
   )
   COLOR.command(
     null,
     '--pdf-pageRanges',
-    '          Paper ranges to print, e.g., "1-5, 8, 11-13"'
+    '          Paper ranges to print, e.g., "1-5, 8, 11-13"',
   )
   COLOR.command(
     null,
     '--pdf-format',
-    '              Paper format. If set, takes priority over width or height options. Defaults to a4.'
+    '              Paper format. If set, takes priority over width or height options. Defaults to a4.',
   )
   COLOR.command(
     null,
     '--pdf-width',
-    '               Paper width, accepts values labeled with units.'
+    '               Paper width, accepts values labeled with units.',
   )
   COLOR.command(
     null,
     '--pdf-height',
-    '              Paper height, accepts values labeled with units.'
+    '              Paper height, accepts values labeled with units.',
   )
   COLOR.command(
     null,
     '--pdf-margin-top',
-    '          Top margin, accepts values labeled with units.'
+    '          Top margin, accepts values labeled with units.',
   )
   COLOR.command(
     null,
     '--pdf-margin-right',
-    '        Right margin, accepts values labeled with units.'
+    '        Right margin, accepts values labeled with units.',
   )
   COLOR.command(
     null,
     '--pdf-margin-bottom',
-    '       Bottom margin, accepts values labeled with units.'
+    '       Bottom margin, accepts values labeled with units.',
   )
   COLOR.command(
     null,
     '--pdf-margin-left',
-    '         Left margin, accepts values labeled with units. '
+    '         Left margin, accepts values labeled with units. ',
   )
   COLOR.command(
     null,
     '--pdf-preferCSSPageSize',
-    '   Give any CSS @page size declared in the page priority over what is declared in width and height or format options.'
+    '   Give any CSS @page size declared in the page priority over what is declared in width and height or format options.',
   )
   COLOR.command(
     null,
     '--pdf-omitBackground',
-    '      Hides default white background and allows capturing screenshots with transparency. Defaults to true. '
+    '      Hides default white background and allows capturing screenshots with transparency. Defaults to true. ',
   )
 }
 
@@ -236,19 +236,33 @@ export async function exporter(argument: PdfExportArguments) {
       browser = await puppeteer.launch(launchOptions)
     } catch (launchError) {
       throw new Error(
-        `Failed to launch browser. Make sure Chrome is installed. ${launchError}`
+        `Failed to launch browser. Make sure Chrome is installed. ${launchError}`,
       )
     }
     page = await browser.newPage()
 
     console.log(
-      'Loading course content... This may take a while for large courses.'
+      'Loading course content... This may take a while for large courses.',
     )
 
     // Handle alert dialogs automatically to prevent blocking
     page.on('dialog', async (dialog) => {
       console.log(`[Dialog ${dialog.type()}]: ${dialog.message()}`)
       await dialog.accept()
+    })
+
+    // Set up render done listener BEFORE navigating to catch the signal
+    let renderDoneResolve: () => void
+    const renderDonePromise = new Promise<void>((resolve) => {
+      renderDoneResolve = resolve
+    })
+
+    page.on('console', (msg) => {
+      const text = msg.text()
+      if (text.startsWith('__RENDER_DONE__')) {
+        console.log('got render done signal:', text)
+        renderDoneResolve()
+      }
     })
 
     // Wait for page to load completely
@@ -277,7 +291,7 @@ export async function exporter(argument: PdfExportArguments) {
         }, href)
       } catch (e) {
         throw new Error(
-          `Failed to load custom stylesheet from '${argument['pdf-stylesheet']}': ${e}`
+          `Failed to load custom stylesheet from '${argument['pdf-stylesheet']}': ${e}`,
         )
       }
     }
@@ -290,13 +304,20 @@ export async function exporter(argument: PdfExportArguments) {
         }, argument['pdf-theme'])
       } catch (e) {
         throw new Error(
-          `Failed to apply theme '${argument['pdf-theme']}': ${e}`
+          `Failed to apply theme '${argument['pdf-theme']}': ${e}`,
         )
       }
     }
 
     if (!argument['pdf-preview']) {
-      await helper.sleep(argument['pdf-timeout'] || DEFAULT_TIMEOUT_MS)
+      // Wait for LiaScript to signal rendering is complete
+      await renderDonePromise
+
+      // Additional wait time for any final rendering
+      if (argument['pdf-timeout']) {
+        await helper.sleep(argument['pdf-timeout'])
+      }
+
       await toPDF(argument, page)
     } else {
       console.log('Preview mode enabled - browser will remain open')
@@ -376,7 +397,7 @@ async function toPDF(argument: PdfExportArguments, page: Page) {
   } catch (e) {
     const error = e as Error
     throw new Error(
-      `Failed to generate PDF at '${argument.output}.pdf': ${error.message}`
+      `Failed to generate PDF at '${argument.output}.pdf': ${error.message}`,
     )
   }
 }

@@ -126,7 +126,7 @@
   "settings.pdf.themeRed": "Rot",
   "settings.pdf.themeYellow": "Gelb",
   "settings.pdf.timeout": "Timeout (ms)",
-  "settings.pdf.timeoutHint": "Wartezeit für vollständiges Laden (60000 = 60 Sekunden)",
+  "settings.pdf.timeoutHint": "Wartezeit für vollständiges Laden (15000 = 15 Sekunden)",
   "settings.pdf.preferCSSPageSize": "CSS @page-Größe bevorzugen",
   "settings.pdf.preferCSSPageSizeHint": "CSS-Seitengröße hat Vorrang",
   "settings.pdf.omitBackground": "Transparenter Hintergrund",

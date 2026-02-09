@@ -97,11 +97,11 @@ export async function startServer(
     console.log(`
 ╔═══════════════════════════════════════════════════════╗
 ║                                                       ║
-║   🚀 LiaScript Export Server                         ║
+║   🚀 LiaScript Export Server                          ║
 ║                                                       ║
-║   📍 http://localhost:${actualPort.toString().padEnd(4)}                         ║
+║   📍 http://localhost:${actualPort.toString().padEnd(4)}                            ║
 ║                                                       ║
-║   Press Ctrl+C to stop the server                    ║
+║   Press Ctrl+C to stop the server                     ║
 ║                                                       ║
 ╚═══════════════════════════════════════════════════════╝
     `)

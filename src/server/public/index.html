@@ -14,8 +14,14 @@
           <img src="./assets/icon.svg" alt="LiaScript" />
         </a>
         <ul class="navbar-menu">
-          <li><a href="/" class="navbar-link active" data-i18n="nav.home">Home</a></li>
-          <li><a href="/status.html" class="navbar-link" data-i18n="nav.status">Status</a></li>
+          <li>
+            <a href="/" class="navbar-link active" data-i18n="nav.home">Home</a>
+          </li>
+          <li>
+            <a href="/status.html" class="navbar-link" data-i18n="nav.status"
+              >Status</a
+            >
+          </li>
           <li class="language-selector-container">
             <select id="language-selector" class="language-selector">
               <option value="en">EN</option>
@@ -25,7 +31,7 @@
         </ul>
       </div>
     </nav>
-    
+
     <div class="container">
       <header>
         <h1 data-i18n="header.title">LiaScript Exporter</h1>
@@ -42,10 +48,20 @@
 
             <!-- Upload Tab -->
             <div class="source-tabs">
-              <button type="button" class="tab-button active" data-tab="upload" data-i18n="tabs.fileUpload">
+              <button
+                type="button"
+                class="tab-button active"
+                data-tab="upload"
+                data-i18n="tabs.fileUpload"
+              >
                 File Upload
               </button>
-              <button type="button" class="tab-button" data-tab="git" data-i18n="tabs.gitRepository">
+              <button
+                type="button"
+                class="tab-button"
+                data-tab="git"
+                data-i18n="tabs.gitRepository"
+              >
                 Git Repository
               </button>
             </div>
@@ -65,7 +81,9 @@
                   <polyline points="17 8 12 3 7 8"></polyline>
                   <line x1="12" y1="3" x2="12" y2="15"></line>
                 </svg>
-                <p data-i18n="upload.dropzone">Drop files here or click to select</p>
+                <p data-i18n="upload.dropzone">
+                  Drop files here or click to select
+                </p>
                 <p class="hint" data-i18n="upload.hint">
                   ZIP files or multiple files (max. 100MB)
                 </p>
@@ -76,7 +94,9 @@
             <!-- Git Panel -->
             <div class="tab-panel" id="git-panel">
               <div class="form-group">
-                <label for="gitUrl" data-i18n="git.repoUrlRequired">Repository URL *</label>
+                <label for="gitUrl" data-i18n="git.repoUrlRequired"
+                  >Repository URL *</label
+                >
                 <input
                   type="text"
                   id="gitUrl"
@@ -86,7 +106,9 @@
               </div>
               <div class="form-row">
                 <div class="form-group">
-                  <label for="gitBranch" data-i18n="git.branch">Branch / Tag</label>
+                  <label for="gitBranch" data-i18n="git.branch"
+                    >Branch / Tag</label
+                  >
                   <input
                     type="text"
                     id="gitBranch"
@@ -96,7 +118,9 @@
                   />
                 </div>
                 <div class="form-group">
-                  <label for="gitSubdir" data-i18n="git.subdirectory">Subdirectory</label>
+                  <label for="gitSubdir" data-i18n="git.subdirectory"
+                    >Subdirectory</label
+                  >
                   <input
                     type="text"
                     id="gitSubdir"
@@ -189,7 +213,9 @@
                   <div class="preset-content">
                     <div class="format-icon">📦</div>
                     <h3 data-i18n="formats.scorm2004.title">SCORM 2004</h3>
-                    <p data-i18n="formats.scorm2004.subtitle">Modern Standard</p>
+                    <p data-i18n="formats.scorm2004.subtitle">
+                      Modern Standard
+                    </p>
                   </div>
                 </label>
 
@@ -345,7 +371,9 @@
                 class="collapsible-toggle"
               >
                 <span class="toggle-icon">▶</span>
-                <span data-i18n="sections.advancedSettings">3. Advanced Settings (optional)</span>
+                <span data-i18n="sections.advancedSettings"
+                  >3. Advanced Settings (optional)</span
+                >
               </button>
             </h2>
 
@@ -355,10 +383,16 @@
                 class="settings-group"
                 data-formats="scorm1.2,scorm2004,moodle,ilias,opal,generic,openolat,openedx"
               >
-                <h3 class="settings-heading" data-i18n="settings.scorm.title">SCORM Settings</h3>
+                <h3 class="settings-heading" data-i18n="settings.scorm.title">
+                  SCORM Settings
+                </h3>
 
                 <div class="form-group">
-                  <label for="masteryScore" data-i18n="settings.scorm.masteryScore">Mastery Score</label>
+                  <label
+                    for="masteryScore"
+                    data-i18n="settings.scorm.masteryScore"
+                    >Mastery Score</label
+                  >
                   <input
                     type="text"
                     inputmode="numeric"
@@ -372,7 +406,11 @@
                 </div>
 
                 <div class="form-group">
-                  <label for="scormOrganization" data-i18n="settings.scorm.organization">Organization</label>
+                  <label
+                    for="scormOrganization"
+                    data-i18n="settings.scorm.organization"
+                    >Organization</label
+                  >
                   <input
                     type="text"
                     id="scormOrganization"
@@ -386,7 +424,11 @@
                 </div>
 
                 <div class="form-group">
-                  <label for="typicalDuration" data-i18n="settings.scorm.typicalDuration">Typical Duration</label>
+                  <label
+                    for="typicalDuration"
+                    data-i18n="settings.scorm.typicalDuration"
+                    >Typical Duration</label
+                  >
                   <input
                     type="text"
                     id="typicalDuration"
@@ -394,7 +436,11 @@
                     placeholder="PT0H5M0S"
                     value="PT0H5M0S"
                   />
-                  <span class="hint" data-i18n="settings.scorm.typicalDurationHint">Format: PT0H5M0S (5 minutes)</span>
+                  <span
+                    class="hint"
+                    data-i18n="settings.scorm.typicalDurationHint"
+                    >Format: PT0H5M0S (5 minutes)</span
+                  >
                 </div>
 
                 <div class="form-group">
@@ -418,18 +464,30 @@
                       id="scormEmbed"
                       name="option_scormEmbed"
                     />
-                    <span data-i18n="settings.scorm.embedMarkdown">Embed Markdown</span>
+                    <span data-i18n="settings.scorm.embedMarkdown"
+                      >Embed Markdown</span
+                    >
                   </label>
-                  <span class="hint" data-i18n="settings.scorm.embedMarkdownHint">Recommended for Moodle 4</span>
+                  <span
+                    class="hint"
+                    data-i18n="settings.scorm.embedMarkdownHint"
+                    >Recommended for Moodle 4</span
+                  >
                 </div>
               </div>
 
               <!-- xAPI Settings -->
               <div class="settings-group" data-formats="xapi">
-                <h3 class="settings-heading" data-i18n="settings.xapi.title">xAPI Settings</h3>
+                <h3 class="settings-heading" data-i18n="settings.xapi.title">
+                  xAPI Settings
+                </h3>
 
                 <div class="form-group">
-                  <label for="xapiEndpoint" data-i18n="settings.xapi.lrsEndpoint">LRS Endpoint</label>
+                  <label
+                    for="xapiEndpoint"
+                    data-i18n="settings.xapi.lrsEndpoint"
+                    >LRS Endpoint</label
+                  >
                   <input
                     type="text"
                     id="xapiEndpoint"
@@ -442,20 +500,27 @@
                 </div>
 
                 <div class="form-group">
-                  <label for="xapiAuth" data-i18n="settings.xapi.authentication">Authentication</label>
+                  <label for="xapiAuth" data-i18n="settings.xapi.authentication"
+                    >Authentication</label
+                  >
                   <input
                     type="text"
                     id="xapiAuth"
                     name="option_xapi-auth"
                     placeholder="Basic dXNlcm5hbWU6cGFzc3dvcmQ="
                   />
-                  <span class="hint" data-i18n="settings.xapi.authenticationHint"
-                    >Basic Auth String for LRS (e.g. "Basic base64encodedcredentials")</span
+                  <span
+                    class="hint"
+                    data-i18n="settings.xapi.authenticationHint"
+                    >Basic Auth String for LRS (e.g. "Basic
+                    base64encodedcredentials")</span
                   >
                 </div>
 
                 <div class="form-group">
-                  <label for="xapiActor" data-i18n="settings.xapi.actor">Actor (JSON)</label>
+                  <label for="xapiActor" data-i18n="settings.xapi.actor"
+                    >Actor (JSON)</label
+                  >
                   <textarea
                     id="xapiActor"
                     name="option_xapi-actor"
@@ -469,7 +534,9 @@
                 </div>
 
                 <div class="form-group">
-                  <label for="xapiCourseId" data-i18n="settings.xapi.courseId">Course ID</label>
+                  <label for="xapiCourseId" data-i18n="settings.xapi.courseId"
+                    >Course ID</label
+                  >
                   <input
                     type="text"
                     id="xapiCourseId"
@@ -477,12 +544,17 @@
                     placeholder="https://example.com/course/123"
                   />
                   <span class="hint" data-i18n="settings.xapi.courseIdHint"
-                    >Unique identifier for the course (default: course URL)</span
+                    >Unique identifier for the course (default: course
+                    URL)</span
                   >
                 </div>
 
                 <div class="form-group">
-                  <label for="xapiCourseTitle" data-i18n="settings.xapi.courseTitle">Course Title</label>
+                  <label
+                    for="xapiCourseTitle"
+                    data-i18n="settings.xapi.courseTitle"
+                    >Course Title</label
+                  >
                   <input
                     type="text"
                     id="xapiCourseTitle"
@@ -496,7 +568,11 @@
                 </div>
 
                 <div class="form-group">
-                  <label for="xapiMasteryScore" data-i18n="settings.xapi.masteryScore">Mastery Score</label>
+                  <label
+                    for="xapiMasteryScore"
+                    data-i18n="settings.xapi.masteryScore"
+                    >Mastery Score</label
+                  >
                   <input
                     type="text"
                     inputmode="decimal"
@@ -510,7 +586,11 @@
                 </div>
 
                 <div class="form-group">
-                  <label for="xapiProgressThreshold" data-i18n="settings.xapi.progressThreshold">Progress Threshold</label>
+                  <label
+                    for="xapiProgressThreshold"
+                    data-i18n="settings.xapi.progressThreshold"
+                    >Progress Threshold</label
+                  >
                   <input
                     type="text"
                     inputmode="decimal"
@@ -518,8 +598,11 @@
                     name="option_xapi-progress-threshold"
                     placeholder="0.9"
                   />
-                  <span class="hint" data-i18n="settings.xapi.progressThresholdHint"
-                    >Required slide progress for completion (0.0-1.0, default: 0.9)</span
+                  <span
+                    class="hint"
+                    data-i18n="settings.xapi.progressThresholdHint"
+                    >Required slide progress for completion (0.0-1.0, default:
+                    0.9)</span
                   >
                 </div>
 
@@ -532,7 +615,9 @@
                     />
                     <span data-i18n="settings.xapi.debugMode">Debug Mode</span>
                   </label>
-                  <span class="hint" data-i18n="settings.xapi.debugModeHint">Output xAPI statements to console</span>
+                  <span class="hint" data-i18n="settings.xapi.debugModeHint"
+                    >Output xAPI statements to console</span
+                  >
                 </div>
 
                 <div class="form-group">
@@ -543,15 +628,21 @@
                       name="option_xapi-zip"
                       checked
                     />
-                    <span data-i18n="settings.xapi.zipPackage">Package as ZIP</span>
+                    <span data-i18n="settings.xapi.zipPackage"
+                      >Package as ZIP</span
+                    >
                   </label>
-                  <span class="hint" data-i18n="settings.xapi.zipPackageHint">Output as ZIP file</span>
+                  <span class="hint" data-i18n="settings.xapi.zipPackageHint"
+                    >Output as ZIP file</span
+                  >
                 </div>
               </div>
 
               <!-- IMS Settings -->
               <div class="settings-group" data-formats="ims">
-                <h3 class="settings-heading" data-i18n="settings.ims.title">IMS Settings</h3>
+                <h3 class="settings-heading" data-i18n="settings.ims.title">
+                  IMS Settings
+                </h3>
 
                 <div class="form-group">
                   <label>
@@ -560,15 +651,21 @@
                       id="imsIndexeddb"
                       name="option_imsIndexeddb"
                     />
-                    <span data-i18n="settings.ims.useIndexedDB">Use IndexedDB</span>
+                    <span data-i18n="settings.ims.useIndexedDB"
+                      >Use IndexedDB</span
+                    >
                   </label>
-                  <span class="hint" data-i18n="settings.ims.useIndexedDBHint">Persistent storage in browser</span>
+                  <span class="hint" data-i18n="settings.ims.useIndexedDBHint"
+                    >Persistent storage in browser</span
+                  >
                 </div>
               </div>
 
               <!-- Web Settings -->
               <div class="settings-group" data-formats="web">
-                <h3 class="settings-heading" data-i18n="settings.web.title">Web Settings</h3>
+                <h3 class="settings-heading" data-i18n="settings.web.title">
+                  Web Settings
+                </h3>
 
                 <div class="form-group">
                   <label>
@@ -577,9 +674,13 @@
                       id="webIframe"
                       name="option_webIframe"
                     />
-                    <span data-i18n="settings.web.iframeVersion">iFrame Version</span>
+                    <span data-i18n="settings.web.iframeVersion"
+                      >iFrame Version</span
+                    >
                   </label>
-                  <span class="hint" data-i18n="settings.web.iframeVersionHint">Hides the course URL</span>
+                  <span class="hint" data-i18n="settings.web.iframeVersionHint"
+                    >Hides the course URL</span
+                  >
                 </div>
 
                 <div class="form-group">
@@ -589,9 +690,13 @@
                       id="webIndexeddb"
                       name="option_webIndexeddb"
                     />
-                    <span data-i18n="settings.web.useIndexedDB">Use IndexedDB</span>
+                    <span data-i18n="settings.web.useIndexedDB"
+                      >Use IndexedDB</span
+                    >
                   </label>
-                  <span class="hint" data-i18n="settings.web.useIndexedDBHint">Store data in browser</span>
+                  <span class="hint" data-i18n="settings.web.useIndexedDBHint"
+                    >Store data in browser</span
+                  >
                 </div>
 
                 <div class="form-group">
@@ -602,19 +707,27 @@
                       name="option_webZip"
                       checked
                     />
-                    <span data-i18n="settings.web.zipPackage">Package as ZIP</span>
+                    <span data-i18n="settings.web.zipPackage"
+                      >Package as ZIP</span
+                    >
                   </label>
-                  <span class="hint" data-i18n="settings.web.zipPackageHint">Creates a ZIP file</span>
+                  <span class="hint" data-i18n="settings.web.zipPackageHint"
+                    >Creates a ZIP file</span
+                  >
                 </div>
               </div>
 
               <!-- PDF Settings -->
               <div class="settings-group" data-formats="pdf">
-                <h3 class="settings-heading" data-i18n="settings.pdf.title">PDF Settings</h3>
+                <h3 class="settings-heading" data-i18n="settings.pdf.title">
+                  PDF Settings
+                </h3>
 
                 <!-- Layout & Format -->
                 <div class="form-group">
-                  <label for="pdfFormat" data-i18n="settings.pdf.pageFormat">Page Format</label>
+                  <label for="pdfFormat" data-i18n="settings.pdf.pageFormat"
+                    >Page Format</label
+                  >
                   <select id="pdfFormat" name="option_pdf-format">
                     <option value="A4" selected>A4</option>
                     <option value="A3">A3</option>
@@ -624,7 +737,9 @@
                     <option value="Tabloid">Tabloid</option>
                     <option value="Ledger">Ledger</option>
                   </select>
-                  <span class="hint" data-i18n="settings.pdf.pageFormatHint">Standard paper size</span>
+                  <span class="hint" data-i18n="settings.pdf.pageFormatHint"
+                    >Standard paper size</span
+                  >
                 </div>
 
                 <div class="form-group">
@@ -636,12 +751,16 @@
                     />
                     <span data-i18n="settings.pdf.landscape">Landscape</span>
                   </label>
-                  <span class="hint" data-i18n="settings.pdf.landscapeHint">Print page in landscape orientation</span>
+                  <span class="hint" data-i18n="settings.pdf.landscapeHint"
+                    >Print page in landscape orientation</span
+                  >
                 </div>
 
                 <!-- Scale & Background -->
                 <div class="form-group">
-                  <label for="pdfScale" data-i18n="settings.pdf.scale">Scale</label>
+                  <label for="pdfScale" data-i18n="settings.pdf.scale"
+                    >Scale</label
+                  >
                   <input
                     type="text"
                     inputmode="decimal"
@@ -649,7 +768,9 @@
                     name="option_pdf-scale"
                     placeholder="1.0"
                   />
-                  <span class="hint" data-i18n="settings.pdf.scaleHint">Page scale (0.1 - 2.0)</span>
+                  <span class="hint" data-i18n="settings.pdf.scaleHint"
+                    >Page scale (0.1 - 2.0)</span
+                  >
                 </div>
 
                 <div class="form-group">
@@ -660,14 +781,22 @@
                       name="option_pdf-printBackground"
                       checked
                     />
-                    <span data-i18n="settings.pdf.printBackground">Print Background Graphics</span>
+                    <span data-i18n="settings.pdf.printBackground"
+                      >Print Background Graphics</span
+                    >
                   </label>
-                  <span class="hint" data-i18n="settings.pdf.printBackgroundHint">Prints background colors and images</span>
+                  <span
+                    class="hint"
+                    data-i18n="settings.pdf.printBackgroundHint"
+                    >Prints background colors and images</span
+                  >
                 </div>
 
                 <!-- Margins -->
                 <div class="form-group">
-                  <label for="pdfMarginTop" data-i18n="settings.pdf.marginTop">Top Margin</label>
+                  <label for="pdfMarginTop" data-i18n="settings.pdf.marginTop"
+                    >Top Margin</label
+                  >
                   <input
                     type="text"
                     id="pdfMarginTop"
@@ -681,7 +810,11 @@
                 </div>
 
                 <div class="form-group">
-                  <label for="pdfMarginBottom" data-i18n="settings.pdf.marginBottom">Bottom Margin</label>
+                  <label
+                    for="pdfMarginBottom"
+                    data-i18n="settings.pdf.marginBottom"
+                    >Bottom Margin</label
+                  >
                   <input
                     type="text"
                     id="pdfMarginBottom"
@@ -695,7 +828,9 @@
                 </div>
 
                 <div class="form-group">
-                  <label for="pdfMarginLeft" data-i18n="settings.pdf.marginLeft">Left Margin</label>
+                  <label for="pdfMarginLeft" data-i18n="settings.pdf.marginLeft"
+                    >Left Margin</label
+                  >
                   <input
                     type="text"
                     id="pdfMarginLeft"
@@ -709,7 +844,11 @@
                 </div>
 
                 <div class="form-group">
-                  <label for="pdfMarginRight" data-i18n="settings.pdf.marginRight">Right Margin</label>
+                  <label
+                    for="pdfMarginRight"
+                    data-i18n="settings.pdf.marginRight"
+                    >Right Margin</label
+                  >
                   <input
                     type="text"
                     id="pdfMarginRight"
@@ -730,9 +869,13 @@
                       id="pdfDisplayHeaderFooter"
                       name="option_pdf-displayHeaderFooter"
                     />
-                    <span data-i18n="settings.pdf.displayHeaderFooter">Display Header & Footer</span>
+                    <span data-i18n="settings.pdf.displayHeaderFooter"
+                      >Display Header & Footer</span
+                    >
                   </label>
-                  <span class="hint" data-i18n="settings.pdf.displayHeaderFooterHint"
+                  <span
+                    class="hint"
+                    data-i18n="settings.pdf.displayHeaderFooterHint"
                     >Shows header and footer on each page</span
                   >
                 </div>
@@ -742,7 +885,9 @@
                   id="pdfHeaderGroup"
                   style="display: none"
                 >
-                  <label for="pdfHeaderTemplate" data-i18n="settings.pdf.headerTemplate"
+                  <label
+                    for="pdfHeaderTemplate"
+                    data-i18n="settings.pdf.headerTemplate"
                     >Header Template (HTML)</label
                   >
                   <textarea
@@ -753,7 +898,8 @@
                     placeholder="<div style='font-size: 10px; text-align: center; width: 100%;'><span class='title'></span></div>"
                   ></textarea>
                   <span class="hint" data-i18n="settings.pdf.headerTemplateHint"
-                    >HTML template with classes: date, title, url, pageNumber, totalPages</span
+                    >HTML template with classes: date, title, url, pageNumber,
+                    totalPages</span
                   >
                 </div>
 
@@ -762,7 +908,9 @@
                   id="pdfFooterGroup"
                   style="display: none"
                 >
-                  <label for="pdfFooterTemplate" data-i18n="settings.pdf.footerTemplate"
+                  <label
+                    for="pdfFooterTemplate"
+                    data-i18n="settings.pdf.footerTemplate"
                     >Footer Template (HTML)</label
                   >
                   <textarea
@@ -772,12 +920,16 @@
                     data-i18n-placeholder="settings.pdf.footerTemplatePlaceholder"
                     placeholder="<div style='font-size: 10px; text-align: center; width: 100%;'><span class='pageNumber'></span> / <span class='totalPages'></span></div>"
                   ></textarea>
-                  <span class="hint" data-i18n="settings.pdf.footerTemplateHint">HTML template for footer</span>
+                  <span class="hint" data-i18n="settings.pdf.footerTemplateHint"
+                    >HTML template for footer</span
+                  >
                 </div>
 
                 <!-- Page Ranges -->
                 <div class="form-group">
-                  <label for="pdfPageRanges" data-i18n="settings.pdf.pageRanges">Page Ranges</label>
+                  <label for="pdfPageRanges" data-i18n="settings.pdf.pageRanges"
+                    >Page Ranges</label
+                  >
                   <input
                     type="text"
                     id="pdfPageRanges"
@@ -792,29 +944,51 @@
 
                 <!-- LiaScript Specific -->
                 <div class="form-group">
-                  <label for="pdfTheme" data-i18n="settings.pdf.theme">LiaScript Theme</label>
+                  <label for="pdfTheme" data-i18n="settings.pdf.theme"
+                    >LiaScript Theme</label
+                  >
                   <select id="pdfTheme" name="option_pdf-theme">
                     <option value="">Standard</option>
-                    <option value="default" data-i18n="settings.pdf.themeDefault">Default</option>
-                    <option value="turquoise" data-i18n="settings.pdf.themeTurquoise">Turquoise</option>
-                    <option value="blue" data-i18n="settings.pdf.themeBlue">Blue</option>
-                    <option value="red" data-i18n="settings.pdf.themeRed">Red</option>
-                    <option value="yellow" data-i18n="settings.pdf.themeYellow">Yellow</option>
+                    <option
+                      value="default"
+                      data-i18n="settings.pdf.themeDefault"
+                    >
+                      Default
+                    </option>
+                    <option
+                      value="turquoise"
+                      data-i18n="settings.pdf.themeTurquoise"
+                    >
+                      Turquoise
+                    </option>
+                    <option value="blue" data-i18n="settings.pdf.themeBlue">
+                      Blue
+                    </option>
+                    <option value="red" data-i18n="settings.pdf.themeRed">
+                      Red
+                    </option>
+                    <option value="yellow" data-i18n="settings.pdf.themeYellow">
+                      Yellow
+                    </option>
                   </select>
-                  <span class="hint" data-i18n="settings.pdf.themeHint">Color scheme for PDF</span>
+                  <span class="hint" data-i18n="settings.pdf.themeHint"
+                    >Color scheme for PDF</span
+                  >
                 </div>
 
                 <div class="form-group">
-                  <label for="pdfTimeout" data-i18n="settings.pdf.timeout">Timeout (ms)</label>
+                  <label for="pdfTimeout" data-i18n="settings.pdf.timeout"
+                    >Timeout (ms)</label
+                  >
                   <input
                     type="text"
                     inputmode="numeric"
                     id="pdfTimeout"
                     name="option_pdf-timeout"
-                    placeholder="60000"
+                    placeholder="15000"
                   />
                   <span class="hint" data-i18n="settings.pdf.timeoutHint"
-                    >Wait time for complete loading (60000 = 60 seconds)</span
+                    >Wait time for complete loading (15000 = 15 seconds)</span
                   >
                 </div>
 
@@ -826,9 +1000,15 @@
                       id="pdfPreferCSSPageSize"
                       name="option_pdf-preferCSSPageSize"
                     />
-                    <span data-i18n="settings.pdf.preferCSSPageSize">Prefer CSS @page Size</span>
+                    <span data-i18n="settings.pdf.preferCSSPageSize"
+                      >Prefer CSS @page Size</span
+                    >
                   </label>
-                  <span class="hint" data-i18n="settings.pdf.preferCSSPageSizeHint">CSS page size takes precedence</span>
+                  <span
+                    class="hint"
+                    data-i18n="settings.pdf.preferCSSPageSizeHint"
+                    >CSS page size takes precedence</span
+                  >
                 </div>
 
                 <div class="form-group">
@@ -838,18 +1018,28 @@
                       id="pdfOmitBackground"
                       name="option_pdf-omitBackground"
                     />
-                    <span data-i18n="settings.pdf.omitBackground">Transparent Background</span>
+                    <span data-i18n="settings.pdf.omitBackground"
+                      >Transparent Background</span
+                    >
                   </label>
-                  <span class="hint" data-i18n="settings.pdf.omitBackgroundHint">White background is omitted</span>
+                  <span class="hint" data-i18n="settings.pdf.omitBackgroundHint"
+                    >White background is omitted</span
+                  >
                 </div>
               </div>
 
               <!-- Android Settings -->
               <div class="settings-group" data-formats="android">
-                <h3 class="settings-heading" data-i18n="settings.android.title">Android Settings</h3>
+                <h3 class="settings-heading" data-i18n="settings.android.title">
+                  Android Settings
+                </h3>
 
                 <div class="form-group">
-                  <label for="androidAppName" data-i18n="settings.android.appName">App Name</label>
+                  <label
+                    for="androidAppName"
+                    data-i18n="settings.android.appName"
+                    >App Name</label
+                  >
                   <input
                     type="text"
                     id="androidAppName"
@@ -857,11 +1047,15 @@
                     data-i18n-placeholder="settings.android.appNameHint"
                     placeholder="My App"
                   />
-                  <span class="hint" data-i18n="settings.android.appNameHint">Name of the Android app</span>
+                  <span class="hint" data-i18n="settings.android.appNameHint"
+                    >Name of the Android app</span
+                  >
                 </div>
 
                 <div class="form-group">
-                  <label for="androidAppId" data-i18n="settings.android.appId">App ID *</label>
+                  <label for="androidAppId" data-i18n="settings.android.appId"
+                    >App ID *</label
+                  >
                   <input
                     type="text"
                     id="androidAppId"
@@ -878,10 +1072,14 @@
 
               <!-- EPUB Settings -->
               <div class="settings-group" data-formats="epub">
-                <h3 class="settings-heading" data-i18n="settings.epub.title">EPUB Settings</h3>
+                <h3 class="settings-heading" data-i18n="settings.epub.title">
+                  EPUB Settings
+                </h3>
 
                 <div class="form-group">
-                  <label for="epubAuthor" data-i18n="settings.epub.author">Author</label>
+                  <label for="epubAuthor" data-i18n="settings.epub.author"
+                    >Author</label
+                  >
                   <input
                     type="text"
                     id="epubAuthor"
@@ -889,11 +1087,15 @@
                     data-i18n-placeholder="settings.epub.authorPlaceholder"
                     placeholder="John Doe"
                   />
-                  <span class="hint" data-i18n="settings.epub.authorHint">Author of the e-book</span>
+                  <span class="hint" data-i18n="settings.epub.authorHint"
+                    >Author of the e-book</span
+                  >
                 </div>
 
                 <div class="form-group">
-                  <label for="epubPublisher" data-i18n="settings.epub.publisher">Publisher</label>
+                  <label for="epubPublisher" data-i18n="settings.epub.publisher"
+                    >Publisher</label
+                  >
                   <input
                     type="text"
                     id="epubPublisher"
@@ -901,13 +1103,17 @@
                     data-i18n-placeholder="settings.epub.publisherHint"
                     placeholder="My Publisher"
                   />
-                  <span class="hint" data-i18n="settings.epub.publisherHint">Publisher/Publisher house</span>
+                  <span class="hint" data-i18n="settings.epub.publisherHint"
+                    >Publisher/Publisher house</span
+                  >
                 </div>
               </div>
 
               <!-- JSON Settings -->
               <div class="settings-group" data-formats="json">
-                <h3 class="settings-heading" data-i18n="settings.json.title">JSON Settings</h3>
+                <h3 class="settings-heading" data-i18n="settings.json.title">
+                  JSON Settings
+                </h3>
 
                 <div class="form-group">
                   <label>
@@ -918,7 +1124,9 @@
                     />
                     <span data-i18n="settings.json.fullJSON">Full JSON</span>
                   </label>
-                  <span class="hint" data-i18n="settings.json.fullJSONHint">Exports all details</span>
+                  <span class="hint" data-i18n="settings.json.fullJSONHint"
+                    >Exports all details</span
+                  >
                 </div>
 
                 <div class="form-group">
@@ -929,18 +1137,26 @@
                       name="option_jsonPretty"
                       checked
                     />
-                    <span data-i18n="settings.json.prettyPrint">Formatted (Pretty Print)</span>
+                    <span data-i18n="settings.json.prettyPrint"
+                      >Formatted (Pretty Print)</span
+                    >
                   </label>
-                  <span class="hint" data-i18n="settings.json.prettyPrintHint">Readable formatted JSON</span>
+                  <span class="hint" data-i18n="settings.json.prettyPrintHint"
+                    >Readable formatted JSON</span
+                  >
                 </div>
               </div>
 
               <!-- RDF Settings -->
               <div class="settings-group" data-formats="rdf">
-                <h3 class="settings-heading" data-i18n="settings.rdf.title">RDF Settings</h3>
+                <h3 class="settings-heading" data-i18n="settings.rdf.title">
+                  RDF Settings
+                </h3>
 
                 <div class="form-group">
-                  <label for="rdfFormat" data-i18n="settings.rdf.outputFormat">Output Format</label>
+                  <label for="rdfFormat" data-i18n="settings.rdf.outputFormat"
+                    >Output Format</label
+                  >
                   <select id="rdfFormat" name="option_rdf-format">
                     <option value="json-ld" selected>JSON-LD</option>
                     <option value="n-quads">N-Quads</option>
@@ -957,13 +1173,19 @@
                       id="rdfPreview"
                       name="option_rdf-preview"
                     />
-                    <span data-i18n="settings.rdf.previewConsole">Preview in Console</span>
+                    <span data-i18n="settings.rdf.previewConsole"
+                      >Preview in Console</span
+                    >
                   </label>
-                  <span class="hint" data-i18n="settings.rdf.previewConsoleHint">Display output in console</span>
+                  <span class="hint" data-i18n="settings.rdf.previewConsoleHint"
+                    >Display output in console</span
+                  >
                 </div>
 
                 <div class="form-group">
-                  <label for="rdfUrl" data-i18n="settings.rdf.externalUrl">External URL</label>
+                  <label for="rdfUrl" data-i18n="settings.rdf.externalUrl"
+                    >External URL</label
+                  >
                   <input
                     type="url"
                     id="rdfUrl"
@@ -976,7 +1198,9 @@
                 </div>
 
                 <div class="form-group">
-                  <label for="rdfType" data-i18n="settings.rdf.schemaType">Schema.org Type</label>
+                  <label for="rdfType" data-i18n="settings.rdf.schemaType"
+                    >Schema.org Type</label
+                  >
                   <input
                     type="text"
                     id="rdfType"
@@ -984,12 +1208,15 @@
                     placeholder="Course"
                   />
                   <span class="hint" data-i18n="settings.rdf.schemaTypeHint"
-                    >Schema.org type (default: Course, e.g. EducationalResource)</span
+                    >Schema.org type (default: Course, e.g.
+                    EducationalResource)</span
                   >
                 </div>
 
                 <div class="form-group">
-                  <label for="rdfTemplate" data-i18n="settings.rdf.templateUrl">Template URL/File</label>
+                  <label for="rdfTemplate" data-i18n="settings.rdf.templateUrl"
+                    >Template URL/File</label
+                  >
                   <input
                     type="text"
                     id="rdfTemplate"
@@ -1002,26 +1229,37 @@
                 </div>
 
                 <div class="form-group">
-                  <label for="rdfLicense" data-i18n="settings.rdf.licenseUrl">License URL</label>
+                  <label for="rdfLicense" data-i18n="settings.rdf.licenseUrl"
+                    >License URL</label
+                  >
                   <input
                     type="url"
                     id="rdfLicense"
                     name="option_rdf-license"
                     placeholder="https://creativecommons.org/licenses/by/4.0/"
                   />
-                  <span class="hint" data-i18n="settings.rdf.licenseUrlHint">URL to course license (optional)</span>
+                  <span class="hint" data-i18n="settings.rdf.licenseUrlHint"
+                    >URL to course license (optional)</span
+                  >
                 </div>
 
                 <div class="form-group">
-                  <label for="rdfEducationalLevel" data-i18n="settings.rdf.educationalLevel">Educational Level</label>
+                  <label
+                    for="rdfEducationalLevel"
+                    data-i18n="settings.rdf.educationalLevel"
+                    >Educational Level</label
+                  >
                   <input
                     type="text"
                     id="rdfEducationalLevel"
                     name="option_rdf-educationalLevel"
                     placeholder="beginner, intermediate, advanced"
                   />
-                  <span class="hint" data-i18n="settings.rdf.educationalLevelHint"
-                    >Educational level (e.g. beginner, intermediate, advanced)</span
+                  <span
+                    class="hint"
+                    data-i18n="settings.rdf.educationalLevelHint"
+                    >Educational level (e.g. beginner, intermediate,
+                    advanced)</span
                   >
                 </div>
               </div>
@@ -1053,7 +1291,8 @@
               <span data-i18n="submit.button">Start Export</span>
             </button>
             <p class="info-text" data-i18n-html="submit.info">
-              Export jobs are queued.<br />Only one export is processed at a time.
+              Export jobs are queued.<br />Only one export is processed at a
+              time.
             </p>
           </section>
         </form>
@@ -1064,10 +1303,19 @@
             <h2 data-i18n="modal.title">Export Started</h2>
             <div id="confirmationDetails"></div>
             <div class="modal-actions">
-              <a id="statusLink" href="#" class="btn-primary" data-i18n="modal.statusLink"
+              <a
+                id="statusLink"
+                href="#"
+                class="btn-primary"
+                data-i18n="modal.statusLink"
                 >Go to Status Page</a
               >
-              <button type="button" id="closeModal" class="btn-secondary" data-i18n="modal.close">
+              <button
+                type="button"
+                id="closeModal"
+                class="btn-secondary"
+                data-i18n="modal.close"
+              >
                 Close
               </button>
             </div>
