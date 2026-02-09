@@ -4,8 +4,70 @@ let currentSourceType = 'upload'
 let currentExportTab = 'presets'
 let presetsConfig = null
 
+// Initialize number inputs with validation (for Windows Electron compatibility)
+// Using type="text" with inputmode instead of type="number"
+function initializeNumberInputs() {
+  const numberInputs = [
+    { id: 'masteryScore', min: 0, max: 100, isInteger: true, value: 70 },
+    { id: 'xapiMasteryScore', min: 0, max: 1, isInteger: false, value: null },
+    { id: 'xapiProgressThreshold', min: 0, max: 1, isInteger: false, value: null },
+    { id: 'pdfScale', min: 0.1, max: 2, isInteger: false, value: 1 },
+    { id: 'pdfTimeout', min: 1000, max: null, isInteger: true, value: 60000 }
+  ]
+
+  numberInputs.forEach(config => {
+    const input = document.getElementById(config.id)
+    if (input) {
+      if (config.value !== null) {
+        input.value = config.value
+      }
+
+      input.addEventListener('blur', () => {
+        let value = input.value.trim()
+        if (value === '') return 
+
+        const num = config.isInteger ? parseInt(value, 10) : parseFloat(value)
+
+        if (isNaN(num)) {
+          input.value = config.value !== null ? config.value : ''
+          return
+        }
+
+        let clampedValue = num
+        if (config.min !== null && num < config.min) {
+          clampedValue = config.min
+        }
+        if (config.max !== null && num > config.max) {
+          clampedValue = config.max
+        }
+
+        input.value = clampedValue
+      })
+
+      // Prevent non-numeric input
+      input.addEventListener('beforeinput', (e) => {      
+        const data = e.data
+        if (!data) return
+        
+        const currentValue = input.value
+        
+        // Allow digits
+        if (/^\d+$/.test(data)) return
+        
+        // Allow decimal point for non-integer fields (only one)
+        if (!config.isInteger && data === '.' && !currentValue.includes('.')) {
+          return
+        }
+        
+        e.preventDefault()
+      })
+    }
+  })
+}
+
 // Initialize app
 document.addEventListener('DOMContentLoaded', async () => {
+  initializeNumberInputs()
   await loadPresets()
   initializeTabs()
   initializeExportTabs()
@@ -23,48 +85,52 @@ async function loadPresets() {
     const response = await fetch('/api/presets')
     const data = await response.json()
     presetsConfig = data.presets
-
-    const presetsGrid = document.getElementById('presets-grid')
-    presetsGrid.innerHTML = ''
-
-    presetsConfig.forEach((preset, index) => {
-      const label = document.createElement('label')
-      label.className = 'preset-tile'
-
-      const input = document.createElement('input')
-      input.type = 'radio'
-      input.name = 'preset'
-      input.value = preset.id
-      input.dataset.description = preset.description
-      input.dataset.presetOptions = JSON.stringify(preset.options)
-      if (index === 0) input.checked = true
-
-      const content = document.createElement('div')
-      content.className = 'preset-content'
-
-      const logo = document.createElement('div')
-      logo.style.fontSize = '2rem'
-      logo.style.marginBottom = '0.5rem'
-      logo.textContent = preset.logo
-
-      const title = document.createElement('h3')
-      title.textContent = preset.name
-
-      const subtitle = document.createElement('p')
-      subtitle.textContent = preset.subtitle
-
-      content.appendChild(logo)
-      content.appendChild(title)
-      content.appendChild(subtitle)
-
-      label.appendChild(input)
-      label.appendChild(content)
-
-      presetsGrid.appendChild(label)
-    })
+    renderPresets()
   } catch (error) {
     console.error('Failed to load presets:', error)
   }
+}
+
+// Render presets with current language
+function renderPresets() {
+  const presetsGrid = document.getElementById('presets-grid')
+  presetsGrid.innerHTML = ''
+
+  presetsConfig.forEach((preset, index) => {
+    const label = document.createElement('label')
+    label.className = 'preset-tile'
+
+    const input = document.createElement('input')
+    input.type = 'radio'
+    input.name = 'preset'
+    input.value = preset.id
+    input.dataset.descriptionKey = `presets.${preset.id}.description`
+    input.dataset.presetOptions = JSON.stringify(preset.options)
+    if (index === 0) input.checked = true
+
+    const content = document.createElement('div')
+    content.className = 'preset-content'
+
+    const logo = document.createElement('div')
+    logo.style.fontSize = '2rem'
+    logo.style.marginBottom = '0.5rem'
+    logo.textContent = preset.logo
+
+    const title = document.createElement('h3')
+    title.textContent = preset.name
+
+    const subtitle = document.createElement('p')
+    subtitle.textContent = preset.subtitle
+
+    content.appendChild(logo)
+    content.appendChild(title)
+    content.appendChild(subtitle)
+
+    label.appendChild(input)
+    label.appendChild(content)
+
+    presetsGrid.appendChild(label)
+  })
 }
 
 // Tab switching
@@ -89,8 +155,6 @@ function initializeTabs() {
         document.getElementById('gitUrl').removeAttribute('required')
       } else {
         document.getElementById('gitUrl').setAttribute('required', 'required')
-        selectedFiles = []
-        updateFileList()
       }
     })
   })
@@ -130,21 +194,53 @@ function initializeExportTabs() {
 // File upload handling
 function initializeUpload() {
   const uploadArea = document.getElementById('uploadArea')
-  const fileInput = document.getElementById('fileInput')
+
+  // Check if running in Electron
+  const isElectron = window.electronAPI !== undefined
 
   // Click to select files
-  uploadArea.addEventListener('click', (e) => {
-    if (e.target !== fileInput) {
+  uploadArea.addEventListener('click', async (e) => {
+    if (isElectron) {
+      // Use Electron's native file dialog
+      try {
+        const result = await window.electronAPI.openFileDialog()
+        if (!result.canceled && result.files && result.files.length > 0) {
+          // Convert base64 content back to File objects
+          const files = result.files.map(fileData => {
+            // Decode base64 to binary
+            const binaryString = atob(fileData.content)
+            const bytes = new Uint8Array(binaryString.length)
+            for (let i = 0; i < binaryString.length; i++) {
+              bytes[i] = binaryString.charCodeAt(i)
+            }
+            // Create File object
+            return new File([bytes], fileData.name, {
+              type: fileData.type,
+              lastModified: fileData.lastModified
+            })
+          })
+          handleFiles(files)
+        }
+      } catch (error) {
+        console.error('Error opening file dialog:', error)
+        alert('Fehler beim Öffnen des Dateiauswahl-Dialogs')
+      }
+    } else {
+      // Fallback: create temporary file input for browser mode
+      const fileInput = document.createElement('input')
+      fileInput.type = 'file'
+      fileInput.multiple = true
+      fileInput.style.display = 'none'
+      fileInput.addEventListener('change', (e) => {
+        handleFiles(e.target.files)
+        document.body.removeChild(fileInput)
+      })
+      document.body.appendChild(fileInput)
       fileInput.click()
     }
   })
 
-  // File selection
-  fileInput.addEventListener('change', (e) => {
-    handleFiles(e.target.files)
-  })
-
-  // Drag and drop
+  // Drag and drop (works in both Electron and browser)
   uploadArea.addEventListener('dragover', (e) => {
     e.preventDefault()
     uploadArea.classList.add('drag-over')
@@ -185,13 +281,15 @@ function updateFileList() {
     return
   }
 
+  const removeTitle = window.i18n ? window.i18n.t('files.remove') : 'Remove'
+
   fileList.innerHTML = selectedFiles
     .map(
       (file, index) => `
     <div class="file-item">
       <span class="file-name">${escapeHtml(file.name)}</span>
       <span class="file-size">${formatFileSize(file.size)}</span>
-      <button type="button" class="remove-file" data-index="${index}" title="Entfernen">×</button>
+      <button type="button" class="remove-file" data-index="${index}" title="${removeTitle}">×</button>
     </div>
   `,
     )
@@ -481,6 +579,9 @@ function initializeForm() {
 
 // Show confirmation modal
 function showConfirmation(result) {
+  // Save job ID to localStorage
+  localStorage.setItem('lastJobId', result.jobId)
+  
   const modal = document.getElementById('confirmationModal')
   const details = document.getElementById('confirmationDetails')
   const statusLink = document.getElementById('statusLink')
@@ -532,7 +633,10 @@ function initializePresetDescription() {
     if (e.target.name === 'preset') {
       const descriptionBox = document.getElementById('preset-description')
       const descriptionText = descriptionBox.querySelector('p')
-      const description = e.target.dataset.description
+      
+      // Get translation key and translate
+      const descriptionKey = e.target.dataset.descriptionKey
+      const description = window.i18n ? window.i18n.t(descriptionKey) : ''
 
       if (description) {
         descriptionText.innerHTML = description
@@ -546,11 +650,16 @@ function initializePresetDescription() {
   // Show description for initially checked preset
   setTimeout(() => {
     const checkedPreset = document.querySelector('input[name="preset"]:checked')
-    if (checkedPreset && checkedPreset.dataset.description) {
+    if (checkedPreset) {
       const descriptionBox = document.getElementById('preset-description')
       const descriptionText = descriptionBox.querySelector('p')
-      descriptionText.innerHTML = checkedPreset.dataset.description
-      descriptionBox.style.display = 'block'
+      const descriptionKey = checkedPreset.dataset.descriptionKey
+      const description = window.i18n ? window.i18n.t(descriptionKey) : ''
+      
+      if (description) {
+        descriptionText.innerHTML = description
+        descriptionBox.style.display = 'block'
+      }
     }
   }, 100)
 }
