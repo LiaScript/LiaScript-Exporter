@@ -4,6 +4,7 @@ import fastifyStatic from '@fastify/static'
 import { join, dirname } from 'path'
 import { fileURLToPath } from 'url'
 import { exportRouter } from './routes/export'
+import { i18nRouter } from './routes/i18n'
 import { JobQueue } from './queue/jobQueue'
 import { existsSync } from 'fs'
 
@@ -55,6 +56,7 @@ export async function startServer(port: number = 3000): Promise<void> {
 
   // Register routes
   await fastify.register(exportRouter, { prefix: '/api' })
+  await fastify.register(i18nRouter, { prefix: '/api/i18n' })
 
   // Graceful shutdown
   const shutdown = async () => {

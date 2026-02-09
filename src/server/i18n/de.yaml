@@ -1,0 +1,314 @@
+# German translations for LiaScript Export Server
+meta:
+  language: Deutsch
+  code: de
+
+# Header
+header:
+  title: LiaScript Export Server
+  subtitle: Erstellen Sie Exporte für verschiedene LMS und Formate
+
+# Source section
+source:
+  title: 1. Projekt-Quelle
+  tabs:
+    upload: Datei-Upload
+    git: Git Repository
+  upload:
+    dropzone: Dateien hier ablegen oder klicken zum Auswählen
+    hint: ZIP-Dateien oder mehrere Dateien (max. 100MB)
+  git:
+    url_label: Repository URL *
+    url_placeholder: https://github.com/user/repo.git
+    branch_label: Branch / Tag
+    branch_placeholder: main
+    subdir_label: Unterverzeichnis
+    subdir_placeholder: docs/
+
+# Export target section
+export:
+  title: 2. Export-Ziel
+  tabs:
+    presets: Bekannte Konfigurationen
+    formats: Formate
+
+# Format descriptions
+formats:
+  scorm12:
+    title: SCORM 1.2
+    subtitle: Legacy Standard
+    description: >
+      E-Learning-Standard für Lernmanagementsysteme. Weit verbreitet, aber älter.
+      Geeignet für ältere LMS-Plattformen.
+  scorm2004:
+    title: SCORM 2004
+    subtitle: Modern Standard
+    description: >
+      Moderne Version des SCORM-Standards mit erweiterten Funktionen für
+      Lernpfade und Bewertungen. Empfohlen für aktuelle LMS-Systeme.
+  ims:
+    title: IMS
+    subtitle: Content Package
+    description: >
+      IMS Content Packaging für Austausch von Lerninhalten zwischen
+      verschiedenen Plattformen. Standard für plattformübergreifende Kompatibilität.
+  web:
+    title: Web
+    subtitle: Standalone
+    description: >
+      Eigenständige HTML-Website zum Hosten auf beliebigen Webservern.
+      Funktioniert offline und online. Perfekt für eigenes Hosting.
+  pdf:
+    title: PDF
+    subtitle: Dokument
+    description: >
+      Portables Dokumentenformat zum Drucken und Archivieren.
+      Ideal für statische Inhalte und Offline-Lektüre.
+  android:
+    title: Android
+    subtitle: App Package
+    description: >
+      Android-App-Paket (APK) für Installation auf Android-Geräten.
+      Ermöglicht Offline-Zugriff und native App-Erfahrung.
+  json:
+    title: JSON
+    subtitle: Data Export
+    description: >
+      Strukturiertes Datenformat für programmatische Weiterverarbeitung
+      und API-Integration. Perfekt für Entwickler und automatisierte Workflows.
+  epub:
+    title: EPUB
+    subtitle: E-Book
+    description: >
+      Offenes E-Book-Format für E-Reader und mobile Geräte.
+      Unterstützt reflowable Layouts und ist kompatibel mit den meisten E-Readern.
+  rdf:
+    title: RDF
+    subtitle: Metadaten
+    description: >
+      Resource Description Framework für strukturierte Metadaten und Linked Data.
+      Für semantische Web-Anwendungen und Metadaten-Export.
+  xapi:
+    title: xAPI
+    subtitle: Learning Analytics
+    description: >
+      Experience API (xAPI) für Learning Analytics und detailliertes Tracking
+      von Lernaktivitäten. Ermöglicht erweiterte Auswertungen über einen
+      Learning Record Store (LRS).
+
+# Advanced settings section
+settings:
+  title: 3. Erweiterte Einstellungen (optional)
+  no_settings: Für dieses Format sind keine zusätzlichen Einstellungen verfügbar.
+
+  # SCORM settings
+  scorm:
+    title: SCORM Einstellungen
+    mastery_score: Mastery Score
+    mastery_score_hint: Mindestpunktzahl für Bestehen (0-100)
+    organization: Organisation
+    organization_hint: Titel der Organisation im SCORM-Paket
+    typical_duration: Typische Dauer
+    typical_duration_hint: "Format: PT0H5M0S (5 Minuten)"
+    iframe: iFrame verwenden
+    iframe_hint: Für bessere Kompatibilität in manchen LMS
+    embed: Markdown einbetten
+    embed_hint: Empfohlen für Moodle 4
+
+  # xAPI settings
+  xapi:
+    title: xAPI Einstellungen
+    endpoint: LRS Endpoint
+    endpoint_hint: URL des Learning Record Store (LRS) Endpoints
+    auth: Authentifizierung
+    auth_hint: "Basic Auth String für LRS (z.B. 'Basic base64encodedcredentials')"
+    actor: Actor (JSON)
+    actor_hint: "xAPI Actor im JSON-Format (Standard: anonymous)"
+    course_id: Kurs-ID
+    course_id_hint: "Eindeutiger Identifier für den Kurs (Standard: Kurs-URL)"
+    course_title: Kurs-Titel
+    course_title_hint: "Angezeigter Titel des Kurses (Standard: aus Dokument)"
+    mastery_score: Mastery Score
+    mastery_score_hint: "Erforderliche Quote zum Bestehen (0.0-1.0, Standard: 0.8)"
+    progress_threshold: Progress Threshold
+    progress_threshold_hint: "Erforderliche Folienprogress für Abschluss (0.0-1.0, Standard: 0.9)"
+    debug: Debug-Modus
+    debug_hint: xAPI Statements in Konsole ausgeben
+    zip: Als ZIP verpacken
+    zip_hint: Ausgabe als ZIP-Datei
+
+  # IMS settings
+  ims:
+    title: IMS Einstellungen
+    indexeddb: IndexedDB verwenden
+    indexeddb_hint: Persistente Speicherung im Browser
+
+  # Web settings
+  web:
+    title: Web Einstellungen
+    iframe: iFrame Version
+    iframe_hint: Versteckt die Kurs-URL
+    indexeddb: IndexedDB verwenden
+    indexeddb_hint: Daten im Browser speichern
+    zip: Als ZIP verpacken
+    zip_hint: Erstellt eine ZIP-Datei
+
+  # PDF settings
+  pdf:
+    title: PDF Einstellungen
+    format: Seitenformat
+    format_hint: Standardgröße des Papiers
+    landscape: Querformat (Landscape)
+    landscape_hint: Seite im Querformat drucken
+    scale: Skalierung
+    scale_hint: Skalierung der Seite (0.1 - 2.0)
+    print_background: Hintergrundgrafiken drucken
+    print_background_hint: Druckt Hintergrundfarben und -bilder
+    margin_top: Rand Oben
+    margin_top_hint: Oberer Rand in Pixel oder mit Einheit (z.B. "2cm")
+    margin_bottom: Rand Unten
+    margin_bottom_hint: Unterer Rand in Pixel oder mit Einheit
+    margin_left: Rand Links
+    margin_left_hint: Linker Rand in Pixel oder mit Einheit
+    margin_right: Rand Rechts
+    margin_right_hint: Rechter Rand in Pixel oder mit Einheit
+    header_footer: Kopf- und Fußzeile anzeigen
+    header_footer_hint: Zeigt Kopf- und Fußzeile auf jeder Seite
+    header_template: Kopfzeilen-Template (HTML)
+    header_template_hint: "HTML-Template mit Klassen: date, title, url, pageNumber, totalPages"
+    footer_template: Fußzeilen-Template (HTML)
+    footer_template_hint: HTML-Template für die Fußzeile
+    page_ranges: Seitenbereiche
+    page_ranges_hint: Nur bestimmte Seiten drucken (optional)
+    page_ranges_placeholder: z.B. 1-5, 8, 11-13
+    theme: LiaScript Theme
+    theme_hint: Farbschema für das PDF
+    theme_default: Standard
+    theme_turquoise: Türkis
+    theme_blue: Blau
+    theme_red: Rot
+    theme_yellow: Gelb
+    timeout: Timeout (ms)
+    timeout_hint: Wartezeit für vollständiges Laden (60000 = 60 Sekunden)
+    prefer_css_page: CSS @page Größe bevorzugen
+    prefer_css_page_hint: CSS-Seitengröße hat Vorrang
+    omit_background: Transparenten Hintergrund
+    omit_background_hint: Weißer Hintergrund wird weggelassen
+
+  # Android settings
+  android:
+    title: Android Einstellungen
+    app_name: App Name
+    app_name_hint: Name der Android-App
+    app_id: App ID *
+    app_id_hint: Eindeutiger App-Identifier (z.B. io.github.liascript)
+
+  # EPUB settings
+  epub:
+    title: EPUB Einstellungen
+    author: Autor
+    author_hint: Autor des E-Books
+    publisher: Verlag
+    publisher_hint: Publisher/Verlag
+
+  # JSON settings
+  json:
+    title: JSON Einstellungen
+    full: Vollständiges JSON
+    full_hint: Exportiert alle Details
+    pretty: Formatiert (Pretty Print)
+    pretty_hint: Lesbar formatiertes JSON
+
+  # RDF settings
+  rdf:
+    title: RDF Einstellungen
+    format: Ausgabeformat
+    format_hint: "Format für die RDF-Ausgabe (Standard: JSON-LD)"
+    preview: Preview in Konsole
+    preview_hint: Ausgabe in der Konsole anzeigen
+    url: Externe URL
+    url_hint: Externe URL für lokale Projekte (optional)
+    type: Schema.org Type
+    type_hint: "Schema.org-Typ (Standard: Course, z.B. EducationalResource)"
+    template: Template URL/Datei
+    template_hint: URL oder JSON-Datei als Template (optional)
+    license: Lizenz-URL
+    license_hint: URL zur Lizenz des Kurses (optional)
+    educational_level: Bildungsniveau
+    educational_level_hint: Bildungsniveau (z.B. beginner, intermediate, advanced)
+
+# Submit section
+submit:
+  button: Export starten
+  info: |
+    Export-Aufträge werden in eine Warteschlange eingereiht.
+    Es wird jeweils nur ein Export gleichzeitig verarbeitet.
+
+# Confirmation modal
+modal:
+  title: Export gestartet
+  job_id: Job-ID
+  queue_position: Position in Warteschlange
+  success: Ihr Export wurde erfolgreich zur Warteschlange hinzugefügt.
+  status_link: Zur Status-Seite
+  close: Schließen
+
+# Status page
+status:
+  title: Export Status
+  subtitle: Verfolgen Sie den Status Ihres Export-Auftrags
+  loading: Lade Status...
+  refresh_info: Seite wird automatisch alle 3 Sekunden aktualisiert
+  back_home: Zurück zur Startseite
+  no_job_id: Keine Job-ID angegeben.
+  error_loading: "Fehler beim Laden des Status:"
+  job_not_found: Job nicht gefunden
+  download: Download Export
+
+  # Status labels
+  queued: In Warteschlange
+  processing: Wird verarbeitet
+  completed: Abgeschlossen
+  failed: Fehlgeschlagen
+
+  # Details
+  source: Quelle
+  source_upload: Datei-Upload
+  source_git: Git Repository
+  repository: Repository
+  files: Dateien
+  files_count: "{count} Datei(en)"
+  target: Ziel
+  created_at: Erstellt am
+  started_at: Gestartet am
+  completed_at: Abgeschlossen am
+  error: Fehler
+
+# Footer
+footer:
+  copyright: "© 2025 LiaScript Export Server"
+
+# Validation messages
+validation:
+  no_files: Bitte laden Sie mindestens eine Datei hoch.
+  no_git_url: Bitte geben Sie eine Git-Repository-URL ein.
+  no_export_target: Bitte wählen Sie ein Export-Ziel aus.
+  export_failed: Fehler beim Erstellen des Exports
+
+# Errors (backend)
+errors:
+  no_files_uploaded: Keine Dateien hochgeladen und keine Git-URL angegeben
+  no_markdown_in_zip: >
+    Keine Markdown-Datei im ZIP-Archiv gefunden.
+    Bitte fügen Sie eine README.md oder eine andere .md-Datei hinzu.
+  no_markdown_in_git: >
+    Keine Markdown-Datei im Git-Repository gefunden.
+    Bitte fügen Sie eine README.md oder eine andere .md-Datei hinzu.
+  git_clone_failed: "Fehler beim Klonen des Git-Repositorys:"
+  invalid_request: Ungültiges Anfrageformat
+  export_job_failed: Export-Auftrag konnte nicht erstellt werden
+
+# Common
+common:
+  remove: Entfernen
+  learn_more: Mehr erfahren

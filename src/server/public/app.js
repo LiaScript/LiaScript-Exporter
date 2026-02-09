@@ -6,6 +6,9 @@ let presetsConfig = null
 
 // Initialize app
 document.addEventListener('DOMContentLoaded', async () => {
+  // Initialize i18n first
+  await window.i18n.init()
+  
   await loadPresets()
   initializeTabs()
   initializeExportTabs()
@@ -15,6 +18,12 @@ document.addEventListener('DOMContentLoaded', async () => {
   initializeExportSelection()
   initializeFormatDescription()
   initializePresetDescription()
+  
+  // Listen for language changes to reload presets
+  window.addEventListener('languageChanged', async () => {
+    await loadPresets()
+    window.i18n.apply()
+  })
 })
 
 // Load presets from server
@@ -179,6 +188,7 @@ function handleFiles(files) {
 
 function updateFileList() {
   const fileList = document.getElementById('fileList')
+  const removeTitle = window.i18n ? window.i18n.t('common.remove') : 'Entfernen'
 
   if (selectedFiles.length === 0) {
     fileList.innerHTML = ''
@@ -191,7 +201,7 @@ function updateFileList() {
     <div class="file-item">
       <span class="file-name">${escapeHtml(file.name)}</span>
       <span class="file-size">${formatFileSize(file.size)}</span>
-      <button type="button" class="remove-file" data-index="${index}" title="Entfernen">×</button>
+      <button type="button" class="remove-file" data-index="${index}" title="${removeTitle}">×</button>
     </div>
   `,
     )
@@ -377,24 +387,25 @@ function initializeForm() {
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault()
+    const t = window.i18n ? window.i18n.t : (key) => key
 
     // Validation
     if (currentSourceType === 'upload' && selectedFiles.length === 0) {
-      alert('Bitte laden Sie mindestens eine Datei hoch.')
+      alert(t('validation.no_files'))
       return
     }
 
     if (currentSourceType === 'git') {
       const gitUrl = document.getElementById('gitUrl').value.trim()
       if (!gitUrl) {
-        alert('Bitte geben Sie eine Git-Repository-URL ein.')
+        alert(t('validation.no_git_url'))
         return
       }
     }
 
     // Disable submit button
     submitBtn.disabled = true
-    submitBtn.textContent = 'Export wird gestartet...'
+    submitBtn.textContent = t('submit.button') + '...'
 
     try {
       const formData = new FormData()
@@ -426,7 +437,16 @@ function initializeForm() {
       } else if (selectedFormat) {
         formData.append('format', selectedFormat.value)
       } else {
-        alert('Bitte wählen Sie ein Export-Ziel aus.')
+        alert(t('validation.no_export_target'))
+        submitBtn.disabled = false
+        submitBtn.innerHTML = `
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="7 10 12 15 17 10"></polyline>
+            <line x1="12" y1="15" x2="12" y2="3"></line>
+          </svg>
+          ${t('submit.button')}
+        `
         return
       }
 
@@ -464,7 +484,7 @@ function initializeForm() {
       selectedFiles = []
       updateFileList()
     } catch (error) {
-      alert('Fehler beim Erstellen des Exports: ' + error.message)
+      alert(t('validation.export_failed') + ': ' + error.message)
     } finally {
       submitBtn.disabled = false
       submitBtn.innerHTML = `
@@ -473,7 +493,7 @@ function initializeForm() {
           <polyline points="7 10 12 15 17 10"></polyline>
           <line x1="12" y1="15" x2="12" y2="3"></line>
         </svg>
-        Export starten
+        ${t('submit.button')}
       `
     }
   })
@@ -485,11 +505,12 @@ function showConfirmation(result) {
   const details = document.getElementById('confirmationDetails')
   const statusLink = document.getElementById('statusLink')
   const closeBtn = document.getElementById('closeModal')
+  const t = window.i18n ? window.i18n.t : (key) => key
 
   details.innerHTML = `
-    <p><strong>Job-ID:</strong> ${result.jobId}</p>
-    <p><strong>Position in Warteschlange:</strong> ${result.queuePosition}</p>
-    <p class="success-message">Ihr Export wurde erfolgreich zur Warteschlange hinzugefügt.</p>
+    <p><strong>${t('modal.job_id')}:</strong> ${result.jobId}</p>
+    <p><strong>${t('modal.queue_position')}:</strong> ${result.queuePosition}</p>
+    <p class="success-message">${t('modal.success')}</p>
   `
 
   statusLink.href = `/status.html?jobId=${result.jobId}`

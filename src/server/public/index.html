@@ -3,14 +3,35 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>LiaScript Export Server</title>
+    <title data-i18n="header.title">LiaScript Export Server</title>
     <link rel="stylesheet" href="/styles.css" />
+    <style>
+      .language-selector-wrapper {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+      }
+      .language-selector-wrapper select {
+        padding: 0.5rem 1rem;
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        background: var(--card-bg);
+        cursor: pointer;
+        font-size: 0.875rem;
+      }
+      header {
+        position: relative;
+      }
+    </style>
   </head>
   <body>
     <div class="container">
       <header>
-        <h1>LiaScript Export Server</h1>
-        <p class="subtitle">
+        <div class="language-selector-wrapper">
+          <select id="language-selector" aria-label="Language"></select>
+        </div>
+        <h1 data-i18n="header.title">LiaScript Export Server</h1>
+        <p class="subtitle" data-i18n="header.subtitle">
           Erstellen Sie Exporte für verschiedene LMS und Formate
         </p>
       </header>
@@ -19,14 +40,14 @@
         <form id="exportForm" enctype="multipart/form-data">
           <!-- Section 1: Project Source -->
           <section class="card">
-            <h2>1. Projekt-Quelle</h2>
+            <h2 data-i18n="source.title">1. Projekt-Quelle</h2>
 
             <!-- Upload Tab -->
             <div class="source-tabs">
-              <button type="button" class="tab-button active" data-tab="upload">
+              <button type="button" class="tab-button active" data-tab="upload" data-i18n="source.tabs.upload">
                 Datei-Upload
               </button>
-              <button type="button" class="tab-button" data-tab="git">
+              <button type="button" class="tab-button" data-tab="git" data-i18n="source.tabs.git">
                 Git Repository
               </button>
             </div>
@@ -46,8 +67,8 @@
                   <polyline points="17 8 12 3 7 8"></polyline>
                   <line x1="12" y1="3" x2="12" y2="15"></line>
                 </svg>
-                <p>Dateien hier ablegen oder klicken zum Auswählen</p>
-                <p class="hint">
+                <p data-i18n="source.upload.dropzone">Dateien hier ablegen oder klicken zum Auswählen</p>
+                <p class="hint" data-i18n="source.upload.hint">
                   ZIP-Dateien oder mehrere Dateien (max. 100MB)
                 </p>
                 <input
@@ -64,31 +85,34 @@
             <!-- Git Panel -->
             <div class="tab-panel" id="git-panel">
               <div class="form-group">
-                <label for="gitUrl">Repository URL *</label>
+                <label for="gitUrl" data-i18n="source.git.url_label">Repository URL *</label>
                 <input
                   type="text"
                   id="gitUrl"
                   name="gitUrl"
                   placeholder="https://github.com/user/repo.git"
+                  data-i18n-placeholder="source.git.url_placeholder"
                 />
               </div>
               <div class="form-row">
                 <div class="form-group">
-                  <label for="gitBranch">Branch / Tag</label>
+                  <label for="gitBranch" data-i18n="source.git.branch_label">Branch / Tag</label>
                   <input
                     type="text"
                     id="gitBranch"
                     name="gitBranch"
                     placeholder="main"
+                    data-i18n-placeholder="source.git.branch_placeholder"
                   />
                 </div>
                 <div class="form-group">
-                  <label for="gitSubdir">Unterverzeichnis</label>
+                  <label for="gitSubdir" data-i18n="source.git.subdir_label">Unterverzeichnis</label>
                   <input
                     type="text"
                     id="gitSubdir"
                     name="gitSubdir"
                     placeholder="docs/"
+                    data-i18n-placeholder="source.git.subdir_placeholder"
                   />
                 </div>
               </div>
@@ -97,7 +121,7 @@
 
           <!-- Section 2: Export Target -->
           <section class="card">
-            <h2>2. Export-Ziel</h2>
+            <h2 data-i18n="export.title">2. Export-Ziel</h2>
 
             <!-- Export Target Tabs -->
             <div class="export-tabs">
@@ -105,6 +129,7 @@
                 type="button"
                 class="export-tab-button active"
                 data-export-tab="presets"
+                data-i18n="export.tabs.presets"
               >
                 Bekannte Konfigurationen
               </button>
@@ -112,6 +137,7 @@
                 type="button"
                 class="export-tab-button"
                 data-export-tab="formats"
+                data-i18n="export.tabs.formats"
               >
                 Formate
               </button>
@@ -309,7 +335,7 @@
                 class="collapsible-toggle"
               >
                 <span class="toggle-icon">▶</span>
-                3. Erweiterte Einstellungen (optional)
+                <span data-i18n="settings.title">3. Erweiterte Einstellungen (optional)</span>
               </button>
             </h2>
 
@@ -319,10 +345,10 @@
                 class="settings-group"
                 data-formats="scorm1.2,scorm2004,moodle,ilias,opal,generic,openolat,openedx"
               >
-                <h3 class="settings-heading">SCORM Einstellungen</h3>
+                <h3 class="settings-heading" data-i18n="settings.scorm.title">SCORM Einstellungen</h3>
 
                 <div class="form-group">
-                  <label for="masteryScore">Mastery Score</label>
+                  <label for="masteryScore" data-i18n="settings.scorm.mastery_score">Mastery Score</label>
                   <input
                     type="number"
                     id="masteryScore"
@@ -331,26 +357,26 @@
                     max="100"
                     value="70"
                   />
-                  <span class="hint"
+                  <span class="hint" data-i18n="settings.scorm.mastery_score_hint"
                     >Mindestpunktzahl für Bestehen (0-100)</span
                   >
                 </div>
 
                 <div class="form-group">
-                  <label for="scormOrganization">Organisation</label>
+                  <label for="scormOrganization" data-i18n="settings.scorm.organization">Organisation</label>
                   <input
                     type="text"
                     id="scormOrganization"
                     name="option_scormOrganization"
                     placeholder="Meine Organisation"
                   />
-                  <span class="hint"
+                  <span class="hint" data-i18n="settings.scorm.organization_hint"
                     >Titel der Organisation im SCORM-Paket</span
                   >
                 </div>
 
                 <div class="form-group">
-                  <label for="typicalDuration">Typische Dauer</label>
+                  <label for="typicalDuration" data-i18n="settings.scorm.typical_duration">Typische Dauer</label>
                   <input
                     type="text"
                     id="typicalDuration"
@@ -358,7 +384,7 @@
                     placeholder="PT0H5M0S"
                     value="PT0H5M0S"
                   />
-                  <span class="hint">Format: PT0H5M0S (5 Minuten)</span>
+                  <span class="hint" data-i18n="settings.scorm.typical_duration_hint">Format: PT0H5M0S (5 Minuten)</span>
                 </div>
 
                 <div class="form-group">
@@ -368,9 +394,9 @@
                       id="scormIframe"
                       name="option_scormIframe"
                     />
-                    iFrame verwenden
+                    <span data-i18n="settings.scorm.iframe">iFrame verwenden</span>
                   </label>
-                  <span class="hint"
+                  <span class="hint" data-i18n="settings.scorm.iframe_hint"
                     >Für bessere Kompatibilität in manchen LMS</span
                   >
                 </div>
@@ -382,9 +408,9 @@
                       id="scormEmbed"
                       name="option_scormEmbed"
                     />
-                    Markdown einbetten
+                    <span data-i18n="settings.scorm.embed">Markdown einbetten</span>
                   </label>
-                  <span class="hint">Empfohlen für Moodle 4</span>
+                  <span class="hint" data-i18n="settings.scorm.embed_hint">Empfohlen für Moodle 4</span>
                 </div>
               </div>
 
@@ -1023,9 +1049,9 @@
                 <polyline points="7 10 12 15 17 10"></polyline>
                 <line x1="12" y1="15" x2="12" y2="3"></line>
               </svg>
-              Export starten
+              <span data-i18n="submit.button">Export starten</span>
             </button>
-            <p class="info-text">
+            <p class="info-text" data-i18n-html="submit.info">
               Export-Aufträge werden in eine Warteschlange eingereiht.<br />
               Es wird jeweils nur ein Export gleichzeitig verarbeitet.
             </p>
@@ -1035,13 +1061,13 @@
         <!-- Confirmation Modal -->
         <div id="confirmationModal" class="modal hidden">
           <div class="modal-content">
-            <h2>Export gestartet</h2>
+            <h2 data-i18n="modal.title">Export gestartet</h2>
             <div id="confirmationDetails"></div>
             <div class="modal-actions">
-              <a id="statusLink" href="#" class="btn-primary"
+              <a id="statusLink" href="#" class="btn-primary" data-i18n="modal.status_link"
                 >Zur Status-Seite</a
               >
-              <button type="button" id="closeModal" class="btn-secondary">
+              <button type="button" id="closeModal" class="btn-secondary" data-i18n="modal.close">
                 Schließen
               </button>
             </div>
@@ -1050,10 +1076,11 @@
       </main>
 
       <footer>
-        <p>&copy; 2025 LiaScript Export Server</p>
+        <p data-i18n="footer.copyright">&copy; 2025 LiaScript Export Server</p>
       </footer>
     </div>
 
+    <script src="/i18n.js"></script>
     <script src="/app.js"></script>
   </body>
 </html>

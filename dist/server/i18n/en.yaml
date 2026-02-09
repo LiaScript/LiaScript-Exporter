@@ -1,0 +1,314 @@
+# English translations for LiaScript Export Server
+meta:
+  language: English
+  code: en
+
+# Header
+header:
+  title: LiaScript Export Server
+  subtitle: Create exports for various LMS and formats
+
+# Source section
+source:
+  title: 1. Project Source
+  tabs:
+    upload: File Upload
+    git: Git Repository
+  upload:
+    dropzone: Drop files here or click to select
+    hint: ZIP files or multiple files (max. 100MB)
+  git:
+    url_label: Repository URL *
+    url_placeholder: https://github.com/user/repo.git
+    branch_label: Branch / Tag
+    branch_placeholder: main
+    subdir_label: Subdirectory
+    subdir_placeholder: docs/
+
+# Export target section
+export:
+  title: 2. Export Target
+  tabs:
+    presets: Known Configurations
+    formats: Formats
+
+# Format descriptions
+formats:
+  scorm12:
+    title: SCORM 1.2
+    subtitle: Legacy Standard
+    description: >
+      E-learning standard for learning management systems. Widely used but older.
+      Suitable for older LMS platforms.
+  scorm2004:
+    title: SCORM 2004
+    subtitle: Modern Standard
+    description: >
+      Modern version of the SCORM standard with extended features for learning
+      paths and assessments. Recommended for current LMS systems.
+  ims:
+    title: IMS
+    subtitle: Content Package
+    description: >
+      IMS Content Packaging for exchanging learning content between different
+      platforms. Standard for cross-platform compatibility.
+  web:
+    title: Web
+    subtitle: Standalone
+    description: >
+      Standalone HTML website for hosting on any web server.
+      Works offline and online. Perfect for self-hosting.
+  pdf:
+    title: PDF
+    subtitle: Document
+    description: >
+      Portable document format for printing and archiving.
+      Ideal for static content and offline reading.
+  android:
+    title: Android
+    subtitle: App Package
+    description: >
+      Android app package (APK) for installation on Android devices.
+      Enables offline access and native app experience.
+  json:
+    title: JSON
+    subtitle: Data Export
+    description: >
+      Structured data format for programmatic processing and API integration.
+      Perfect for developers and automated workflows.
+  epub:
+    title: EPUB
+    subtitle: E-Book
+    description: >
+      Open e-book format for e-readers and mobile devices.
+      Supports reflowable layouts and is compatible with most e-readers.
+  rdf:
+    title: RDF
+    subtitle: Metadata
+    description: >
+      Resource Description Framework for structured metadata and Linked Data.
+      For semantic web applications and metadata export.
+  xapi:
+    title: xAPI
+    subtitle: Learning Analytics
+    description: >
+      Experience API (xAPI) for Learning Analytics and detailed tracking of
+      learning activities. Enables advanced analytics through a Learning Record
+      Store (LRS).
+
+# Advanced settings section
+settings:
+  title: 3. Advanced Settings (optional)
+  no_settings: No additional settings available for this format.
+
+  # SCORM settings
+  scorm:
+    title: SCORM Settings
+    mastery_score: Mastery Score
+    mastery_score_hint: Minimum score to pass (0-100)
+    organization: Organization
+    organization_hint: Organization title in SCORM package
+    typical_duration: Typical Duration
+    typical_duration_hint: "Format: PT0H5M0S (5 minutes)"
+    iframe: Use iFrame
+    iframe_hint: For better compatibility in some LMS
+    embed: Embed Markdown
+    embed_hint: Recommended for Moodle 4
+
+  # xAPI settings
+  xapi:
+    title: xAPI Settings
+    endpoint: LRS Endpoint
+    endpoint_hint: URL of the Learning Record Store (LRS) endpoint
+    auth: Authentication
+    auth_hint: "Basic Auth string for LRS (e.g. 'Basic base64encodedcredentials')"
+    actor: Actor (JSON)
+    actor_hint: "xAPI Actor in JSON format (default: anonymous)"
+    course_id: Course ID
+    course_id_hint: "Unique identifier for the course (default: course URL)"
+    course_title: Course Title
+    course_title_hint: "Displayed title of the course (default: from document)"
+    mastery_score: Mastery Score
+    mastery_score_hint: "Required score to pass (0.0-1.0, default: 0.8)"
+    progress_threshold: Progress Threshold
+    progress_threshold_hint: "Required slide progress for completion (0.0-1.0, default: 0.9)"
+    debug: Debug Mode
+    debug_hint: Output xAPI statements to console
+    zip: Package as ZIP
+    zip_hint: Output as ZIP file
+
+  # IMS settings
+  ims:
+    title: IMS Settings
+    indexeddb: Use IndexedDB
+    indexeddb_hint: Persistent storage in browser
+
+  # Web settings
+  web:
+    title: Web Settings
+    iframe: iFrame Version
+    iframe_hint: Hides the course URL
+    indexeddb: Use IndexedDB
+    indexeddb_hint: Store data in browser
+    zip: Package as ZIP
+    zip_hint: Creates a ZIP file
+
+  # PDF settings
+  pdf:
+    title: PDF Settings
+    format: Page Format
+    format_hint: Default paper size
+    landscape: Landscape
+    landscape_hint: Print page in landscape orientation
+    scale: Scale
+    scale_hint: Page scale (0.1 - 2.0)
+    print_background: Print Background Graphics
+    print_background_hint: Prints background colors and images
+    margin_top: Margin Top
+    margin_top_hint: Top margin in pixels or with unit (e.g. "2cm")
+    margin_bottom: Margin Bottom
+    margin_bottom_hint: Bottom margin in pixels or with unit
+    margin_left: Margin Left
+    margin_left_hint: Left margin in pixels or with unit
+    margin_right: Margin Right
+    margin_right_hint: Right margin in pixels or with unit
+    header_footer: Show Header and Footer
+    header_footer_hint: Shows header and footer on each page
+    header_template: Header Template (HTML)
+    header_template_hint: "HTML template with classes: date, title, url, pageNumber, totalPages"
+    footer_template: Footer Template (HTML)
+    footer_template_hint: HTML template for footer
+    page_ranges: Page Ranges
+    page_ranges_hint: Print only specific pages (optional)
+    page_ranges_placeholder: e.g. 1-5, 8, 11-13
+    theme: LiaScript Theme
+    theme_hint: Color scheme for PDF
+    theme_default: Default
+    theme_turquoise: Turquoise
+    theme_blue: Blue
+    theme_red: Red
+    theme_yellow: Yellow
+    timeout: Timeout (ms)
+    timeout_hint: Wait time for complete loading (60000 = 60 seconds)
+    prefer_css_page: Prefer CSS @page Size
+    prefer_css_page_hint: CSS page size takes precedence
+    omit_background: Transparent Background
+    omit_background_hint: White background is omitted
+
+  # Android settings
+  android:
+    title: Android Settings
+    app_name: App Name
+    app_name_hint: Name of the Android app
+    app_id: App ID *
+    app_id_hint: Unique app identifier (e.g. io.github.liascript)
+
+  # EPUB settings
+  epub:
+    title: EPUB Settings
+    author: Author
+    author_hint: Author of the e-book
+    publisher: Publisher
+    publisher_hint: Publisher
+
+  # JSON settings
+  json:
+    title: JSON Settings
+    full: Full JSON
+    full_hint: Exports all details
+    pretty: Formatted (Pretty Print)
+    pretty_hint: Readable formatted JSON
+
+  # RDF settings
+  rdf:
+    title: RDF Settings
+    format: Output Format
+    format_hint: "Format for RDF output (default: JSON-LD)"
+    preview: Preview in Console
+    preview_hint: Display output in console
+    url: External URL
+    url_hint: External URL for local projects (optional)
+    type: Schema.org Type
+    type_hint: "Schema.org type (default: Course, e.g. EducationalResource)"
+    template: Template URL/File
+    template_hint: URL or JSON file as template (optional)
+    license: License URL
+    license_hint: URL to the course license (optional)
+    educational_level: Educational Level
+    educational_level_hint: Educational level (e.g. beginner, intermediate, advanced)
+
+# Submit section
+submit:
+  button: Start Export
+  info: |
+    Export jobs are queued for processing.
+    Only one export is processed at a time.
+
+# Confirmation modal
+modal:
+  title: Export Started
+  job_id: Job ID
+  queue_position: Queue Position
+  success: Your export has been successfully added to the queue.
+  status_link: Go to Status Page
+  close: Close
+
+# Status page
+status:
+  title: Export Status
+  subtitle: Track the status of your export job
+  loading: Loading status...
+  refresh_info: Page refreshes automatically every 3 seconds
+  back_home: Back to Home
+  no_job_id: No job ID specified.
+  error_loading: "Error loading status:"
+  job_not_found: Job not found
+  download: Download Export
+
+  # Status labels
+  queued: Queued
+  processing: Processing
+  completed: Completed
+  failed: Failed
+
+  # Details
+  source: Source
+  source_upload: File Upload
+  source_git: Git Repository
+  repository: Repository
+  files: Files
+  files_count: "{count} file(s)"
+  target: Target
+  created_at: Created at
+  started_at: Started at
+  completed_at: Completed at
+  error: Error
+
+# Footer
+footer:
+  copyright: "© 2025 LiaScript Export Server"
+
+# Validation messages
+validation:
+  no_files: Please upload at least one file.
+  no_git_url: Please enter a Git repository URL.
+  no_export_target: Please select an export target.
+  export_failed: Error creating export
+
+# Errors (backend)
+errors:
+  no_files_uploaded: No files uploaded and no Git URL provided
+  no_markdown_in_zip: >
+    No markdown file found in ZIP archive.
+    Please include a README.md or any .md file.
+  no_markdown_in_git: >
+    No markdown file found in Git repository.
+    Please include a README.md or any .md file.
+  git_clone_failed: "Failed to clone Git repository:"
+  invalid_request: Invalid request format
+  export_job_failed: Failed to create export job
+
+# Common
+common:
+  remove: Remove
+  learn_more: Learn more
