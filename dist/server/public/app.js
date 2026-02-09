@@ -5,7 +5,7 @@ let currentExportTab = 'presets'
 let presetsConfig = null
 
 // Initialize number inputs with validation (for Windows Electron compatibility)
-// Using type="text" with inputmode instead of type="number" to avoid Electron issues
+// Using type="text" with inputmode instead of type="number"
 function initializeNumberInputs() {
   const numberInputs = [
     { id: 'masteryScore', min: 0, max: 100, isInteger: true, value: 70 },
