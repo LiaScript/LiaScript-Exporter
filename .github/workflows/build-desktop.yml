@@ -59,6 +59,7 @@ jobs:
       
       - name: Generate icons
         run: |
+          mkdir -p electron/build
           cd electron/build
           electron-icon-builder --input=../../LiaScript/resources/icon.png --output=.
         shell: bash
