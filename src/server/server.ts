@@ -6,8 +6,25 @@ import { fileURLToPath } from 'url'
 import { exportRouter } from './routes/export'
 import { JobQueue } from './queue/jobQueue'
 import { existsSync } from 'fs'
+import os from 'os'
 
 export const jobQueue = new JobQueue()
+
+function getLocalIP(): string {
+  const interfaces = os.networkInterfaces()
+  for (const name of Object.keys(interfaces)) {
+    const iface = interfaces[name]
+    if (!iface) continue
+
+    for (const alias of iface) {
+      // Skip internal (127.0.0.1) and non-IPv4 addresses
+      if (alias.family === 'IPv4' && !alias.internal) {
+        return alias.address
+      }
+    }
+  }
+  return '127.0.0.1' // fallback to localhost
+}
 
 export async function startServer(
   port: number = 3000,
@@ -94,12 +111,15 @@ export async function startServer(
       return fastify
     }
 
+    const localIP = getLocalIP()
+
     console.log(`
 ╔═══════════════════════════════════════════════════════╗
 ║                                                       ║
 ║   🚀 LiaScript Export Server                          ║
 ║                                                       ║
-║   📍 http://localhost:${actualPort.toString().padEnd(4)}                            ║
+║   📍 http://localhost:${actualPort}                            ║
+║   📍 http://${localIP}:${actualPort}                        ║
 ║                                                       ║
 ║   Press Ctrl+C to stop the server                     ║
 ║                                                       ║
