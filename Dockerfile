@@ -1,6 +1,10 @@
 # Android builds currently work well with JDK 17 for modern AGP
 FROM eclipse-temurin:21-jdk-jammy
 
+# Limit Java memory usage (adjust values as needed)
+ENV JAVA_OPTS="-Xmx256m -Xms128m -XX:MaxMetaspaceSize=128m"
+ENV GRADLE_OPTS="-Xmx256m -Xms128m -XX:MaxMetaspaceSize=128m -Dorg.gradle.daemon=false -Dorg.gradle.parallel=false -Dorg.gradle.workers.max=1 -Dorg.gradle.jvmargs=-Xmx256m"
+
 ARG ANDROID_SDK_ROOT=/opt/android-sdk
 ENV ANDROID_SDK_ROOT=${ANDROID_SDK_ROOT}
 ENV ANDROID_HOME=${ANDROID_SDK_ROOT}
@@ -93,11 +97,10 @@ RUN CHROME_PATH=$(find /root/.cache/puppeteer -name chrome -type f | head -n 1) 
 # Create entrypoint script that sources the environment
 RUN echo '#!/bin/sh\n\
     export PUPPETEER_EXECUTABLE_PATH=$(find /root/.cache/puppeteer -name chrome -type f | head -n 1)\n\
-    exec node /app/dist/index.js "$@"' > /entrypoint.sh && \
+    exec "$@"' > /entrypoint.sh && \
     chmod +x /entrypoint.sh
 
 EXPOSE 4000
 
 ENTRYPOINT ["/entrypoint.sh"]
-
-CMD ["serve", "--port", "4000"]
+CMD ["sh", "-c", "node /app/dist/index.js serve --port ${PORT:-4000}"]
