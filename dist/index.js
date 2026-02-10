@@ -409,7 +409,7 @@ ${o}
 \u{2551}   \u{1F680} LiaScript Export Server                          \u{2551}
 \u{2551}                                                       \u{2551}
 \u{2551}   \u{1F4CD} http://localhost:${t}                            \u{2551}
-\u{2551}   \u{1F4CD} http://${n}:${t}                            \u{2551}
+\u{2551}   \u{1F4CD} http://${n}:${t}                        \u{2551}
 \u{2551}                                                       \u{2551}
 \u{2551}   Press Ctrl+C to stop the server                     \u{2551}
 \u{2551}                                                       \u{2551}
