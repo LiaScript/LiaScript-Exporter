@@ -2,8 +2,8 @@
 FROM eclipse-temurin:21-jdk-jammy
 
 # Limit Java memory usage (adjust values as needed)
-ENV JAVA_OPTS="-Xmx256m -Xms128m -XX:MaxMetaspaceSize=128m"
-ENV GRADLE_OPTS="-Xmx256m -Xms128m -XX:MaxMetaspaceSize=128m -Dorg.gradle.daemon=false -Dorg.gradle.parallel=false -Dorg.gradle.workers.max=1 -Dorg.gradle.jvmargs=-Xmx256m"
+#ENV JAVA_OPTS="-Xmx256m -Xms128m -XX:MaxMetaspaceSize=128m"
+#ENV GRADLE_OPTS="-Xmx256m -Xms128m -XX:MaxMetaspaceSize=128m -Dorg.gradle.daemon=false -Dorg.gradle.parallel=false -Dorg.gradle.workers.max=1 -Dorg.gradle.jvmargs=-Xmx256m"
 
 ARG ANDROID_SDK_ROOT=/opt/android-sdk
 ENV ANDROID_SDK_ROOT=${ANDROID_SDK_ROOT}
@@ -67,6 +67,9 @@ WORKDIR /app
 COPY package.json package-lock.json* ./
 RUN npm ci --omit=dev
 
+# Copy the dist folder
+COPY dist/ ./dist/
+
 # Pre-cache Capacitor dependencies for Android builds
 RUN mkdir -p dist/capacitor-cache && \
     cd dist/capacitor-cache && \
@@ -74,16 +77,13 @@ RUN mkdir -p dist/capacitor-cache && \
     npm install && \
     echo "import type { CapacitorConfig } from '@capacitor/cli'; const config: CapacitorConfig = { appId: 'io.liascript.course', appName: 'App', webDir: 'www' }; export default config;" > capacitor.config.ts && \
     mkdir -p www && \
-    touch www/index.html && \
+    cp -r ../assets/capacitor/* www/ && \
+    cp -r ../assets/common/* www/ && \
     npx cap add android && \
     cd android && \
-    ./gradlew && \
+    ./gradlew assembleDebug && \
     cd .. && \
-    rm -rf www android capacitor.config.ts && \
-    cd ..
-
-# Copy the dist folder
-COPY dist/ ./dist/
+    rm -rf www android capacitor.config.ts
 
 # Install Puppeteer's Chrome explicitly
 RUN npx puppeteer browsers install chrome
