@@ -159,6 +159,7 @@ export async function exporter(argument: EpubExportArguments, json: any) {
 
   const dirname = helper.dirname()
 
+  // Use web assets instead of pdf assets for better resource loading
   let url = `file://${dirname}/assets/pdf/index.html?`
 
   if (helper.isURL(argument.input)) {
@@ -336,25 +337,312 @@ async function toEPUB(
   try {
     console.log('Extracting rendered HTML content...')
 
-    // Extract the complete HTML including inline styles and processed content
-    const htmlContent = await page.evaluate(() => {
-      // Get the main content area
-      const content = document.body
+    // Extract chapters from main elements
+    // Each main element becomes a separate chapter in the EPUB
+    const chapters = await page.evaluate(() => {
+      // Clone body to avoid modifying the actual page
+      const bodyClone = document.body.cloneNode(true) as HTMLElement
 
-      return content ? content.outerHTML : document.body.innerHTML
-    })
+      // Remove problematic link tags (icons, manifests, preconnect, etc.)
+      // Keep only inline styles, scripts are removed by EPUB processor
+      const linksToRemove = bodyClone.querySelectorAll(
+        'link[rel="icon"], link[rel="shortcut icon"], link[rel="apple-touch-icon"], ' +
+          'link[rel="manifest"], link[rel="preconnect"], link[rel="dns-prefetch"], ' +
+          'link[rel="preload"], link[rel="stylesheet"]',
+      )
 
-    // Extract inline CSS from the page
-    const inlineCSS = await page.evaluate(() => {
-      const styles: string[] = []
-      // Get all style tags
-      document.querySelectorAll('style').forEach((style) => {
-        styles.push(style.textContent || '')
+      linksToRemove.forEach((link) => link.remove())
+
+      // Process terminal output blocks first (before Ace editors)
+      const terminals = bodyClone.querySelectorAll('.lia-code-terminal')
+      console.log(`Found ${terminals.length} terminal output blocks`)
+
+      terminals.forEach((terminal) => {
+        try {
+          const terminalOutput = terminal.querySelector('lia-terminal')
+          if (terminalOutput) {
+            const pre = document.createElement('pre')
+            const code = document.createElement('code')
+
+            // Style as terminal with dark background
+            pre.setAttribute(
+              'style',
+              'background-color: #1e1e1e; color: #d4d4d4; padding: 1em; ' +
+                'border-radius: 4px; font-family: monospace; overflow-x: auto;',
+            )
+
+            // Extract text from terminal divs
+            const textDivs = terminalOutput.querySelectorAll(
+              'div[class^="text-"]',
+            )
+            if (textDivs.length > 0) {
+              textDivs.forEach((div) => {
+                const text = div.textContent || ''
+                const span = document.createElement('span')
+                span.textContent = text
+
+                // Preserve text type styling (info, error, warning)
+                if (div.classList.contains('text-error')) {
+                  span.setAttribute('style', 'color: #f48771;')
+                } else if (div.classList.contains('text-warning')) {
+                  span.setAttribute('style', 'color: #dcdcaa;')
+                }
+
+                code.appendChild(span)
+                code.appendChild(document.createTextNode('\n'))
+              })
+            } else {
+              code.textContent = terminalOutput.textContent || ''
+            }
+
+            pre.appendChild(code)
+            terminal.replaceWith(pre)
+            console.log('Replaced terminal block with styled output')
+          }
+        } catch (e) {
+          console.error('Error processing terminal block:', e)
+        }
       })
-      return styles.join('\n')
+
+      // Fix Ace Editor code blocks - extract text with syntax highlighting and line numbers
+      // Ace editor creates complex DOM structures that don't work in EPUB
+      const codeInputs = bodyClone.querySelectorAll('.lia-code__input')
+      console.log(`Found ${codeInputs.length} code editor blocks`)
+
+      codeInputs.forEach((codeInput) => {
+        try {
+          const aceEditor = codeInput.querySelector('.ace_editor')
+          if (!aceEditor) return
+
+          // Get line numbers from gutter
+          const gutterCells = aceEditor.querySelectorAll('.ace_gutter-cell')
+          const lineNumbers: string[] = []
+          gutterCells.forEach((cell) => {
+            const lineNum = cell.textContent?.trim()
+            if (lineNum && !isNaN(parseInt(lineNum))) {
+              lineNumbers.push(lineNum)
+            }
+          })
+
+          // Get code content from ace editor
+          const aceContent = aceEditor.querySelector('.ace_text-layer')
+          if (!aceContent) return
+
+          // Extract lines with syntax highlighting preserved as inline styles
+          // Only query for line groups, not individual lines, to avoid duplication
+          const aceLineGroups = aceContent.querySelectorAll('.ace_line_group')
+
+          // Create a simple pre/code block
+          const pre = document.createElement('pre')
+          const code = document.createElement('code')
+
+          // Style for code blocks with light background
+          pre.setAttribute(
+            'style',
+            'background-color: #f5f5f5; padding: 1em; border-radius: 4px; ' +
+              'border-left: 3px solid #4caf50; overflow-x: auto; font-family: monospace; ' +
+              'display: block; white-space: pre-wrap;',
+          )
+
+          // Also style the code element to ensure it's contained
+          code.setAttribute('style', 'display: block;')
+
+          let lineIndex = 0
+          if (aceLineGroups.length > 0) {
+            aceLineGroups.forEach((lineGroup) => {
+              // Each line group contains one or more ace_line elements
+              const lines = lineGroup.querySelectorAll('.ace_line')
+
+              lines.forEach((line) => {
+                // Build line as HTML string for better control
+                let lineHTML = ''
+
+                // Add line number if available
+                if (lineIndex < lineNumbers.length) {
+                  const lineNum = lineNumbers[lineIndex]
+                  lineHTML += `<span style="color: #858585; display: inline-block; width: 3em; text-align: right; margin-right: 1em;">${lineNum}</span>`
+                  lineIndex++
+                }
+
+                // Extract tokens with their colors
+                const tokens = line.querySelectorAll('span[class*="ace_"]')
+
+                if (tokens.length > 0) {
+                  tokens.forEach((token) => {
+                    const text = token.textContent || ''
+                    if (!text.trim()) return
+
+                    const computedStyle = window.getComputedStyle(token)
+                    const color = computedStyle.color
+
+                    if (
+                      color &&
+                      color !== 'rgb(0, 0, 0)' &&
+                      color !== 'rgba(0, 0, 0, 0)'
+                    ) {
+                      lineHTML += `<span style="color: ${color};">${text}</span>`
+                    } else {
+                      lineHTML += text
+                    }
+                  })
+                } else {
+                  // No tokens, just get plain text
+                  const text = line.textContent || ''
+                  lineHTML += text.replace(/[\u200B-\u200D\uFEFF\n]/g, '')
+                }
+
+                // Create a span element for this line and set its innerHTML
+                const lineSpan = document.createElement('span')
+                lineSpan.innerHTML = lineHTML
+                lineSpan.setAttribute(
+                  'style',
+                  'display: block; white-space: nowrap;',
+                )
+
+                code.appendChild(lineSpan)
+              })
+            })
+          }
+
+          pre.appendChild(code)
+
+          // Replace the entire code input block with the pre/code block
+          codeInput.replaceWith(pre)
+          console.log(
+            `Replaced code editor with line numbers and syntax highlighting`,
+          )
+        } catch (e) {
+          console.error('Error processing code editor:', e)
+        }
+      })
+
+      // Extract chapters from main elements
+      const mainElements = bodyClone.querySelectorAll('main')
+      const chapterList: Array<{ title: string; data: string }> = []
+
+      if (mainElements.length > 0) {
+        console.log(
+          `Found ${mainElements.length} main elements to convert to chapters`,
+        )
+
+        mainElements.forEach((main, index) => {
+          // Extract chapter title from first header with h1-h6 class
+          let chapterTitle = `Chapter ${index + 1}`
+
+          const header = main.querySelector('header')
+          if (header) {
+            // Look for h tags with classes .h1 to .h6
+            const hTag = header.querySelector('.h1, .h2, .h3, .h4, .h5, .h6')
+            if (hTag && hTag.textContent) {
+              chapterTitle = hTag.textContent.trim()
+            }
+          }
+
+          // Get the HTML content of this main element
+          const chapterData = main.outerHTML
+
+          chapterList.push({
+            title: chapterTitle,
+            data: chapterData,
+          })
+
+          console.log(`  Chapter ${index + 1}: ${chapterTitle}`)
+        })
+
+        return chapterList
+      } else {
+        // No main elements found, return entire body as single chapter
+        console.log(
+          'No main elements found, using entire body as single chapter',
+        )
+        return [
+          {
+            title: 'Content',
+            data: bodyClone.outerHTML,
+          },
+        ]
+      }
     })
+
+    console.log('Reading CSS and fonts directly from dist/assets/pdf folder...')
+
+    // Read CSS directly from the pdf assets folder
+    const pdfAssetsPath = path.join(dirname, 'assets', 'pdf')
+    const cssFiles = fs
+      .readdirSync(pdfAssetsPath)
+      .filter((f) => f.endsWith('.css'))
+
+    let allCSS = ''
+    const fontPaths: string[] = []
+
+    if (cssFiles.length > 0) {
+      console.log(
+        `Found ${cssFiles.length} CSS file(s): ${cssFiles.join(', ')}`,
+      )
+      // Read and concatenate all CSS files
+      cssFiles.forEach((cssFile) => {
+        const cssPath = path.join(pdfAssetsPath, cssFile)
+        const cssContent = fs.readFileSync(cssPath, 'utf-8')
+        allCSS += cssContent + '\n'
+      })
+
+      // Extract font filenames from CSS
+      const fontMatches = allCSS.match(
+        /url\(['"]?([^'")\s]+\.(?:woff2?|ttf|otf|eot))['"]?\)/gi,
+      )
+      if (fontMatches) {
+        const uniqueFonts = new Set<string>()
+        fontMatches.forEach((match) => {
+          const fontMatch = match.match(/url\(['"]?([^'")\s]+)['"]?\)/)
+          if (fontMatch && fontMatch[1]) {
+            // Extract just the filename (remove any path components)
+            const fontFilename = path.basename(fontMatch[1])
+            uniqueFonts.add(fontFilename)
+          }
+        })
+
+        // Convert font filenames to absolute file system paths
+        uniqueFonts.forEach((fontFilename) => {
+          const fontPath = path.join(pdfAssetsPath, fontFilename)
+          if (fs.existsSync(fontPath)) {
+            fontPaths.push(fontPath)
+          } else {
+            console.warn(`Warning: Font file not found: ${fontPath}`)
+          }
+        })
+
+        console.log(`Found ${fontPaths.length} font files referenced in CSS:`)
+        fontPaths.forEach((font) => console.log(`  - ${path.basename(font)}`))
+      }
+    } else {
+      console.warn('Warning: No CSS files found in pdf assets folder')
+    }
+
+    // Also scan directory for KaTeX font files specifically
+    // KaTeX fonts follow pattern: KaTeX_*.woff2, KaTeX_*.woff, KaTeX_*.ttf
+    console.log('Scanning for KaTeX font files...')
+    const allFiles = fs.readdirSync(pdfAssetsPath)
+    const katexFonts = allFiles.filter(
+      (f) =>
+        f.startsWith('KaTeX_') &&
+        (f.endsWith('.woff') || f.endsWith('.woff2') || f.endsWith('.ttf')),
+    )
+
+    katexFonts.forEach((fontFile) => {
+      const fontPath = path.join(pdfAssetsPath, fontFile)
+      // Only add if not already in the list
+      if (!fontPaths.includes(fontPath) && fs.existsSync(fontPath)) {
+        fontPaths.push(fontPath)
+      }
+    })
+
+    console.log(`Total fonts to embed: ${fontPaths.length}`)
+    if (fontPaths.length > 0) {
+      fontPaths.forEach((font) => console.log(`  - ${path.basename(font)}`))
+    }
 
     console.log('Building EPUB file...')
+    console.log(`Total chapters to include: ${chapters.length}`)
 
     // Parse authors if comma-separated
     let authors: string | string[] = argument['epub-author'] || 'Unknown'
@@ -362,14 +650,17 @@ async function toEPUB(
       authors = authors.split(',').map((a) => a.trim())
     }
 
-    // Parse fonts if comma-separated
-    let fonts: string[] = []
+    // Start with fonts from filesystem
+    let fonts: string[] = [...fontPaths]
+
+    // Add any custom fonts specified in arguments
     if (argument['epub-fonts']) {
-      fonts = argument['epub-fonts'].split(',').map((f) => f.trim())
+      const customFonts = argument['epub-fonts'].split(',').map((f) => f.trim())
+      fonts.push(...customFonts)
     }
 
-    // Read custom CSS if provided
-    let customCSS = inlineCSS
+    // Read custom CSS if provided and prepend to extracted CSS
+    let customCSS = allCSS
     if (argument['epub-stylesheet']) {
       try {
         const cssPath = path.resolve(argument['epub-stylesheet'])
@@ -381,12 +672,9 @@ async function toEPUB(
     }
 
     // Configure EPUB options
-    const epubOptions = {
+    const epubOptions: any = {
       title: argument['epub-title'],
       author: authors,
-      publisher: argument['epub-publisher'],
-      cover: argument['epub-cover'],
-      description: argument['epub-description'],
       lang: argument['epub-language'] || DEFAULT_LANG,
       tocTitle: argument['epub-toc-title'] || DEFAULT_TOC_TITLE,
       appendChapterTitles:
@@ -394,18 +682,23 @@ async function toEPUB(
         DEFAULT_APPEND_CHAPTER_TITLES,
       hideToC: argument['epub-hide-toc'] ?? DEFAULT_HIDE_TOC,
       css: customCSS,
-      fonts: fonts.length > 0 ? fonts : undefined,
       version: (argument['epub-version'] || DEFAULT_EPUB_VERSION) as 2 | 3,
-      content: [
-        {
-          title:
-            argument['epub-chapter-title'] ||
-            argument['epub-title'] ||
-            'Content',
-          data: htmlContent,
-        },
-      ],
+      content: chapters, // Use extracted chapters from main elements
       verbose: false,
+    }
+
+    // Add optional fields only if provided
+    if (argument['epub-publisher']) {
+      epubOptions.publisher = argument['epub-publisher']
+    }
+    if (argument['epub-cover']) {
+      epubOptions.cover = argument['epub-cover']
+    }
+    if (argument['epub-description']) {
+      epubOptions.description = argument['epub-description']
+    }
+    if (fonts.length > 0) {
+      epubOptions.fonts = fonts
     }
 
     // Generate EPUB
