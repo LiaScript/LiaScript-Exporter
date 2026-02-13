@@ -229,7 +229,8 @@ export class Exporter {
       //format == IOS.format ||
       format == RDF.format ||
       format == XAPI.format ||
-      format == PROJECT.format
+      format == PROJECT.format ||
+      format == EPUB.format
       ? ExportFormat.FULL_JSON
       : format
   }

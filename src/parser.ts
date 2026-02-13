@@ -218,12 +218,20 @@ export function parsePresetsArguments(presetId: string): Arguments {
     'pdf-theme': argv['pdf-theme'],
 
     // epub cases
+    'epub-title': argv['epub-title'],
     'epub-author': argv['epub-author'],
     'epub-publisher': argv['epub-publisher'],
     'epub-cover': argv['epub-cover'],
+    'epub-description': argv['epub-description'],
+    'epub-language': argv['epub-language'],
+    'epub-version': argv['epub-version'],
     'epub-stylesheet': argv['epub-stylesheet'],
     'epub-theme': argv['epub-theme'],
+    'epub-toc-title': argv['epub-toc-title'],
+    'epub-hide-toc': argv['epub-hide-toc'],
     'epub-timeout': argv['epub-timeout'],
+    'epub-fonts': argv['epub-fonts'],
+    'epub-chapter-title': argv['epub-chapter-title'],
     'epub-preview': argv['epub-preview'],
 
     'android-sdk': escapeBackslash(argv['android-sdk']),
