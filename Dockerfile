@@ -1,4 +1,6 @@
-# Android builds currently work well with JDK 17 for modern AGP
+# Docker image for Android export with Play Store signing support 
+
+# Base image with Java 21 for Android SDK and Gradle
 FROM eclipse-temurin:21-jdk-jammy
 
 # Limit Java memory usage (adjust values as needed)
@@ -94,10 +96,31 @@ RUN CHROME_PATH=$(find /root/.cache/puppeteer -name chrome -type f | head -n 1) 
     echo "Chrome installed at: $CHROME_PATH" && \
     chmod +x /etc/profile.d/puppeteer.sh
 
-# Create entrypoint script that sources the environment
-RUN echo '#!/bin/sh\n\
-    export PUPPETEER_EXECUTABLE_PATH=$(find /root/.cache/puppeteer -name chrome -type f | head -n 1)\n\
-    exec "$@"' > /entrypoint.sh && \
+# Create directory for keystore (to be mounted as volume for Play Store builds)
+RUN mkdir -p /keystore
+
+# Create entrypoint script with keystore support for signed Android builds
+RUN echo '#!/bin/bash\n\
+set -e\n\
+\n\
+# Set Puppeteer executable path\n\
+export PUPPETEER_EXECUTABLE_PATH=$(find /root/.cache/puppeteer -name chrome -type f | head -n 1)\n\
+\n\
+# Check for keystore configuration when building release\n\
+if [[ "$*" == *"--android-bundle"* ]] || [[ "$*" == *"--android-release"* ]]; then\n\
+  if [ -z "$KEYSTORE_FILE" ] && [ ! -f "/keystore/release.keystore" ]; then\n\
+    echo "Warning: No keystore found. Set KEYSTORE_FILE env var or mount keystore to /keystore/release.keystore"\n\
+  fi\n\
+  \n\
+  # Export signing environment variables if not already set\n\
+  export KEYSTORE_FILE=${KEYSTORE_FILE:-/keystore/release.keystore}\n\
+  export KEYSTORE_PASSWORD=${KEYSTORE_PASSWORD:-}\n\
+  export KEY_ALIAS=${KEY_ALIAS:-release}\n\
+  export KEY_PASSWORD=${KEY_PASSWORD:-}\n\
+fi\n\
+\n\
+# Execute the main application\n\
+exec node /app/dist/index.js "$@"' > /entrypoint.sh && \
     chmod +x /entrypoint.sh
 
 EXPOSE 4000

@@ -4,6 +4,8 @@ dist/index.js.map
 node_modules
 build
 ignore
+/output
+release.keystore
 
 # Electron build artifacts
 release/
