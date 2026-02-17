@@ -118,6 +118,12 @@ export function parseArguments(): Arguments {
     'android-iconBackgroundColor': argv['android-iconBackgroundColor'],
     'android-iconBackgroundColorDark': argv['android-iconBackgroundColorDark'],
     'android-preview': argv['android-preview'],
+    'android-release': argv['android-release'],
+    'android-bundle': argv['android-bundle'],
+    'android-keystore': escapeBackslash(argv['android-keystore']),
+    'android-keystorePassword': argv['android-keystorePassword'],
+    'android-keyAlias': argv['android-keyAlias'],
+    'android-keyPassword': argv['android-keyPassword'],
 
     // project settings
     'project-no-meta': argv['project-no-meta'],
@@ -241,6 +247,12 @@ export function parsePresetsArguments(presetId: string): Arguments {
     'android-iconBackgroundColor': argv['android-iconBackgroundColor'],
     'android-iconBackgroundColorDark': argv['android-iconBackgroundColorDark'],
     'android-preview': argv['android-preview'],
+    'android-release': argv['android-release'],
+    'android-bundle': argv['android-bundle'],
+    'android-keystore': escapeBackslash(argv['android-keystore']),
+    'android-keystorePassword': argv['android-keystorePassword'],
+    'android-keyAlias': argv['android-keyAlias'],
+    'android-keyPassword': argv['android-keyPassword'],
 
     // project settings
     'project-no-meta': argv['project-no-meta'],

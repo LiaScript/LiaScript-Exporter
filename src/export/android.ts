@@ -51,7 +51,32 @@ export function help() {
   COLOR.command(
     null,
     '--android-release',
-    '         Create release build (requires signing setup)',
+    '         Create release APK build (requires signing setup)',
+  )
+  COLOR.command(
+    null,
+    '--android-bundle',
+    '         Create release AAB bundle for Play Store (requires signing setup)',
+  )
+  COLOR.command(
+    null,
+    '--android-keystore',
+    '        Path to keystore file for signing',
+  )
+  COLOR.command(
+    null,
+    '--android-keystorePassword',
+    ' Keystore password (or use KEYSTORE_PASSWORD env var)',
+  )
+  COLOR.command(
+    null,
+    '--android-keyAlias',
+    '         Key alias (default: release, or use KEY_ALIAS env var)',
+  )
+  COLOR.command(
+    null,
+    '--android-keyPassword',
+    '      Key password (or use KEY_PASSWORD env var)',
   )
 
   COLOR.command(
@@ -76,6 +101,11 @@ export interface AndroidExportArguments {
   'android-iconBackgroundColorDark'?: string
   'android-preview'?: boolean
   'android-release'?: boolean
+  'android-bundle'?: boolean
+  'android-keystore'?: string
+  'android-keystorePassword'?: string
+  'android-keyAlias'?: string
+  'android-keyPassword'?: string
 }
 
 export const format = 'android'
@@ -198,13 +228,37 @@ export default config`,
             console.log('ready')
           },
         )
-      } else if (argument['android-release']) {
+      } else if (argument['android-bundle']) {
+        // Build signed AAB for Play Store
+        await configureSigning(tmp, argument)
         execute(
-          ['./gradlew assembleRelease'],
+          ['./gradlew bundleRelease --stacktrace'],
           path.join(tmp, 'android'),
           function () {
-            console.warn('DONE')
-            fs.copy(
+            const bundlePath = path.join(
+              tmp,
+              'android/app/build/outputs/bundle/release/app-release.aab',
+            )
+            
+            if (fs.existsSync(bundlePath)) {
+              console.warn('✅ AAB bundle created successfully')
+              fs.copySync(bundlePath, argument.output + '.aab')
+              console.log(`✅ Signed AAB: ${argument.output}.aab`)
+            } else {
+              console.error('❌ AAB file not found. Build may have failed.')
+              process.exit(1)
+            }
+          },
+        )
+      } else if (argument['android-release']) {
+        // Build signed release APK
+        await configureSigning(tmp, argument)
+        execute(
+          ['./gradlew assembleRelease --stacktrace'],
+          path.join(tmp, 'android'),
+          function () {
+            console.warn('✅ APK created successfully')
+            fs.copySync(
               path.join(
                 tmp,
                 'android/app/build/outputs/apk/release/app-release.apk',
@@ -214,12 +268,13 @@ export default config`,
           },
         )
       } else {
+        // Build debug APK
         execute(
-          ['./gradlew assembleDebug'],
+          ['./gradlew assembleDebug --stacktrace'],
           path.join(tmp, 'android'),
           function () {
-            console.warn('DONE')
-            fs.copy(
+            console.warn('✅ Debug APK created')
+            fs.copySync(
               path.join(
                 tmp,
                 'android/app/build/outputs/apk/debug/app-debug.apk',
@@ -264,22 +319,96 @@ android.useAndroidX=true`,
   }
 }
 
+async function configureSigning(
+  tmpPath: string,
+  argument: AndroidExportArguments,
+) {
+  const androidPath = path.join(tmpPath, 'android')
+  const buildGradlePath = path.join(androidPath, 'app/build.gradle')
+
+  // Get signing configuration from arguments or environment variables
+  const keystoreFile =
+    argument['android-keystore'] || process.env.KEYSTORE_FILE
+  const keystorePassword =
+    argument['android-keystorePassword'] || process.env.KEYSTORE_PASSWORD
+  const keyAlias = argument['android-keyAlias'] || process.env.KEY_ALIAS || 'release'
+  const keyPassword =
+    argument['android-keyPassword'] || process.env.KEY_PASSWORD || keystorePassword
+
+  if (!keystoreFile) {
+    console.error('ERROR: Keystore file not specified!')
+    console.error('Use --android-keystore or set KEYSTORE_FILE environment variable')
+    throw new Error('Keystore file required for signed builds')
+  }
+
+  if (!fs.existsSync(keystoreFile)) {
+    console.error(`ERROR: Keystore file not found: ${keystoreFile}`)
+    throw new Error('Keystore file does not exist')
+  }
+
+  if (!keystorePassword || !keyPassword) {
+    console.error('ERROR: Keystore passwords not provided!')
+    console.error('Use --android-keystorePassword and --android-keyPassword')
+    console.error('Or set KEYSTORE_PASSWORD and KEY_PASSWORD environment variables')
+    throw new Error('Keystore passwords required for signed builds')
+  }
+
+  console.log(`Configuring signing with keystore: ${keystoreFile}`)
+
+  // Read the existing build.gradle
+  let buildGradle = fs.readFileSync(buildGradlePath, 'utf8')
+
+  // Add signing configuration to build.gradle
+  const signingConfig = `
+    signingConfigs {
+        release {
+            storeFile file("${keystoreFile}")
+            storePassword "${keystorePassword}"
+            keyAlias "${keyAlias}"
+            keyPassword "${keyPassword}"
+        }
+    }
+`
+
+  // Insert signing config after android { 
+  buildGradle = buildGradle.replace(
+    /android\s*\{/,
+    `android {
+${signingConfig}`,
+  )
+
+  // Add signingConfig to release buildType
+  buildGradle = buildGradle.replace(
+    /buildTypes\s*\{[\s\S]*?release\s*\{/,
+    (match: string) => {
+      return match + '\n            signingConfig signingConfigs.release'
+    },
+  )
+
+  await helper.writeFile(buildGradlePath, buildGradle)
+  console.log('Signing configuration added to build.gradle')
+}
+
 function execute(cmds: string[], cwd: string, callback: () => void) {
   const cmd = cmds.shift()
 
   if (cmd) {
     console.log('exec:', cmd)
+    
     exec(
       cmd,
       { cwd: cwd },
       async (error: Error | null, stdout: string, stderr: string) => {
         if (error) {
-          console.warn(`error: ${error.message}`)
+          console.error(`❌ Command failed: ${error.message}`)
+          return
         }
-        if (stderr) {
+        if (stderr && !cmd.includes('gradlew')) {
           console.warn(`stderr: ${stderr}`)
         }
-        console.log(`stdout: ${stdout}`)
+        if (stdout && !cmd.includes('gradlew')) {
+          console.log(`stdout: ${stdout}`)
+        }
 
         execute(cmds, cwd, callback)
       },
