@@ -15,7 +15,6 @@ const DEFAULT_HIDE_TOC = false
 
 /**
  * Displays help information about EPUB export options and settings.
- * Shows both LiaScript-specific settings and EPUB generation options.
  */
 export function help() {
   console.log('')
@@ -30,77 +29,25 @@ export function help() {
   )
 
   console.log(COLOR.heading('Required settings:'), '\n')
-  COLOR.command(
-    null,
-    '--epub-title',
-    '              Title of the book (required)',
-  )
-  COLOR.command(
-    null,
-    '--epub-author',
-    '             Author name(s), comma-separated for multiple authors',
-  )
+  COLOR.command(null, '--epub-title', '              Title of the book (required)')
+  COLOR.command(null, '--epub-author', '             Author name(s), comma-separated for multiple authors')
 
   console.log('')
   console.log(COLOR.heading('Optional settings:'), '\n')
 
   COLOR.command(null, '--epub-publisher', '          Publisher name')
-  COLOR.command(
-    null,
-    '--epub-cover',
-    '              Path to cover image (absolute path or URL)',
-  )
+  COLOR.command(null, '--epub-cover', '              Path to cover image (absolute path or URL)')
   COLOR.command(null, '--epub-description', '        Book description')
-  COLOR.command(
-    null,
-    '--epub-language',
-    `           Language code in 2 letters (default: ${DEFAULT_LANG})`,
-  )
-  COLOR.command(
-    null,
-    '--epub-version',
-    `            EPUB version: 2 or 3 (default: ${DEFAULT_EPUB_VERSION})`,
-  )
-  COLOR.command(
-    null,
-    '--epub-stylesheet',
-    '        Path to custom CSS file for styling',
-  )
-  COLOR.command(
-    null,
-    '--epub-theme',
-    '              LiaScript theme: default, turquoise, blue, red, yellow',
-  )
-  COLOR.command(
-    null,
-    '--epub-toc-title',
-    `         Title for table of contents (default: "${DEFAULT_TOC_TITLE}")`,
-  )
-  COLOR.command(
-    null,
-    '--epub-hide-toc',
-    '           Hide table of contents in the generated EPUB (default: false)',
-  )
-  COLOR.command(
-    null,
-    '--epub-timeout',
-    `            Additional wait time for rendering in ms (default: ${DEFAULT_TIMEOUT_MS})`,
-  )
-  COLOR.command(
-    null,
-    '--epub-fonts',
-    '             Comma-separated paths to custom font files to embed',
-  )
-  COLOR.command(
-    null,
-    '--epub-chapter-title',
-    '     Custom title for the main chapter (default: course title)',
-  )
-  COLOR.command(
-    null,
-    '--epub-preview',
-    '           Open preview browser for debugging (default: false)',
-  )
+  COLOR.command(null, '--epub-language', `           Language code in 2 letters (default: ${DEFAULT_LANG})`)
+  COLOR.command(null, '--epub-version', `            EPUB version: 2 or 3 (default: ${DEFAULT_EPUB_VERSION})`)
+  COLOR.command(null, '--epub-stylesheet', '        Path to custom CSS file for styling')
+  COLOR.command(null, '--epub-theme', '              LiaScript theme: default, turquoise, blue, red, yellow')
+  COLOR.command(null, '--epub-toc-title', `         Title for table of contents (default: "${DEFAULT_TOC_TITLE}")`)
+  COLOR.command(null, '--epub-hide-toc', '           Hide table of contents in the generated EPUB (default: false)')
+  COLOR.command(null, '--epub-timeout', `            Additional wait time for rendering in ms (default: ${DEFAULT_TIMEOUT_MS})`)
+  COLOR.command(null, '--epub-fonts', '             Comma-separated paths to custom font files to embed')
+  COLOR.command(null, '--epub-chapter-title', '     Custom title for the main chapter (default: course title)')
+  COLOR.command(null, '--epub-preview', '           Open preview browser for debugging (default: false)')
 }
 
 /**
@@ -134,7 +81,7 @@ export const format = 'epub'
 
 /**
  * Exports a LiaScript course to EPUB format using Puppeteer and @lesjoursfr/html-to-epub.
- *
+ * 
  * This function launches a headless Chrome browser, loads the LiaScript content,
  * applies any custom styling or themes, extracts the rendered HTML DOM,
  * and generates an EPUB file.
@@ -153,22 +100,15 @@ export const format = 'epub'
  * })
  * ```
  */
-export async function exporter(argument: EpubExportArguments, json: any) {
-  console.log('Starting EPUB export with arguments:', argument)
-  // Validate required parameters
-
+export async function exporter(argument: EpubExportArguments) {
   const dirname = helper.dirname()
 
-  // Use web assets instead of pdf assets for better resource loading
   let url = `file://${dirname}/assets/pdf/index.html?`
-
   if (helper.isURL(argument.input)) {
     url += argument.input
   } else {
     url += 'file://' + path.resolve(argument.input)
   }
-
-  console.log('EPUB export started with URL:', json)
 
   let browser: Browser | null = null
   let page: Page | null = null
@@ -205,15 +145,11 @@ export async function exporter(argument: EpubExportArguments, json: any) {
         `Failed to launch browser for EPUB generation. Make sure Chrome is installed. ${launchError}`,
       )
     }
+
     page = await browser.newPage()
+    console.log('Loading course content... This may take a while for large courses.')
 
-    console.log(
-      'Loading course content... This may take a while for large courses.',
-    )
-
-    // Handle alert dialogs automatically to prevent blocking
     page.on('dialog', async (dialog) => {
-      console.log(`[Dialog ${dialog.type()}]: ${dialog.message()}`)
       await dialog.accept()
     })
 
@@ -224,9 +160,7 @@ export async function exporter(argument: EpubExportArguments, json: any) {
     })
 
     page.on('console', (msg) => {
-      const text = msg.text()
-      if (text.startsWith('__RENDER_DONE__')) {
-        console.log('got render done signal:', text)
+      if (msg.text().startsWith('__RENDER_DONE__')) {
         renderDoneResolve()
       }
     })
@@ -241,13 +175,11 @@ export async function exporter(argument: EpubExportArguments, json: any) {
 
     if (argument['epub-stylesheet']) {
       const href = path.resolve(dirname + '/../', argument['epub-stylesheet'])
-
       try {
         await page.evaluate(async (href) => {
           const link = document.createElement('link')
           link.rel = 'stylesheet'
           link.href = href
-
           const promise = new Promise((resolve, reject) => {
             link.onload = resolve
             link.onerror = reject
@@ -269,9 +201,7 @@ export async function exporter(argument: EpubExportArguments, json: any) {
           document.documentElement.classList.add('lia-theme-' + theme)
         }, argument['epub-theme'])
       } catch (e) {
-        throw new Error(
-          `Failed to apply theme '${argument['epub-theme']}': ${e}`,
-        )
+        throw new Error(`Failed to apply theme '${argument['epub-theme']}': ${e}`)
       }
     }
 
@@ -279,7 +209,6 @@ export async function exporter(argument: EpubExportArguments, json: any) {
       // Wait for LiaScript to signal rendering is complete
       await renderDonePromise
 
-      // Additional wait time for any final rendering
       if (argument['epub-timeout']) {
         await helper.sleep(argument['epub-timeout'])
       }
@@ -293,12 +222,9 @@ export async function exporter(argument: EpubExportArguments, json: any) {
     console.error('EPUB export failed:', error.message)
     throw new Error(`Failed to export EPUB: ${error.message}`)
   } finally {
-    // Clean up resources based on mode
     if (argument['epub-preview']) {
-      // In preview mode, keep browser open but inform user
       console.log('Browser kept open for preview. Close manually when done.')
     } else {
-      // In normal mode, always close browser and page
       if (page) {
         try {
           await page.close()
@@ -306,7 +232,6 @@ export async function exporter(argument: EpubExportArguments, json: any) {
           console.error('Failed to close page:', closeError)
         }
       }
-
       if (browser) {
         try {
           await browser.close()
@@ -320,7 +245,7 @@ export async function exporter(argument: EpubExportArguments, json: any) {
 
 /**
  * Generates an EPUB file from a Puppeteer page.
- *
+ * 
  * Extracts the rendered HTML DOM, processes images and resources,
  * and creates an EPUB file using @lesjoursfr/html-to-epub.
  *
@@ -335,273 +260,243 @@ async function toEPUB(
   dirname: string,
 ) {
   try {
-    console.log('Extracting rendered HTML content...')
+    console.log('Converting SVG diagrams to PNG images...')
+    const svgImages = await convertSvgsToImages(page)
+    console.log(`Converted ${svgImages.size} SVG diagrams to PNG`)
 
     // Extract chapters from main elements
     // Each main element becomes a separate chapter in the EPUB
-    const chapters = await page.evaluate(() => {
-      // Clone body to avoid modifying the actual page
+
+    const svgImagesArray = Array.from(svgImages.entries())
+    const chapters = await page.evaluate((svgImagesData) => {
       const bodyClone = document.body.cloneNode(true) as HTMLElement
 
-      // Remove problematic link tags (icons, manifests, preconnect, etc.)
-      // Keep only inline styles, scripts are removed by EPUB processor
-      const linksToRemove = bodyClone.querySelectorAll(
-        'link[rel="icon"], link[rel="shortcut icon"], link[rel="apple-touch-icon"], ' +
-          'link[rel="manifest"], link[rel="preconnect"], link[rel="dns-prefetch"], ' +
-          'link[rel="preload"], link[rel="stylesheet"]',
-      )
+      // Remove problematic link tags
+      bodyClone
+        .querySelectorAll(
+          'link[rel="icon"], link[rel="shortcut icon"], link[rel="apple-touch-icon"], ' +
+            'link[rel="manifest"], link[rel="preconnect"], link[rel="dns-prefetch"], ' +
+            'link[rel="preload"], link[rel="stylesheet"]',
+        )
+        .forEach((link: any) => link.remove())
 
-      linksToRemove.forEach((link) => link.remove())
+      // Replace SVG diagrams with PNG images for better EPUB compatibility
+      bodyClone
+        .querySelectorAll('figure.lia-figure[data-svg-index]')
+        .forEach((figure: any) => {
+          try {
+            const svgIndex = parseInt(figure.getAttribute('data-svg-index') || '-1')
+            const imageData = svgImagesData.find((item: any) => item[0] === svgIndex)
 
-      // Process terminal output blocks first (before Ace editors)
-      const terminals = bodyClone.querySelectorAll('.lia-code-terminal')
-      console.log(`Found ${terminals.length} terminal output blocks`)
+            if (imageData && imageData[1]) {
+              const img = document.createElement('img')
+              img.src = imageData[1]
+              img.alt = 'ASCII Diagram'
+              img.setAttribute('style', 'max-width: 100%; height: auto; display: block; margin: 0 auto;')
 
-      terminals.forEach((terminal) => {
+              figure.innerHTML = ''
+              figure.appendChild(img)
+              figure.setAttribute(
+                'style',
+                'margin: 1.5em auto; padding: 1.5em; background-color: #f8f9fa; ' +
+                  'border: 1px solid #dee2e6; border-radius: 4px; text-align: center; ' +
+                  'page-break-inside: avoid; max-width: 90%;',
+              )
+            }
+          } catch (e) {
+            console.error('Error replacing SVG with image:', e)
+          }
+        })
+
+      // Process terminal output blocks
+      bodyClone.querySelectorAll('.lia-code-terminal').forEach((terminal: Element) => {
         try {
           const terminalOutput = terminal.querySelector('lia-terminal')
-          if (terminalOutput) {
-            const pre = document.createElement('pre')
-            const code = document.createElement('code')
+          if (!terminalOutput) return
 
-            // Style as terminal with dark background
-            pre.setAttribute(
-              'style',
-              'background-color: #1e1e1e; color: #d4d4d4; padding: 1em; ' +
-                'border-radius: 4px; font-family: monospace; overflow-x: auto;',
-            )
+          const pre = document.createElement('pre')
+          const code = document.createElement('code')
 
-            // Extract text from terminal divs
-            const textDivs = terminalOutput.querySelectorAll(
-              'div[class^="text-"]',
-            )
-            if (textDivs.length > 0) {
-              textDivs.forEach((div) => {
-                const text = div.textContent || ''
-                const span = document.createElement('span')
-                span.textContent = text
+          pre.setAttribute(
+            'style',
+            'background-color: #1e1e1e; color: #d4d4d4; padding: 1em; ' +
+              'border-radius: 4px; font-family: monospace; overflow-x: auto;',
+          )
 
-                // Preserve text type styling (info, error, warning)
-                if (div.classList.contains('text-error')) {
-                  span.setAttribute('style', 'color: #f48771;')
-                } else if (div.classList.contains('text-warning')) {
-                  span.setAttribute('style', 'color: #dcdcaa;')
-                }
-
-                code.appendChild(span)
-                code.appendChild(document.createTextNode('\n'))
-              })
-            } else {
-              code.textContent = terminalOutput.textContent || ''
-            }
-
-            pre.appendChild(code)
-            terminal.replaceWith(pre)
-            console.log('Replaced terminal block with styled output')
+          const textDivs = terminalOutput.querySelectorAll('div[class^="text-"]')
+          if (textDivs.length > 0) {
+            textDivs.forEach((div: Element) => {
+              const span = document.createElement('span')
+              span.textContent = div.textContent || ''
+              if (div.classList.contains('text-error')) {
+                span.setAttribute('style', 'color: #f48771;')
+              } else if (div.classList.contains('text-warning')) {
+                span.setAttribute('style', 'color: #dcdcaa;')
+              }
+              code.appendChild(span)
+              code.appendChild(document.createTextNode('\n'))
+            })
+          } else {
+            code.textContent = terminalOutput.textContent || ''
           }
+
+          pre.appendChild(code)
+          terminal.replaceWith(pre)
         } catch (e) {
           console.error('Error processing terminal block:', e)
         }
       })
 
-      // Fix Ace Editor code blocks - extract text with syntax highlighting and line numbers
-      // Ace editor creates complex DOM structures that don't work in EPUB
-      const codeInputs = bodyClone.querySelectorAll('.lia-code__input')
-      console.log(`Found ${codeInputs.length} code editor blocks`)
-
-      codeInputs.forEach((codeInput) => {
+      // Replace Ace Editor code blocks with static pre/code elements
+      bodyClone.querySelectorAll('.lia-code__input').forEach((codeInput: Element) => {
         try {
           const aceEditor = codeInput.querySelector('.ace_editor')
           if (!aceEditor) return
 
-          // Get line numbers from gutter
-          const gutterCells = aceEditor.querySelectorAll('.ace_gutter-cell')
-          const lineNumbers: string[] = []
-          gutterCells.forEach((cell) => {
-            const lineNum = cell.textContent?.trim()
-            if (lineNum && !isNaN(parseInt(lineNum))) {
-              lineNumbers.push(lineNum)
-            }
-          })
-
-          // Get code content from ace editor
           const aceContent = aceEditor.querySelector('.ace_text-layer')
           if (!aceContent) return
 
-          // Extract lines with syntax highlighting preserved as inline styles
-          // Only query for line groups, not individual lines, to avoid duplication
-          const aceLineGroups = aceContent.querySelectorAll('.ace_line_group')
+          const firstLineText = aceContent.querySelector('.ace_line')?.textContent?.trim() || ''
+          const isPlainTextBlock =
+            firstLineText.startsWith('<!--') ||
+            (firstLineText.startsWith('<') &&
+              /(<div|<html|<body|<p|<span|<a|<section|<article)/.test(firstLineText))
 
-          // Create a simple pre/code block
           const pre = document.createElement('pre')
           const code = document.createElement('code')
 
-          // Style for code blocks with light background
-          pre.setAttribute(
-            'style',
-            'background-color: #f5f5f5; padding: 1em; border-radius: 4px; ' +
-              'border-left: 3px solid #4caf50; overflow-x: auto; font-family: monospace; ' +
-              'display: block; white-space: pre-wrap;',
-          )
+          if (isPlainTextBlock) {
+            pre.setAttribute(
+              'style',
+              'background-color: #f9f9f9; padding: 1em; border-radius: 4px; ' +
+                'border-left: 3px solid #999; overflow-x: auto; font-family: monospace; ' +
+                'display: block; white-space: pre-wrap; color: #6a737d;',
+            )
+            code.setAttribute('style', 'display: block;')
 
-          // Also style the code element to ensure it's contained
-          code.setAttribute('style', 'display: block;')
+            const textLines: string[] = []
+            aceContent.querySelectorAll('.ace_line_group').forEach((lineGroup: Element) => {
+              lineGroup.querySelectorAll('.ace_line').forEach((line: Element) => {
+                textLines.push(line.textContent || '')
+              })
+            })
+            code.textContent = textLines.join('\n')
+          } else {
+            const gutterCells = aceEditor.querySelectorAll('.ace_gutter-cell')
+            const lineNumbers: string[] = []
+            gutterCells.forEach((cell: Element) => {
+              const lineNum = cell.textContent?.trim()
+              if (lineNum && !isNaN(parseInt(lineNum))) {
+                lineNumbers.push(lineNum)
+              }
+            })
 
-          let lineIndex = 0
-          if (aceLineGroups.length > 0) {
-            aceLineGroups.forEach((lineGroup) => {
-              // Each line group contains one or more ace_line elements
-              const lines = lineGroup.querySelectorAll('.ace_line')
+            pre.setAttribute(
+              'style',
+              'background-color: #f5f5f5; padding: 1em; border-radius: 4px; ' +
+                'border-left: 3px solid #4caf50; overflow-x: auto; font-family: monospace; ' +
+                'display: block; white-space: pre-wrap;',
+            )
+            code.setAttribute('style', 'display: block;')
 
-              lines.forEach((line) => {
-                // Build line as HTML string for better control
+            let lineIndex = 0
+            aceContent.querySelectorAll('.ace_line_group').forEach((lineGroup: Element) => {
+              lineGroup.querySelectorAll('.ace_line').forEach((line: Element) => {
                 let lineHTML = ''
 
-                // Add line number if available
                 if (lineIndex < lineNumbers.length) {
-                  const lineNum = lineNumbers[lineIndex]
-                  lineHTML += `<span style="color: #858585; display: inline-block; width: 3em; text-align: right; margin-right: 1em;">${lineNum}</span>`
+                  lineHTML += `<span style="color: #858585; display: inline-block; width: 3em; text-align: right; margin-right: 1em;">${lineNumbers[lineIndex]}</span>`
                   lineIndex++
                 }
 
-                // Extract tokens with their colors
                 const tokens = line.querySelectorAll('span[class*="ace_"]')
+                const escape = (text: string) =>
+                  text
+                    .replace(/&/g, '&amp;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;')
+                    .replace(/"/g, '&quot;')
+                    .replace(/'/g, '&#39;')
 
                 if (tokens.length > 0) {
-                  tokens.forEach((token) => {
+                  tokens.forEach((token: Element) => {
                     const text = token.textContent || ''
                     if (!text.trim()) return
-
-                    const computedStyle = window.getComputedStyle(token)
-                    const color = computedStyle.color
-
-                    if (
-                      color &&
-                      color !== 'rgb(0, 0, 0)' &&
-                      color !== 'rgba(0, 0, 0, 0)'
-                    ) {
-                      lineHTML += `<span style="color: ${color};">${text}</span>`
+                    const color = window.getComputedStyle(token as HTMLElement).color
+                    const escaped = escape(text)
+                    if (color && color !== 'rgb(0, 0, 0)' && color !== 'rgba(0, 0, 0, 0)') {
+                      lineHTML += `<span style="color: ${color};">${escaped}</span>`
                     } else {
-                      lineHTML += text
+                      lineHTML += escaped
                     }
                   })
                 } else {
-                  // No tokens, just get plain text
-                  const text = line.textContent || ''
-                  lineHTML += text.replace(/[\u200B-\u200D\uFEFF\n]/g, '')
+                  const cleanText = (line.textContent || '').replace(/[\u200B-\u200D\uFEFF\n]/g, '')
+                  lineHTML += escape(cleanText)
                 }
 
-                // Create a span element for this line and set its innerHTML
                 const lineSpan = document.createElement('span')
                 lineSpan.innerHTML = lineHTML
-                lineSpan.setAttribute(
-                  'style',
-                  'display: block; white-space: nowrap;',
-                )
-
+                lineSpan.setAttribute('style', 'display: block; white-space: nowrap;')
                 code.appendChild(lineSpan)
               })
             })
           }
 
           pre.appendChild(code)
-
-          // Replace the entire code input block with the pre/code block
           codeInput.replaceWith(pre)
-          console.log(
-            `Replaced code editor with line numbers and syntax highlighting`,
-          )
         } catch (e) {
           console.error('Error processing code editor:', e)
         }
       })
 
-      // Extract chapters from main elements
+      // Extract chapters from <main> elements
       const mainElements = bodyClone.querySelectorAll('main')
       const chapterList: Array<{ title: string; data: string }> = []
 
       if (mainElements.length > 0) {
-        console.log(
-          `Found ${mainElements.length} main elements to convert to chapters`,
-        )
-
-        mainElements.forEach((main, index) => {
-          // Extract chapter title from first header with h1-h6 class
+        mainElements.forEach((main: Element, index: number) => {
           let chapterTitle = `Chapter ${index + 1}`
-
-          const header = main.querySelector('header')
-          if (header) {
-            // Look for h tags with classes .h1 to .h6
-            const hTag = header.querySelector('.h1, .h2, .h3, .h4, .h5, .h6')
-            if (hTag && hTag.textContent) {
-              chapterTitle = hTag.textContent.trim()
-            }
+          const hTag = main.querySelector('header')?.querySelector('.h1, .h2, .h3, .h4, .h5, .h6')
+          if (hTag?.textContent) {
+            chapterTitle = hTag.textContent.trim()
           }
 
-          // Get the HTML content of this main element
-          const chapterData = main.outerHTML
+          main.querySelectorAll('script, style').forEach((el: Element) => el.remove())
 
-          chapterList.push({
-            title: chapterTitle,
-            data: chapterData,
-          })
-
-          console.log(`  Chapter ${index + 1}: ${chapterTitle}`)
+          const tempDiv = document.createElement('div')
+          tempDiv.appendChild(main.cloneNode(true))
+          chapterList.push({ title: chapterTitle, data: tempDiv.innerHTML })
         })
 
         return chapterList
       } else {
-        // No main elements found, return entire body as single chapter
-        console.log(
-          'No main elements found, using entire body as single chapter',
-        )
-        return [
-          {
-            title: 'Content',
-            data: bodyClone.outerHTML,
-          },
-        ]
+        bodyClone.querySelectorAll('script, style').forEach((el: Element) => el.remove())
+        return [{ title: 'Content', data: bodyClone.outerHTML }]
       }
-    })
+    }, svgImagesArray)
 
-    console.log('Reading CSS and fonts directly from dist/assets/pdf folder...')
-
-    // Read CSS directly from the pdf assets folder
+    // Read CSS and fonts from the pdf assets folder
     const pdfAssetsPath = path.join(dirname, 'assets', 'pdf')
-    const cssFiles = fs
-      .readdirSync(pdfAssetsPath)
-      .filter((f) => f.endsWith('.css'))
+    const cssFiles = fs.readdirSync(pdfAssetsPath).filter((f) => f.endsWith('.css'))
 
     let allCSS = ''
     const fontPaths: string[] = []
 
     if (cssFiles.length > 0) {
-      console.log(
-        `Found ${cssFiles.length} CSS file(s): ${cssFiles.join(', ')}`,
-      )
-      // Read and concatenate all CSS files
       cssFiles.forEach((cssFile) => {
-        const cssPath = path.join(pdfAssetsPath, cssFile)
-        const cssContent = fs.readFileSync(cssPath, 'utf-8')
-        allCSS += cssContent + '\n'
+        allCSS += fs.readFileSync(path.join(pdfAssetsPath, cssFile), 'utf-8') + '\n'
       })
 
-      // Extract font filenames from CSS
-      const fontMatches = allCSS.match(
-        /url\(['"]?([^'")\s]+\.(?:woff2?|ttf|otf|eot))['"]?\)/gi,
-      )
+      const fontMatches = allCSS.match(/url\(['"]?([^'")\s]+\.(?:woff2?|ttf|otf|eot))['"]?\)/gi)
       if (fontMatches) {
         const uniqueFonts = new Set<string>()
         fontMatches.forEach((match) => {
           const fontMatch = match.match(/url\(['"]?([^'")\s]+)['"]?\)/)
-          if (fontMatch && fontMatch[1]) {
-            // Extract just the filename (remove any path components)
-            const fontFilename = path.basename(fontMatch[1])
-            uniqueFonts.add(fontFilename)
+          if (fontMatch?.[1]) {
+            uniqueFonts.add(path.basename(fontMatch[1]))
           }
         })
-
-        // Convert font filenames to absolute file system paths
         uniqueFonts.forEach((fontFilename) => {
           const fontPath = path.join(pdfAssetsPath, fontFilename)
           if (fs.existsSync(fontPath)) {
@@ -610,108 +505,110 @@ async function toEPUB(
             console.warn(`Warning: Font file not found: ${fontPath}`)
           }
         })
-
-        console.log(`Found ${fontPaths.length} font files referenced in CSS:`)
-        fontPaths.forEach((font) => console.log(`  - ${path.basename(font)}`))
       }
     } else {
       console.warn('Warning: No CSS files found in pdf assets folder')
     }
 
-    // Also scan directory for KaTeX font files specifically
-    // KaTeX fonts follow pattern: KaTeX_*.woff2, KaTeX_*.woff, KaTeX_*.ttf
-    console.log('Scanning for KaTeX font files...')
-    const allFiles = fs.readdirSync(pdfAssetsPath)
-    const katexFonts = allFiles.filter(
-      (f) =>
-        f.startsWith('KaTeX_') &&
-        (f.endsWith('.woff') || f.endsWith('.woff2') || f.endsWith('.ttf')),
-    )
+    // Include KaTeX font files not already referenced in CSS
+    fs.readdirSync(pdfAssetsPath)
+      .filter(
+        (f) =>
+          f.startsWith('KaTeX_') &&
+          (f.endsWith('.woff') || f.endsWith('.woff2') || f.endsWith('.ttf')),
+      )
+      .forEach((fontFile) => {
+        const fontPath = path.join(pdfAssetsPath, fontFile)
+        if (!fontPaths.includes(fontPath) && fs.existsSync(fontPath)) {
+          fontPaths.push(fontPath)
+        }
+      })
 
-    katexFonts.forEach((fontFile) => {
-      const fontPath = path.join(pdfAssetsPath, fontFile)
-      // Only add if not already in the list
-      if (!fontPaths.includes(fontPath) && fs.existsSync(fontPath)) {
-        fontPaths.push(fontPath)
-      }
-    })
+    console.log(`Building EPUB with ${chapters.length} chapter(s) and ${fontPaths.length} font(s)...`)
 
-    console.log(`Total fonts to embed: ${fontPaths.length}`)
-    if (fontPaths.length > 0) {
-      fontPaths.forEach((font) => console.log(`  - ${path.basename(font)}`))
-    }
-
-    console.log('Building EPUB file...')
-    console.log(`Total chapters to include: ${chapters.length}`)
-
-    // Parse authors if comma-separated
     let authors: string | string[] = argument['epub-author'] || 'Unknown'
     if (typeof authors === 'string' && authors.includes(',')) {
       authors = authors.split(',').map((a) => a.trim())
     }
 
-    // Start with fonts from filesystem
     let fonts: string[] = [...fontPaths]
-
-    // Add any custom fonts specified in arguments
     if (argument['epub-fonts']) {
-      const customFonts = argument['epub-fonts'].split(',').map((f) => f.trim())
-      fonts.push(...customFonts)
+      fonts.push(...argument['epub-fonts'].split(',').map((f) => f.trim()))
     }
 
-    // Read custom CSS if provided and prepend to extracted CSS
     let customCSS = allCSS
     if (argument['epub-stylesheet']) {
       try {
-        const cssPath = path.resolve(argument['epub-stylesheet'])
-        const cssContent = fs.readFileSync(cssPath, 'utf-8')
-        customCSS = cssContent + '\n' + customCSS
+        customCSS = fs.readFileSync(path.resolve(argument['epub-stylesheet']), 'utf-8') + '\n' + customCSS
       } catch (e) {
         console.warn(`Warning: Could not read custom stylesheet: ${e}`)
       }
     }
 
-    // Configure EPUB options
     const epubOptions: any = {
       title: argument['epub-title'],
       author: authors,
       lang: argument['epub-language'] || DEFAULT_LANG,
       tocTitle: argument['epub-toc-title'] || DEFAULT_TOC_TITLE,
-      appendChapterTitles:
-        argument['epub-chapter-title'] !== undefined ||
-        DEFAULT_APPEND_CHAPTER_TITLES,
+      appendChapterTitles: argument['epub-chapter-title'] === undefined && DEFAULT_APPEND_CHAPTER_TITLES,
       hideToC: argument['epub-hide-toc'] ?? DEFAULT_HIDE_TOC,
       css: customCSS,
       version: (argument['epub-version'] || DEFAULT_EPUB_VERSION) as 2 | 3,
-      content: chapters, // Use extracted chapters from main elements
+      content: chapters,
       verbose: false,
     }
 
-    // Add optional fields only if provided
-    if (argument['epub-publisher']) {
-      epubOptions.publisher = argument['epub-publisher']
-    }
-    if (argument['epub-cover']) {
-      epubOptions.cover = argument['epub-cover']
-    }
-    if (argument['epub-description']) {
-      epubOptions.description = argument['epub-description']
-    }
-    if (fonts.length > 0) {
-      epubOptions.fonts = fonts
-    }
+    if (argument['epub-publisher']) epubOptions.publisher = argument['epub-publisher']
+    if (argument['epub-cover']) epubOptions.cover = argument['epub-cover']
+    if (argument['epub-description']) epubOptions.description = argument['epub-description']
+    if (fonts.length > 0) epubOptions.fonts = fonts
 
-    // Generate EPUB
     const outputPath = argument.output.endsWith('.epub')
       ? argument.output
       : argument.output + '.epub'
 
-    const epub = new EPub(epubOptions, outputPath)
-    await epub.render()
-
+    await new EPub(epubOptions, outputPath).render()
     console.log(`EPUB successfully generated: ${outputPath}`)
   } catch (e) {
     const error = e as Error
     throw new Error(`Failed to generate EPUB: ${error.message}`)
   }
+}
+
+/**
+ * Converts all SVG diagrams in the page to base64-encoded PNG images.
+ * EPUB readers often have poor SVG support, so screenshots are used instead.
+ *
+ * @param page - Puppeteer page instance
+ * @returns Map of SVG element indexes to base64 PNG data URIs
+ */
+async function convertSvgsToImages(page: Page): Promise<Map<number, string>> {
+  const svgImages = new Map<number, string>()
+
+  // Tag each figure that contains an SVG with a unique index attribute
+  const svgCount = await page.evaluate(() => {
+    let svgIndex = 0
+    document.querySelectorAll('figure.lia-figure').forEach((figure: Element) => {
+      const mediaDiv = figure.querySelector('.lia-figure__media')
+      if (mediaDiv?.querySelector('svg')) {
+        figure.setAttribute('data-svg-index', svgIndex.toString())
+        svgIndex++
+      }
+    })
+    return svgIndex
+  })
+
+  for (let i = 0; i < svgCount; i++) {
+    try {
+      const element = await page.$(`figure.lia-figure[data-svg-index="${i}"]`)
+      if (element) {
+        const screenshot = await element.screenshot({ type: 'png' })
+        svgImages.set(i, `data:image/png;base64,${Buffer.from(screenshot).toString('base64')}`)
+      }
+    } catch (e) {
+      console.error(`Failed to screenshot SVG ${i}:`, e)
+    }
+  }
+
+  return svgImages
 }
