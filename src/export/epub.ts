@@ -264,11 +264,16 @@ async function toEPUB(
     const svgImages = await convertSvgsToImages(page)
     console.log(`Converted ${svgImages.size} SVG diagrams to PNG`)
 
-    // Extract chapters from main elements
-    // Each main element becomes a separate chapter in the EPUB
+    console.log('Extracting syntax-highlighted code blocks...')
+    const highlightedBlocks = await extractHighlightedCode(page)
+    console.log(`Extracted ${highlightedBlocks.size} highlighted code block(s)`)
 
-    const svgImagesArray = Array.from(svgImages.entries())
-    const chapters = await page.evaluate((svgImagesData) => {
+    const payload: { svgImages: [number, string][]; codeBlocks: [number, string][] } = {
+      svgImages: Array.from(svgImages.entries()) as [number, string][],
+      codeBlocks: Array.from(highlightedBlocks.entries()) as [number, string][],
+    }
+    const chapters = await page.evaluate((data: { svgImages: [number, string][]; codeBlocks: [number, string][] }) => {
+      const { svgImages: svgImagesData, codeBlocks } = data
       const bodyClone = document.body.cloneNode(true) as HTMLElement
 
       // Remove problematic link tags
@@ -279,6 +284,11 @@ async function toEPUB(
             'link[rel="preload"], link[rel="stylesheet"]',
         )
         .forEach((link: any) => link.remove())
+
+      // Remove the copy-to-clipboard button from code blocks
+      bodyClone
+        .querySelectorAll('.lia-code__copy, .lia-code__copy--inverted')
+        .forEach((btn: Element) => btn.remove())
 
       // Replace SVG diagrams with PNG images for better EPUB compatibility
       bodyClone
@@ -347,106 +357,18 @@ async function toEPUB(
         }
       })
 
-      // Replace Ace Editor code blocks with static pre/code elements
+      // Replace Ace Editor code blocks with pre-extracted syntax-highlighted HTML
       bodyClone.querySelectorAll('.lia-code__input').forEach((codeInput: Element) => {
         try {
-          const aceEditor = codeInput.querySelector('.ace_editor')
-          if (!aceEditor) return
-
-          const aceContent = aceEditor.querySelector('.ace_text-layer')
-          if (!aceContent) return
-
-          const firstLineText = aceContent.querySelector('.ace_line')?.textContent?.trim() || ''
-          const isPlainTextBlock =
-            firstLineText.startsWith('<!--') ||
-            (firstLineText.startsWith('<') &&
-              /(<div|<html|<body|<p|<span|<a|<section|<article)/.test(firstLineText))
-
-          const pre = document.createElement('pre')
-          const code = document.createElement('code')
-
-          if (isPlainTextBlock) {
-            pre.setAttribute(
-              'style',
-              'background-color: #f9f9f9; padding: 1em; border-radius: 4px; ' +
-                'border-left: 3px solid #999; overflow-x: auto; font-family: monospace; ' +
-                'display: block; white-space: pre-wrap; color: #6a737d;',
-            )
-            code.setAttribute('style', 'display: block;')
-
-            const textLines: string[] = []
-            aceContent.querySelectorAll('.ace_line_group').forEach((lineGroup: Element) => {
-              lineGroup.querySelectorAll('.ace_line').forEach((line: Element) => {
-                textLines.push(line.textContent || '')
-              })
-            })
-            code.textContent = textLines.join('\n')
-          } else {
-            const gutterCells = aceEditor.querySelectorAll('.ace_gutter-cell')
-            const lineNumbers: string[] = []
-            gutterCells.forEach((cell: Element) => {
-              const lineNum = cell.textContent?.trim()
-              if (lineNum && !isNaN(parseInt(lineNum))) {
-                lineNumbers.push(lineNum)
-              }
-            })
-
-            pre.setAttribute(
-              'style',
-              'background-color: #f5f5f5; padding: 1em; border-radius: 4px; ' +
-                'border-left: 3px solid #4caf50; overflow-x: auto; font-family: monospace; ' +
-                'display: block; white-space: pre-wrap;',
-            )
-            code.setAttribute('style', 'display: block;')
-
-            let lineIndex = 0
-            aceContent.querySelectorAll('.ace_line_group').forEach((lineGroup: Element) => {
-              lineGroup.querySelectorAll('.ace_line').forEach((line: Element) => {
-                let lineHTML = ''
-
-                if (lineIndex < lineNumbers.length) {
-                  lineHTML += `<span style="color: #858585; display: inline-block; width: 3em; text-align: right; margin-right: 1em;">${lineNumbers[lineIndex]}</span>`
-                  lineIndex++
-                }
-
-                const tokens = line.querySelectorAll('span[class*="ace_"]')
-                const escape = (text: string) =>
-                  text
-                    .replace(/&/g, '&amp;')
-                    .replace(/</g, '&lt;')
-                    .replace(/>/g, '&gt;')
-                    .replace(/"/g, '&quot;')
-                    .replace(/'/g, '&#39;')
-
-                if (tokens.length > 0) {
-                  tokens.forEach((token: Element) => {
-                    const text = token.textContent || ''
-                    if (!text.trim()) return
-                    const color = window.getComputedStyle(token as HTMLElement).color
-                    const escaped = escape(text)
-                    if (color && color !== 'rgb(0, 0, 0)' && color !== 'rgba(0, 0, 0, 0)') {
-                      lineHTML += `<span style="color: ${color};">${escaped}</span>`
-                    } else {
-                      lineHTML += escaped
-                    }
-                  })
-                } else {
-                  const cleanText = (line.textContent || '').replace(/[\u200B-\u200D\uFEFF\n]/g, '')
-                  lineHTML += escape(cleanText)
-                }
-
-                const lineSpan = document.createElement('span')
-                lineSpan.innerHTML = lineHTML
-                lineSpan.setAttribute('style', 'display: block; white-space: nowrap;')
-                code.appendChild(lineSpan)
-              })
-            })
+          const idx = parseInt(codeInput.getAttribute('data-code-index') || '-1')
+          const entry = codeBlocks.find((item) => item[0] === idx)
+          if (entry && entry[1]) {
+            const wrapper = document.createElement('div')
+            wrapper.innerHTML = entry[1]
+            codeInput.replaceWith(wrapper.firstChild || wrapper)
           }
-
-          pre.appendChild(code)
-          codeInput.replaceWith(pre)
         } catch (e) {
-          console.error('Error processing code editor:', e)
+          console.error('Error injecting highlighted code block:', e)
         }
       })
 
@@ -474,7 +396,7 @@ async function toEPUB(
         bodyClone.querySelectorAll('script, style').forEach((el: Element) => el.remove())
         return [{ title: 'Content', data: bodyClone.outerHTML }]
       }
-    }, svgImagesArray)
+    }, payload)
 
     // Read CSS and fonts from the pdf assets folder
     const pdfAssetsPath = path.join(dirname, 'assets', 'pdf')
@@ -576,8 +498,121 @@ async function toEPUB(
 }
 
 /**
- * Converts all SVG diagrams in the page to base64-encoded PNG images.
- * EPUB readers often have poor SVG support, so screenshots are used instead.
+ * Extracts syntax-highlighted HTML from all Ace Editor code blocks in the live page
+ *
+ * @param page - Puppeteer page instance
+ * @returns Map of block indexes to static highlighted HTML strings
+ */
+async function extractHighlightedCode(page: Page): Promise<Map<number, string>> {
+  const result = await page.evaluate(() => {
+    const escape = (text: string) =>
+      text
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;')
+
+    const blocks: [number, string][] = []
+    let idx = 0
+
+    document.querySelectorAll('.lia-code__input').forEach((codeInput: Element) => {
+      codeInput.setAttribute('data-code-index', idx.toString())
+
+      try {
+        const aceEditor = codeInput.querySelector('.ace_editor')
+        const aceContent = aceEditor?.querySelector('.ace_text-layer')
+
+        if (!aceEditor || !aceContent) {
+          blocks.push([idx, ''])
+          idx++
+          return
+        }
+
+        const gutterCells = aceEditor.querySelectorAll('.ace_gutter-cell')
+        const lineNumbers: string[] = []
+        gutterCells.forEach((cell: Element) => {
+          const n = cell.textContent?.trim()
+          if (n && !isNaN(parseInt(n))) lineNumbers.push(n)
+        })
+
+        const bgColor = window.getComputedStyle(aceEditor as HTMLElement).backgroundColor || '#f5f5f5'
+
+        let codeHTML = ''
+        let lineIndex = 0
+
+        aceContent.querySelectorAll('.ace_line_group').forEach((lineGroup: Element) => {
+          lineGroup.querySelectorAll('.ace_line').forEach((line: Element) => {
+            let lineHTML = ''
+
+            if (lineIndex < lineNumbers.length) {
+              lineHTML += `<span style="color:#858585;display:inline-block;width:3em;text-align:right;margin-right:1em;user-select:none;">${lineNumbers[lineIndex]}</span>`
+              lineIndex++
+            }
+
+            // Walk childNodes instead of querySelectorAll so plain text nodes
+            // (spaces between tokens) are captured alongside styled span tokens
+            const hasTokenSpans = line.querySelector('span[class*="ace_"]') !== null
+            if (hasTokenSpans) {
+              line.childNodes.forEach((node: ChildNode) => {
+                if (node.nodeType === Node.TEXT_NODE) {
+                  // Plain text node — raw space/whitespace between tokens
+                  const text = node.textContent || ''
+                  // Strip Ace zero-width / invisible control chars but keep real spaces
+                  const cleaned = text.replace(/[\u200B-\u200D\uFEFF]/g, '')
+                  if (cleaned) lineHTML += escape(cleaned)
+                } else if (node.nodeType === Node.ELEMENT_NODE) {
+                  const tokenEl = node as HTMLElement
+                  // Recurse one level: Ace sometimes nests spans (e.g. ace_indent_guide inside ace_indent)
+                  const text = tokenEl.textContent || ''
+                  if (!text) return
+                  const cleaned = text.replace(/[\u200B-\u200D\uFEFF]/g, '')
+                  if (!cleaned) return
+                  const color = window.getComputedStyle(tokenEl).color
+                  const fontWeight = window.getComputedStyle(tokenEl).fontWeight
+                  const fontStyle = window.getComputedStyle(tokenEl).fontStyle
+                  const escaped = escape(cleaned)
+                  let style = ''
+                  if (color && color !== 'rgb(0, 0, 0)' && color !== 'rgba(0, 0, 0, 0)') {
+                    style += `color:${color};`
+                  }
+                  if (fontWeight === 'bold' || parseInt(fontWeight) >= 700) style += 'font-weight:bold;'
+                  if (fontStyle === 'italic') style += 'font-style:italic;'
+                  lineHTML += style ? `<span style="${style}">${escaped}</span>` : escaped
+                }
+              })
+            } else {
+              const cleanText = (line.textContent || '').replace(/[\u200B-\u200D\uFEFF\n]/g, '')
+              lineHTML += escape(cleanText)
+            }
+
+            codeHTML += `<span style="display:block;">${lineHTML}\n</span>`
+          })
+        })
+
+        const html =
+          `<pre style="background-color:${bgColor};padding:1em;border-radius:4px;` +
+          `border-left:3px solid #4caf50;overflow-x:auto;font-family:monospace;` +
+          `white-space:pre;margin:0.5em 0;">` +
+          `<code style="display:block;">${codeHTML}</code></pre>`
+
+        blocks.push([idx, html])
+      } catch (e) {
+        blocks.push([idx, ''])
+      }
+
+      idx++
+    })
+
+    return blocks
+  })
+
+  return new Map(result)
+}
+
+/**
+ * Converts all SVG diagrams in the page to base64-encoded PNG images
+ * EPUB readers often have poor SVG support, so screenshots are used instead
  *
  * @param page - Puppeteer page instance
  * @returns Map of SVG element indexes to base64 PNG data URIs
