@@ -261,7 +261,13 @@ async function toEPUB(
 ) {
   try {
     console.log('Converting SVG diagrams to PNG images...')
-    const svgImages = await convertSvgsToImages(page)
+    const svgImages = await screenshotTaggedElements(
+      page,
+      'figure.lia-figure',
+      'data-svg-index',
+      'SVG diagram',
+      `return !!el.querySelector('.lia-figure__media svg')`,
+    )
     console.log(`Converted ${svgImages.size} SVG diagrams to PNG`)
 
     console.log('Extracting syntax-highlighted code blocks...')
@@ -272,13 +278,24 @@ async function toEPUB(
     const abcImages = await screenshotAbcBlocks(page)
     console.log(`Captured ${abcImages.size} ABC notation block(s)`)
 
-    const payload: { svgImages: [number, string][]; codeBlocks: [number, string][]; abcImages: [number, string][] } = {
-      svgImages: Array.from(svgImages.entries()) as [number, string][],
-      codeBlocks: Array.from(highlightedBlocks.entries()) as [number, string][],
-      abcImages: Array.from(abcImages.entries()) as [number, string][],
+    console.log('Screenshotting embedded media (Spotify, SoundCloud, etc.)...')
+    const embedImages = await screenshotTaggedElements(
+      page,
+      'lia-embed',
+      'data-embed-index',
+      'embed',
+    )
+    console.log(`Captured ${embedImages.size} embed cover(s)`)
+
+    const toEntries = (map: Map<number, string>) => Array.from(map.entries()) as [number, string][]
+    const payload = {
+      svgImages: toEntries(svgImages),
+      codeBlocks: toEntries(highlightedBlocks),
+      abcImages: toEntries(abcImages),
+      embedImages: toEntries(embedImages),
     }
-    const chapters = await page.evaluate((data: { svgImages: [number, string][]; codeBlocks: [number, string][]; abcImages: [number, string][] }) => {
-      const { svgImages: svgImagesData, codeBlocks, abcImages: abcImagesData } = data
+    const chapters = await page.evaluate((data) => {
+      const { svgImages: svgImagesData, codeBlocks, abcImages: abcImagesData, embedImages: embedImagesData } = data
       const bodyClone = document.body.cloneNode(true) as HTMLElement
 
       // Remove problematic link tags
@@ -299,6 +316,25 @@ async function toEPUB(
       bodyClone
         .querySelectorAll('.lia-code-control')
         .forEach((ctrl: Element) => ctrl.remove())
+
+      // Replace <lia-embed> elements with their pre-captured cover screenshots
+      bodyClone.querySelectorAll('lia-embed[data-embed-index]').forEach((embed: Element) => {
+        try {
+          const idx = parseInt(embed.getAttribute('data-embed-index') || '-1')
+          const imageData = embedImagesData.find((item: any) => item[0] === idx)
+          if (imageData && imageData[1]) {
+            const img = document.createElement('img')
+            img.src = imageData[1]
+            img.alt = 'Embedded media'
+            img.setAttribute('style', embed.getAttribute('style') || 'width:250px;height:250px;')
+            embed.replaceWith(img)
+          } else {
+            embed.remove()
+          }
+        } catch (e) {
+          console.error('Error replacing embed:', e)
+        }
+      })
 
       // Replace ABC notation blocks with the pre-captured PNG screenshot
       bodyClone
@@ -712,39 +748,52 @@ async function screenshotAbcBlocks(page: Page): Promise<Map<number, string>> {
 }
 
 /**
- * Converts all SVG diagrams in the page to base64-encoded PNG images
- * EPUB readers often have poor SVG support, so screenshots are used instead
+ * Tags matching elements with a data attribute index, then screenshots each one
  *
- * @param page - Puppeteer page instance
- * @returns Map of SVG element indexes to base64 PNG data URIs
+ * @param page       - Puppeteer page instance
+ * @param selector   - CSS selector to find elements
+ * @param dataAttr   - data-attribute name used for indexing (e.g. 'data-svg-index')
+ * @param label      - human-readable label for error messages
+ * @param tagFilter  - optional filter run inside page.evaluate(); receives each
+ *                     matched element and returns true to tag it
+ * @returns Map of element indexes to base64 PNG data URIs
  */
-async function convertSvgsToImages(page: Page): Promise<Map<number, string>> {
-  const svgImages = new Map<number, string>()
+async function screenshotTaggedElements(
+  page: Page,
+  selector: string,
+  dataAttr: string,
+  label: string,
+  tagFilter?: string, // JS function body: (el) => boolean, serialised as string
+): Promise<Map<number, string>> {
+  const count = await page.evaluate(
+    (sel: string, attr: string, filterBody: string | null) => {
+      let idx = 0
+      const filterFn = filterBody ? new Function('el', filterBody) as (el: Element) => boolean : null
+      document.querySelectorAll(sel).forEach((el: Element) => {
+        if (!filterFn || filterFn(el)) {
+          el.setAttribute(attr, idx.toString())
+          idx++
+        }
+      })
+      return idx
+    },
+    selector,
+    dataAttr,
+    tagFilter ?? null,
+  )
 
-  // Tag each figure that contains an SVG with a unique index attribute
-  const svgCount = await page.evaluate(() => {
-    let svgIndex = 0
-    document.querySelectorAll('figure.lia-figure').forEach((figure: Element) => {
-      const mediaDiv = figure.querySelector('.lia-figure__media')
-      if (mediaDiv?.querySelector('svg')) {
-        figure.setAttribute('data-svg-index', svgIndex.toString())
-        svgIndex++
-      }
-    })
-    return svgIndex
-  })
-
-  for (let i = 0; i < svgCount; i++) {
+  const images = new Map<number, string>()
+  for (let i = 0; i < count; i++) {
     try {
-      const element = await page.$(`figure.lia-figure[data-svg-index="${i}"]`)
-      if (element) {
-        const screenshot = await element.screenshot({ type: 'png' })
-        svgImages.set(i, `data:image/png;base64,${Buffer.from(screenshot).toString('base64')}`)
+      const el = await page.$(`${selector}[${dataAttr}="${i}"]`)
+      if (el) {
+        const screenshot = await el.screenshot({ type: 'png' })
+        images.set(i, `data:image/png;base64,${Buffer.from(screenshot).toString('base64')}`)
       }
     } catch (e) {
-      console.error(`Failed to screenshot SVG ${i}:`, e)
+      console.error(`Failed to screenshot ${label} ${i}:`, e)
     }
   }
 
-  return svgImages
+  return images
 }
