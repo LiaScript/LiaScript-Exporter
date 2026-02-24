@@ -287,15 +287,20 @@ async function toEPUB(
     )
     console.log(`Captured ${embedImages.size} embed cover(s)`)
 
+    console.log('Extracting ECharts diagrams...')
+    const chartImages = await extractChartSvgs(page)
+    console.log(`Extracted ${chartImages.size} chart(s)`)
+
     const toEntries = (map: Map<number, string>) => Array.from(map.entries()) as [number, string][]
     const payload = {
       svgImages: toEntries(svgImages),
       codeBlocks: toEntries(highlightedBlocks),
       abcImages: toEntries(abcImages),
       embedImages: toEntries(embedImages),
+      chartImages: toEntries(chartImages),
     }
     const chapters = await page.evaluate((data) => {
-      const { svgImages: svgImagesData, codeBlocks, abcImages: abcImagesData, embedImages: embedImagesData } = data
+      const { svgImages: svgImagesData, codeBlocks, abcImages: abcImagesData, embedImages: embedImagesData, chartImages: chartImagesData } = data
       const bodyClone = document.body.cloneNode(true) as HTMLElement
 
       // Remove problematic link tags
@@ -317,80 +322,83 @@ async function toEPUB(
         .querySelectorAll('.lia-code-control')
         .forEach((ctrl: Element) => ctrl.remove())
 
-      // Replace <lia-embed> elements with their pre-captured cover screenshots
-      bodyClone.querySelectorAll('lia-embed[data-embed-index]').forEach((embed: Element) => {
-        try {
-          const idx = parseInt(embed.getAttribute('data-embed-index') || '-1')
-          const imageData = embedImagesData.find((item: any) => item[0] === idx)
-          if (imageData && imageData[1]) {
-            const img = document.createElement('img')
-            img.src = imageData[1]
-            img.alt = 'Embedded media'
-            img.setAttribute('style', embed.getAttribute('style') || 'width:250px;height:250px;')
-            embed.replaceWith(img)
-          } else {
-            embed.remove()
-          }
-        } catch (e) {
-          console.error('Error replacing embed:', e)
-        }
-      })
-
-      // Replace ABC notation blocks with the pre-captured PNG screenshot
-      bodyClone
-        .querySelectorAll('.lia-code-terminal[data-abc-index]')
-        .forEach((terminal: Element) => {
+      // Helper: replace tagged elements with their pre-captured images
+      const replaceWithImage = (
+        selector: string,
+        dataAttr: string,
+        images: [number, string][],
+        options: {
+          alt: string | ((el: Element) => string)
+          wrapInFigure?: boolean           // true → wrap <img> in a new <figure>
+          reuseAsContainer?: boolean       // true → clear element innerHTML and append <img> inside it
+          imgStyle?: string | ((el: Element) => string)
+          figureStyle?: string
+        },
+      ) => {
+        const defaultImgStyle = 'max-width: 100%; height: auto; display: block; margin: 0 auto;'
+        bodyClone.querySelectorAll(selector).forEach((el: Element) => {
           try {
-            const abcIndex = parseInt(terminal.getAttribute('data-abc-index') || '-1')
-            const imageData = abcImagesData.find((item: any) => item[0] === abcIndex)
-            if (imageData && imageData[1]) {
+            const idx = parseInt(el.getAttribute(dataAttr) || '-1')
+            const entry = images.find((item: any) => item[0] === idx)
+            if (!entry || !entry[1]) {
+              el.remove()
+              return
+            }
+
+            const img = document.createElement('img')
+            img.src = entry[1]
+            img.alt = typeof options.alt === 'function' ? options.alt(el) : options.alt
+            const style = typeof options.imgStyle === 'function' ? options.imgStyle(el) : (options.imgStyle ?? defaultImgStyle)
+            img.setAttribute('style', style)
+
+            if (options.reuseAsContainer) {
+              el.innerHTML = ''
+              el.appendChild(img)
+              if (options.figureStyle) el.setAttribute('style', options.figureStyle)
+            } else if (options.wrapInFigure) {
               const figure = document.createElement('figure')
               figure.setAttribute(
                 'style',
-                'margin: 1.5em auto; text-align: center; page-break-inside: avoid;',
+                options.figureStyle || 'margin: 1.5em auto; text-align: center; page-break-inside: avoid;',
               )
-              const img = document.createElement('img')
-              img.src = imageData[1]
-              img.alt = 'ABC Music Notation'
-              img.setAttribute('style', 'max-width: 100%; height: auto; display: block; margin: 0 auto;')
               figure.appendChild(img)
-              terminal.replaceWith(figure)
+              el.replaceWith(figure)
             } else {
-              // No screenshot available — just remove the terminal block entirely
-              terminal.remove()
+              el.replaceWith(img)
             }
           } catch (e) {
-            console.error('Error replacing ABC block:', e)
+            console.error(`Error replacing ${selector}:`, e)
           }
         })
+      }
+
+      // Replace <lia-embed> elements with their pre-captured cover screenshots
+      replaceWithImage('lia-embed[data-embed-index]', 'data-embed-index', embedImagesData, {
+        alt: 'Embedded media',
+        imgStyle: (el) => el.getAttribute('style') || 'width:250px;height:250px;',
+      })
+
+      // Replace <lia-chart> elements with their extracted SVG images
+      replaceWithImage('lia-chart[data-chart-index]', 'data-chart-index', chartImagesData, {
+        alt: (el) => el.getAttribute('aria-label') || 'Chart',
+        wrapInFigure: true,
+      })
+
+      // Replace ABC notation blocks with pre-captured SVG
+      replaceWithImage('.lia-code-terminal[data-abc-index]', 'data-abc-index', abcImagesData, {
+        alt: 'ABC Music Notation',
+        wrapInFigure: true,
+      })
 
       // Replace SVG diagrams with PNG images for better EPUB compatibility
-      bodyClone
-        .querySelectorAll('figure.lia-figure[data-svg-index]')
-        .forEach((figure: any) => {
-          try {
-            const svgIndex = parseInt(figure.getAttribute('data-svg-index') || '-1')
-            const imageData = svgImagesData.find((item: any) => item[0] === svgIndex)
-
-            if (imageData && imageData[1]) {
-              const img = document.createElement('img')
-              img.src = imageData[1]
-              img.alt = 'ASCII Diagram'
-              img.setAttribute('style', 'max-width: 100%; height: auto; display: block; margin: 0 auto;')
-
-              figure.innerHTML = ''
-              figure.appendChild(img)
-              figure.setAttribute(
-                'style',
-                'margin: 1.5em auto; padding: 1.5em; background-color: #f8f9fa; ' +
-                  'border: 1px solid #dee2e6; border-radius: 4px; text-align: center; ' +
-                  'page-break-inside: avoid; max-width: 90%;',
-              )
-            }
-          } catch (e) {
-            console.error('Error replacing SVG with image:', e)
-          }
-        })
+      replaceWithImage('figure.lia-figure[data-svg-index]', 'data-svg-index', svgImagesData, {
+        alt: 'ASCII Diagram',
+        reuseAsContainer: true,
+        figureStyle:
+          'margin: 1.5em auto; padding: 1.5em; background-color: #f8f9fa; ' +
+          'border: 1px solid #dee2e6; border-radius: 4px; text-align: center; ' +
+          'page-break-inside: avoid; max-width: 90%;',
+      })
 
       // Process terminal output blocks
       bodyClone.querySelectorAll('.lia-code-terminal').forEach((terminal: Element) => {
@@ -745,6 +753,48 @@ async function screenshotAbcBlocks(page: Page): Promise<Map<number, string>> {
   }
 
   return abcImages
+}
+
+/**
+ * Extracts SVG from every <lia-chart> element (ECharts, open Shadow DOM)
+ *
+ * @param page - Puppeteer page instance
+ * @returns Map of chart indexes to base64 SVG data URIs
+ */
+async function extractChartSvgs(page: Page): Promise<Map<number, string>> {
+  const count = await page.evaluate(() => {
+    let idx = 0
+    document.querySelectorAll('lia-chart').forEach((el: Element) => {
+      el.setAttribute('data-chart-index', idx.toString())
+      idx++
+    })
+    return idx
+  })
+
+  const images = new Map<number, string>()
+  const elements = await page.$$('lia-chart')
+
+  for (let i = 0; i < count; i++) {
+    try {
+      const el = elements[i]
+      if (!el) continue
+
+      const svgDataUri = await page.evaluate((host: Element) => {
+        const svg = host.shadowRoot?.querySelector('svg')
+        if (!svg) return null
+        const svgString = new XMLSerializer().serializeToString(svg)
+        return 'data:image/svg+xml;base64,' + btoa(svgString)
+      }, el)
+
+      if (svgDataUri) {
+        images.set(i, svgDataUri)
+      }
+    } catch (e) {
+      console.error(`Failed to extract chart ${i}:`, e)
+    }
+  }
+
+  return images
 }
 
 /**
