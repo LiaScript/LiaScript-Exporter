@@ -268,12 +268,17 @@ async function toEPUB(
     const highlightedBlocks = await extractHighlightedCode(page)
     console.log(`Extracted ${highlightedBlocks.size} highlighted code block(s)`)
 
-    const payload: { svgImages: [number, string][]; codeBlocks: [number, string][] } = {
+    console.log('Screenshotting ABC music notation blocks...')
+    const abcImages = await screenshotAbcBlocks(page)
+    console.log(`Captured ${abcImages.size} ABC notation block(s)`)
+
+    const payload: { svgImages: [number, string][]; codeBlocks: [number, string][]; abcImages: [number, string][] } = {
       svgImages: Array.from(svgImages.entries()) as [number, string][],
       codeBlocks: Array.from(highlightedBlocks.entries()) as [number, string][],
+      abcImages: Array.from(abcImages.entries()) as [number, string][],
     }
-    const chapters = await page.evaluate((data: { svgImages: [number, string][]; codeBlocks: [number, string][] }) => {
-      const { svgImages: svgImagesData, codeBlocks } = data
+    const chapters = await page.evaluate((data: { svgImages: [number, string][]; codeBlocks: [number, string][]; abcImages: [number, string][] }) => {
+      const { svgImages: svgImagesData, codeBlocks, abcImages: abcImagesData } = data
       const bodyClone = document.body.cloneNode(true) as HTMLElement
 
       // Remove problematic link tags
@@ -289,6 +294,39 @@ async function toEPUB(
       bodyClone
         .querySelectorAll('.lia-code__copy, .lia-code__copy--inverted')
         .forEach((btn: Element) => btn.remove())
+
+      // Remove run/version control toolbar
+      bodyClone
+        .querySelectorAll('.lia-code-control')
+        .forEach((ctrl: Element) => ctrl.remove())
+
+      // Replace ABC notation blocks with the pre-captured PNG screenshot
+      bodyClone
+        .querySelectorAll('.lia-code-terminal[data-abc-index]')
+        .forEach((terminal: Element) => {
+          try {
+            const abcIndex = parseInt(terminal.getAttribute('data-abc-index') || '-1')
+            const imageData = abcImagesData.find((item: any) => item[0] === abcIndex)
+            if (imageData && imageData[1]) {
+              const figure = document.createElement('figure')
+              figure.setAttribute(
+                'style',
+                'margin: 1.5em auto; text-align: center; page-break-inside: avoid;',
+              )
+              const img = document.createElement('img')
+              img.src = imageData[1]
+              img.alt = 'ABC Music Notation'
+              img.setAttribute('style', 'max-width: 100%; height: auto; display: block; margin: 0 auto;')
+              figure.appendChild(img)
+              terminal.replaceWith(figure)
+            } else {
+              // No screenshot available — just remove the terminal block entirely
+              terminal.remove()
+            }
+          } catch (e) {
+            console.error('Error replacing ABC block:', e)
+          }
+        })
 
       // Replace SVG diagrams with PNG images for better EPUB compatibility
       bodyClone
@@ -321,6 +359,12 @@ async function toEPUB(
       // Process terminal output blocks
       bodyClone.querySelectorAll('.lia-code-terminal').forEach((terminal: Element) => {
         try {
+          // Skip if this is an ABC block that wasn't replaced (already handled above)
+          if (terminal.querySelector('lia-abcjs')) {
+            terminal.remove()
+            return
+          }
+
           const terminalOutput = terminal.querySelector('lia-terminal')
           if (!terminalOutput) return
 
@@ -541,53 +585,64 @@ async function extractHighlightedCode(page: Page): Promise<Map<number, string>> 
         let codeHTML = ''
         let lineIndex = 0
 
-        aceContent.querySelectorAll('.ace_line_group').forEach((lineGroup: Element) => {
-          lineGroup.querySelectorAll('.ace_line').forEach((line: Element) => {
-            let lineHTML = ''
-
-            if (lineIndex < lineNumbers.length) {
-              lineHTML += `<span style="color:#858585;display:inline-block;width:3em;text-align:right;margin-right:1em;user-select:none;">${lineNumbers[lineIndex]}</span>`
-              lineIndex++
-            }
-
-            // Walk childNodes instead of querySelectorAll so plain text nodes
-            // (spaces between tokens) are captured alongside styled span tokens
-            const hasTokenSpans = line.querySelector('span[class*="ace_"]') !== null
-            if (hasTokenSpans) {
-              line.childNodes.forEach((node: ChildNode) => {
-                if (node.nodeType === Node.TEXT_NODE) {
-                  // Plain text node — raw space/whitespace between tokens
-                  const text = node.textContent || ''
-                  // Strip Ace zero-width / invisible control chars but keep real spaces
-                  const cleaned = text.replace(/[\u200B-\u200D\uFEFF]/g, '')
-                  if (cleaned) lineHTML += escape(cleaned)
-                } else if (node.nodeType === Node.ELEMENT_NODE) {
-                  const tokenEl = node as HTMLElement
-                  // Recurse one level: Ace sometimes nests spans (e.g. ace_indent_guide inside ace_indent)
-                  const text = tokenEl.textContent || ''
-                  if (!text) return
-                  const cleaned = text.replace(/[\u200B-\u200D\uFEFF]/g, '')
-                  if (!cleaned) return
-                  const color = window.getComputedStyle(tokenEl).color
-                  const fontWeight = window.getComputedStyle(tokenEl).fontWeight
-                  const fontStyle = window.getComputedStyle(tokenEl).fontStyle
-                  const escaped = escape(cleaned)
-                  let style = ''
-                  if (color && color !== 'rgb(0, 0, 0)' && color !== 'rgba(0, 0, 0, 0)') {
-                    style += `color:${color};`
-                  }
-                  if (fontWeight === 'bold' || parseInt(fontWeight) >= 700) style += 'font-weight:bold;'
-                  if (fontStyle === 'italic') style += 'font-style:italic;'
-                  lineHTML += style ? `<span style="${style}">${escaped}</span>` : escaped
+        // Helper: render a single .ace_line element's content as HTML string
+        const renderLineContent = (line: Element): string => {
+          let lineHTML = ''
+          const hasTokenSpans = line.querySelector('span[class*="ace_"]') !== null
+          if (hasTokenSpans) {
+            line.childNodes.forEach((node: ChildNode) => {
+              if (node.nodeType === Node.TEXT_NODE) {
+                // Plain text node — raw space/whitespace between tokens
+                const text = node.textContent || ''
+                // Strip Ace zero-width / invisible control chars but keep real spaces
+                const cleaned = text.replace(/[\u200B-\u200D\uFEFF]/g, '')
+                if (cleaned) lineHTML += escape(cleaned)
+              } else if (node.nodeType === Node.ELEMENT_NODE) {
+                const tokenEl = node as HTMLElement
+                // Recurse one level: Ace sometimes nests spans (e.g. ace_indent_guide inside ace_indent)
+                const text = tokenEl.textContent || ''
+                if (!text) return
+                const cleaned = text.replace(/[\u200B-\u200D\uFEFF]/g, '')
+                if (!cleaned) return
+                const color = window.getComputedStyle(tokenEl).color
+                const fontWeight = window.getComputedStyle(tokenEl).fontWeight
+                const fontStyle = window.getComputedStyle(tokenEl).fontStyle
+                const escaped = escape(cleaned)
+                let style = ''
+                if (color && color !== 'rgb(0, 0, 0)' && color !== 'rgba(0, 0, 0, 0)') {
+                  style += `color:${color};`
                 }
-              })
-            } else {
-              const cleanText = (line.textContent || '').replace(/[\u200B-\u200D\uFEFF\n]/g, '')
-              lineHTML += escape(cleanText)
-            }
+                if (fontWeight === 'bold' || parseInt(fontWeight) >= 700) style += 'font-weight:bold;'
+                if (fontStyle === 'italic') style += 'font-style:italic;'
+                lineHTML += style ? `<span style="${style}">${escaped}</span>` : escaped
+              }
+            })
+          } else {
+            const cleanText = (line.textContent || '').replace(/[\u200B-\u200D\uFEFF\n]/g, '')
+            lineHTML += escape(cleanText)
+          }
+          return lineHTML
+        }
 
-            codeHTML += `<span style="display:block;">${lineHTML}\n</span>`
+        aceContent.querySelectorAll('.ace_line_group').forEach((lineGroup: Element) => {
+          // Each .ace_line_group represents ONE logical source line
+          const subLines = lineGroup.querySelectorAll('.ace_line')
+          if (subLines.length === 0) return
+
+          let lineHTML = ''
+
+          // Emit the gutter line number for this logical line
+          if (lineIndex < lineNumbers.length) {
+            lineHTML += `<span style="color:#858585;display:inline-block;width:3em;text-align:right;margin-right:1em;user-select:none;">${lineNumbers[lineIndex]}</span>`
+            lineIndex++
+          }
+
+          // Concatenate content from every sub-line (soft-wrap continuations)
+          subLines.forEach((line: Element) => {
+            lineHTML += renderLineContent(line)
           })
+
+          codeHTML += `<span style="display:block;">${lineHTML}\n</span>`
         })
 
         const html =
@@ -608,6 +663,52 @@ async function extractHighlightedCode(page: Page): Promise<Map<number, string>> 
   })
 
   return new Map(result)
+}
+
+/**
+ * Screenshots every <lia-abcjs> music-notation element
+ *
+ * @param page - Puppeteer page instance
+ * @returns Map of ABC block indexes to base64 PNG data URIs
+ */
+async function screenshotAbcBlocks(page: Page): Promise<Map<number, string>> {
+  const abcImages = new Map<number, string>()
+
+  // Tag each .lia-code-terminal that wraps a <lia-abcjs> element
+  const abcCount = await page.evaluate(() => {
+    let abcIndex = 0
+    document.querySelectorAll('.lia-code-terminal').forEach((terminal: Element) => {
+      if (terminal.querySelector('lia-abcjs')) {
+        terminal.setAttribute('data-abc-index', abcIndex.toString())
+        abcIndex++
+      }
+    })
+    return abcIndex
+  })
+
+  // Find each <lia-abcjs> element and capture a screenshot of its rendered SVG content
+  for (let i = 0; i < abcCount; i++) {
+    try {
+      const elements = await page.$$('lia-abcjs')
+      const el = elements[i]
+      if (!el) continue
+
+      const svgDataUri = await page.evaluate((host: Element) => {
+        const svg = host.shadowRoot?.getElementById('paper')?.querySelector('svg')
+        if (!svg) return null
+        const svgString = new XMLSerializer().serializeToString(svg)
+        return 'data:image/svg+xml;base64,' + btoa(svgString)
+      }, el)
+
+      if (svgDataUri) {
+        abcImages.set(i, svgDataUri)
+      }
+    } catch (e) {
+      console.error(`Failed to convert ABC block ${i}:`, e)
+    }
+  }
+
+  return abcImages
 }
 
 /**
