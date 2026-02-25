@@ -291,6 +291,10 @@ async function toEPUB(
     const chartImages = await extractChartSvgs(page)
     console.log(`Extracted ${chartImages.size} chart(s)`)
 
+    console.log('Extracting math formulas...')
+    const formulaHtml = await extractFormulaHtml(page)
+    console.log(`Extracted ${formulaHtml.size} formula(s)`)
+
     const toEntries = (map: Map<number, string>) => Array.from(map.entries()) as [number, string][]
     const payload = {
       svgImages: toEntries(svgImages),
@@ -298,9 +302,17 @@ async function toEPUB(
       abcImages: toEntries(abcImages),
       embedImages: toEntries(embedImages),
       chartImages: toEntries(chartImages),
+      formulas: toEntries(formulaHtml),
     }
     const chapters = await page.evaluate((data) => {
-      const { svgImages: svgImagesData, codeBlocks, abcImages: abcImagesData, embedImages: embedImagesData, chartImages: chartImagesData } = data
+      const { 
+        svgImages: svgImagesData, 
+        codeBlocks, 
+        abcImages: abcImagesData, 
+        embedImages: embedImagesData, 
+        chartImages: chartImagesData, 
+        formulas: formulasData 
+      } = data
       const bodyClone = document.body.cloneNode(true) as HTMLElement
 
       // Remove problematic link tags
@@ -400,11 +412,60 @@ async function toEPUB(
           'page-break-inside: avoid; max-width: 90%;',
       })
 
+      // Replace <lia-formula> elements with their pre-extracted MathML/KaTeX HTML
+      bodyClone.querySelectorAll('lia-formula[data-formula-index]').forEach((formula: Element) => {
+        try {
+          const idx = parseInt(formula.getAttribute('data-formula-index') || '-1')
+          const entry = formulasData.find((item: any) => item[0] === idx)
+          if (entry && entry[1]) {
+            const isBlock = formula.getAttribute('displaymode') === 'true'
+            const wrapper = document.createElement(isBlock ? 'div' : 'span')
+            wrapper.innerHTML = entry[1]
+
+            // Set display attribute on <math> element for EPUB3 MathML rendering
+            const mathEl = wrapper.querySelector('math')
+            if (mathEl) {
+              mathEl.setAttribute('display', isBlock ? 'block' : 'inline')
+              if (isBlock) {
+                wrapper.setAttribute('style', 'text-align: center; margin: 1em 0;')
+              }
+            }
+
+            formula.replaceWith(wrapper)
+          }
+        } catch (e) {
+          console.error('Error replacing formula:', e)
+        }
+      })
+
       // Process terminal output blocks
       bodyClone.querySelectorAll('.lia-code-terminal').forEach((terminal: Element) => {
         try {
-          // Skip if this is an ABC block that wasn't replaced (already handled above)
+          // Skip if this is an ABC block (already handled above)
           if (terminal.querySelector('lia-abcjs')) {
+            terminal.remove()
+            return
+          }
+
+          // If the terminal contains rendered MathML (from @runFormula macro)
+          // Extract the formula and replace the terminal with it
+          const mathEls = terminal.querySelectorAll('math')
+          if (mathEls.length > 0) {
+            const container = document.createElement('div')
+            container.setAttribute(
+              'style',
+              'text-align: center; margin: 1em 0; background-color: #1e1e1e; color: #d4d4d4; padding: 1em; border-radius: 4px;'
+            )
+            mathEls.forEach((m) => {
+              m.setAttribute('display', 'block')
+              container.appendChild(m.cloneNode(true))
+            })
+            terminal.replaceWith(container)
+            return
+          }
+
+          // If terminal still has an unreplaced <lia-formula> (no data extracted), remove it
+          if (terminal.querySelector('lia-formula')) {
             terminal.remove()
             return
           }
@@ -795,6 +856,67 @@ async function extractChartSvgs(page: Page): Promise<Map<number, string>> {
   }
 
   return images
+}
+
+/**
+ * Extracts rendered KaTeX HTML from every <lia-formula> element (open Shadow DOM)
+ *
+ * @param page - Puppeteer page instance
+ * @returns Map of formula indexes to rendered KaTeX HTML strings
+ */
+async function extractFormulaHtml(page: Page): Promise<Map<number, string>> {
+  const result = await page.evaluate(() => {
+    const formulas: [number, string][] = []
+    let idx = 0
+
+    document.querySelectorAll('lia-formula').forEach((el: Element) => {
+      el.setAttribute('data-formula-index', idx.toString())
+
+      try {
+        const shadow = el.shadowRoot
+        if (!shadow) {
+          formulas.push([idx, ''])
+          idx++
+          return
+        }
+
+        // Collect all <style> content from the Shadow DOM
+        let styleHTML = ''
+        shadow.querySelectorAll('style').forEach((s: Element) => {
+          styleHTML += `<style>${s.textContent || ''}</style>`
+        })
+
+        // Get the rendered KaTeX span
+        const span = shadow.querySelector('span')
+        if (!span) {
+          formulas.push([idx, ''])
+          idx++
+          return
+        }
+
+        const spanClone = span.cloneNode(true) as HTMLElement
+        const mathml = spanClone.querySelector('.katex-mathml')
+
+        if (mathml) {
+          // Extract the <math> element from inside .katex-mathml
+          const mathEl = mathml.querySelector('math')
+          formulas.push([idx, mathEl ? mathEl.outerHTML : spanClone.outerHTML])
+        } else {
+          // Fallback: strip MathML and use visual HTML if no MathML found
+          spanClone.querySelectorAll('.katex-mathml').forEach((m) => m.remove())
+          formulas.push([idx, styleHTML + spanClone.outerHTML])
+        }
+      } catch (e) {
+        formulas.push([idx, ''])
+      }
+
+      idx++
+    })
+
+    return formulas
+  })
+
+  return new Map(result)
 }
 
 /**
