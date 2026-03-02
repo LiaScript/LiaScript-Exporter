@@ -278,6 +278,10 @@ async function toEPUB(
     const abcImages = await screenshotAbcBlocks(page)
     console.log(`Captured ${abcImages.size} ABC notation block(s)`)
 
+    console.log('Screenshotting standalone ABC music notation blocks...')
+    const standaloneAbcImages = await screenshotStandaloneAbcBlocks(page)
+    console.log(`Captured ${standaloneAbcImages.size} standalone ABC notation block(s)`)
+
     console.log('Screenshotting embedded media (Spotify, SoundCloud, etc.)...')
     const embedImages = await screenshotTaggedElements(
       page,
@@ -295,23 +299,61 @@ async function toEPUB(
     const formulaHtml = await extractFormulaHtml(page)
     console.log(`Extracted ${formulaHtml.size} formula(s)`)
 
+    // Hide formula accessibility/MathML content inside SVG foreignObjects before screenshotting
+    await page.evaluate(() => {
+      document.querySelectorAll('svg foreignObject lia-formula').forEach((formula) => {
+        formula.childNodes.forEach((child) => {
+          if (child.nodeType === Node.ELEMENT_NODE) {
+            (child as HTMLElement).style.display = 'none'
+          }
+        })
+        const shadow = formula.shadowRoot
+        if (shadow) {
+          shadow.querySelectorAll('.katex-mathml').forEach((mathml) => {
+            (mathml as HTMLElement).style.display = 'none'
+          })
+        }
+      })
+    })
+
+    console.log('Screenshotting inline SVGs (foreignObject, interactive)...')
+    const inlineSvgImages = await screenshotTaggedElements(
+      page,
+      'svg',
+      'data-inline-svg-index',
+      'inline SVG',
+      // Only content SVGs with viewBox, not inside containers already handled
+      `if (!el.hasAttribute('viewBox')) return false;
+       const skip = el.closest('.lia-figure, .lia-code, lia-chart, lia-abcjs, lia-embed');
+       if (skip) return false;
+       // Skip tiny decorative SVGs (icons, spinners, etc.)
+       const rect = el.getBoundingClientRect();
+       if (rect.width < 50 || rect.height < 50) return false;
+       return true;`,
+    )
+    console.log(`Captured ${inlineSvgImages.size} inline SVG(s)`)
+
     const toEntries = (map: Map<number, string>) => Array.from(map.entries()) as [number, string][]
     const payload = {
       svgImages: toEntries(svgImages),
       codeBlocks: toEntries(highlightedBlocks),
       abcImages: toEntries(abcImages),
+      standaloneAbcImages: toEntries(standaloneAbcImages),
       embedImages: toEntries(embedImages),
       chartImages: toEntries(chartImages),
       formulas: toEntries(formulaHtml),
+      inlineSvgImages: toEntries(inlineSvgImages),
     }
     const chapters = await page.evaluate((data) => {
       const { 
         svgImages: svgImagesData, 
         codeBlocks, 
-        abcImages: abcImagesData, 
+        abcImages: abcImagesData,
+        standaloneAbcImages: standaloneAbcImagesData,
         embedImages: embedImagesData, 
         chartImages: chartImagesData, 
-        formulas: formulasData 
+        formulas: formulasData,
+        inlineSvgImages: inlineSvgImagesData
       } = data
       const bodyClone = document.body.cloneNode(true) as HTMLElement
 
@@ -402,6 +444,12 @@ async function toEPUB(
         wrapInFigure: true,
       })
 
+      // Replace standalone ABC notation elements (from template macros like @ABCJS.render)
+      replaceWithImage('lia-abcjs[data-standalone-abc-index]', 'data-standalone-abc-index', standaloneAbcImagesData, {
+        alt: 'ABC Music Notation',
+        wrapInFigure: true,
+      })
+
       // Replace SVG diagrams with PNG images for better EPUB compatibility
       replaceWithImage('figure.lia-figure[data-svg-index]', 'data-svg-index', svgImagesData, {
         alt: 'ASCII Diagram',
@@ -410,6 +458,14 @@ async function toEPUB(
           'margin: 1.5em auto; padding: 1.5em; background-color: #f8f9fa; ' +
           'border: 1px solid #dee2e6; border-radius: 4px; text-align: center; ' +
           'page-break-inside: avoid; max-width: 90%;',
+      })
+
+      // Replace inline SVGs (foreignObject, interactive content) with PNG screenshots
+      replaceWithImage('svg[data-inline-svg-index]', 'data-inline-svg-index', inlineSvgImagesData, {
+        alt: 'SVG Graphic',
+        wrapInFigure: true,
+        figureStyle:
+          'margin: 1.5em auto; text-align: center; page-break-inside: avoid;',
       })
 
       // Replace <lia-formula> elements with their pre-extracted MathML/KaTeX HTML
@@ -546,6 +602,18 @@ async function toEPUB(
         return [{ title: 'Content', data: bodyClone.outerHTML }]
       }
     }, payload)
+
+    // Sanitize chapter HTML for XHTML/XML compatibility
+    for (const chapter of chapters) {
+      // Strip HTML comments — XML forbids "--" inside comment bodies
+      chapter.data = chapter.data.replace(/<!--[\s\S]*?-->/g, '')
+
+      // Escape namespace-prefixed tags like <jc:trillian.mit.edu> that aren't valid HTML elements
+      chapter.data = chapter.data.replace(
+        /<((?!\/?\s*(?:svg|math|xlink|xml|xmlns)[:\s>])[a-zA-Z][a-zA-Z0-9]*:[^\s>]+[^>]*)>/g,
+        '&lt;$1&gt;',
+      )
+    }
 
     // Read CSS and fonts from the pdf assets folder
     const pdfAssetsPath = path.join(dirname, 'assets', 'pdf')
@@ -814,6 +882,52 @@ async function screenshotAbcBlocks(page: Page): Promise<Map<number, string>> {
   }
 
   return abcImages
+}
+
+/**
+ * Extracts SVG from standalone <lia-abcjs> elements (NOT inside .lia-code-terminal).
+ * These come from imported template macros like @ABCJS.render.
+ *
+ * @param page - Puppeteer page instance
+ * @returns Map of standalone ABC indexes to base64 SVG data URIs
+ */
+async function screenshotStandaloneAbcBlocks(page: Page): Promise<Map<number, string>> {
+  const standaloneAbcImages = new Map<number, string>()
+
+  // Tag each <lia-abcjs> that is NOT inside a .lia-code-terminal
+  const count = await page.evaluate(() => {
+    let idx = 0
+    document.querySelectorAll('lia-abcjs').forEach((el: Element) => {
+      if (!el.closest('.lia-code-terminal')) {
+        el.setAttribute('data-standalone-abc-index', idx.toString())
+        idx++
+      }
+    })
+    return idx
+  })
+
+  // Extract SVG from each standalone <lia-abcjs> element's Shadow DOM
+  for (let i = 0; i < count; i++) {
+    try {
+      const el = await page.$(`lia-abcjs[data-standalone-abc-index="${i}"]`)
+      if (!el) continue
+
+      const svgDataUri = await page.evaluate((host: Element) => {
+        const svg = host.shadowRoot?.getElementById('paper')?.querySelector('svg')
+        if (!svg) return null
+        const svgString = new XMLSerializer().serializeToString(svg)
+        return 'data:image/svg+xml;base64,' + btoa(svgString)
+      }, el)
+
+      if (svgDataUri) {
+        standaloneAbcImages.set(i, svgDataUri)
+      }
+    } catch (e) {
+      console.error(`Failed to convert standalone ABC block ${i}:`, e)
+    }
+  }
+
+  return standaloneAbcImages
 }
 
 /**
