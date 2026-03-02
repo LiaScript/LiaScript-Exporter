@@ -533,7 +533,7 @@ async function toEPUB(
             chapterTitle = hTag.textContent.trim()
           }
 
-          main.querySelectorAll('script, style').forEach((el: Element) => el.remove())
+          main.querySelectorAll('script').forEach((el: Element) => el.remove())
 
           const tempDiv = document.createElement('div')
           tempDiv.appendChild(main.cloneNode(true))
@@ -542,7 +542,7 @@ async function toEPUB(
 
         return chapterList
       } else {
-        bodyClone.querySelectorAll('script, style').forEach((el: Element) => el.remove())
+        bodyClone.querySelectorAll('script').forEach((el: Element) => el.remove())
         return [{ title: 'Content', data: bodyClone.outerHTML }]
       }
     }, payload)
