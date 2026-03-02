@@ -2,8 +2,8 @@ import * as helper from './helper'
 import * as COLOR from '../colorize'
 import * as path from 'path'
 import puppeteer, { Browser, Page } from 'puppeteer'
-import { EPub } from '@lesjoursfr/html-to-epub'
 import * as fs from 'fs'
+import { tmpdir } from 'os'
 
 // Default EPUB generation settings
 const DEFAULT_TIMEOUT_MS = 15000 // 15 seconds
@@ -239,8 +239,6 @@ export async function exporter(argument: EpubExportArguments) {
           console.error('Failed to close browser:', closeError)
         }
       }
-
-      process.exit(0)
     }
   }
 }
@@ -702,6 +700,7 @@ async function toEPUB(
       version: (argument['epub-version'] || DEFAULT_EPUB_VERSION) as 2 | 3,
       content: chapters,
       verbose: false,
+      tempDir: path.join(tmpdir(), 'liaex-epub-temp'),
     }
 
     if (argument['epub-publisher']) epubOptions.publisher = argument['epub-publisher']
@@ -713,6 +712,11 @@ async function toEPUB(
       ? argument.output
       : argument.output + '.epub'
 
+    // Use dynamic import with a variable to prevent Parcel from converting it to require()
+    // The @lesjoursfr/html-to-epub package is ESM-only and cannot be require()'d
+    const epubModuleName = '@lesjoursfr/html-to-epub'
+    const epubModule = await (new Function('m', 'return import(m)') as (m: string) => Promise<any>)(epubModuleName)
+    const EPub = epubModule.EPub
     await new EPub(epubOptions, outputPath).render()
     console.log(`EPUB successfully generated: ${outputPath}`)
   } catch (e) {
