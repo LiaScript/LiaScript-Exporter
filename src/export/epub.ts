@@ -584,9 +584,14 @@ async function toEPUB(
       if (mainElements.length > 0) {
         mainElements.forEach((main: Element, index: number) => {
           let chapterTitle = `Chapter ${index + 1}`
-          const hTag = main.querySelector('header')?.querySelector('.h1, .h2, .h3, .h4, .h5, .h6')
+          const headerEl = main.querySelector('header')
+          const hTag = headerEl?.querySelector('.h1, .h2, .h3, .h4, .h5, .h6')
           if (hTag?.textContent) {
             chapterTitle = hTag.textContent.trim()
+          }
+          // Remove the header from DOM to avoid duplicate titles
+          if (headerEl) {
+            headerEl.remove()
           }
 
           main.querySelectorAll('script').forEach((el: Element) => el.remove())
