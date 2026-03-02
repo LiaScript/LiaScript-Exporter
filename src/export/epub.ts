@@ -239,6 +239,8 @@ export async function exporter(argument: EpubExportArguments) {
           console.error('Failed to close browser:', closeError)
         }
       }
+
+      process.exit(0)
     }
   }
 }
@@ -683,7 +685,7 @@ async function toEPUB(
     let customCSS = allCSS
     if (argument['epub-stylesheet']) {
       try {
-        customCSS = fs.readFileSync(path.resolve(argument['epub-stylesheet']), 'utf-8') + '\n' + customCSS
+        customCSS = customCSS + '\n' + fs.readFileSync(path.resolve(argument['epub-stylesheet']), 'utf-8')
       } catch (e) {
         console.warn(`Warning: Could not read custom stylesheet: ${e}`)
       }
