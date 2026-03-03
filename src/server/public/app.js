@@ -229,7 +229,7 @@ function initializeUpload() {
         }
       } catch (error) {
         console.error('Error opening file dialog:', error)
-        alert('Fehler beim Öffnen des Dateiauswahl-Dialogs')
+        alert(window.i18n ? window.i18n.t('submit.errorFileDialog') : 'Error opening file dialog')
       }
     } else {
       // Fallback: create temporary file input for browser mode
@@ -484,21 +484,21 @@ function initializeForm() {
 
     // Validation
     if (currentSourceType === 'upload' && selectedFiles.length === 0) {
-      alert('Bitte laden Sie mindestens eine Datei hoch.')
+      alert(window.i18n ? window.i18n.t('submit.errorNoFile') : 'Please upload at least one file.')
       return
     }
 
     if (currentSourceType === 'git') {
       const gitUrl = document.getElementById('gitUrl').value.trim()
       if (!gitUrl) {
-        alert('Bitte geben Sie eine Git-Repository-URL ein.')
+        alert(window.i18n ? window.i18n.t('submit.errorNoGitUrl') : 'Please enter a Git repository URL.')
         return
       }
     }
 
     // Disable submit button
     submitBtn.disabled = true
-    submitBtn.textContent = 'Export wird gestartet...'
+    submitBtn.textContent = window.i18n ? window.i18n.t('submit.starting') : 'Starting export...'
 
     try {
       const formData = new FormData()
@@ -530,7 +530,7 @@ function initializeForm() {
       } else if (selectedFormat) {
         formData.append('format', selectedFormat.value)
       } else {
-        alert('Bitte wählen Sie ein Export-Ziel aus.')
+        alert(window.i18n ? window.i18n.t('submit.errorNoTarget') : 'Please select an export target.')
         return
       }
 
@@ -557,7 +557,7 @@ function initializeForm() {
 
       if (!response.ok) {
         const error = await response.json()
-        throw new Error(error.error || 'Export fehlgeschlagen')
+        throw new Error(error.error || (window.i18n ? window.i18n.t('submit.errorFailed') : 'Export failed'))
       }
 
       const result = await response.json()
@@ -568,7 +568,7 @@ function initializeForm() {
       selectedFiles = []
       updateFileList()
     } catch (error) {
-      alert('Fehler beim Erstellen des Exports: ' + error.message)
+      alert((window.i18n ? window.i18n.t('submit.errorCreating') : 'Error creating export: ') + error.message)
     } finally {
       submitBtn.disabled = false
       submitBtn.innerHTML = `
@@ -577,7 +577,7 @@ function initializeForm() {
           <polyline points="7 10 12 15 17 10"></polyline>
           <line x1="12" y1="15" x2="12" y2="3"></line>
         </svg>
-        Export starten
+        ${window.i18n ? window.i18n.t('submit.button') : 'Start Export'}
       `
     }
   })
@@ -594,9 +594,9 @@ function showConfirmation(result) {
   const closeBtn = document.getElementById('closeModal')
 
   details.innerHTML = `
-    <p><strong>Job-ID:</strong> ${result.jobId}</p>
-    <p><strong>Position in Warteschlange:</strong> ${result.queuePosition}</p>
-    <p class="success-message">Ihr Export wurde erfolgreich zur Warteschlange hinzugefügt.</p>
+    <p><strong>${window.i18n ? window.i18n.t('modal.jobId') : 'Job ID'}:</strong> ${result.jobId}</p>
+    <p><strong>${window.i18n ? window.i18n.t('modal.queuePosition') : 'Position in queue'}:</strong> ${result.queuePosition}</p>
+    <p class="success-message">${window.i18n ? window.i18n.t('modal.successMessage') : 'Your export has been successfully added to the queue.'}</p>
   `
 
   statusLink.href = `/status.html?jobId=${result.jobId}`
