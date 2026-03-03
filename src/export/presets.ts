@@ -23,20 +23,20 @@ export function help() {
 
   console.log('  Show configuration for a specific preset:')
   console.log(
-    COLOR.italic('    node dist/index.js -f presets --moodle4x-scorm2004\n'),
+    COLOR.italic('    node dist/index.js -f presets --moodle\n'),
   )
 
   console.log('  Export with preset configuration:')
   console.log(
     COLOR.italic(
-      '    node dist/index.js -i course.md -f presets --moodle4x-scorm2004 -o output\n',
+      '    node dist/index.js -i course.md -f presets --moodle -o output\n',
     ),
   )
 
   console.log('  Override preset parameters with additional flags:')
   console.log(
     COLOR.italic(
-      '    node dist/index.js -i course.md -f presets --moodle4x-scorm2004 --scorm-organization "My Org" -o output\n',
+      '    node dist/index.js -i course.md -f presets --moodle --scorm-organization "My Org" -o output\n',
     ),
   )
 

@@ -71,7 +71,7 @@ async function handlePresetsMode(): Promise<void> {
       key !== 'input',
   )
 
-  // Check if a preset ID is specified (as a flag like --moodle4x-scorm2004)
+  // Check if a preset ID is specified (as a flag like --moodle)
   const presetId = presetFlags.length > 0 ? presetFlags[0] : null
 
   if (!presetId) {

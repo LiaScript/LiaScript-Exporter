@@ -1,12 +1,13 @@
 presets:
-  - id: moodle4x-scorm2004
+  - id: moodle
     name: Moodle
     logo: 🎓
-    format: scorm2004
-    subtitle: SCORM 2004
+    format: scorm1.2
+    subtitle: SCORM 1.2
     description: >
       Moodle ist das weltweit am häufigsten verwendete Open-Source-Lernmanagementsystem.
-      Diese Konfiguration verwendet SCORM 2004 für maximale Kompatibilität mit Moodle 3.x und 4.x.
+      Diese Konfiguration verwendet SCORM 1.2 mit Embed-Modus für Moodle 4.x Kompatibilität.
+      Für Moodle 3.x empfehlen wir stattdessen den iframe-Modus.
       <a href='https://moodle.org' target='_blank'>Mehr erfahren</a>
     options:
       # SCORM-spezifische Einstellungen
@@ -18,7 +19,7 @@ presets:
       typicalDuration: "PT0H5M0S"
       scormIframe: false
       scormEmbed: true  # Empfohlen für Moodle 4
-      format: scorm2004
+      format: scorm1.2
 
   - id: ilias
     name: ILIAS
@@ -82,11 +83,11 @@ presets:
   - id: openolat
     name: OpenOlat
     logo: 🔓
-    format: scorm2004
-    subtitle: SCORM 2004
+    format: scorm1.2
+    subtitle: SCORM 1.2
     description: >
       OpenOlat ist eine Open-Source E-Learning-Plattform aus der Schweiz.
-      Diese Konfiguration nutzt SCORM 2004 für volle Funktionalität.
+      Diese Konfiguration nutzt SCORM 1.2 für volle Funktionalität.
       <a href='https://www.openolat.com' target='_blank'>Mehr erfahren</a>
     options:
       responsiveVoice: false
@@ -96,8 +97,8 @@ presets:
       scormOrganization: ""
       typicalDuration: "PT0H5M0S"
       scormIframe: false
-      scormEmbed: false
-      format: scorm2004
+      scormEmbed: true
+      format: scorm1.2
 
   - id: openedx
     name: Open edX

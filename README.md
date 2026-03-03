@@ -1197,7 +1197,7 @@ Most of the data is taken from:
 | MATRIX LMS                         | full      |            |         |         |       |      |             |
 | Meridian LMS                       | full      | full       |         |         |       |      |             |
 | Mobile Agility LMS                 | full      | full       |         |         |       |      |             |
-| Moodle LMS                         | full      | full       |         | partial |       | full |             |
+| Moodle LMS                         | full      | partial    |         | partial |       | full |             |
 | MOS Chorus LMS                     |           | full       |         |         |       |      |             |
 | Myicourse LMS                      | partial   | partial    |         |         |       |      |             |
 | MySkillpad LMS                     | full      | full       |         |         |       |      |             |
@@ -1206,8 +1206,8 @@ Most of the data is taken from:
 | Nimble LMS                         | full      |            |         |         |       |      |             |
 | Ninth Brain LMS                    | full      | full       | full    |         |       |      |             |
 | OLAT LMS                           | full      | full       |         |         |       | full |             |
-| OPAL                               | full      | no         |         |         |       | full |             |
-| Open edx                           | full      |            |         |         |       |      | open source |
+| OPAL                               | full      | full       |         |         |       | full |             |
+| Open edx                           | full      | full       |         |         |       |      | open source |
 | OpenOLAT                           | full      |            |         |         |       | full | open source |
 | Opigno LMS                         | full      | full       |         |         |       |      |             |
 | Oracle Taleo Learn Cloud Service   | full      | full       |         | full    |       |      |             |
