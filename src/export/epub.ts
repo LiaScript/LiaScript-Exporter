@@ -245,7 +245,7 @@ export async function exporter(argument: EpubExportArguments) {
 
 /**
  * Generates an EPUB file from a Puppeteer page.
- * 
+ *
  * Extracts the rendered HTML DOM, processes images and resources,
  * and creates an EPUB file using @lesjoursfr/html-to-epub.
  *
@@ -607,6 +607,40 @@ async function toEPUB(
         return [{ title: 'Content', data: bodyClone.outerHTML }]
       }
     }, payload)
+
+    // Convert external/URL-based images to data URIs
+    console.log('Fetching external/URL-based images as data URIs...')
+    for (const chapter of chapters) {
+      chapter.data = await page.evaluate(async (html: string) => {
+        const parser = new DOMParser()
+        const doc = parser.parseFromString(html, 'text/html')
+
+        const imgs = Array.from(doc.querySelectorAll('img[src]'))
+        await Promise.all(
+          imgs.map(async (img) => {
+            const src = img.getAttribute('src')!
+            // Skip already-inlined data URIs and local file:// paths
+            if (src.startsWith('data:') || src.startsWith('file://')) return
+
+            try {
+              const response = await fetch(src)
+              if (!response.ok) return
+              const blob = await response.blob()
+              const dataUri = await new Promise<string>((resolve) => {
+                const reader = new FileReader()
+                reader.onload = () => resolve(reader.result as string)
+                reader.readAsDataURL(blob)
+              })
+              img.setAttribute('src', dataUri)
+            } catch (e) {
+              console.warn('Failed to fetch image:', src, e)
+            }
+          })
+        )
+
+        return doc.body.innerHTML
+      }, chapter.data)
+    }
 
     // Sanitize chapter HTML for XHTML/XML compatibility
     for (const chapter of chapters) {
