@@ -29,25 +29,77 @@ export function help() {
   )
 
   console.log(COLOR.heading('Required settings:'), '\n')
-  COLOR.command(null, '--epub-title', '              Title of the book (required)')
-  COLOR.command(null, '--epub-author', '             Author name(s), comma-separated for multiple authors')
+  COLOR.command(
+    null,
+    '--epub-title',
+    '              Title of the book (required)',
+  )
+  COLOR.command(
+    null,
+    '--epub-author',
+    '             Author name(s), comma-separated for multiple authors',
+  )
 
   console.log('')
   console.log(COLOR.heading('Optional settings:'), '\n')
 
   COLOR.command(null, '--epub-publisher', '          Publisher name')
-  COLOR.command(null, '--epub-cover', '              Path to cover image (absolute path or URL)')
+  COLOR.command(
+    null,
+    '--epub-cover',
+    '              Path to cover image (absolute path or URL)',
+  )
   COLOR.command(null, '--epub-description', '        Book description')
-  COLOR.command(null, '--epub-language', `           Language code in 2 letters (default: ${DEFAULT_LANG})`)
-  COLOR.command(null, '--epub-version', `            EPUB version: 2 or 3 (default: ${DEFAULT_EPUB_VERSION})`)
-  COLOR.command(null, '--epub-stylesheet', '        Path to custom CSS file for styling')
-  COLOR.command(null, '--epub-theme', '              LiaScript theme: default, turquoise, blue, red, yellow')
-  COLOR.command(null, '--epub-toc-title', `         Title for table of contents (default: "${DEFAULT_TOC_TITLE}")`)
-  COLOR.command(null, '--epub-hide-toc', '           Hide table of contents in the generated EPUB (default: false)')
-  COLOR.command(null, '--epub-timeout', `            Additional wait time for rendering in ms (default: ${DEFAULT_TIMEOUT_MS})`)
-  COLOR.command(null, '--epub-fonts', '             Comma-separated paths to custom font files to embed')
-  COLOR.command(null, '--epub-chapter-title', '     Custom title for the main chapter (default: course title)')
-  COLOR.command(null, '--epub-preview', '           Open preview browser for debugging (default: false)')
+  COLOR.command(
+    null,
+    '--epub-language',
+    `           Language code in 2 letters (default: ${DEFAULT_LANG})`,
+  )
+  COLOR.command(
+    null,
+    '--epub-version',
+    `            EPUB version: 2 or 3 (default: ${DEFAULT_EPUB_VERSION})`,
+  )
+  COLOR.command(
+    null,
+    '--epub-stylesheet',
+    '        Path to custom CSS file for styling',
+  )
+  COLOR.command(
+    null,
+    '--epub-theme',
+    '              LiaScript theme: default, turquoise, blue, red, yellow',
+  )
+  COLOR.command(
+    null,
+    '--epub-toc-title',
+    `         Title for table of contents (default: "${DEFAULT_TOC_TITLE}")`,
+  )
+  COLOR.command(
+    null,
+    '--epub-hide-toc',
+    '           Hide table of contents in the generated EPUB (default: false)',
+  )
+  COLOR.command(
+    null,
+    '--epub-timeout',
+    `            Additional wait time for rendering in ms (default: ${DEFAULT_TIMEOUT_MS})`,
+  )
+  COLOR.command(
+    null,
+    '--epub-fonts',
+    '             Comma-separated paths to custom font files to embed',
+  )
+  COLOR.command(
+    null,
+    '--epub-chapter-title',
+    '     Custom title for the main chapter (default: course title)',
+  )
+  COLOR.command(
+    null,
+    '--epub-preview',
+    '           Open preview browser for debugging (default: false)',
+  )
 }
 
 /**
@@ -81,7 +133,7 @@ export const format = 'epub'
 
 /**
  * Exports a LiaScript course to EPUB format using Puppeteer and @lesjoursfr/html-to-epub.
- * 
+ *
  * This function launches a headless Chrome browser, loads the LiaScript content,
  * applies any custom styling or themes, extracts the rendered HTML DOM,
  * and generates an EPUB file.
@@ -147,7 +199,9 @@ export async function exporter(argument: EpubExportArguments) {
     }
 
     page = await browser.newPage()
-    console.log('Loading course content... This may take a while for large courses.')
+    console.log(
+      'Loading course content... This may take a while for large courses.',
+    )
 
     page.on('dialog', async (dialog) => {
       await dialog.accept()
@@ -165,6 +219,9 @@ export async function exporter(argument: EpubExportArguments) {
       }
     })
 
+    await page.setExtraHTTPHeaders({
+      referer: 'https://liascript.github.io/',
+    })
     // Wait for page to load completely
     // Using 'networkidle2' ensures all network requests are complete
     // Timeout set to 0 (unlimited) to handle large courses
@@ -201,7 +258,9 @@ export async function exporter(argument: EpubExportArguments) {
           document.documentElement.classList.add('lia-theme-' + theme)
         }, argument['epub-theme'])
       } catch (e) {
-        throw new Error(`Failed to apply theme '${argument['epub-theme']}': ${e}`)
+        throw new Error(
+          `Failed to apply theme '${argument['epub-theme']}': ${e}`,
+        )
       }
     }
 
@@ -280,7 +339,9 @@ async function toEPUB(
 
     console.log('Screenshotting standalone ABC music notation blocks...')
     const standaloneAbcImages = await screenshotStandaloneAbcBlocks(page)
-    console.log(`Captured ${standaloneAbcImages.size} standalone ABC notation block(s)`)
+    console.log(
+      `Captured ${standaloneAbcImages.size} standalone ABC notation block(s)`,
+    )
 
     console.log('Screenshotting embedded media (Spotify, SoundCloud, etc.)...')
     const embedImages = await screenshotTaggedElements(
@@ -301,19 +362,21 @@ async function toEPUB(
 
     // Hide formula accessibility/MathML content inside SVG foreignObjects before screenshotting
     await page.evaluate(() => {
-      document.querySelectorAll('svg foreignObject lia-formula').forEach((formula) => {
-        formula.childNodes.forEach((child) => {
-          if (child.nodeType === Node.ELEMENT_NODE) {
-            (child as HTMLElement).style.display = 'none'
+      document
+        .querySelectorAll('svg foreignObject lia-formula')
+        .forEach((formula) => {
+          formula.childNodes.forEach((child) => {
+            if (child.nodeType === Node.ELEMENT_NODE) {
+              ;(child as HTMLElement).style.display = 'none'
+            }
+          })
+          const shadow = formula.shadowRoot
+          if (shadow) {
+            shadow.querySelectorAll('.katex-mathml').forEach((mathml) => {
+              ;(mathml as HTMLElement).style.display = 'none'
+            })
           }
         })
-        const shadow = formula.shadowRoot
-        if (shadow) {
-          shadow.querySelectorAll('.katex-mathml').forEach((mathml) => {
-            (mathml as HTMLElement).style.display = 'none'
-          })
-        }
-      })
     })
 
     console.log('Screenshotting inline SVGs (foreignObject, interactive)...')
@@ -333,7 +396,8 @@ async function toEPUB(
     )
     console.log(`Captured ${inlineSvgImages.size} inline SVG(s)`)
 
-    const toEntries = (map: Map<number, string>) => Array.from(map.entries()) as [number, string][]
+    const toEntries = (map: Map<number, string>) =>
+      Array.from(map.entries()) as [number, string][]
     const payload = {
       svgImages: toEntries(svgImages),
       codeBlocks: toEntries(highlightedBlocks),
@@ -345,15 +409,15 @@ async function toEPUB(
       inlineSvgImages: toEntries(inlineSvgImages),
     }
     const chapters = await page.evaluate((data) => {
-      const { 
-        svgImages: svgImagesData, 
-        codeBlocks, 
+      const {
+        svgImages: svgImagesData,
+        codeBlocks,
         abcImages: abcImagesData,
         standaloneAbcImages: standaloneAbcImagesData,
-        embedImages: embedImagesData, 
-        chartImages: chartImagesData, 
+        embedImages: embedImagesData,
+        chartImages: chartImagesData,
         formulas: formulasData,
-        inlineSvgImages: inlineSvgImagesData
+        inlineSvgImages: inlineSvgImagesData,
       } = data
       const bodyClone = document.body.cloneNode(true) as HTMLElement
 
@@ -383,13 +447,14 @@ async function toEPUB(
         images: [number, string][],
         options: {
           alt: string | ((el: Element) => string)
-          wrapInFigure?: boolean           // true → wrap <img> in a new <figure>
-          reuseAsContainer?: boolean       // true → clear element innerHTML and append <img> inside it
+          wrapInFigure?: boolean // true → wrap <img> in a new <figure>
+          reuseAsContainer?: boolean // true → clear element innerHTML and append <img> inside it
           imgStyle?: string | ((el: Element) => string)
           figureStyle?: string
         },
       ) => {
-        const defaultImgStyle = 'max-width: 100%; height: auto; display: block; margin: 0 auto;'
+        const defaultImgStyle =
+          'max-width: 100%; height: auto; display: block; margin: 0 auto;'
         bodyClone.querySelectorAll(selector).forEach((el: Element) => {
           try {
             const idx = parseInt(el.getAttribute(dataAttr) || '-1')
@@ -401,19 +466,25 @@ async function toEPUB(
 
             const img = document.createElement('img')
             img.src = entry[1]
-            img.alt = typeof options.alt === 'function' ? options.alt(el) : options.alt
-            const style = typeof options.imgStyle === 'function' ? options.imgStyle(el) : (options.imgStyle ?? defaultImgStyle)
+            img.alt =
+              typeof options.alt === 'function' ? options.alt(el) : options.alt
+            const style =
+              typeof options.imgStyle === 'function'
+                ? options.imgStyle(el)
+                : (options.imgStyle ?? defaultImgStyle)
             img.setAttribute('style', style)
 
             if (options.reuseAsContainer) {
               el.innerHTML = ''
               el.appendChild(img)
-              if (options.figureStyle) el.setAttribute('style', options.figureStyle)
+              if (options.figureStyle)
+                el.setAttribute('style', options.figureStyle)
             } else if (options.wrapInFigure) {
               const figure = document.createElement('figure')
               figure.setAttribute(
                 'style',
-                options.figureStyle || 'margin: 1.5em auto; text-align: center; page-break-inside: avoid;',
+                options.figureStyle ||
+                  'margin: 1.5em auto; text-align: center; page-break-inside: avoid;',
               )
               figure.appendChild(img)
               el.replaceWith(figure)
@@ -427,155 +498,201 @@ async function toEPUB(
       }
 
       // Replace <lia-embed> elements with their pre-captured cover screenshots
-      replaceWithImage('lia-embed[data-embed-index]', 'data-embed-index', embedImagesData, {
-        alt: 'Embedded media',
-        imgStyle: (el) => el.getAttribute('style') || 'width:250px;height:250px;',
-      })
+      replaceWithImage(
+        'lia-embed[data-embed-index]',
+        'data-embed-index',
+        embedImagesData,
+        {
+          alt: 'Embedded media',
+          imgStyle: (el) =>
+            el.getAttribute('style') || 'width:250px;height:250px;',
+        },
+      )
 
       // Replace <lia-chart> elements with their extracted SVG images
-      replaceWithImage('lia-chart[data-chart-index]', 'data-chart-index', chartImagesData, {
-        alt: (el) => el.getAttribute('aria-label') || 'Chart',
-        wrapInFigure: true,
-      })
+      replaceWithImage(
+        'lia-chart[data-chart-index]',
+        'data-chart-index',
+        chartImagesData,
+        {
+          alt: (el) => el.getAttribute('aria-label') || 'Chart',
+          wrapInFigure: true,
+        },
+      )
 
       // Replace ABC notation blocks with pre-captured SVG
-      replaceWithImage('.lia-code-terminal[data-abc-index]', 'data-abc-index', abcImagesData, {
-        alt: 'ABC Music Notation',
-        wrapInFigure: true,
-      })
+      replaceWithImage(
+        '.lia-code-terminal[data-abc-index]',
+        'data-abc-index',
+        abcImagesData,
+        {
+          alt: 'ABC Music Notation',
+          wrapInFigure: true,
+        },
+      )
 
       // Replace standalone ABC notation elements (from template macros like @ABCJS.render)
-      replaceWithImage('lia-abcjs[data-standalone-abc-index]', 'data-standalone-abc-index', standaloneAbcImagesData, {
-        alt: 'ABC Music Notation',
-        wrapInFigure: true,
-      })
+      replaceWithImage(
+        'lia-abcjs[data-standalone-abc-index]',
+        'data-standalone-abc-index',
+        standaloneAbcImagesData,
+        {
+          alt: 'ABC Music Notation',
+          wrapInFigure: true,
+        },
+      )
 
       // Replace SVG diagrams with PNG images for better EPUB compatibility
-      replaceWithImage('figure.lia-figure[data-svg-index]', 'data-svg-index', svgImagesData, {
-        alt: 'ASCII Diagram',
-        reuseAsContainer: true,
-        figureStyle:
-          'margin: 1.5em auto; padding: 1.5em; background-color: #f8f9fa; ' +
-          'border: 1px solid #dee2e6; border-radius: 4px; text-align: center; ' +
-          'page-break-inside: avoid; max-width: 90%;',
-      })
+      replaceWithImage(
+        'figure.lia-figure[data-svg-index]',
+        'data-svg-index',
+        svgImagesData,
+        {
+          alt: 'ASCII Diagram',
+          reuseAsContainer: true,
+          figureStyle:
+            'margin: 1.5em auto; padding: 1.5em; background-color: #f8f9fa; ' +
+            'border: 1px solid #dee2e6; border-radius: 4px; text-align: center; ' +
+            'page-break-inside: avoid; max-width: 90%;',
+        },
+      )
 
       // Replace inline SVGs (foreignObject, interactive content) with PNG screenshots
-      replaceWithImage('svg[data-inline-svg-index]', 'data-inline-svg-index', inlineSvgImagesData, {
-        alt: 'SVG Graphic',
-        wrapInFigure: true,
-        figureStyle:
-          'margin: 1.5em auto; text-align: center; page-break-inside: avoid;',
-      })
+      replaceWithImage(
+        'svg[data-inline-svg-index]',
+        'data-inline-svg-index',
+        inlineSvgImagesData,
+        {
+          alt: 'SVG Graphic',
+          wrapInFigure: true,
+          figureStyle:
+            'margin: 1.5em auto; text-align: center; page-break-inside: avoid;',
+        },
+      )
 
       // Replace <lia-formula> elements with their pre-extracted MathML/KaTeX HTML
-      bodyClone.querySelectorAll('lia-formula[data-formula-index]').forEach((formula: Element) => {
-        try {
-          const idx = parseInt(formula.getAttribute('data-formula-index') || '-1')
-          const entry = formulasData.find((item: any) => item[0] === idx)
-          if (entry && entry[1]) {
-            const isBlock = formula.getAttribute('displaymode') === 'true'
-            const wrapper = document.createElement(isBlock ? 'div' : 'span')
-            wrapper.innerHTML = entry[1]
+      bodyClone
+        .querySelectorAll('lia-formula[data-formula-index]')
+        .forEach((formula: Element) => {
+          try {
+            const idx = parseInt(
+              formula.getAttribute('data-formula-index') || '-1',
+            )
+            const entry = formulasData.find((item: any) => item[0] === idx)
+            if (entry && entry[1]) {
+              const isBlock = formula.getAttribute('displaymode') === 'true'
+              const wrapper = document.createElement(isBlock ? 'div' : 'span')
+              wrapper.innerHTML = entry[1]
 
-            // Set display attribute on <math> element for EPUB3 MathML rendering
-            const mathEl = wrapper.querySelector('math')
-            if (mathEl) {
-              mathEl.setAttribute('display', isBlock ? 'block' : 'inline')
-              if (isBlock) {
-                wrapper.setAttribute('style', 'text-align: center; margin: 1em 0;')
+              // Set display attribute on <math> element for EPUB3 MathML rendering
+              const mathEl = wrapper.querySelector('math')
+              if (mathEl) {
+                mathEl.setAttribute('display', isBlock ? 'block' : 'inline')
+                if (isBlock) {
+                  wrapper.setAttribute(
+                    'style',
+                    'text-align: center; margin: 1em 0;',
+                  )
+                }
               }
-            }
 
-            formula.replaceWith(wrapper)
+              formula.replaceWith(wrapper)
+            }
+          } catch (e) {
+            console.error('Error replacing formula:', e)
           }
-        } catch (e) {
-          console.error('Error replacing formula:', e)
-        }
-      })
+        })
 
       // Process terminal output blocks
-      bodyClone.querySelectorAll('.lia-code-terminal').forEach((terminal: Element) => {
-        try {
-          // Skip if this is an ABC block (already handled above)
-          if (terminal.querySelector('lia-abcjs')) {
-            terminal.remove()
-            return
-          }
+      bodyClone
+        .querySelectorAll('.lia-code-terminal')
+        .forEach((terminal: Element) => {
+          try {
+            // Skip if this is an ABC block (already handled above)
+            if (terminal.querySelector('lia-abcjs')) {
+              terminal.remove()
+              return
+            }
 
-          // If the terminal contains rendered MathML (from @runFormula macro)
-          // Extract the formula and replace the terminal with it
-          const mathEls = terminal.querySelectorAll('math')
-          if (mathEls.length > 0) {
-            const container = document.createElement('div')
-            container.setAttribute(
+            // If the terminal contains rendered MathML (from @runFormula macro)
+            // Extract the formula and replace the terminal with it
+            const mathEls = terminal.querySelectorAll('math')
+            if (mathEls.length > 0) {
+              const container = document.createElement('div')
+              container.setAttribute(
+                'style',
+                'text-align: center; margin: 1em 0; background-color: #1e1e1e; color: #d4d4d4; padding: 1em; border-radius: 4px;',
+              )
+              mathEls.forEach((m) => {
+                m.setAttribute('display', 'block')
+                container.appendChild(m.cloneNode(true))
+              })
+              terminal.replaceWith(container)
+              return
+            }
+
+            // If terminal still has an unreplaced <lia-formula> (no data extracted), remove it
+            if (terminal.querySelector('lia-formula')) {
+              terminal.remove()
+              return
+            }
+
+            const terminalOutput = terminal.querySelector('lia-terminal')
+            if (!terminalOutput) return
+
+            const pre = document.createElement('pre')
+            const code = document.createElement('code')
+
+            pre.setAttribute(
               'style',
-              'text-align: center; margin: 1em 0; background-color: #1e1e1e; color: #d4d4d4; padding: 1em; border-radius: 4px;'
+              'background-color: #1e1e1e; color: #d4d4d4; padding: 1em; ' +
+                'border-radius: 4px; font-family: monospace; overflow-x: auto;',
             )
-            mathEls.forEach((m) => {
-              m.setAttribute('display', 'block')
-              container.appendChild(m.cloneNode(true))
-            })
-            terminal.replaceWith(container)
-            return
+
+            const textDivs = terminalOutput.querySelectorAll(
+              'div[class^="text-"]',
+            )
+            if (textDivs.length > 0) {
+              textDivs.forEach((div: Element) => {
+                const span = document.createElement('span')
+                span.textContent = div.textContent || ''
+                if (div.classList.contains('text-error')) {
+                  span.setAttribute('style', 'color: #f48771;')
+                } else if (div.classList.contains('text-warning')) {
+                  span.setAttribute('style', 'color: #dcdcaa;')
+                }
+                code.appendChild(span)
+                code.appendChild(document.createTextNode('\n'))
+              })
+            } else {
+              code.textContent = terminalOutput.textContent || ''
+            }
+
+            pre.appendChild(code)
+            terminal.replaceWith(pre)
+          } catch (e) {
+            console.error('Error processing terminal block:', e)
           }
-
-          // If terminal still has an unreplaced <lia-formula> (no data extracted), remove it
-          if (terminal.querySelector('lia-formula')) {
-            terminal.remove()
-            return
-          }
-
-          const terminalOutput = terminal.querySelector('lia-terminal')
-          if (!terminalOutput) return
-
-          const pre = document.createElement('pre')
-          const code = document.createElement('code')
-
-          pre.setAttribute(
-            'style',
-            'background-color: #1e1e1e; color: #d4d4d4; padding: 1em; ' +
-              'border-radius: 4px; font-family: monospace; overflow-x: auto;',
-          )
-
-          const textDivs = terminalOutput.querySelectorAll('div[class^="text-"]')
-          if (textDivs.length > 0) {
-            textDivs.forEach((div: Element) => {
-              const span = document.createElement('span')
-              span.textContent = div.textContent || ''
-              if (div.classList.contains('text-error')) {
-                span.setAttribute('style', 'color: #f48771;')
-              } else if (div.classList.contains('text-warning')) {
-                span.setAttribute('style', 'color: #dcdcaa;')
-              }
-              code.appendChild(span)
-              code.appendChild(document.createTextNode('\n'))
-            })
-          } else {
-            code.textContent = terminalOutput.textContent || ''
-          }
-
-          pre.appendChild(code)
-          terminal.replaceWith(pre)
-        } catch (e) {
-          console.error('Error processing terminal block:', e)
-        }
-      })
+        })
 
       // Replace Ace Editor code blocks with pre-extracted syntax-highlighted HTML
-      bodyClone.querySelectorAll('.lia-code__input').forEach((codeInput: Element) => {
-        try {
-          const idx = parseInt(codeInput.getAttribute('data-code-index') || '-1')
-          const entry = codeBlocks.find((item) => item[0] === idx)
-          if (entry && entry[1]) {
-            const wrapper = document.createElement('div')
-            wrapper.innerHTML = entry[1]
-            codeInput.replaceWith(wrapper.firstChild || wrapper)
+      bodyClone
+        .querySelectorAll('.lia-code__input')
+        .forEach((codeInput: Element) => {
+          try {
+            const idx = parseInt(
+              codeInput.getAttribute('data-code-index') || '-1',
+            )
+            const entry = codeBlocks.find((item) => item[0] === idx)
+            if (entry && entry[1]) {
+              const wrapper = document.createElement('div')
+              wrapper.innerHTML = entry[1]
+              codeInput.replaceWith(wrapper.firstChild || wrapper)
+            }
+          } catch (e) {
+            console.error('Error injecting highlighted code block:', e)
           }
-        } catch (e) {
-          console.error('Error injecting highlighted code block:', e)
-        }
-      })
+        })
 
       // Extract chapters from <main> elements
       const mainElements = bodyClone.querySelectorAll('main')
@@ -603,7 +720,9 @@ async function toEPUB(
 
         return chapterList
       } else {
-        bodyClone.querySelectorAll('script').forEach((el: Element) => el.remove())
+        bodyClone
+          .querySelectorAll('script')
+          .forEach((el: Element) => el.remove())
         return [{ title: 'Content', data: bodyClone.outerHTML }]
       }
     }, payload)
@@ -635,7 +754,7 @@ async function toEPUB(
             } catch (e) {
               console.warn('Failed to fetch image:', src, e)
             }
-          })
+          }),
         )
 
         return doc.body.innerHTML
@@ -656,17 +775,22 @@ async function toEPUB(
 
     // Read CSS and fonts from the pdf assets folder
     const pdfAssetsPath = path.join(dirname, 'assets', 'pdf')
-    const cssFiles = fs.readdirSync(pdfAssetsPath).filter((f) => f.endsWith('.css'))
+    const cssFiles = fs
+      .readdirSync(pdfAssetsPath)
+      .filter((f) => f.endsWith('.css'))
 
     let allCSS = ''
     const fontPaths: string[] = []
 
     if (cssFiles.length > 0) {
       cssFiles.forEach((cssFile) => {
-        allCSS += fs.readFileSync(path.join(pdfAssetsPath, cssFile), 'utf-8') + '\n'
+        allCSS +=
+          fs.readFileSync(path.join(pdfAssetsPath, cssFile), 'utf-8') + '\n'
       })
 
-      const fontMatches = allCSS.match(/url\(['"]?([^'")\s]+\.(?:woff2?|ttf|otf|eot))['"]?\)/gi)
+      const fontMatches = allCSS.match(
+        /url\(['"]?([^'")\s]+\.(?:woff2?|ttf|otf|eot))['"]?\)/gi,
+      )
       if (fontMatches) {
         const uniqueFonts = new Set<string>()
         fontMatches.forEach((match) => {
@@ -702,7 +826,9 @@ async function toEPUB(
         }
       })
 
-    console.log(`Building EPUB with ${chapters.length} chapter(s) and ${fontPaths.length} font(s)...`)
+    console.log(
+      `Building EPUB with ${chapters.length} chapter(s) and ${fontPaths.length} font(s)...`,
+    )
 
     let authors: string | string[] = argument['epub-author'] || 'Unknown'
     if (typeof authors === 'string' && authors.includes(',')) {
@@ -717,7 +843,10 @@ async function toEPUB(
     let customCSS = allCSS
     if (argument['epub-stylesheet']) {
       try {
-        customCSS = customCSS + '\n' + fs.readFileSync(path.resolve(argument['epub-stylesheet']), 'utf-8')
+        customCSS =
+          customCSS +
+          '\n' +
+          fs.readFileSync(path.resolve(argument['epub-stylesheet']), 'utf-8')
       } catch (e) {
         console.warn(`Warning: Could not read custom stylesheet: ${e}`)
       }
@@ -728,7 +857,9 @@ async function toEPUB(
       author: authors,
       lang: argument['epub-language'] || DEFAULT_LANG,
       tocTitle: argument['epub-toc-title'] || DEFAULT_TOC_TITLE,
-      appendChapterTitles: argument['epub-chapter-title'] === undefined && DEFAULT_APPEND_CHAPTER_TITLES,
+      appendChapterTitles:
+        argument['epub-chapter-title'] === undefined &&
+        DEFAULT_APPEND_CHAPTER_TITLES,
       hideToC: argument['epub-hide-toc'] ?? DEFAULT_HIDE_TOC,
       css: customCSS,
       version: (argument['epub-version'] || DEFAULT_EPUB_VERSION) as 2 | 3,
@@ -737,9 +868,11 @@ async function toEPUB(
       tempDir: path.join(tmpdir(), 'liaex-epub-temp'),
     }
 
-    if (argument['epub-publisher']) epubOptions.publisher = argument['epub-publisher']
+    if (argument['epub-publisher'])
+      epubOptions.publisher = argument['epub-publisher']
     if (argument['epub-cover']) epubOptions.cover = argument['epub-cover']
-    if (argument['epub-description']) epubOptions.description = argument['epub-description']
+    if (argument['epub-description'])
+      epubOptions.description = argument['epub-description']
     if (fonts.length > 0) epubOptions.fonts = fonts
 
     const outputPath = argument.output.endsWith('.epub')
@@ -749,7 +882,9 @@ async function toEPUB(
     // Use dynamic import with a variable to prevent Parcel from converting it to require()
     // The @lesjoursfr/html-to-epub package is ESM-only and cannot be require()'d
     const epubModuleName = '@lesjoursfr/html-to-epub'
-    const epubModule = await (new Function('m', 'return import(m)') as (m: string) => Promise<any>)(epubModuleName)
+    const epubModule = await (
+      new Function('m', 'return import(m)') as (m: string) => Promise<any>
+    )(epubModuleName)
     const EPub = epubModule.EPub
     await new EPub(epubOptions, outputPath).render()
     console.log(`EPUB successfully generated: ${outputPath}`)
@@ -765,7 +900,9 @@ async function toEPUB(
  * @param page - Puppeteer page instance
  * @returns Map of block indexes to static highlighted HTML strings
  */
-async function extractHighlightedCode(page: Page): Promise<Map<number, string>> {
+async function extractHighlightedCode(
+  page: Page,
+): Promise<Map<number, string>> {
   const result = await page.evaluate(() => {
     const escape = (text: string) =>
       text
@@ -778,104 +915,121 @@ async function extractHighlightedCode(page: Page): Promise<Map<number, string>> 
     const blocks: [number, string][] = []
     let idx = 0
 
-    document.querySelectorAll('.lia-code__input').forEach((codeInput: Element) => {
-      codeInput.setAttribute('data-code-index', idx.toString())
+    document
+      .querySelectorAll('.lia-code__input')
+      .forEach((codeInput: Element) => {
+        codeInput.setAttribute('data-code-index', idx.toString())
 
-      try {
-        const aceEditor = codeInput.querySelector('.ace_editor')
-        const aceContent = aceEditor?.querySelector('.ace_text-layer')
+        try {
+          const aceEditor = codeInput.querySelector('.ace_editor')
+          const aceContent = aceEditor?.querySelector('.ace_text-layer')
 
-        if (!aceEditor || !aceContent) {
-          blocks.push([idx, ''])
-          idx++
-          return
-        }
-
-        const gutterCells = aceEditor.querySelectorAll('.ace_gutter-cell')
-        const lineNumbers: string[] = []
-        gutterCells.forEach((cell: Element) => {
-          const n = cell.textContent?.trim()
-          if (n && !isNaN(parseInt(n))) lineNumbers.push(n)
-        })
-
-        const bgColor = window.getComputedStyle(aceEditor as HTMLElement).backgroundColor || '#f5f5f5'
-
-        let codeHTML = ''
-        let lineIndex = 0
-
-        // Helper: render a single .ace_line element's content as HTML string
-        const renderLineContent = (line: Element): string => {
-          let lineHTML = ''
-          const hasTokenSpans = line.querySelector('span[class*="ace_"]') !== null
-          if (hasTokenSpans) {
-            line.childNodes.forEach((node: ChildNode) => {
-              if (node.nodeType === Node.TEXT_NODE) {
-                // Plain text node — raw space/whitespace between tokens
-                const text = node.textContent || ''
-                // Strip Ace zero-width / invisible control chars but keep real spaces
-                const cleaned = text.replace(/[\u200B-\u200D\uFEFF]/g, '')
-                if (cleaned) lineHTML += escape(cleaned)
-              } else if (node.nodeType === Node.ELEMENT_NODE) {
-                const tokenEl = node as HTMLElement
-                // Recurse one level: Ace sometimes nests spans (e.g. ace_indent_guide inside ace_indent)
-                const text = tokenEl.textContent || ''
-                if (!text) return
-                const cleaned = text.replace(/[\u200B-\u200D\uFEFF]/g, '')
-                if (!cleaned) return
-                const color = window.getComputedStyle(tokenEl).color
-                const fontWeight = window.getComputedStyle(tokenEl).fontWeight
-                const fontStyle = window.getComputedStyle(tokenEl).fontStyle
-                const escaped = escape(cleaned)
-                let style = ''
-                if (color && color !== 'rgb(0, 0, 0)' && color !== 'rgba(0, 0, 0, 0)') {
-                  style += `color:${color};`
-                }
-                if (fontWeight === 'bold' || parseInt(fontWeight) >= 700) style += 'font-weight:bold;'
-                if (fontStyle === 'italic') style += 'font-style:italic;'
-                lineHTML += style ? `<span style="${style}">${escaped}</span>` : escaped
-              }
-            })
-          } else {
-            const cleanText = (line.textContent || '').replace(/[\u200B-\u200D\uFEFF\n]/g, '')
-            lineHTML += escape(cleanText)
-          }
-          return lineHTML
-        }
-
-        aceContent.querySelectorAll('.ace_line_group').forEach((lineGroup: Element) => {
-          // Each .ace_line_group represents ONE logical source line
-          const subLines = lineGroup.querySelectorAll('.ace_line')
-          if (subLines.length === 0) return
-
-          let lineHTML = ''
-
-          // Emit the gutter line number for this logical line
-          if (lineIndex < lineNumbers.length) {
-            lineHTML += `<span style="color:#858585;display:inline-block;width:3em;text-align:right;margin-right:1em;user-select:none;">${lineNumbers[lineIndex]}</span>`
-            lineIndex++
+          if (!aceEditor || !aceContent) {
+            blocks.push([idx, ''])
+            idx++
+            return
           }
 
-          // Concatenate content from every sub-line (soft-wrap continuations)
-          subLines.forEach((line: Element) => {
-            lineHTML += renderLineContent(line)
+          const gutterCells = aceEditor.querySelectorAll('.ace_gutter-cell')
+          const lineNumbers: string[] = []
+          gutterCells.forEach((cell: Element) => {
+            const n = cell.textContent?.trim()
+            if (n && !isNaN(parseInt(n))) lineNumbers.push(n)
           })
 
-          codeHTML += `<span style="display:block;">${lineHTML}\n</span>`
-        })
+          const bgColor =
+            window.getComputedStyle(aceEditor as HTMLElement).backgroundColor ||
+            '#f5f5f5'
 
-        const html =
-          `<pre style="background-color:${bgColor};padding:1em;border-radius:4px;` +
-          `border-left:3px solid #4caf50;overflow-x:auto;font-family:monospace;` +
-          `white-space:pre;margin:0.5em 0;">` +
-          `<code style="display:block;">${codeHTML}</code></pre>`
+          let codeHTML = ''
+          let lineIndex = 0
 
-        blocks.push([idx, html])
-      } catch (e) {
-        blocks.push([idx, ''])
-      }
+          // Helper: render a single .ace_line element's content as HTML string
+          const renderLineContent = (line: Element): string => {
+            let lineHTML = ''
+            const hasTokenSpans =
+              line.querySelector('span[class*="ace_"]') !== null
+            if (hasTokenSpans) {
+              line.childNodes.forEach((node: ChildNode) => {
+                if (node.nodeType === Node.TEXT_NODE) {
+                  // Plain text node — raw space/whitespace between tokens
+                  const text = node.textContent || ''
+                  // Strip Ace zero-width / invisible control chars but keep real spaces
+                  const cleaned = text.replace(/[\u200B-\u200D\uFEFF]/g, '')
+                  if (cleaned) lineHTML += escape(cleaned)
+                } else if (node.nodeType === Node.ELEMENT_NODE) {
+                  const tokenEl = node as HTMLElement
+                  // Recurse one level: Ace sometimes nests spans (e.g. ace_indent_guide inside ace_indent)
+                  const text = tokenEl.textContent || ''
+                  if (!text) return
+                  const cleaned = text.replace(/[\u200B-\u200D\uFEFF]/g, '')
+                  if (!cleaned) return
+                  const color = window.getComputedStyle(tokenEl).color
+                  const fontWeight = window.getComputedStyle(tokenEl).fontWeight
+                  const fontStyle = window.getComputedStyle(tokenEl).fontStyle
+                  const escaped = escape(cleaned)
+                  let style = ''
+                  if (
+                    color &&
+                    color !== 'rgb(0, 0, 0)' &&
+                    color !== 'rgba(0, 0, 0, 0)'
+                  ) {
+                    style += `color:${color};`
+                  }
+                  if (fontWeight === 'bold' || parseInt(fontWeight) >= 700)
+                    style += 'font-weight:bold;'
+                  if (fontStyle === 'italic') style += 'font-style:italic;'
+                  lineHTML += style
+                    ? `<span style="${style}">${escaped}</span>`
+                    : escaped
+                }
+              })
+            } else {
+              const cleanText = (line.textContent || '').replace(
+                /[\u200B-\u200D\uFEFF\n]/g,
+                '',
+              )
+              lineHTML += escape(cleanText)
+            }
+            return lineHTML
+          }
 
-      idx++
-    })
+          aceContent
+            .querySelectorAll('.ace_line_group')
+            .forEach((lineGroup: Element) => {
+              // Each .ace_line_group represents ONE logical source line
+              const subLines = lineGroup.querySelectorAll('.ace_line')
+              if (subLines.length === 0) return
+
+              let lineHTML = ''
+
+              // Emit the gutter line number for this logical line
+              if (lineIndex < lineNumbers.length) {
+                lineHTML += `<span style="color:#858585;display:inline-block;width:3em;text-align:right;margin-right:1em;user-select:none;">${lineNumbers[lineIndex]}</span>`
+                lineIndex++
+              }
+
+              // Concatenate content from every sub-line (soft-wrap continuations)
+              subLines.forEach((line: Element) => {
+                lineHTML += renderLineContent(line)
+              })
+
+              codeHTML += `<span style="display:block;">${lineHTML}\n</span>`
+            })
+
+          const html =
+            `<pre style="background-color:${bgColor};padding:1em;border-radius:4px;` +
+            `border-left:3px solid #4caf50;overflow-x:auto;font-family:monospace;` +
+            `white-space:pre;margin:0.5em 0;">` +
+            `<code style="display:block;">${codeHTML}</code></pre>`
+
+          blocks.push([idx, html])
+        } catch (e) {
+          blocks.push([idx, ''])
+        }
+
+        idx++
+      })
 
     return blocks
   })
@@ -895,12 +1049,14 @@ async function screenshotAbcBlocks(page: Page): Promise<Map<number, string>> {
   // Tag each .lia-code-terminal that wraps a <lia-abcjs> element
   const abcCount = await page.evaluate(() => {
     let abcIndex = 0
-    document.querySelectorAll('.lia-code-terminal').forEach((terminal: Element) => {
-      if (terminal.querySelector('lia-abcjs')) {
-        terminal.setAttribute('data-abc-index', abcIndex.toString())
-        abcIndex++
-      }
-    })
+    document
+      .querySelectorAll('.lia-code-terminal')
+      .forEach((terminal: Element) => {
+        if (terminal.querySelector('lia-abcjs')) {
+          terminal.setAttribute('data-abc-index', abcIndex.toString())
+          abcIndex++
+        }
+      })
     return abcIndex
   })
 
@@ -912,7 +1068,9 @@ async function screenshotAbcBlocks(page: Page): Promise<Map<number, string>> {
       if (!el) continue
 
       const svgDataUri = await page.evaluate((host: Element) => {
-        const svg = host.shadowRoot?.getElementById('paper')?.querySelector('svg')
+        const svg = host.shadowRoot
+          ?.getElementById('paper')
+          ?.querySelector('svg')
         if (!svg) return null
         const svgString = new XMLSerializer().serializeToString(svg)
         return 'data:image/svg+xml;base64,' + btoa(svgString)
@@ -936,7 +1094,9 @@ async function screenshotAbcBlocks(page: Page): Promise<Map<number, string>> {
  * @param page - Puppeteer page instance
  * @returns Map of standalone ABC indexes to base64 SVG data URIs
  */
-async function screenshotStandaloneAbcBlocks(page: Page): Promise<Map<number, string>> {
+async function screenshotStandaloneAbcBlocks(
+  page: Page,
+): Promise<Map<number, string>> {
   const standaloneAbcImages = new Map<number, string>()
 
   // Tag each <lia-abcjs> that is NOT inside a .lia-code-terminal
@@ -958,7 +1118,9 @@ async function screenshotStandaloneAbcBlocks(page: Page): Promise<Map<number, st
       if (!el) continue
 
       const svgDataUri = await page.evaluate((host: Element) => {
-        const svg = host.shadowRoot?.getElementById('paper')?.querySelector('svg')
+        const svg = host.shadowRoot
+          ?.getElementById('paper')
+          ?.querySelector('svg')
         if (!svg) return null
         const svgString = new XMLSerializer().serializeToString(svg)
         return 'data:image/svg+xml;base64,' + btoa(svgString)
@@ -1099,7 +1261,9 @@ async function screenshotTaggedElements(
   const count = await page.evaluate(
     (sel: string, attr: string, filterBody: string | null) => {
       let idx = 0
-      const filterFn = filterBody ? new Function('el', filterBody) as (el: Element) => boolean : null
+      const filterFn = filterBody
+        ? (new Function('el', filterBody) as (el: Element) => boolean)
+        : null
       document.querySelectorAll(sel).forEach((el: Element) => {
         if (!filterFn || filterFn(el)) {
           el.setAttribute(attr, idx.toString())
@@ -1119,7 +1283,10 @@ async function screenshotTaggedElements(
       const el = await page.$(`${selector}[${dataAttr}="${i}"]`)
       if (el) {
         const screenshot = await el.screenshot({ type: 'png' })
-        images.set(i, `data:image/png;base64,${Buffer.from(screenshot).toString('base64')}`)
+        images.set(
+          i,
+          `data:image/png;base64,${Buffer.from(screenshot).toString('base64')}`,
+        )
       }
     } catch (e) {
       console.error(`Failed to screenshot ${label} ${i}:`, e)

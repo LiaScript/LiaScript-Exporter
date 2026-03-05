@@ -265,6 +265,9 @@ export async function exporter(argument: PdfExportArguments) {
       }
     })
 
+    await page.setExtraHTTPHeaders({
+      referer: 'https://liascript.github.io/',
+    })
     // Wait for page to load completely
     // Using 'networkidle2' ensures all network requests are complete
     // Timeout set to 0 (unlimited) to handle large courses
