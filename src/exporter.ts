@@ -222,7 +222,6 @@ export class Exporter {
     return format == SCORM12.format ||
       format == SCORM2004.format ||
       format == PDF.format ||
-      format == EPUB.format ||
       format == WEB.format ||
       format == IMS.format ||
       format == ANDROID.format ||

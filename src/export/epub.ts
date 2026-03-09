@@ -37,7 +37,7 @@ export function help() {
   COLOR.command(
     null,
     '--epub-author',
-    '             Author name(s), comma-separated for multiple authors',
+    '             Author name(s), semicolon-separated for multiple authors',
   )
 
   console.log('')
@@ -152,7 +152,7 @@ export const format = 'epub'
  * })
  * ```
  */
-export async function exporter(argument: EpubExportArguments) {
+export async function exporter(argument: EpubExportArguments, json: any) {
   const dirname = helper.dirname()
 
   let url = `file://${dirname}/assets/pdf/index.html?`
@@ -229,6 +229,12 @@ export async function exporter(argument: EpubExportArguments) {
       waitUntil: 'networkidle2',
       timeout: DEFAULT_TIMEOUT_MS,
     })
+
+    argument['epub-title'] = argument['epub-title'] || json.lia.str_title
+    argument['epub-cover'] = argument['epub-cover'] || json.lia.definition.logo
+    argument['epub-author'] = argument['epub-author'] || json.lia.definition.author
+    argument['epub-language'] = argument['epub-language'] || json.lia.definition.language
+    argument['epub-description'] = argument['epub-description'] || json.lia.definition.comment
 
     if (argument['epub-stylesheet']) {
       const href = path.resolve(dirname + '/../', argument['epub-stylesheet'])
@@ -831,9 +837,10 @@ async function toEPUB(
     )
 
     let authors: string | string[] = argument['epub-author'] || 'Unknown'
-    if (typeof authors === 'string' && authors.includes(',')) {
-      authors = authors.split(',').map((a) => a.trim())
+    if (typeof authors === 'string' && authors.includes(';')) {
+      authors = authors.split(';').map((a) => a.trim())
     }
+
 
     let fonts: string[] = [...fontPaths]
     if (argument['epub-fonts']) {
@@ -852,8 +859,10 @@ async function toEPUB(
       }
     }
 
+    
+
     const epubOptions: any = {
-      title: argument['epub-title'],
+      title: argument['epub-title'] ,
       author: authors,
       lang: argument['epub-language'] || DEFAULT_LANG,
       tocTitle: argument['epub-toc-title'] || DEFAULT_TOC_TITLE,
