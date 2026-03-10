@@ -8,8 +8,11 @@ action
 docker
 ignore
 LiaScript
-node_modules
+node_modules/
 scripts
 server
 *.zip
 ignore
+test/
+electron/
+release/
