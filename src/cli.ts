@@ -17,12 +17,21 @@ export function displayHelp(): void {
   console.log(COLOR.heading('LiaScript-Exporter'))
   console.log('')
   COLOR.info(
-    'Export your LiaScript Markdown files to different formats. The following commandline options are available. Based on the selected output format, additional options can be used.',
+    'Export your LiaScript Markdown files to different formats. You can either use the serve option in order to have a nice UI or use the commandline options below. Based on the selected output format, additional options can be used.',
   )
   console.log('')
 
-  COLOR.command('-h', '--help', 'show this help')
+  console.log(COLOR.heading('Server:'))
+  COLOR.command(
+    'serve',
+    '[--port PORT]',
+    'Start the export server with web interface (default port: 3000)',
+  )
 
+  console.log('')
+  console.log(COLOR.heading('CLI - Commands:\n'))
+
+  COLOR.command('-h', '--help', 'show this help')
   COLOR.command('-i', '--input', 'file to be used as input')
   COLOR.command(
     '-p',
@@ -45,15 +54,6 @@ export function displayHelp(): void {
     'scorm1.2, scorm2004, json, fullJson, web, ims, pdf, epub, docx, android, linkedData, presets (default is json)',
   )
   COLOR.command('-v', '--version', 'output the current version')
-
-  console.log('')
-  console.log(COLOR.heading('Commands:'))
-  COLOR.command(
-    'serve',
-    '[--port PORT]',
-    'Start the export server with web interface (default port: 3000)',
-  )
-
   COLOR.command('\n-k', '--key', 'responsive voice key ')
 
   PRESETS.help()

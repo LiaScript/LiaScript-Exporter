@@ -20,7 +20,7 @@ export function help() {
     'Known SCORM configurations per LMS:\n  https://www.npmjs.com/package/@liascript/exporter#scorm-examples\n',
   )
 
-  https: COLOR.command(
+  COLOR.command(
     null,
     '--scorm-organization',
     '      set the organization title',

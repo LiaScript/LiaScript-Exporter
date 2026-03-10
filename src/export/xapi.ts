@@ -1,5 +1,6 @@
 import * as helper from './helper'
 import * as RDF from './rdf'
+import * as COLOR from '../colorize'
 
 const path = require('path')
 const fs = require('fs-extra')
@@ -8,30 +9,60 @@ const fs = require('fs-extra')
  * Help function for xAPI export
  */
 export function help() {
-  console.log('\nxAPI Options:')
-  console.log(
-    '--xapi-endpoint        URL of the Learning Record Store (LRS) endpoint'
+  console.log('')
+  console.log(COLOR.heading('xAPI settings:'), '\n')
+
+  COLOR.info(
+    'xAPI (Experience API) is a standard for tracking learning experiences and interactions.',
   )
-  console.log(
-    '--xapi-auth            Authentication string for the LRS (e.g., "Basic dXNlcm5hbWU6cGFzc3dvcmQ=")'
+
+  console.log('\nLearn more: https://xapi.com/\n')
+
+  COLOR.command(
+    null,
+    '--xapi-endpoint',
+    '        URL of the Learning Record Store (LRS) endpoint',
   )
-  console.log(
-    '--xapi-actor           JSON string representing the xAPI actor (default: anonymous)'
+  COLOR.command(
+    null,
+    '--xapi-auth',
+    '            Authentication string for the LRS (e.g., "Basic dXNlcm5hbWU6cGFzc3dvcmQ=")',
   )
-  console.log(
-    '--xapi-course-id       Custom identifier for the course (default: course URL)'
+  COLOR.command(
+    null,
+    '--xapi-actor',
+    '           JSON string representing the xAPI actor (default: anonymous)',
   )
-  console.log(
-    '--xapi-course-title    Custom title for the course (default: from document)'
+  COLOR.command(
+    null,
+    '--xapi-course-id',
+    '       Custom identifier for the course (default: course URL)',
   )
-  console.log(
-    '--xapi-mastery-threshold  Score threshold for mastery (default: 0.8)'
+  COLOR.command(
+    null,
+    '--xapi-course-title',
+    '    Custom title for the course (default: from document)',
   )
-  console.log(
-    '--xapi-progress-threshold Score threshold for progress (default: 0.9)'
+  COLOR.command(
+    null,
+    '--xapi-mastery-threshold',
+    '  Score threshold for mastery (default: 0.8)',
   )
-  console.log('--xapi-debug           Enable debug logging for xAPI statements')
-  console.log('--xapi-zip             Package the output as a zip file')
+  COLOR.command(
+    null,
+    '--xapi-progress-threshold',
+    ' Score threshold for progress (default: 0.9)',
+  )
+  COLOR.command(
+    null,
+    '--xapi-debug',
+    '           Enable debug logging for xAPI statements',
+  )
+  COLOR.command(
+    null,
+    '--xapi-zip',
+    '             Package the output as a zip file',
+  )
 }
 
 export const format = 'xapi'
@@ -50,7 +81,7 @@ function generateTincanXml(
   courseDescription: string,
   launchFile: string,
   courseId: string,
-  resources: string[] = []
+  resources: string[] = [],
 ) {
   // Create resource elements for all files
   const resourceElements = resources
@@ -126,7 +157,7 @@ export async function exporter(argument: XapiExportArguments, json: any) {
         progressThreshold: argument['xapi-progress-threshold'] || 0.9,
         totalSlides: json.lia.sections.length,
       }) +
-      ';'
+      ';',
   )
 
   // Add default course
@@ -137,7 +168,7 @@ export async function exporter(argument: XapiExportArguments, json: any) {
   }
    window.LIA.defaultCourseURL = "${path.basename(argument.readme)}"
   </script>`,
-    index
+    index,
   )
 
   // Add xAPI configuration
@@ -269,7 +300,7 @@ export async function exporter(argument: XapiExportArguments, json: any) {
           <button onclick="saveXAPIConfig()">Save Configuration</button>
         </div>
       </div>`,
-      index
+      index,
     )
   }
 
@@ -278,14 +309,14 @@ export async function exporter(argument: XapiExportArguments, json: any) {
     `<script>
     window.xAPIConfig = ${JSON.stringify(xapiConfig, null, 2)};
     </script>`,
-    index
+    index,
   )
 
   // Update title
   try {
     index = index.replace(
       '<title>Lia</title>',
-      `<title>${json.lia.str_title}</title><meta property="og:title" content="${json.lia.str_title}"> <meta name="twitter:title" content="${json.lia.str_title}">`
+      `<title>${json.lia.str_title}</title><meta property="og:title" content="${json.lia.str_title}"> <meta name="twitter:title" content="${json.lia.str_title}">`,
     )
     console.log('updating title ...')
   } catch (e) {
@@ -297,7 +328,7 @@ export async function exporter(argument: XapiExportArguments, json: any) {
     let description = json.lia.definition.macro.comment
     index = index.replace(
       '<meta name="description" content="LiaScript is a service for running free and interactive online courses, build with its own Markup-language. So check out the following course ;-)">',
-      `<meta name="description" content="${description}"><meta property="og:description" content="${description}"><meta name="twitter:description" content="${description}">`
+      `<meta name="description" content="${description}"><meta property="og:description" content="${description}"><meta name="twitter:description" content="${description}">`,
     )
     console.log('updating description ...')
   } catch (e) {
@@ -309,7 +340,7 @@ export async function exporter(argument: XapiExportArguments, json: any) {
     let logo = json.lia.definition.logo
     index = helper.inject(
       `<meta property="og:image" content="${logo}"><meta name="twitter:image" content="${logo}">`,
-      index
+      index,
     )
     console.log('updating logo ...')
   } catch (e) {
@@ -364,7 +395,7 @@ export async function exporter(argument: XapiExportArguments, json: any) {
     courseDescription,
     'index.html',
     courseId,
-    resources
+    resources,
   )
 
   // Write tincan.xml to the root of the package
