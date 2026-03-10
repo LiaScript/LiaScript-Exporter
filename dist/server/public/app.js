@@ -117,12 +117,6 @@ function renderPresets() {
     const content = document.createElement('div')
     content.className = 'preset-content'
 
-<<<<<<< HEAD
-    const logo = document.createElement('div')
-    logo.style.fontSize = '2rem'
-    logo.style.marginBottom = '0.5rem'
-    logo.textContent = preset.logo
-=======
     let logo
     if (preset.logo.url) {
       logo = document.createElement('img')
@@ -135,7 +129,6 @@ function renderPresets() {
       logo.style.marginBottom = '0.5rem'
       logo.textContent = preset.logo.icon
     }
->>>>>>> 71ca210 (update logos)
 
     const title = document.createElement('h3')
     title.textContent = preset.name
@@ -244,15 +237,11 @@ function initializeUpload() {
         }
       } catch (error) {
         console.error('Error opening file dialog:', error)
-<<<<<<< HEAD
-        alert(window.i18n ? window.i18n.t('submit.errorFileDialog') : 'Error opening file dialog')
-=======
         alert(
           window.i18n
             ? window.i18n.t('submit.errorFileDialog')
             : 'Error opening file dialog',
         )
->>>>>>> 71ca210 (update logos)
       }
     } else {
       // Fallback: create temporary file input for browser mode
@@ -507,43 +496,31 @@ function initializeForm() {
 
     // Validation
     if (currentSourceType === 'upload' && selectedFiles.length === 0) {
-<<<<<<< HEAD
-      alert(window.i18n ? window.i18n.t('submit.errorNoFile') : 'Please upload at least one file.')
-=======
       alert(
         window.i18n
           ? window.i18n.t('submit.errorNoFile')
           : 'Please upload at least one file.',
       )
->>>>>>> 71ca210 (update logos)
       return
     }
 
     if (currentSourceType === 'git') {
       const gitUrl = document.getElementById('gitUrl').value.trim()
       if (!gitUrl) {
-<<<<<<< HEAD
-        alert(window.i18n ? window.i18n.t('submit.errorNoGitUrl') : 'Please enter a Git repository URL.')
-=======
         alert(
           window.i18n
             ? window.i18n.t('submit.errorNoGitUrl')
             : 'Please enter a Git repository URL.',
         )
->>>>>>> 71ca210 (update logos)
         return
       }
     }
 
     // Disable submit button
     submitBtn.disabled = true
-<<<<<<< HEAD
-    submitBtn.textContent = window.i18n ? window.i18n.t('submit.starting') : 'Starting export...'
-=======
     submitBtn.textContent = window.i18n
       ? window.i18n.t('submit.starting')
       : 'Starting export...'
->>>>>>> 71ca210 (update logos)
 
     try {
       const formData = new FormData()
@@ -575,15 +552,11 @@ function initializeForm() {
       } else if (selectedFormat) {
         formData.append('format', selectedFormat.value)
       } else {
-<<<<<<< HEAD
-        alert(window.i18n ? window.i18n.t('submit.errorNoTarget') : 'Please select an export target.')
-=======
         alert(
           window.i18n
             ? window.i18n.t('submit.errorNoTarget')
             : 'Please select an export target.',
         )
->>>>>>> 71ca210 (update logos)
         return
       }
 
@@ -610,16 +583,12 @@ function initializeForm() {
 
       if (!response.ok) {
         const error = await response.json()
-<<<<<<< HEAD
-        throw new Error(error.error || (window.i18n ? window.i18n.t('submit.errorFailed') : 'Export failed'))
-=======
         throw new Error(
           error.error ||
             (window.i18n
               ? window.i18n.t('submit.errorFailed')
               : 'Export failed'),
         )
->>>>>>> 71ca210 (update logos)
       }
 
       const result = await response.json()
@@ -630,15 +599,11 @@ function initializeForm() {
       selectedFiles = []
       updateFileList()
     } catch (error) {
-<<<<<<< HEAD
-      alert((window.i18n ? window.i18n.t('submit.errorCreating') : 'Error creating export: ') + error.message)
-=======
       alert(
         (window.i18n
           ? window.i18n.t('submit.errorCreating')
           : 'Error creating export: ') + error.message,
       )
->>>>>>> 71ca210 (update logos)
     } finally {
       submitBtn.disabled = false
       submitBtn.innerHTML = `

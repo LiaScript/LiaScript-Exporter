@@ -346,7 +346,11 @@
                     data-description="Microsoft Word document format for professional documents. Compatible with Word 2007+, LibreOffice Writer, and Google Docs. <a href='https://en.wikipedia.org/wiki/Office_Open_XML' target='_blank'>Learn more</a>"
                   />
                   <div class="preset-content">
-                    <div class="format-icon">📝</div>
+                    <img
+                      style="height: 48px"
+                      src="../assets/docx.svg"
+                      alt="DOCX"
+                    />
                     <h3 data-i18n="formats.docx.title">DOCX</h3>
                     <p data-i18n="formats.docx.subtitle">Word Document</p>
                   </div>
@@ -1195,12 +1199,25 @@
                 </div>
 
                 <div class="form-group">
-                  <label for="docxOrientation" data-i18n="settings.docx.orientation"
+                  <label
+                    for="docxOrientation"
+                    data-i18n="settings.docx.orientation"
                     >Orientation</label
                   >
                   <select id="docxOrientation" name="option_docx-orientation">
-                    <option value="portrait" selected data-i18n="settings.docx.orientationPortrait">Portrait</option>
-                    <option value="landscape" data-i18n="settings.docx.orientationLandscape">Landscape</option>
+                    <option
+                      value="portrait"
+                      selected
+                      data-i18n="settings.docx.orientationPortrait"
+                    >
+                      Portrait
+                    </option>
+                    <option
+                      value="landscape"
+                      data-i18n="settings.docx.orientationLandscape"
+                    >
+                      Landscape
+                    </option>
                   </select>
                   <span class="hint" data-i18n="settings.docx.orientationHint"
                     >Page orientation</span
@@ -1245,11 +1262,31 @@
                     >LiaScript Theme</label
                   >
                   <select id="docxTheme" name="option_docx-theme">
-                    <option value="" selected data-i18n="settings.docx.themeDefault">Default</option>
-                    <option value="turquoise" data-i18n="settings.docx.themeTurquoise">Turquoise</option>
-                    <option value="blue" data-i18n="settings.docx.themeBlue">Blue</option>
-                    <option value="red" data-i18n="settings.docx.themeRed">Red</option>
-                    <option value="yellow" data-i18n="settings.docx.themeYellow">Yellow</option>
+                    <option
+                      value=""
+                      selected
+                      data-i18n="settings.docx.themeDefault"
+                    >
+                      Default
+                    </option>
+                    <option
+                      value="turquoise"
+                      data-i18n="settings.docx.themeTurquoise"
+                    >
+                      Turquoise
+                    </option>
+                    <option value="blue" data-i18n="settings.docx.themeBlue">
+                      Blue
+                    </option>
+                    <option value="red" data-i18n="settings.docx.themeRed">
+                      Red
+                    </option>
+                    <option
+                      value="yellow"
+                      data-i18n="settings.docx.themeYellow"
+                    >
+                      Yellow
+                    </option>
                   </select>
                   <span class="hint" data-i18n="settings.docx.themeHint"
                     >Color scheme for the document</span
@@ -1291,7 +1328,9 @@
                       id="docxPageNumber"
                       name="option_docx-page-number"
                     />
-                    <span data-i18n="settings.docx.pageNumber">Page Numbers</span>
+                    <span data-i18n="settings.docx.pageNumber"
+                      >Page Numbers</span
+                    >
                   </label>
                   <span class="hint" data-i18n="settings.docx.pageNumberHint"
                     >Add page numbers to the footer</span
