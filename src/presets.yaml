@@ -1,16 +1,48 @@
 presets:
-  - id: moodle
-    name: Moodle
+  - id: moodle3
+    name: Moodle3.x
     logo:
       icon: 🎓
       url: ../assets/moodle.svg
     format: scorm1.2
     subtitle: SCORM 1.2
-    description: >
-      Moodle ist das weltweit am häufigsten verwendete Open-Source-Lernmanagementsystem.
-      Diese Konfiguration verwendet SCORM 1.2 mit Embed-Modus für Moodle 4.x Kompatibilität.
-      Für Moodle 3.x empfehlen wir stattdessen den iframe-Modus.
-      <a href='https://moodle.org' target='_blank'>Mehr erfahren</a>
+    description:
+      de: >
+        Moodle ist das weltweit am häufigsten verwendete Open-Source-Lernmanagementsystem.
+        Diese Konfiguration verwendet SCORM 1.2 mit Embed-Modus für Moodle 3.x Kompatibilität.
+        <a href='https://moodle.org' target='_blank'>Mehr erfahren</a>
+      en: >
+        Moodle is the world's most widely used open-source learning management system.
+        This configuration uses SCORM 1.2 with embed mode for Moodle 3.x compatibility.
+        <a href='https://moodle.org' target='_blank'>Learn more</a>
+    options:
+      # SCORM-spezifische Einstellungen
+      responsiveVoice: false
+      translateWithGoogle: false
+      debugging: false
+      removeBase: false
+      scormOrganization: ""
+      typicalDuration: "PT0H5M0S"
+      scormIframe: true
+      scormEmbed: false  # Empfohlen für Moodle 4
+      format: scorm1.2
+
+  - id: moodle4
+    name: Moodle4.x
+    logo:
+      icon: 🎓
+      url: ../assets/moodle.svg
+    format: scorm1.2
+    subtitle: SCORM 1.2
+    description:
+      de: >
+        Moodle ist das weltweit am häufigsten verwendete Open-Source-Lernmanagementsystem.
+        Diese Konfiguration verwendet SCORM 1.2 mit Embed-Modus für Moodle 4.x Kompatibilität.
+        <a href='https://moodle.org' target='_blank'>Mehr erfahren</a>
+      en: >
+        Moodle is the world's most widely used open-source learning management system.
+        This configuration uses SCORM 1.2 with embed mode for Moodle 4.x compatibility.
+        <a href='https://moodle.org' target='_blank'>Learn more</a>
     options:
       # SCORM-spezifische Einstellungen
       responsiveVoice: false
@@ -30,10 +62,15 @@ presets:
       url: ../assets/ilias.png
     format: scorm1.2
     subtitle: SCORM 1.2
-    description: >
-      ILIAS ist ein leistungsstarkes Open-Source-LMS aus Deutschland.
-      Diese Konfiguration nutzt SCORM 1.2 für bestmögliche Kompatibilität mit ILIAS-Versionen.
-      <a href='https://www.ilias.de' target='_blank'>Mehr erfahren</a>
+    description:
+      de: >
+        ILIAS ist ein leistungsstarkes Open-Source-LMS aus Deutschland.
+        Diese Konfiguration nutzt SCORM 1.2 für bestmögliche Kompatibilität mit ILIAS-Versionen.
+        <a href='https://www.ilias.de' target='_blank'>Mehr erfahren</a>
+      en: >
+        ILIAS is a powerful open-source LMS from Germany.
+        This configuration uses SCORM 1.2 for best compatibility with ILIAS versions.
+        <a href='https://www.ilias.de' target='_blank'>Learn more</a>
     options:
       responsiveVoice: false
       translateWithGoogle: false
@@ -52,10 +89,15 @@ presets:
       url: ../assets/opal.png
     format: scorm2004
     subtitle: SCORM 2004
-    description: >
-      OPAL (Online-Plattform für Akademisches Lehren und Lernen) ist das zentrale LMS
-      für sächsische Hochschulen. Optimiert für SCORM 2004.
-      <a href='https://bildungsportal.sachsen.de/opal' target='_blank'>Mehr erfahren</a>
+    description:
+      de: >
+        OPAL (Online-Plattform für Akademisches Lehren und Lernen) ist das zentrale LMS
+        für sächsische Hochschulen. Optimiert für SCORM 2004.
+        <a href='https://bildungsportal.sachsen.de/opal' target='_blank'>Mehr erfahren</a>
+      en: >
+        OPAL (Online Platform for Academic Teaching and Learning) is the central LMS
+        for Saxon universities. Optimized for SCORM 2004.
+        <a href='https://bildungsportal.sachsen.de/opal' target='_blank'>Learn more</a>
     options:
       responsiveVoice: false
       translateWithGoogle: false
@@ -67,16 +109,22 @@ presets:
       scormEmbed: false
       format: scorm2004
 
-  - id: generic
-    name: Generic LMS
+  - id: scormCloud
+    name: ScormCloud
     logo:
-      icon: 🌐
+      icon: 🌩️
       url: ../assets/scorm.png
     format: scorm2004
     subtitle: SCORM 2004
-    description: >
-      Universelle SCORM 2004 Konfiguration für beliebige Lernmanagementsysteme,
-      die den SCORM 2004 Standard unterstützen. Funktioniert mit den meisten modernen LMS-Plattformen.
+    description: 
+      de: >
+        ScormCloud ist eine kommerzielle SCORM-Hosting-Plattform, die von Rustici Software betrieben wird.
+        Diese Konfiguration bietet universelle SCORM 2004 Einstellungen für maximale Kompatibilität.
+        <a href='https://scorm.com/scorm-solved/scorm-cloud-features/' target='_blank'>Mehr erfahren</a>
+      en: >
+        ScormCloud is a commercial SCORM hosting platform operated by Rustici Software.
+        This configuration provides universal SCORM 2004 settings for maximum compatibility.
+        <a href='https://scorm.com/scorm-solved/scorm-cloud-features/' target='_blank'>Learn more</a>
     options:
       responsiveVoice: false
       translateWithGoogle: false
@@ -95,10 +143,15 @@ presets:
       url: ../assets/openolat.png
     format: scorm1.2
     subtitle: SCORM 1.2
-    description: >
-      OpenOlat ist eine Open-Source E-Learning-Plattform aus der Schweiz.
-      Diese Konfiguration nutzt SCORM 1.2 für volle Funktionalität.
-      <a href='https://www.openolat.com' target='_blank'>Mehr erfahren</a>
+    description:
+      de: >
+        OpenOlat ist eine Open-Source E-Learning-Plattform aus der Schweiz.
+        Diese Konfiguration nutzt SCORM 1.2 für volle Funktionalität.
+        <a href='https://www.openolat.com' target='_blank'>Mehr erfahren</a>
+      en: >
+        OpenOlat is an open-source e-learning platform from Switzerland.
+        This configuration uses SCORM 1.2 for full functionality.
+        <a href='https://www.openolat.com' target='_blank'>Learn more</a>
     options:
       responsiveVoice: false
       translateWithGoogle: false
@@ -117,10 +170,15 @@ presets:
       url: ../assets/edx.svg
     format: scorm2004
     subtitle: SCORM 2004
-    description: >
-      Open edX ist die Open-Source-Plattform hinter edX.org und wird weltweit für MOOCs eingesetzt.
-      Verwendet SCORM 2004 über das SCORM XBlock.
-      <a href='https://openedx.org' target='_blank'>Mehr erfahren</a>
+    description: 
+      de: >
+        Open edX ist die Open-Source-Plattform hinter edX.org und wird weltweit für MOOCs eingesetzt.
+        Verwendet SCORM 2004 über das SCORM XBlock.
+        <a href='https://openedx.org' target='_blank'>Mehr erfahren</a>
+      en: >
+        Open edX is the open-source platform behind edX.org and is used worldwide for MOOCs.
+        Uses SCORM 2004 via the SCORM XBlock.
+        <a href='https://openedx.org' target='_blank'>Learn more</a>
     options:
       responsiveVoice: false
       translateWithGoogle: false
@@ -130,4 +188,32 @@ presets:
       typicalDuration: "PT0H5M0S"
       scormIframe: true  # Oft erforderlich für Open edX
       scormEmbed: false
+      format: scorm2004
+
+  - id: learnworlds
+    name: LearnWorlds
+    logo:
+      icon: 🌍
+      url: ../assets/learnworlds.png
+    format: scorm2004
+    subtitle: SCORM 2004
+    description: 
+      de: >
+        LearnWorlds ist eine moderne Cloud-basierte Lernplattform für Online-Kursanbieter.
+        Diese Konfiguration nutzt SCORM 2004 mit Iframe-Modus und masteryScore für beste Kompatibilität.
+        <a href='https://www.learnworlds.com' target='_blank'>Mehr erfahren</a>
+      en: >
+        LearnWorlds is a modern cloud-based learning platform for online course providers.
+        This configuration uses SCORM 2004 with iframe mode and masteryScore for best compatibility.
+        <a href='https://www.learnworlds.com' target='_blank'>Learn more</a>
+    options:
+      responsiveVoice: false
+      translateWithGoogle: false
+      debugging: false
+      removeBase: false
+      scormOrganization: ""
+      typicalDuration: "PT0H5M0S"
+      scormIframe: true
+      scormEmbed: false
+      masteryScore: 80
       format: scorm2004
