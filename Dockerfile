@@ -119,6 +119,11 @@ if [[ "$*" == *"--android-bundle"* ]] || [[ "$*" == *"--android-release"* ]]; th
   export KEY_PASSWORD=${KEY_PASSWORD:-}\n\
 fi\n\
 \n\
+# Default to serve if no arguments provided\n\
+if [ $# -eq 0 ]; then\n\
+  set -- serve --port "${PORT:-4000}"\n\
+fi\n\
+\n\
 # Execute the main application\n\
 exec node /app/dist/index.js "$@"' > /entrypoint.sh && \
     chmod +x /entrypoint.sh
@@ -126,4 +131,3 @@ exec node /app/dist/index.js "$@"' > /entrypoint.sh && \
 EXPOSE 4000
 
 ENTRYPOINT ["/entrypoint.sh"]
-CMD ["sh", "-c", "node /app/dist/index.js serve --port ${PORT:-4000}"]
