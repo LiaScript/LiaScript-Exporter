@@ -1,7 +1,9 @@
 presets:
   - id: moodle
     name: Moodle
-    logo: 🎓
+    logo:
+      icon: 🎓
+      url: ../assets/moodle.svg
     format: scorm1.2
     subtitle: SCORM 1.2
     description: >
@@ -23,7 +25,9 @@ presets:
 
   - id: ilias
     name: ILIAS
-    logo: 📚
+    logo:
+      icon: 📚
+      url: ../assets/ilias.png
     format: scorm1.2
     subtitle: SCORM 1.2
     description: >
@@ -43,7 +47,9 @@ presets:
 
   - id: opal
     name: OPAL
-    logo: 🏛️
+    logo:
+      icon: 🏛️
+      url: ../assets/opal.png
     format: scorm2004
     subtitle: SCORM 2004
     description: >
@@ -63,7 +69,9 @@ presets:
 
   - id: generic
     name: Generic LMS
-    logo: 🌐
+    logo:
+      icon: 🌐
+      url: ../assets/scorm.png
     format: scorm2004
     subtitle: SCORM 2004
     description: >
@@ -82,7 +90,9 @@ presets:
 
   - id: openolat
     name: OpenOlat
-    logo: 🔓
+    logo:
+      icon: 🔓
+      url: ../assets/openolat.png
     format: scorm1.2
     subtitle: SCORM 1.2
     description: >
@@ -102,7 +112,9 @@ presets:
 
   - id: openedx
     name: Open edX
-    logo: 🎯
+    logo:
+      icon: 🎯
+      url: ../assets/edx.svg
     format: scorm2004
     subtitle: SCORM 2004
     description: >

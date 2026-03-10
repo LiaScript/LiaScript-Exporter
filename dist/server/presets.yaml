@@ -1,7 +1,7 @@
 presets:
   - id: moodle
     name: Moodle
-    logo: 🎓
+    logo: ../assets/moodle.svg
     format: scorm2004
     subtitle: SCORM 2004
     description: >

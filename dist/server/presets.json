@@ -3,7 +3,7 @@
     {
       "id": "moodle",
       "name": "Moodle",
-      "logo": "🎓",
+      "logo": "../assets/moodle.svg",
       "format": "scorm2004",
       "subtitle": "SCORM 2004",
       "description": "Moodle ist das weltweit am häufigsten verwendete Open-Source-Lernmanagementsystem. Diese Konfiguration verwendet SCORM 2004 für maximale Kompatibilität mit Moodle 3.x und 4.x. <a href='https://moodle.org' target='_blank'>Mehr erfahren</a>",

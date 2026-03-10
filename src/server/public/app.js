@@ -117,10 +117,18 @@ function renderPresets() {
     const content = document.createElement('div')
     content.className = 'preset-content'
 
-    const logo = document.createElement('div')
-    logo.style.fontSize = '2rem'
-    logo.style.marginBottom = '0.5rem'
-    logo.textContent = preset.logo
+    let logo
+    if (preset.logo.url) {
+      logo = document.createElement('img')
+      logo.src = preset.logo.url
+      logo.alt = preset.name + ' logo'
+      logo.style.height = '48px'
+    } else {
+      logo = document.createElement('div')
+      logo.style.fontSize = '2rem'
+      logo.style.marginBottom = '0.5rem'
+      logo.textContent = preset.logo.icon
+    }
 
     const title = document.createElement('h3')
     title.textContent = preset.name
@@ -229,7 +237,11 @@ function initializeUpload() {
         }
       } catch (error) {
         console.error('Error opening file dialog:', error)
-        alert(window.i18n ? window.i18n.t('submit.errorFileDialog') : 'Error opening file dialog')
+        alert(
+          window.i18n
+            ? window.i18n.t('submit.errorFileDialog')
+            : 'Error opening file dialog',
+        )
       }
     } else {
       // Fallback: create temporary file input for browser mode
@@ -484,21 +496,31 @@ function initializeForm() {
 
     // Validation
     if (currentSourceType === 'upload' && selectedFiles.length === 0) {
-      alert(window.i18n ? window.i18n.t('submit.errorNoFile') : 'Please upload at least one file.')
+      alert(
+        window.i18n
+          ? window.i18n.t('submit.errorNoFile')
+          : 'Please upload at least one file.',
+      )
       return
     }
 
     if (currentSourceType === 'git') {
       const gitUrl = document.getElementById('gitUrl').value.trim()
       if (!gitUrl) {
-        alert(window.i18n ? window.i18n.t('submit.errorNoGitUrl') : 'Please enter a Git repository URL.')
+        alert(
+          window.i18n
+            ? window.i18n.t('submit.errorNoGitUrl')
+            : 'Please enter a Git repository URL.',
+        )
         return
       }
     }
 
     // Disable submit button
     submitBtn.disabled = true
-    submitBtn.textContent = window.i18n ? window.i18n.t('submit.starting') : 'Starting export...'
+    submitBtn.textContent = window.i18n
+      ? window.i18n.t('submit.starting')
+      : 'Starting export...'
 
     try {
       const formData = new FormData()
@@ -530,7 +552,11 @@ function initializeForm() {
       } else if (selectedFormat) {
         formData.append('format', selectedFormat.value)
       } else {
-        alert(window.i18n ? window.i18n.t('submit.errorNoTarget') : 'Please select an export target.')
+        alert(
+          window.i18n
+            ? window.i18n.t('submit.errorNoTarget')
+            : 'Please select an export target.',
+        )
         return
       }
 
@@ -557,7 +583,12 @@ function initializeForm() {
 
       if (!response.ok) {
         const error = await response.json()
-        throw new Error(error.error || (window.i18n ? window.i18n.t('submit.errorFailed') : 'Export failed'))
+        throw new Error(
+          error.error ||
+            (window.i18n
+              ? window.i18n.t('submit.errorFailed')
+              : 'Export failed'),
+        )
       }
 
       const result = await response.json()
@@ -568,7 +599,11 @@ function initializeForm() {
       selectedFiles = []
       updateFileList()
     } catch (error) {
-      alert((window.i18n ? window.i18n.t('submit.errorCreating') : 'Error creating export: ') + error.message)
+      alert(
+        (window.i18n
+          ? window.i18n.t('submit.errorCreating')
+          : 'Error creating export: ') + error.message,
+      )
     } finally {
       submitBtn.disabled = false
       submitBtn.innerHTML = `
