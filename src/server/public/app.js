@@ -110,7 +110,7 @@ function renderPresets() {
     input.type = 'radio'
     input.name = 'preset'
     input.value = preset.id
-    input.dataset.descriptionKey = `presets.${preset.id}.description`
+    input.dataset.presetDescription = JSON.stringify(preset.description)
     input.dataset.presetOptions = JSON.stringify(preset.options)
     if (index === 0) input.checked = true
 
@@ -667,6 +667,18 @@ function initializeFormatDescription() {
     })
   })
 }
+// Pick the right language from a preset description object {de: '...', en: '...'}
+function getPresetDescription(descriptionData) {
+  if (!descriptionData) return ''
+  try {
+    const desc = JSON.parse(descriptionData)
+    const lang = window.i18n ? window.i18n.currentLanguage : 'en'
+    return desc[lang] || desc['en'] || ''
+  } catch {
+    return ''
+  }
+}
+
 // Preset description display
 function initializePresetDescription() {
   // Use event delegation since presets are loaded dynamically
@@ -675,9 +687,9 @@ function initializePresetDescription() {
       const descriptionBox = document.getElementById('preset-description')
       const descriptionText = descriptionBox.querySelector('p')
 
-      // Get translation key and translate
-      const descriptionKey = e.target.dataset.descriptionKey
-      const description = window.i18n ? window.i18n.t(descriptionKey) : ''
+      const description = getPresetDescription(
+        e.target.dataset.presetDescription,
+      )
 
       if (description) {
         descriptionText.innerHTML = description
@@ -694,8 +706,9 @@ function initializePresetDescription() {
     if (checkedPreset) {
       const descriptionBox = document.getElementById('preset-description')
       const descriptionText = descriptionBox.querySelector('p')
-      const descriptionKey = checkedPreset.dataset.descriptionKey
-      const description = window.i18n ? window.i18n.t(descriptionKey) : ''
+      const description = getPresetDescription(
+        checkedPreset.dataset.presetDescription,
+      )
 
       if (description) {
         descriptionText.innerHTML = description

@@ -43,19 +43,20 @@ class I18n {
   }
 
   t(key, fallback = '') {
-    const translation = this.translations[this.currentLanguage]?.[key] ||
-                       this.translations[this.fallbackLanguage]?.[key] ||
-                       fallback ||
-                       key
+    const translation =
+      this.translations[this.currentLanguage]?.[key] ||
+      this.translations[this.fallbackLanguage]?.[key] ||
+      fallback ||
+      key
     return translation
   }
 
   // Update all elements with data-i18n attribute
   updatePageTranslations() {
-    document.querySelectorAll('[data-i18n]').forEach(element => {
+    document.querySelectorAll('[data-i18n]').forEach((element) => {
       const key = element.getAttribute('data-i18n')
       const translation = this.t(key)
-      
+
       if (translation.includes('<') && translation.includes('>')) {
         element.innerHTML = translation
       } else {
@@ -63,22 +64,22 @@ class I18n {
       }
     })
 
-    document.querySelectorAll('[data-i18n-placeholder]').forEach(element => {
+    document.querySelectorAll('[data-i18n-placeholder]').forEach((element) => {
       const key = element.getAttribute('data-i18n-placeholder')
       element.placeholder = this.t(key)
     })
 
-    document.querySelectorAll('[data-i18n-title]').forEach(element => {
+    document.querySelectorAll('[data-i18n-title]').forEach((element) => {
       const key = element.getAttribute('data-i18n-title')
       element.title = this.t(key)
     })
 
-    document.querySelectorAll('[data-i18n-html]').forEach(element => {
+    document.querySelectorAll('[data-i18n-html]').forEach((element) => {
       const key = element.getAttribute('data-i18n-html')
       element.innerHTML = this.t(key)
     })
 
-    document.querySelectorAll('[data-i18n-description]').forEach(element => {
+    document.querySelectorAll('[data-i18n-description]').forEach((element) => {
       const key = element.getAttribute('data-i18n-description')
       const translation = this.t(key)
       element.setAttribute('data-description', translation)
@@ -88,12 +89,13 @@ class I18n {
   updateDynamicContent() {
     // Update preset description if one is currently selected
     const checkedPreset = document.querySelector('input[name="preset"]:checked')
-    if (checkedPreset && checkedPreset.dataset.descriptionKey) {
+    if (checkedPreset && checkedPreset.dataset.presetDescription) {
       const descriptionBox = document.getElementById('preset-description')
       if (descriptionBox && descriptionBox.style.display !== 'none') {
         const descriptionText = descriptionBox.querySelector('p')
         if (descriptionText) {
-          const description = this.t(checkedPreset.dataset.descriptionKey)
+          const desc = JSON.parse(checkedPreset.dataset.presetDescription)
+          const description = desc[this.currentLanguage] || desc['en'] || ''
           descriptionText.innerHTML = description
         }
       }
@@ -116,7 +118,7 @@ class I18n {
     const removeButtons = document.querySelectorAll('.remove-file')
     if (removeButtons.length > 0) {
       const removeTitle = this.t('files.remove')
-      removeButtons.forEach(btn => {
+      removeButtons.forEach((btn) => {
         btn.title = removeTitle
       })
     }
@@ -131,16 +133,16 @@ class I18n {
 
   async init() {
     const savedLang = localStorage.getItem('language')
-    
+
     let initialLang = savedLang || navigator.language.split('-')[0] || 'en'
-    
+
     const supportedLanguages = ['en', 'de']
     if (!supportedLanguages.includes(initialLang)) {
       initialLang = 'en'
     }
 
     await this.loadLanguage(this.fallbackLanguage)
-    
+
     if (initialLang !== this.fallbackLanguage) {
       await this.loadLanguage(initialLang)
     }

@@ -243,11 +243,5 @@
   "status.autoRefresh": "Seite wird automatisch aktualisiert",
   "status.refreshNow": "Jetzt aktualisieren",
   "status.error": "Fehler",
-  "status.errorMessage": "Fehler beim Laden des Status",
-  "presets.moodle.description": "Moodle ist das weltweit am häufigsten verwendete Open-Source-Lernmanagementsystem. Diese Konfiguration verwendet SCORM 1.2 für maximale Kompatibilität mit Moodle 4.x. Für Moodle 3.x empfehlen wir stattdessen den iframe-Modus. <a href='https://moodle.org' target='_blank'>Mehr erfahren</a>",
-  "presets.ilias.description": "ILIAS ist ein leistungsstarkes Open-Source-LMS aus Deutschland. Diese Konfiguration nutzt SCORM 1.2 für bestmögliche Kompatibilität mit ILIAS-Versionen. <a href='https://www.ilias.de' target='_blank'>Mehr erfahren</a>",
-  "presets.opal.description": "OPAL (Online-Plattform für Akademisches Lehren und Lernen) ist das zentrale LMS für sächsische Hochschulen. Optimiert für SCORM 2004. <a href='https://bildungsportal.sachsen.de/opal' target='_blank'>Mehr erfahren</a>",
-  "presets.generic.description": "Universelle SCORM 2004 Konfiguration für beliebige Lernmanagementsysteme, die den SCORM 2004 Standard unterstützen. Funktioniert mit den meisten modernen LMS-Plattformen.",
-  "presets.openolat.description": "OpenOlat ist eine Open-Source E-Learning-Plattform aus der Schweiz. Diese Konfiguration nutzt SCORM 1.2 für volle Funktionalität. <a href='https://www.openolat.com' target='_blank'>Mehr erfahren</a>",
-  "presets.openedx.description": "Open edX ist die Open-Source-Plattform hinter edX.org und wird weltweit für MOOCs eingesetzt. Verwendet SCORM 2004 über das SCORM XBlock. <a href='https://openedx.org' target='_blank'>Mehr erfahren</a>"
+  "status.errorMessage": "Fehler beim Laden des Status"
 }
