@@ -34,7 +34,7 @@ async function main(): Promise<void> {
   // Check for serve command first (positional argument)
   const command = argv._[0]
 
-  if (command === 'serve') {
+  if (command === 'serve' || process.env.MODE === 'serve') {
     const port = argv.port || argv.p || 3000
     await startServer(port)
   } else if (argv.v || argv.version) {

@@ -19,24 +19,20 @@ export function help() {
 
   console.log('\nUsage examples:\n')
   console.log('  List all available presets:')
-  console.log(COLOR.italic('    node dist/index.js -f presets\n'))
+  console.log(COLOR.italic('    liaex -f presets\n'))
 
   console.log('  Show configuration for a specific preset:')
-  console.log(
-    COLOR.italic('    node dist/index.js -f presets --moodle\n'),
-  )
+  console.log(COLOR.italic('    liaex -f presets --moodle\n'))
 
   console.log('  Export with preset configuration:')
   console.log(
-    COLOR.italic(
-      '    node dist/index.js -i course.md -f presets --moodle -o output\n',
-    ),
+    COLOR.italic('    liaex -i course.md -f presets --moodle -o output\n'),
   )
 
   console.log('  Override preset parameters with additional flags:')
   console.log(
     COLOR.italic(
-      '    node dist/index.js -i course.md -f presets --moodle --scorm-organization "My Org" -o output\n',
+      '    liaex -i course.md -f presets --moodle --scorm-organization "My Org" -o output\n',
     ),
   )
 
@@ -93,11 +89,11 @@ export function listPresets(): void {
   console.log('')
 
   config.presets.forEach((preset) => {
-    console.log(`  ${preset.logo}  ${COLOR.bold(preset.id)}`)
+    console.log(`  ${preset.logo.icon}  ${COLOR.bold(preset.id)}`)
     console.log(`      ${preset.name} - ${preset.subtitle}`)
 
     // Remove HTML tags from description for console output
-    const cleanDesc = preset.description
+    const cleanDesc = preset.description.en
       .replace(/<[^>]*>/g, '')
       .replace(/\s+/g, ' ')
       .trim()
@@ -109,12 +105,12 @@ export function listPresets(): void {
   console.log('\nUsage:')
   console.log(
     COLOR.italic(
-      '  node dist/index.js -i <input.md> -f presets --<preset-id> [-o <output>]',
+      '  liaex -i <input.md> -f presets --<preset-id> [-o <output>]',
     ),
   )
   console.log(
     COLOR.italic(
-      '  node dist/index.js -i <input.md> -f presets --<preset-id> [--scorm-organization "..."] [-o <output>]\n',
+      '  liaex -i <input.md> -f presets --<preset-id> [--scorm-organization "..."] [-o <output>]\n',
     ),
   )
   console.log('Tip: Add format-specific flags to override preset defaults.\n')
@@ -131,7 +127,7 @@ export function showPresetConfig(presetId: string): void {
     console.error(`\x1b[31mPreset '${presetId}' not found.\x1b[0m`)
     console.log(
       '\nRun ' +
-        COLOR.italic('node dist/index.js -f presets') +
+        COLOR.italic('liaex -f presets') +
         ' to see all available presets.\n',
     )
     process.exit(1)
@@ -164,7 +160,7 @@ export function showPresetConfig(presetId: string): void {
   console.log('Usage:')
   console.log(
     COLOR.italic(
-      `  node dist/index.js -i <input.md> -f presets --${presetId} [-o <output>]`,
+      `  liaex -i <input.md> -f presets --${presetId} [-o <output>]`,
     ),
   )
   console.log('')
@@ -174,7 +170,7 @@ export function showPresetConfig(presetId: string): void {
   )
   console.log(
     COLOR.italic(
-      `  node dist/index.js -i <input.md> -f presets --${presetId} --scorm-organization "Custom" -o output`,
+      `  liaex -i <input.md> -f presets --${presetId} --scorm-organization "Custom" -o output`,
     ),
   )
   console.log('')

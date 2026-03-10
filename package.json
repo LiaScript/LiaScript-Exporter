@@ -34,6 +34,7 @@
     "asset:deduplicate": "./scripts/deduplicate-assets.sh",
     "build": "npx parcel build --no-cache --no-source-maps src/index.ts && npm run shebang && npm run copy:public && npm run copy:presets",
     "build:debug": "npx parcel build --target node --no-minify --log-level 5 src/index.ts",
+    "watch": "npx parcel serve --no-cache --no-source-maps src/index.ts --out-dir dist --out-file index.js",
     "copy:public": "node scripts/copy-files.js",
     "copy:presets": "node scripts/copy-files.js presets",
     "run:moodle": "cd docker/moodle && docker-compose up",
