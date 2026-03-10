@@ -4,6 +4,7 @@ import * as IMS from './export/ims'
 import * as ANDROID from './export/android'
 import * as PDF from './export/pdf'
 import * as EPUB from './export/epub'
+import * as DOCX from './export/docx'
 import * as PROJECT from './export/project'
 import * as RDF from './export/rdf'
 import * as XAPI from './export/xapi'
@@ -41,7 +42,7 @@ export function displayHelp(): void {
   COLOR.command(
     '-f',
     '--format',
-    'scorm1.2, scorm2004, json, fullJson, web, ims, pdf, epub, android, linkedData, presets (default is json)',
+    'scorm1.2, scorm2004, json, fullJson, web, ims, pdf, epub, docx, android, linkedData, presets (default is json)',
   )
   COLOR.command('-v', '--version', 'output the current version')
 
@@ -61,6 +62,7 @@ export function displayHelp(): void {
   ANDROID.help()
   PDF.help()
   EPUB.help()
+  DOCX.help()
   PROJECT.help()
   RDF.help()
   XAPI.help()

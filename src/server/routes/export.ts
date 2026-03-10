@@ -295,6 +295,9 @@ export const exportRouter: FastifyPluginAsync = async (fastify) => {
         mimeType = 'application/vnd.android.package-archive'
       } else if (filename.endsWith('.epub')) {
         mimeType = 'application/epub+zip'
+      } else if (filename.endsWith('.docx')) {
+        mimeType =
+          'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
       } else if (filename.endsWith('.html')) {
         mimeType = 'text/html'
       }

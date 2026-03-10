@@ -6,6 +6,7 @@ import * as SCORM12 from './export/scorm12'
 import * as SCORM2004 from './export/scorm2004'
 import * as PDF from './export/pdf'
 import * as EPUB from './export/epub'
+import * as DOCX from './export/docx'
 import * as helper from './export/helper'
 import * as IMS from './export/ims'
 import * as ANDROID from './export/android'
@@ -119,6 +120,9 @@ export class Exporter {
       case EPUB.format:
         EPUB.exporter(argument, JSON.parse(json))
         break
+      case DOCX.format:
+        DOCX.exporter(argument)
+        break
       case ANDROID.format:
         ANDROID.exporter(argument, JSON.parse(json))
         break
@@ -204,6 +208,8 @@ export class Exporter {
         await this.handleFileInput(app, argument, format)
       } else if (argument.format === PDF.format) {
         await PDF.exporter(argument)
+      } else if (argument.format === DOCX.format) {
+        await DOCX.exporter(argument)
       } else if (argument.format === RDF.format) {
         await this.handleUrlInput(app, argument, format)
       } else {
@@ -223,6 +229,7 @@ export class Exporter {
       format == SCORM2004.format ||
       format == PDF.format ||
       format == EPUB.format ||
+      format == DOCX.format ||
       format == WEB.format ||
       format == IMS.format ||
       format == ANDROID.format ||

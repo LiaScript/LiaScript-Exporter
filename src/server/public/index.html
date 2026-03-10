@@ -313,6 +313,21 @@
                   <input
                     type="radio"
                     name="format"
+                    value="docx"
+                    data-i18n-description="formats.docx.description"
+                    data-description="Microsoft Word document format for professional documents. Compatible with Word 2007+, LibreOffice Writer, and Google Docs. <a href='https://en.wikipedia.org/wiki/Office_Open_XML' target='_blank'>Learn more</a>"
+                  />
+                  <div class="preset-content">
+                    <div class="format-icon">📝</div>
+                    <h3 data-i18n="formats.docx.title">DOCX</h3>
+                    <p data-i18n="formats.docx.subtitle">Word Document</p>
+                  </div>
+                </label>
+
+                <label class="preset-tile">
+                  <input
+                    type="radio"
+                    name="format"
                     value="rdf"
                     data-i18n-description="formats.rdf.description"
                     data-description="Resource Description Framework for structured metadata and Linked Data. For semantic web applications and metadata export. <a href='https://en.wikipedia.org/wiki/Resource_Description_Framework' target='_blank'>Learn more</a>"
@@ -1105,6 +1120,166 @@
                   />
                   <span class="hint" data-i18n="settings.epub.publisherHint"
                     >Publisher/Publisher house</span
+                  >
+                </div>
+              </div>
+
+              <!-- DOCX Settings -->
+              <div class="settings-group" data-formats="docx">
+                <h3 class="settings-heading" data-i18n="settings.docx.title">
+                  DOCX Settings
+                </h3>
+
+                <div class="form-group">
+                  <label for="docxTitle" data-i18n="settings.docx.docTitle"
+                    >Document Title</label
+                  >
+                  <input
+                    type="text"
+                    id="docxTitle"
+                    name="option_docx-title"
+                    data-i18n-placeholder="settings.docx.docTitlePlaceholder"
+                    placeholder="My Course"
+                  />
+                  <span class="hint" data-i18n="settings.docx.docTitleHint"
+                    >Title of the Word document</span
+                  >
+                </div>
+
+                <div class="form-group">
+                  <label for="docxAuthor" data-i18n="settings.docx.author"
+                    >Author</label
+                  >
+                  <input
+                    type="text"
+                    id="docxAuthor"
+                    name="option_docx-author"
+                    data-i18n-placeholder="settings.docx.authorPlaceholder"
+                    placeholder="John Doe"
+                  />
+                  <span class="hint" data-i18n="settings.docx.authorHint"
+                    >Author of the document</span
+                  >
+                </div>
+
+                <div class="form-group">
+                  <label for="docxOrientation" data-i18n="settings.docx.orientation"
+                    >Orientation</label
+                  >
+                  <select id="docxOrientation" name="option_docx-orientation">
+                    <option value="portrait" selected data-i18n="settings.docx.orientationPortrait">Portrait</option>
+                    <option value="landscape" data-i18n="settings.docx.orientationLandscape">Landscape</option>
+                  </select>
+                  <span class="hint" data-i18n="settings.docx.orientationHint"
+                    >Page orientation</span
+                  >
+                </div>
+
+                <div class="form-group">
+                  <label for="docxFont" data-i18n="settings.docx.font"
+                    >Font</label
+                  >
+                  <input
+                    type="text"
+                    id="docxFont"
+                    name="option_docx-font"
+                    placeholder="Arial"
+                    data-i18n-placeholder="settings.docx.fontPlaceholder"
+                  />
+                  <span class="hint" data-i18n="settings.docx.fontHint"
+                    >Font name (default: Arial)</span
+                  >
+                </div>
+
+                <div class="form-group">
+                  <label for="docxFontSize" data-i18n="settings.docx.fontSize"
+                    >Font Size</label
+                  >
+                  <input
+                    type="number"
+                    id="docxFontSize"
+                    name="option_docx-font-size"
+                    placeholder="22"
+                    min="10"
+                    max="100"
+                  />
+                  <span class="hint" data-i18n="settings.docx.fontSizeHint"
+                    >Font size in half-points (22 = 11pt)</span
+                  >
+                </div>
+
+                <div class="form-group">
+                  <label for="docxTheme" data-i18n="settings.docx.theme"
+                    >LiaScript Theme</label
+                  >
+                  <select id="docxTheme" name="option_docx-theme">
+                    <option value="" selected data-i18n="settings.docx.themeDefault">Default</option>
+                    <option value="turquoise" data-i18n="settings.docx.themeTurquoise">Turquoise</option>
+                    <option value="blue" data-i18n="settings.docx.themeBlue">Blue</option>
+                    <option value="red" data-i18n="settings.docx.themeRed">Red</option>
+                    <option value="yellow" data-i18n="settings.docx.themeYellow">Yellow</option>
+                  </select>
+                  <span class="hint" data-i18n="settings.docx.themeHint"
+                    >Color scheme for the document</span
+                  >
+                </div>
+
+                <div class="form-group">
+                  <label>
+                    <input
+                      type="checkbox"
+                      id="docxHeader"
+                      name="option_docx-header"
+                    />
+                    <span data-i18n="settings.docx.header">Enable Header</span>
+                  </label>
+                  <span class="hint" data-i18n="settings.docx.headerHint"
+                    >Add a header to every page</span
+                  >
+                </div>
+
+                <div class="form-group">
+                  <label>
+                    <input
+                      type="checkbox"
+                      id="docxFooter"
+                      name="option_docx-footer"
+                    />
+                    <span data-i18n="settings.docx.footer">Enable Footer</span>
+                  </label>
+                  <span class="hint" data-i18n="settings.docx.footerHint"
+                    >Add a footer to every page</span
+                  >
+                </div>
+
+                <div class="form-group">
+                  <label>
+                    <input
+                      type="checkbox"
+                      id="docxPageNumber"
+                      name="option_docx-page-number"
+                    />
+                    <span data-i18n="settings.docx.pageNumber">Page Numbers</span>
+                  </label>
+                  <span class="hint" data-i18n="settings.docx.pageNumberHint"
+                    >Add page numbers to the footer</span
+                  >
+                </div>
+
+                <div class="form-group">
+                  <label for="docxTimeout" data-i18n="settings.docx.timeout"
+                    >Timeout (ms)</label
+                  >
+                  <input
+                    type="number"
+                    id="docxTimeout"
+                    name="option_docx-timeout"
+                    placeholder="15000"
+                    min="1000"
+                    max="120000"
+                  />
+                  <span class="hint" data-i18n="settings.docx.timeoutHint"
+                    >Wait time for complete loading (15000 = 15 seconds)</span
                   >
                 </div>
               </div>

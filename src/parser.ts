@@ -9,6 +9,7 @@ import * as ANDROID from './export/android'
 import * as PROJECT from './export/project'
 import * as RDF from './export/rdf'
 import * as XAPI from './export/xapi'
+import * as DOCX from './export/docx'
 import * as PRESETS from './export/presets'
 import path from 'path'
 import { ExportFormat } from './types'
@@ -34,6 +35,7 @@ export type Arguments = BaseArguments &
   Partial<SCORM2004.Scorm2004ExportArguments> &
   Partial<PDF.PdfExportArguments> &
   Partial<EPUB.EpubExportArguments> &
+  Partial<DOCX.DocxExportArguments> &
   Partial<IMS.ImsExportArguments> &
   Partial<ANDROID.AndroidExportArguments> &
   Partial<PROJECT.ProjectExportArguments> &
@@ -110,6 +112,25 @@ export function parseArguments(): Arguments {
     'epub-theme': argv['epub-theme'],
     'epub-timeout': argv['epub-timeout'],
     'epub-preview': argv['epub-preview'],
+
+    // docx cases
+    'docx-title': argv['docx-title'],
+    'docx-author': argv['docx-author'],
+    'docx-subject': argv['docx-subject'],
+    'docx-description': argv['docx-description'],
+    'docx-language': argv['docx-language'],
+    'docx-orientation': argv['docx-orientation'],
+    'docx-font': argv['docx-font'],
+    'docx-font-size': argv['docx-font-size'],
+    'docx-header': argv['docx-header'],
+    'docx-header-html': argv['docx-header-html'],
+    'docx-footer': argv['docx-footer'],
+    'docx-footer-html': argv['docx-footer-html'],
+    'docx-page-number': argv['docx-page-number'],
+    'docx-stylesheet': argv['docx-stylesheet'],
+    'docx-theme': argv['docx-theme'],
+    'docx-timeout': argv['docx-timeout'],
+    'docx-preview': argv['docx-preview'],
 
     'android-sdk': escapeBackslash(argv['android-sdk']),
     'android-appId': argv['android-appId'],
@@ -239,6 +260,25 @@ export function parsePresetsArguments(presetId: string): Arguments {
     'epub-fonts': argv['epub-fonts'],
     'epub-chapter-title': argv['epub-chapter-title'],
     'epub-preview': argv['epub-preview'],
+
+    // docx cases
+    'docx-title': argv['docx-title'],
+    'docx-author': argv['docx-author'],
+    'docx-subject': argv['docx-subject'],
+    'docx-description': argv['docx-description'],
+    'docx-language': argv['docx-language'],
+    'docx-orientation': argv['docx-orientation'],
+    'docx-font': argv['docx-font'],
+    'docx-font-size': argv['docx-font-size'],
+    'docx-header': argv['docx-header'],
+    'docx-header-html': argv['docx-header-html'],
+    'docx-footer': argv['docx-footer'],
+    'docx-footer-html': argv['docx-footer-html'],
+    'docx-page-number': argv['docx-page-number'],
+    'docx-stylesheet': argv['docx-stylesheet'],
+    'docx-theme': argv['docx-theme'],
+    'docx-timeout': argv['docx-timeout'],
+    'docx-preview': argv['docx-preview'],
 
     'android-sdk': escapeBackslash(argv['android-sdk']),
     'android-appId': argv['android-appId'],

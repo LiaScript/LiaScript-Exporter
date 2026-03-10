@@ -272,6 +272,7 @@ export class JobQueue extends EventEmitter {
           android: ['android'],
           ios: ['ios'],
           epub: ['epub'],
+          docx: ['docx'],
           json: ['json'],
           rdf: ['rdf'],
           h5p: ['h5p'],
@@ -342,6 +343,7 @@ export class JobQueue extends EventEmitter {
               'web',
               'pdf',
               'epub',
+              'docx',
               'android',
               'ios',
               'ims',
@@ -481,6 +483,7 @@ export class JobQueue extends EventEmitter {
                 f.endsWith('.html') ||
                 f.endsWith('.pdf') ||
                 f.endsWith('.epub') ||
+                f.endsWith('.docx') ||
                 f.endsWith('.apk'),
             )
 
