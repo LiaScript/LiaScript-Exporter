@@ -1,6 +1,6 @@
 {
   "name": "@liascript/exporter",
-  "version": "3.0.0--1.0.3",
+  "version": "3.0.1--1.0.3",
   "description": "A generic exporter for LiaScript",
   "main": "dist/index.js",
   "repository": {
@@ -36,6 +36,7 @@
     "asset:capacitor": "cd LiaScript && git checkout feat/capacitor8 && rm -rf node_modules && npm i && npm run build:indexeddb && cp -r dist ../dist/assets/capacitor && git checkout development && rm -rf node_modules && npm i",
     "asset:deduplicate": "./scripts/deduplicate-assets.sh",
     "build": "npx parcel build --no-cache --no-source-maps src/index.ts && npm run shebang && npm run copy:public && npm run copy:presets",
+    "build:all": "npm run clean && npm run build:assets && npm run build && npm run minify",
     "build:debug": "npx parcel build --target node --no-minify --log-level 5 src/index.ts",
     "watch": "npx parcel serve --no-cache --no-source-maps src/index.ts --out-dir dist --out-file index.js",
     "copy:public": "node scripts/copy-files.js",
