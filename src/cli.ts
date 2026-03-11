@@ -28,6 +28,12 @@ export function displayHelp(): void {
     'Start the export server with web interface (default port: 3000)',
   )
 
+  COLOR.command(
+    'serve',
+    '[--no-browser]',
+    'Prevent the browser from opening automatically (default: open in browser)',
+  )
+
   console.log('')
   console.log(COLOR.heading('CLI - Commands:\n'))
 

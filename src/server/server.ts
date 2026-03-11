@@ -6,6 +6,7 @@ import { exportRouter } from './routes/export'
 import { JobQueue } from './queue/jobQueue'
 import { existsSync, realpathSync } from 'fs'
 import os from 'os'
+import open from 'open'
 
 export const jobQueue = new JobQueue()
 
@@ -28,6 +29,7 @@ function getLocalIP(): string {
 export async function startServer(
   port: number = 3000,
   returnInstance: boolean = false,
+  openInBrowser: boolean = false,
 ): Promise<any> {
   // Use pretty logging only in development when pino-pretty is available
   const loggerConfig =
@@ -128,6 +130,10 @@ export async function startServer(
 ║                                                       ║
 ╚═══════════════════════════════════════════════════════╝
     `)
+
+    if (openInBrowser) {
+      open(`http://${localIP}:${actualPort}`)
+    }
   } catch (err) {
     fastify.log.error(err)
     process.exit(1)

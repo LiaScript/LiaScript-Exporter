@@ -36,7 +36,14 @@ async function main(): Promise<void> {
 
   if (command === 'serve' || process.env.MODE === 'serve') {
     const port = argv.port || argv.p || 3000
-    await startServer(port)
+
+    let openInBrowser = true
+
+    if (argv['browser'] === false) {
+      openInBrowser = false
+    }
+
+    await startServer(port, false, openInBrowser)
   } else if (argv.v || argv.version) {
     console.log('version:', packageJson.version)
   } else if (argv.h || argv.help) {
