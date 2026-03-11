@@ -1,10 +1,10 @@
 import { FastifyPluginAsync } from 'fastify'
 import { jobQueue } from '../server'
 import { writeFile, mkdir, readFile } from 'fs/promises'
-import { join, basename } from 'path'
+import { join, basename, dirname } from 'path'
+import { realpathSync } from 'fs'
 import { randomUUID } from 'crypto'
 import { tmpdir } from 'os'
-import { fileURLToPath } from 'url'
 import * as YAML from 'yaml'
 import {
   extractZip,
@@ -12,37 +12,44 @@ import {
   isZipFile,
   cloneGitRepo,
 } from '../utils/zipExtractor'
-import { dirname } from '../../export/helper'
 
 export const exportRouter: FastifyPluginAsync = async (fastify) => {
   // GET /api/presets - Get available presets configuration
   fastify.get('/presets', async (request, reply) => {
     try {
       let presetsPath: string = ''
-      
+
       if (process.versions.electron) {
         // In Electron, check if we're in dev or production
         // In dev mode (ts-node), __dirname will be src/server/routes
         // In production, __dirname will be app.asar/dist
         const isDev = __dirname.includes('src/server')
-        
+
         if (isDev) {
           // Development mode: use source file
           presetsPath = join(__dirname, '..', '..', 'presets.yaml')
         } else {
           // Production mode: use unpacked file
-          const resourcesPath = (process as any).resourcesPath || join(__dirname, '../..')
-          presetsPath = join(resourcesPath, 'app.asar.unpacked', 'dist', 'presets.yaml')
+          const resourcesPath =
+            (process as any).resourcesPath || join(__dirname, '../..')
+          presetsPath = join(
+            resourcesPath,
+            'app.asar.unpacked',
+            'dist',
+            'presets.yaml',
+          )
         }
       } else {
         // Standalone Node.js mode - try multiple locations
+        // Parcel replaces __dirname with the *source* path at compile time,
+        // so resolve the symlink of the running script to get the real dist/ dir.
+        const scriptDir = dirname(realpathSync(process.argv[1]))
         const possiblePaths = [
-          join(__dirname, 'presets.yaml'), // Production: dist/
-          join(__dirname, '..', '..', 'presets.yaml'), // Development: src/server/routes/
-          join(process.cwd(), 'dist', 'presets.yaml'), // Fallback
-          join(process.cwd(), 'src', 'presets.yaml'), // Fallback
+          join(scriptDir, 'presets.yaml'), // npm global install: dist/presets.yaml
+          join(process.cwd(), 'dist', 'presets.yaml'), // Docker / repo root
+          join(process.cwd(), 'src', 'presets.yaml'), // Development
         ]
-        
+
         for (const path of possiblePaths) {
           try {
             await readFile(path, 'utf-8')
@@ -52,7 +59,7 @@ export const exportRouter: FastifyPluginAsync = async (fastify) => {
             // Try next path
           }
         }
-        
+
         if (!presetsPath) {
           presetsPath = possiblePaths[0]
         }
@@ -60,11 +67,11 @@ export const exportRouter: FastifyPluginAsync = async (fastify) => {
 
       const presetsContent = await readFile(presetsPath, 'utf-8')
       const presets = YAML.parse(presetsContent)
-      
+
       if (!presets || !presets.presets) {
         throw new Error('Invalid presets file structure')
       }
-      
+
       return { presets: presets.presets }
     } catch (error) {
       console.error('Failed to load presets:', error)

@@ -3,6 +3,7 @@ import * as fs from 'fs-extra'
 import * as path from 'path'
 import YAML from 'yaml'
 import { Preset, PresetsConfig } from '../types'
+import { realpathSync } from 'fs'
 
 export const format = 'presets'
 
@@ -47,8 +48,10 @@ export function help() {
  */
 export function loadPresets(): PresetsConfig {
   try {
-    const dirname = path.resolve(__dirname, '..')
-    const presetsPath = path.join(dirname, 'presets.yaml')
+    // Parcel replaces __dirname with the *source* path at compile time.
+    // Resolve the symlink of the running script to get the real dist/ dir.
+    const scriptDir = path.dirname(realpathSync(process.argv[1]))
+    const presetsPath = path.join(scriptDir, 'presets.yaml')
 
     if (!fs.existsSync(presetsPath)) {
       throw new Error(`Presets file not found at: ${presetsPath}`)
