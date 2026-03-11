@@ -484,6 +484,9 @@ export class JobQueue extends EventEmitter {
                 f.endsWith('.pdf') ||
                 f.endsWith('.epub') ||
                 f.endsWith('.docx') ||
+                f.endsWith('.json') ||
+                f.endsWith('.jsonld') ||
+                f.endsWith('.nq') ||
                 f.endsWith('.apk'),
             )
 
