@@ -10,7 +10,7 @@ ignore
 LiaScript
 node_modules/
 scripts
-server
+src/
 *.zip
 ignore
 test/
