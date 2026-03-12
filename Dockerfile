@@ -121,7 +121,7 @@ fi\n\
 \n\
 # Default to serve if no arguments provided\n\
 if [ $# -eq 0 ]; then\n\
-  set -- serve --port "${PORT:-4000} --no-browser"\n\
+  set -- serve --port "${PORT:-4000}" --no-browser\n\
 fi\n\
 \n\
 # Execute the main application\n\
