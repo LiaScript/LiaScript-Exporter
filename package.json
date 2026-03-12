@@ -1,6 +1,6 @@
 {
   "name": "@liascript/exporter",
-  "version": "3.0.4--1.0.3",
+  "version": "3.0.5--1.0.3",
   "description": "A generic exporter for LiaScript",
   "main": "dist/index.js",
   "repository": {
@@ -21,7 +21,7 @@
     "dist/"
   ],
   "scripts": {
-    "postinstall": "npx puppeteer browsers install chrome",
+    "__postinstall": "npx puppeteer browsers install chrome",
     "__preinstall": "cd LiaScript && npm i && npm run build:scorm1.2 && cp -r dist ../assets/scorm1.2",
     "build:assets": "npm run clean && npm run asset:scorm1.2 && npm run asset:scorm2004 && npm run asset:xapi && npm run asset:web && npm run asset:indexeddb && npm run asset:pdf && npm run asset:capacitor && npm run asset:logo && npm run fix:file && npm run asset:deduplicate && cp -r dist/assets/common/* dist/assets/pdf",
     "build:docker": "docker build -t liascript/exporter:latest .",
@@ -99,6 +99,11 @@
     "electron-builder": "^24.9.1",
     "elm": "^0.19.1-6",
     "parcel": "^2.16.3"
+  },
+  "puppeteer": {
+    "chrome-headless-shell": {
+      "skipDownload": true
+    }
   },
   "engines": {
     "node": ">= 12"
