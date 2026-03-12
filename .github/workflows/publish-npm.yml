@@ -1,0 +1,35 @@
+name: Publish to npm
+
+on:
+    push:
+        tags:
+            - "*.*.*"
+    workflow_dispatch:
+
+jobs:
+    publish:
+        name: Build and Publish to npmjs.com
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout code (recursive submodules)
+              uses: actions/checkout@v4
+              with:
+                  submodules: recursive
+
+            - name: Setup Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: "24"
+                  registry-url: "https://registry.npmjs.org"
+
+            - name: Install dependencies
+              run: npm ci
+
+            - name: Build everything
+              run: npm run build:all
+
+            - name: Publish to npmjs.com
+              run: npm publish --access public
+              env:
+                  NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
