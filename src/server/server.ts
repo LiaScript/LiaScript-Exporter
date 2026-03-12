@@ -1,10 +1,10 @@
 import Fastify from 'fastify'
 import fastifyMultipart from '@fastify/multipart'
 import fastifyStatic from '@fastify/static'
-import { join, dirname } from 'path'
+import { join } from 'path'
 import { exportRouter } from './routes/export'
 import { JobQueue } from './queue/jobQueue'
-import { existsSync, realpathSync } from 'fs'
+import { existsSync } from 'fs'
 import os from 'os'
 import open from 'open'
 
@@ -61,30 +61,26 @@ export async function startServer(
   // Handle ASAR unpacked files for Electron builds
   let publicDir: string
 
-  // NOTE: Parcel replaces __dirname at compile time with the *source* file's
-  // directory, not the output directory. Use process.argv[1] instead, but
-  // resolve any symlinks first (e.g. /usr/local/bin/liaex -> dist/index.js).
-  const resolvedScript = realpathSync(process.argv[1])
-  const scriptDir = dirname(resolvedScript)
-
   // Check if running from ASAR (Electron packaged app)
-  if (scriptDir.includes('app.asar')) {
+  if (__dirname.includes('app.asar')) {
     // Replace app.asar with app.asar.unpacked for unpacked files
-    publicDir =
-      scriptDir.replace('app.asar', 'app.asar.unpacked') + '/server/public'
+    publicDir = __dirname.replace('app.asar', 'app.asar.unpacked') + '/public'
+    console.log('Running from ASAR, using unpacked path:', publicDir)
   } else {
-    // Not in ASAR - try multiple locations for npm global / Docker / development
+    // Not in ASAR - try multiple locations for Docker/standalone/development
     const possibleDirs = [
-      // npm global install: process.argv[1] = <prefix>/dist/index.js
-      join(scriptDir, 'server', 'public'),
-      // Docker / run-from-repo-root
+      // Production Docker - relative to cwd
       join(process.cwd(), 'dist', 'server', 'public'),
-      // Development (ts-node / parcel watch)
+      // Bundled production - relative to __dirname
+      join(__dirname, 'public'),
+      // Development
       join(process.cwd(), 'src', 'server', 'public'),
     ]
 
     publicDir = possibleDirs.find((dir) => existsSync(dir)) || possibleDirs[0]
   }
+
+  console.log('Serving static files from:', publicDir)
 
   await fastify.register(fastifyStatic, {
     root: publicDir,
@@ -124,7 +120,7 @@ export async function startServer(
 ║   🚀 LiaScript Export Server                          ║
 ║                                                       ║
 ║   📍 http://localhost:${actualPort}                            ║
-║   📍 http://${localIP}:${actualPort}                        ║
+║   📍 http://${localIP}:${actualPort}                         ║
 ║                                                       ║
 ║   Press Ctrl+C to stop the server                     ║
 ║                                                       ║
