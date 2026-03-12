@@ -40,10 +40,12 @@ export function tmpDir(): Promise<string> {
  */
 export function dirname(): string {
   // Get the directory where the main entry point (index.js) is located
-  // This works both in Docker and locally because it's relative to the actual running file
+  // Resolve symlinks so this works correctly when installed globally via npm
   const mainFile = require.main?.filename || process.argv[1]
+  const fs_ = require('fs')
+  const resolved = fs_.realpathSync(mainFile)
 
-  return path.dirname(mainFile)
+  return path.dirname(resolved)
 }
 
 /**
@@ -86,7 +88,7 @@ export function filterHidden(
     const components = relPath.split(path.sep)
 
     // Check each component for hidden folders
-    for (const component of components) {
+    for (const component of components) { 
       // Check if the component starts with a dot (i.e., hidden folder)
       if (component.startsWith('.')) {
         return false // Exclude the folder from the copy
