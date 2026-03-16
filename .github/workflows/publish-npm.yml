@@ -18,7 +18,13 @@ jobs:
                   submodules: recursive
 
             - name: Fetch all submodule branches
-              run: git submodule foreach 'git fetch --all'
+              run: |
+                git submodule foreach '
+                  git fetch --all
+                  git checkout -B feat/fullPage origin/feat/fullPage || true
+                  git checkout -B feat/capacitor8 origin/feat/capacitor8 || true
+                  git checkout development || true
+                '
 
             - name: Setup Node.js
               uses: actions/setup-node@v4
