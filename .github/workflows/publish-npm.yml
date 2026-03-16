@@ -17,14 +17,13 @@ jobs:
               with:
                   submodules: recursive
 
-            - name: Fetch all submodule branches
+            - name: Prepare submodule branches for build
+              working-directory: LiaScript
               run: |
-                git submodule foreach '
-                  git fetch --all
-                  git checkout -B feat/fullPage origin/feat/fullPage || true
-                  git checkout -B feat/capacitor8 origin/feat/capacitor8 || true
-                  git checkout development || true
-                '
+                git fetch --unshallow || git fetch --all
+                git checkout -B feat/fullPage origin/feat/fullPage
+                git checkout -B feat/capacitor8 origin/feat/capacitor8
+                git checkout development
 
             - name: Setup Node.js
               uses: actions/setup-node@v4
