@@ -4,7 +4,7 @@ import fastifyStatic from '@fastify/static'
 import { join } from 'path'
 import { exportRouter } from './routes/export'
 import { JobQueue } from './queue/jobQueue'
-import { existsSync } from 'fs'
+import { existsSync, realpathSync } from 'fs'
 import os from 'os'
 import open from 'open'
 
@@ -68,11 +68,19 @@ export async function startServer(
     console.log('Running from ASAR, using unpacked path:', publicDir)
   } else {
     // Not in ASAR - try multiple locations for Docker/standalone/development
+    // Resolve symlinks so global npm installs find the right path
+    const realDir = realpathSync(
+      require.main?.filename || process.argv[1]
+    )
+    const packageDir = join(realDir, '..')
+
     const possibleDirs = [
-      // Production Docker - relative to cwd
-      join(process.cwd(), 'dist', 'server', 'public'),
+      // Global npm install - relative to real binary location
+      join(packageDir, 'server', 'public'),
       // Bundled production - relative to __dirname
       join(__dirname, 'public'),
+      // Production Docker - relative to cwd
+      join(process.cwd(), 'dist', 'server', 'public'),
       // Development
       join(process.cwd(), 'src', 'server', 'public'),
     ]
