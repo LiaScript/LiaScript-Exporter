@@ -12,19 +12,11 @@ jobs:
         runs-on: ubuntu-latest
 
         steps:
-            - name: Checkout code (recursive submodules)
+            - name: Checkout code
               uses: actions/checkout@v4
-              with:
-                  submodules: recursive
-                  fetch-depth: 0
 
-            - name: Prepare submodule branches for build
-              working-directory: LiaScript
-              run: |
-                git fetch origin
-                git checkout -B feat/fullPage origin/feat/fullPage
-                git checkout -B feat/capacitor8 origin/feat/capacitor8
-                git checkout development
+            - name: Initialize LiaScript submodule
+              run: git submodule update --init LiaScript
 
             - name: Setup Node.js
               uses: actions/setup-node@v4
@@ -35,10 +27,20 @@ jobs:
             - name: Install dependencies
               run: npm ci
 
-            - name: Build everything
+            - name: Set ELM_HOME
+              run: echo "ELM_HOME=${GITHUB_WORKSPACE}/.elm" >> $GITHUB_ENV
+
+            - name: Load additional branches
+              run: |
+                cd LiaScript
+                git fetch origin feat/fullPage:refs/heads/feat/fullPage feat/capacitor8:refs/heads/feat/capacitor8
+                npm install
+                npm run prebuild
+
+            - name: Build and prepare for publish
               run: npm run build:all
 
             - name: Publish to npmjs.com
               run: npm publish --access public --tag latest
               env:
-                  NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+                  NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_KEY }}
