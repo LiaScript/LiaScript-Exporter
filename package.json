@@ -18,7 +18,8 @@
   },
   "preferGlobal": true,
   "files": [
-    "dist/"
+    "dist/",
+    "README.md"
   ],
   "scripts": {
     "__postinstall": "npx puppeteer browsers install chrome",
