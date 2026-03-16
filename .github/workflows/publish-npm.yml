@@ -17,6 +17,9 @@ jobs:
               with:
                   submodules: recursive
 
+            - name: Fetch all submodule branches
+              run: git submodule foreach 'git fetch --all'
+
             - name: Setup Node.js
               uses: actions/setup-node@v4
               with:
