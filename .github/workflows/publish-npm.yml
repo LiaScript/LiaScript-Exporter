@@ -16,11 +16,12 @@ jobs:
               uses: actions/checkout@v4
               with:
                   submodules: recursive
+                  fetch-depth: 0
 
             - name: Prepare submodule branches for build
               working-directory: LiaScript
               run: |
-                git fetch --unshallow || git fetch --all
+                git fetch origin
                 git checkout -B feat/fullPage origin/feat/fullPage
                 git checkout -B feat/capacitor8 origin/feat/capacitor8
                 git checkout development
