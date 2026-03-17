@@ -36,6 +36,7 @@ jobs:
                 git fetch origin feat/fullPage:refs/heads/feat/fullPage feat/capacitor8:refs/heads/feat/capacitor8
                 npm install
                 npm run prebuild
+                make -C patches/elm-patch ELM_HOME=${ELM_HOME} || true
 
             - name: Build and prepare for publish
               run: npm run build:all
