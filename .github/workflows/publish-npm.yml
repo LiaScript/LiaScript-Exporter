@@ -37,6 +37,7 @@ jobs:
                 npm install
                 npm run prebuild
                 make -C patches/elm-patch ELM_HOME=${ELM_HOME} || true
+                rm -rf elm-stuff .parcel-cache
 
             - name: Build and prepare for publish
               run: npm run build:all
