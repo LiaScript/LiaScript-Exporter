@@ -1,75 +1,52 @@
-> ## 🚧 Under Construction / Im Umbau 🚧
->
-> <marquee>**We are excited to announce that the LiaScript-Exporter has received funding through the [OE_Sprints](https://www.oer-strategie.de/foerdern/foerderrichtlinien/oe_sprints/) program!**</marquee>
->
-> ![](https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExaWdxeGVzcXlyaHMyZmJzODA2OXRvazB1bjk3ZWZtMXpoMXRmd2p2aSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/hV1dkT2u1gqTUpKdKy/giphy.gif)
->
-> This project (**LiaEx - OER Exporter für LiaScript**) is funded by the German Federal Ministry for Family Affairs, Senior Citizens, Women and Youth (BMBFSFJ) as part of the federal government's OER strategy from October 15, 2025 to April 14, 2026 (funding code: 01PZ25002).
->
-> ### What's happening?
->
-> We are currently restructuring and extending the LiaScript-Exporter to:
->
-> - Improve export capabilities for various Learning Management Systems (LMS)
-> - Develop a bridge function for conversion to H5P systems
-> - Create modern desktop and web applications
-> - Enhance OER-friendly infrastructure based on open standards and open source software
->
-> The goal is to reduce barriers, increase the likelihood of cross-educational use, and enable the OER and LiaScript communities to maintain and develop the software further.
-
 # LiaScript-Exporter
 
-This shall be a generic LiaScript-Exporter that can export educational content
-into different formats, so that LiaScript courses can also be utilized in
-different Learning Management Systems (LMS) or Readers for static content (PDF,
-ePub, ...). At the moment there is only support for SCORM1.2, as the most
-wide-spread exchange format. See the last section
+A generic LiaScript-Exporter that can export educational content into different
+formats, so that LiaScript courses can also be utilized in different Learning
+Management Systems (LMS) or as static documents (PDF, ePub, DOCX, ...).
+Supported export formats include SCORM 1.2, SCORM 2004, IMS, xAPI, Web, PDF,
+ePub, DOCX, Android, and more. See the last section
 [LMS Support List](#LMS-Support-List)
 
 > __But__, it is still the easiest way to share your courses via
 > __`https://LiaScript.github.io/course/?YOUR_REPO`__. The LiaScript course
 > website is a fully fledged "offline-first" Progressive Web App (PWA), which
 > allows to store all of your courses and states directly within your browser. If
-> you are comming from Android, you can also directly install the website as an
-> app on your device. Actually, there is now need for a BackEnd-system anymore,
-> but if you need to track the progress of you students, you can use this tool...
+> you are coming from Android, you can also directly install the website as an
+> app on your device. Actually, there is no need for a back-end system anymore,
+> but if you need to track the progress of your students, you can use this tool...
 
-## Install
+## Usage
 
-At the moment this is a simple command-line tool based on NodeJS, thus you will
-have to install NodeJS first, which contains also `npm` the Node Package
-Manager. You can directly download the installer for your system from:
+The LiaScript-Exporter can be used in three ways:
+
+### 1. Desktop App (recommended for most users)
+
+Download and install the desktop application for your operating system directly from the
+[GitHub Releases](https://github.com/LiaScript/LiaScript-Exporter/releases)
+page. It provides the same web UI without needing to install Node.js or run any
+commands — just download, install, and open.
+
+### 2. Web UI (via CLI)
+
+Install Node.js first (it includes `npm`):
 
 <https://nodejs.org/en/download/>
 
-Afterwards you can open your terminal and type in the following command, this
-will install the LiaScript-Exporter as a global application on your system.
-
-__Install from npm:__
+Then install the LiaScript-Exporter globally:
 
 ``` bash
-npm install -g --verbose @liascript/exporter
+npm install -g @liascript/exporter
 ```
 
-Depending on your configuration, you might need to run this command with root
-privileges. In my case on Linux it is simply:
+On Linux you may need `sudo`:
 
 ``` bash
-sudo npm install -g --verbose @liascript/exporter
+sudo npm install -g @liascript/exporter
 ```
 
-Depending on your configuration, you might need to run this command with root
-privileges. In my case on Linux it is simply:
+On Windows you may need to run the terminal with administrator privileges.
 
-``` bash
-sudo npm install -g --verbose https://github.com/liaScript/LiaScript-Exporter
-```
-
-On Windows you might need to run the terminal with administrator-privileges.
-
-### Web Server Mode
-
-Instead of command-line exports, you can also start a web server with a user-friendly interface:
+Then start the local web server:
 
 ``` bash
 $ liaex serve
@@ -84,227 +61,60 @@ $ liaex serve --port 8080
 The web interface allows you to:
 
 - **Upload files** or specify a **Git repository** as your project source
-- Select an **export target** (Moodle, ILIAS, OPAL, Generic LMS, Web, PDF)
+- Select an **export target** (Moodle, ILIAS, OPAL, Generic LMS, Web, PDF, ePub, DOCX, xAPI)
 - Configure **advanced settings** for your export
 - Queue export jobs and track their status
 
 All exports are processed asynchronously in a queue, with only one export running at a time. After submitting an export, you'll receive a job ID and can track the progress on a status page.
 
-**Features:**
-- Multi-user support with job queue
-- File upload (ZIP or multiple files)
-- Git repository support (with branch/subdirectory options)
-- Preset-based export targets for common LMS platforms
-- Manual format selection (SCORM 1.2, SCORM 2004, IMS, Web, PDF, Android, JSON)
-- Status tracking for export jobs
+### 3. CLI
 
-The server mode is perfect for:
-- Non-technical users who prefer a GUI
-- Institutions that want to provide a self-service export solution
-- Batch processing of multiple courses
-- Testing different export configurations
+For scripting, automation, or CI/CD pipelines, the exporter can be used directly from the command line. Install the same way as above (Node.js + `npm install -g @liascript/exporter`), then see [Basic CLI usage](#Basic-CLI-usage) below.
+
+### Docker (Android export)
+
+Android exports require the Android SDK, which can be complex to set up locally.
+The easiest approach is to use the pre-built Docker image:
+
+``` bash
+docker pull liascript/exporter
+```
+
+Then run an Android export inside the container:
+
+``` bash
+docker run --rm -v $(pwd):/work liascript/exporter \
+  liaex -f android \
+  -i /work/README.md \
+  --android-appId io.github.liascript.mycourse \
+  --output /work/output
+```
+
+Alternatively you can build the image yourself from the provided `Dockerfile` in
+this repository:
+
+``` bash
+docker build -t liascript/exporter .
+```
 
 ## Basic CLI usage
 
-If you have installed the package, you can now use `liaex` or
-`liascript-exporter`. If you type one of the following commands, you will get
-the following output.
-
-### Command-line Export
+Once installed, use `liaex` or `liascript-exporter`. Core options:
 
 ``` shell
-$ liaex
-No input defined
-LiaScript-Exporter
-
-Export your LiaScript Markdown files to different formats. The following
-commandline options are available. Based on the selected output format,
-additional options can be used.
-
--h --help                   show this help
--i --input                  file to be used as input
--p --path                   path to be packed, if not set, the path of the input
-                            file is used
--o --output                 output file name (default is output), the ending is
-                            define by the format
--s --style                  additional styling to passed to the export, can be
-                            used for fixes, such as "height: 100vh; width: 100%;
-                            border: 2px;"
--f --format                 scorm1.2, scorm2004, json, fullJson, web, ims, pdf,
-                            android, linkedData (default is json)
--v --version                output the current version
--k --key                    responsive voice key
-
-SCORM settings: 
-
-SCORM (Sharable Content Object Reference Model) 1.2 & 2004 are standards for
-e-learning content that can be imported into LMS platforms like Moodle,
-Blackboard, and others.
-
-Learn more: https://scorm.com/scorm-explained/
-
-Known SCORM configurations per LMS:
-  https://www.npmjs.com/package/@liascript/exporter#scorm-examples
-
---scorm-organization        set the organization title
---scorm-masteryScore        set the scorm masteryScore (a value between 0
-                            -- 100), default is 0
---scorm-typicalDuration     set the scorm duration, default is PT0H5M0S
---scorm-iframe              use an iframe, when a SCORM starting
-                            parameter is not working
---scorm-embed               embed the Markdown into the JS code,
-                            use in Moodle 4 to handle restrictions with dynamic
-                            loading
-
-IMS settings: 
-
-IMS (Instructional Management Systems) Content Package is an interoperable
-standard format for packaging learning content between different LMSes.
-
-Learn more: https://www.imsglobal.org/content/packaging/index.html
-
---ims-indexeddb             Use IndexedDB to store data persistently
-
-WEB settings: 
-
-Pack the project into a self contained web project that can be hosted
-everywhere.
-
---web-iframe                Use an iframed version to hide the
-                            course URL.
---web-indexeddb             This will allow to store data within the
-                            browser using indexeddb, you can optionally pass a
-                            unique key (by default one is generated randomly).
---web-zip                   By default the result is not
-                            zipped, you can change this with this parameter.
-
-Android settings: 
-
-Android export generates a native Android application (.apk) from your LiaScript
-course using Capacitor. This requires the Android SDK to be installed on your
-system.
-
-Learn more:
-- Capacitor:   https://capacitorjs.com/
-- Android SDK: https://developer.android.com/studio
-
---android-sdk               Specify sdk.dir which is required for
-                            building.
---android-appName           Name of the App (Main-title is used as
-                            default).
---android-appId             Required to identify your App reverse url
-                            such as io.github.liascript
---android-icon              Optional icon with 1024x1024 px
---android-splash            Optional splash image with 2732x2732 px
---android-splashDuration    Duration for splash-screen default 0 milliseconds
---android-preview           Open course in Android-Studio
-
-PDF settings: 
-
-PDF export generates printable documents from your LiaScript course using
-Puppeteer, a headless Chrome browser automation tool. This allows for
-high-quality rendering of all course elements including interactive content.
-
-Learn more: https://pptr.dev/ 
-
---pdf-stylesheet            Inject an local CSS for changing the
-                            appearance.
---pdf-theme                 LiaScript themes: default, turquoise,
-                            blue, red, yellow
---pdf-timeout               Set an additional time horizon to wait
-                            until finished.
---pdf-preview               Open preview-browser (default false),
-                            print not possible
-
-The following are puppeteer specific settings.
-
-Learn more:
-  https://github.com/puppeteer/puppeteer/blob/main/docs/api.md#pagepdfoptions
-
---pdf-scale                 Scale of the webpage rendering.
-                            Defaults to 1. Scale amount must be between 0.1 and
-                            2.
---pdf-displayHeaderFooter   Display header and footer. Defaults to false.
---pdf-headerTemplate        HTML template for the print header, inject
-                            classes date, title, url, pageNumber, totalPages
---pdf-footerTemplate        HTML template for the print footer. Should use
-                            the same format as the headerTemplate
---pdf-printBackground       Print background graphics. Defaults to false
---pdf-landscape             Paper orientation. Defaults to false.
---pdf-pageRanges            Paper ranges to print, e.g., "1-5, 8,
-                            11-13"
---pdf-format                Paper format. If set, takes priority
-                            over width or height options. Defaults to a4.
---pdf-width                 Paper width, accepts values labeled
-                            with units.
---pdf-height                Paper height, accepts values labeled
-                            with units.
---pdf-margin-top            Top margin, accepts values labeled with
-                            units.
---pdf-margin-right          Right margin, accepts values labeled with
-                            units.
---pdf-margin-bottom         Bottom margin, accepts values labeled with
-                            units.
---pdf-margin-left           Left margin, accepts values labeled with
-                            units.
---pdf-preferCSSPageSize     Give any CSS @page size declared in the page
-                            priority over what is declared in width and height
-                            or format options.
---pdf-omitBackground        Hides default white background and allows
-                            capturing screenshots with transparency. Defaults to
-                            true.
-
-Project settings: 
-
-A project is a bundle for multiple LiaScript resource into a single project
-overview page, based on a provided yaml description.
-
-Learn more: https://www.npmjs.com/package/@liascript/exporter#project 
-
-Example:
-- Input:  https://github.com/LiaBooks/liabooks.github.com/blob/main/project.yml
-- Output: https://liabooks.github.io
-
---project-no-meta           Disable the generation of meta information
-                            for OpenGraph and Twitter-cards.
---project-no-rdf            Disable the generation of json-ld.
---project-no-categories     Disable the filter for categories/tags.
---project-category-blur     Enable this and the categories will be blurred
-                            instead of deleted.
---project-generate-scrom12  SCORM12 and pass additional scrom settings.
---project-generate-scrom2004SCORM2004 and pass additional scrom settings.
---project-generate-ims      IMS resources with additional config settings.
---project-generate-pdf      PDFs are automatically generated and added to
-                            every card.
---project-generate-cache    Only generate new files, if they do not exist.
-
-RDF settings: 
-
-RDF (Resource Description Framework) export generates structured metadata for
-your LiaScript course or your project-yaml in standard linked data formats. This
-helps with course discovery and enables semantic web applications to understand
-your content. Available output formats are n-quads and JSON-LD.
-
-Learn more:
-- RDF:     https://www.w3.org/RDF/
-- N-Quads: https://www.w3.org/TR/n-quads/
-- JSON-LD: https://json-ld.org/
-
---rdf-format                Output format n-quads, json-ld
-                            (defaults to json-ld).
---rdf-preview               Output the result to the console.
---rdf-url                   Refer to an external URL when
-                            parsing a local project.
---rdf-type                  Course frm schmema.org is applied as
-                            default, overwrite this with EducationalResource,
-                            etc.
---rdf-license               Add a license-URL, otherwise if url was
-                            provided as input, this will check for an existing
-                            LICENSE file.
---rdf-educationalLevel      Typically beginner, intermediate or advanced,
-                            and formal sets of level indicators.
---rdf-template              Use a URL or json-file as a template.
+-h --help     show help
+-i --input    input file (Markdown or YAML for projects)
+-p --path     path to pack (defaults to the input file's directory)
+-o --output   output file name (default: "output"; extension set by format)
+-f --format   scorm1.2, scorm2004, ims, web, pdf, epub, docx, xapi,
+              android, project, rdf, json, fullJson (default: json)
+-s --style    additional CSS to inject
+-v --version  print version
+-k --key      ResponsiveVoice key for text-to-speech
 ```
+
+Format-specific options are documented in the sections below. You can also run
+`liaex --help` at any time to see the full list.
 
 ### SCORM1.2
 
@@ -544,8 +354,11 @@ updating logo ...
 
 ### Android
 
-To generate an APK project of your course, you will have to download the
-[Android SDK](https://developer.android.com/studio) at first and provide the path
+> **Tip:** Setting up the Android SDK locally can be complex. The easiest approach
+> is to use the pre-built Docker image — see [Docker (Android export)](#Docker-Android-export) above.
+
+To generate an APK project of your course locally, download the
+[Android SDK](https://developer.android.com/studio) and provide the path
 via the option `--android-sdk`. Additionally you will have to define an `appId`
 via `--android-appId`, which is in most cases an unique URL (in reverse order)
 that is pointing to your website/project. This export uses
@@ -633,7 +446,7 @@ __Still a bit experimental__
 ### PDF
 
 For printing out courses to PDF this package uses
-[puppeteer](https://github.com/puppeteer/puppeteer/blob/main/docs/api.md#pagepdfoptions),
+[puppeteer](https://github.com/puppeteer/puppeteer/blob/main/docs/api/puppeteer.pdfoptions.md),
 which is an entire browser. This blows up the project a bit, but it allows to
 store also the results of iframes, and to run coding examples. What this export
 does is basically load the entire course within a single page and run all
@@ -645,13 +458,12 @@ which works also with https inputs.
 
 ``` shell
 liaex --format pdf --pdf-preview -i https://raw.githubusercontent.com/TUBAF-IfI-LiaScript/VL_Softwareentwicklung/master/00_Einfuehrung.md
-
 ```
 
 There are a couple of tweaks, that you can use, have a look at the following
 resource:
 
-[Puppeteer pdf settings](https://github.com/puppeteer/puppeteer/blob/main/docs/api.md#pagepdfoptions)
+[Puppeteer pdf settings](https://github.com/puppeteer/puppeteer/blob/main/docs/api/puppeteer.pdfoptions.md)
 
 __`--pdf-stylesheet`__
 
@@ -710,6 +522,118 @@ $ liaex --format pdf \
 
 depending on the size of the course, this can take a while, please be patient...
 ```
+
+### ePub
+
+ePub export generates e-books from your LiaScript course using Puppeteer to render content and the `@lesjoursfr/html-to-epub` library to produce the ePub file. The output is compatible with most e-readers.
+
+``` shell
+$ liaex -i project/README.md --format epub --epub-title "My Course" --epub-author "Author Name" --output course
+```
+
+**Required settings:**
+
+`--epub-title` Title of the book.
+
+`--epub-author` Author name(s), semicolon-separated for multiple authors.
+
+**Optional settings:**
+
+`--epub-publisher` Publisher name.
+
+`--epub-cover` Path to cover image (absolute path or URL).
+
+`--epub-description` Book description.
+
+`--epub-language` Language code in 2 letters (default: `en`).
+
+`--epub-version` EPUB version: 2 or 3 (default: 3).
+
+`--epub-stylesheet` Path to custom CSS file for styling.
+
+`--epub-theme` LiaScript theme: default, turquoise, blue, red, yellow.
+
+`--epub-toc-title` Title for table of contents (default: `"Table Of Contents"`).
+
+`--epub-hide-toc` Hide table of contents in the generated EPUB (default: false).
+
+`--epub-timeout` Additional wait time for rendering in ms (default: 15000).
+
+`--epub-fonts` Comma-separated paths to custom font files to embed.
+
+`--epub-chapter-title` Custom title for the main chapter (default: course title).
+
+`--epub-preview` Open preview browser for debugging (default: false).
+
+### DOCX
+
+DOCX export generates Microsoft Word documents from your LiaScript course using Puppeteer to render content and the `@turbodocx/html-to-docx` library. The output is compatible with Microsoft Word 2007+, LibreOffice Writer, and Google Docs.
+
+``` shell
+$ liaex -i project/README.md --format docx --output course
+```
+
+**Optional settings:**
+
+`--docx-title` Title of the document.
+
+`--docx-author` Author / creator of the document.
+
+`--docx-subject` Subject of the document.
+
+`--docx-description` Description of the document.
+
+`--docx-language` Language code for spell checker (default: `en-US`).
+
+`--docx-orientation` Page orientation: portrait or landscape (default: `portrait`).
+
+`--docx-font` Font name (default: `Arial`).
+
+`--docx-font-size` Font size in half-points/HIP (default: 22, equals 11pt).
+
+`--docx-header` Enable header in the document (default: false).
+
+`--docx-header-html` Custom HTML string for the header.
+
+`--docx-footer` Enable footer in the document (default: false).
+
+`--docx-footer-html` Custom HTML string for the footer.
+
+`--docx-page-number` Add page numbers to the footer (default: false).
+
+`--docx-stylesheet` Path to a local CSS file to inject before export.
+
+`--docx-theme` LiaScript theme: default, turquoise, blue, red, yellow.
+
+`--docx-timeout` Additional wait time after rendering in ms (default: 15000).
+
+`--docx-preview` Open preview browser for debugging (default: false).
+
+### xAPI
+
+xAPI (Experience API / Tin Can API) is a standard for tracking learning experiences and interactions with a Learning Record Store (LRS). The exporter generates a self-contained web package with a `tincan.xml` manifest.
+
+``` shell
+$ liaex -i project/README.md --format xapi --output course
+```
+
+`--xapi-endpoint` URL of the Learning Record Store (LRS) endpoint.
+
+`--xapi-auth` Authentication string for the LRS (e.g., `"Basic dXNlcm5hbWU6cGFzc3dvcmQ="`).
+
+`--xapi-actor` JSON string representing the xAPI actor (default: anonymous).
+
+`--xapi-course-id` Custom identifier for the course (default: course URL).
+
+`--xapi-course-title` Custom title for the course (default: from document).
+
+`--xapi-mastery-threshold` Score threshold for mastery (default: 0.8).
+
+`--xapi-progress-threshold` Score threshold for progress (default: 0.9).
+
+`--xapi-debug` Enable debug logging for xAPI statements.
+
+`--xapi-zip` Package the output as a zip file.
 
 ### Project
 
@@ -866,7 +790,7 @@ This way you can generate a very detailed project configuration and overview.
 
 ### RDF & JSON-LD
 
-The LiaScript metainformation can be exported to RDF, either as json-ld or as n-quads. The option `--pdf-preview` generates a console output that can be used to inspect the result. Otherwise the result is stored in a file, defined by `-o`, the file-ending is either `.jsonld` or `.np`, depending on the `--rdf-format`
+The LiaScript metainformation can be exported to RDF, either as json-ld or as n-quads. The option `--pdf-preview` generates a console output that can be used to inspect the result. Otherwise the result is stored in a file, defined by `-o`, the file-ending is either `.jsonld` or `.nq`, depending on the `--rdf-format`
 
 ``` shell
 liaex --format rdf --rdf-preview -i https://raw.githubusercontent.com/liaScript/docs/master/README.md
@@ -1034,7 +958,7 @@ jobs:
     - uses: actions/checkout@v4
     
     - name: Export to SCORM
-      uses: ./
+      uses: LiaScript/LiaScript-Exporter@master
       with:
         input-file: 'README.md'
         format: 'scorm1.2'
@@ -1052,25 +976,15 @@ jobs:
 
 For complete GitHub Action documentation, inputs, outputs, and more examples, see: [`action/README.md`](action/README.md)
 
-## TODOs & Contributions
-
-* Further exporter
-
-  * AICC
-  * xAPI
-  * ePub
-
-* Integration into the Atom IDE
+## Contributions
 
 ### Custom extensions
 
-If you are interested in creating integrations for other systems by your own,
-you can do this, by defining custom connectors for your target system. They are
-located at
+If you are interested in creating integrations for other systems, you can define
+custom connectors for your target system. They are located at
 [src/javascript/connectors](https://github.com/liaScript/LiaScript/tree/master/src/javascript/connectors).
-Actually it is a simple class that inherits all methods from `Base/Connector`,
-which have to be changed in accordance to you system.
-__I will have to document this__
+Each connector is a simple class that inherits from `Base/Connector` and overrides
+the relevant methods for the target system.
 
 ## LMS Support List
 
