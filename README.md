@@ -69,7 +69,24 @@ All exports are processed asynchronously in a queue, with only one export runnin
 
 ### 3. CLI
 
-For scripting, automation, or CI/CD pipelines, the exporter can be used directly from the command line. Install the same way as above (Node.js + `npm install -g @liascript/exporter`), then see [Basic CLI usage](#Basic-CLI-usage) below.
+For scripting, automation, or CI/CD pipelines, the exporter can be used directly from the command line. Install the same way as above (Node.js + `npm install -g @liascript/exporter`).
+
+Once installed, use `liaex` or `liascript-exporter`. Core options:
+
+``` shell
+-h --help     show help
+-i --input    input file (Markdown or YAML for projects)
+-p --path     path to pack (defaults to the input file's directory)
+-o --output   output file name (default: "output"; extension set by format)
+-f --format   scorm1.2, scorm2004, ims, web, pdf, epub, docx, xapi,
+              android, project, rdf, json, fullJson (default: json)
+-s --style    additional CSS to inject
+-v --version  print version
+-k --key      ResponsiveVoice key for text-to-speech
+```
+
+Format-specific options are documented in the sections below. You can also run
+`liaex --help` at any time to see the full list.
 
 ### Docker (Android export)
 
@@ -97,28 +114,11 @@ this repository:
 docker build -t liascript/exporter .
 ```
 
-## Basic CLI usage
-
-Once installed, use `liaex` or `liascript-exporter`. Core options:
-
-``` shell
--h --help     show help
--i --input    input file (Markdown or YAML for projects)
--p --path     path to pack (defaults to the input file's directory)
--o --output   output file name (default: "output"; extension set by format)
--f --format   scorm1.2, scorm2004, ims, web, pdf, epub, docx, xapi,
-              android, project, rdf, json, fullJson (default: json)
--s --style    additional CSS to inject
--v --version  print version
--k --key      ResponsiveVoice key for text-to-speech
-```
-
-Format-specific options are documented in the sections below. You can also run
-`liaex --help` at any time to see the full list.
+## Format Reference
 
 ### SCORM1.2
 
-If you want to generate a SCORM1.2 conformant package of you LiaScript-course,
+If you want to generate a SCORM1.2 conformant package of your LiaScript-course,
 use the following command:
 
 ``` shell
@@ -129,12 +129,7 @@ project/README.md
 project/Lizenz.md
 ..
 [17:8:33] SCORM 'Init'
-[17:8:33] SCORM 'create /tmp/lia202037-30349-o6yx80.zb0eo/pro/imsmanifest.xml'
-[17:8:33] SCORM 'create /tmp/lia202037-30349-o6yx80.zb0eo/pro/metadata.xml'
-[17:8:33] SCORM 'create /tmp/lia202037-30349-o6yx80.zb0eo/pro/adlcp_rootv1p2.xsd'
-[17:8:33] SCORM 'create /tmp/lia202037-30349-o6yx80.zb0eo/pro/ims_xml.xsd'
-[17:8:33] SCORM 'create /tmp/lia202037-30349-o6yx80.zb0eo/pro/imscp_rootv1p1p2.xsd'
-[17:8:33] SCORM 'create /tmp/lia202037-30349-o6yx80.zb0eo/pro/imsmd_rootv1p2p1.xsd'
+...
 [17:8:33] SCORM 'Archiving /tmp/lia202037-30349-o6yx80.zb0eo/pro to rockOn.zip'
 [17:8:34] SCORM 'rockOn.zip 4977779 total bytes'
 Done
@@ -188,10 +183,14 @@ parameter to the directory to be copied into your scorm project. You will still
 have to use `--input` to define the main course document, but his has to be
 relative to path parameter.
 
-__`--scrom-organization`__
+__`--scorm-organization`__
 
 This parameter simply sets the organization parameter in your SCORM
-`imsmanifest` file. All other parameters are taken from the course
+`imsmanifest` file. All other parameters are taken from the course.
+
+__`--scorm-typicalDuration`__
+
+Set the expected duration of the course in ISO 8601 duration format (e.g. `PT1H30M0S` for 1.5 hours). Default is `PT0H5M0S`.
 
 __`--scorm-iframe`__
 
@@ -199,6 +198,10 @@ Some LMS like ILIAS or OpenOlat seem to have problems with the required
 `startingParameter` and will not load SCORM1.2 courses properly. To fix this,
 this parameter can be used. It tries to run the course within an additional
 `<iframe>`.
+
+__`--scorm-embed`__
+
+Embed the Markdown source directly into the JavaScript code. Use this for Moodle 4 and other LMS that impose restrictions on dynamic loading of external resources.
 
 ### SCORM2004
 
@@ -220,25 +223,7 @@ project/README.md
 project/Lizenz.md
 ..
 [12:38:31] SCORM 'Init'
-[12:38:31] SCORM 'create /tmp/lia2022114-556265-d2jh0k.odg7e/pro/imsmanifest.xml'
-[12:38:31] SCORM 'create /tmp/lia2022114-556265-d2jh0k.odg7e/pro/metadata.xml'
-[12:38:31] SCORM 'create /tmp/lia2022114-556265-d2jh0k.odg7e/pro/XMLSchema.dtd'
-[12:38:31] SCORM 'create /tmp/lia2022114-556265-d2jh0k.odg7e/pro/adlcp_v1p3.xsd'
-[12:38:31] SCORM 'create /tmp/lia2022114-556265-d2jh0k.odg7e/pro/adlnav_v1p3.xsd'
-[12:38:31] SCORM 'create /tmp/lia2022114-556265-d2jh0k.odg7e/pro/adlseq_v1p3.xsd'
-[12:38:31] SCORM 'create /tmp/lia2022114-556265-d2jh0k.odg7e/pro/datatypes.dtd'
-[12:38:31] SCORM 'create /tmp/lia2022114-556265-d2jh0k.odg7e/pro/imscp_v1p1.xsd'
-[12:38:31] SCORM 'create /tmp/lia2022114-556265-d2jh0k.odg7e/pro/imsss_v1p0.xsd'
-[12:38:31] SCORM 'create /tmp/lia2022114-556265-d2jh0k.odg7e/pro/imsss_v1p0auxresource.xsd'
-[12:38:31] SCORM 'create /tmp/lia2022114-556265-d2jh0k.odg7e/pro/imsss_v1p0control.xsd'
-[12:38:31] SCORM 'create /tmp/lia2022114-556265-d2jh0k.odg7e/pro/imsss_v1p0delivery.xsd'
-[12:38:31] SCORM 'create /tmp/lia2022114-556265-d2jh0k.odg7e/pro/imsss_v1p0limit.xsd'
-[12:38:31] SCORM 'create /tmp/lia2022114-556265-d2jh0k.odg7e/pro/imsss_v1p0objective.xsd'
-[12:38:31] SCORM 'create /tmp/lia2022114-556265-d2jh0k.odg7e/pro/imsss_v1p0random.xsd'
-[12:38:31] SCORM 'create /tmp/lia2022114-556265-d2jh0k.odg7e/pro/imsss_v1p0rollup.xsd'
-[12:38:31] SCORM 'create /tmp/lia2022114-556265-d2jh0k.odg7e/pro/imsss_v1p0seqrule.xsd'
-[12:38:31] SCORM 'create /tmp/lia2022114-556265-d2jh0k.odg7e/pro/imsss_v1p0util.xsd'
-[12:38:31] SCORM 'create /tmp/lia2022114-556265-d2jh0k.odg7e/pro/xml.xsd'
+...
 [12:38:31] SCORM 'Archiving /tmp/lia2022114-556265-d2jh0k.odg7e/pro to rockOn.zip'
 [12:38:32] SCORM 'rockOn.zip 19588706 total bytes'
 Done
@@ -338,7 +323,7 @@ __`--web-iframe`:__ This will put the course into an secondary iframe, which wil
 hide the course-URL (the Markdown-file). Unfortunately, it will not be possible
 anymore to link from outside to a specific slide.
 
-__`web-indexeddb`:__ Generate a LiaScript package that will store states persistently.
+__`--web-indexeddb`:__ Generate a LiaScript package that will store states persistently.
 By default, the database is generated uniquely for the packed course. That means,
 every update will use a new database, which makes sense, if and only if, typos get
 corrected or content is added to the end of the document. Mixing content and moving
@@ -352,6 +337,20 @@ updating description ...
 updating logo ...
 ```
 
+> **Note:** Web exports must be served over HTTP — opening `index.html` directly
+> in a browser (`file://`) will not work due to browser security restrictions.
+> To preview locally, use any static file server, for example:
+>
+> ```shell
+> # using Node.js serve
+> npx serve outputFolder
+>
+> # using Python
+> python3 -m http.server --directory outputFolder
+> ```
+>
+> Then open `http://localhost:3000` (or the port shown) in your browser.
+
 ### Android
 
 > **Tip:** Setting up the Android SDK locally can be complex. The easiest approach
@@ -360,7 +359,7 @@ updating logo ...
 To generate an APK project of your course locally, download the
 [Android SDK](https://developer.android.com/studio) and provide the path
 via the option `--android-sdk`. Additionally you will have to define an `appId`
-via `--android-appId`, which is in most cases an unique URL (in reverse order)
+via `--android-appId`, which is in most cases a unique URL (in reverse order)
 that is pointing to your website/project. This export uses
 [capacitorjs](https://capacitorjs.com) to pack the entire LiaScript runtime
 environment and your resources into one installable Android apk.
@@ -440,6 +439,22 @@ $ ls
 >
 > If you want to preview the result, simply use `--android-preview`, which will
 > open android-studio
+
+__`--android-appName`__
+
+Name of the app. The main title of the course is used as default.
+
+__`--android-icon`__
+
+Optional app icon image (1024x1024 px).
+
+__`--android-splash`__
+
+Optional splash screen image (2732x2732 px).
+
+__`--android-splashDuration`__
+
+Duration for the splash screen in milliseconds. Default is 0.
 
 __Still a bit experimental__
 
@@ -522,6 +537,40 @@ $ liaex --format pdf \
 
 depending on the size of the course, this can take a while, please be patient...
 ```
+
+The following are puppeteer-specific settings (see [puppeteer PDF options](https://github.com/puppeteer/puppeteer/blob/main/docs/api.md#pagepdfoptions)):
+
+__`--pdf-scale`__ Scale of the webpage rendering. Defaults to 1. Must be between 0.1 and 2.
+
+__`--pdf-displayHeaderFooter`__ Display header and footer. Defaults to false.
+
+__`--pdf-headerTemplate`__ HTML template for the print header. You can use the classes `date`, `title`, `url`, `pageNumber`, `totalPages`.
+
+__`--pdf-footerTemplate`__ HTML template for the print footer. Same format as `--pdf-headerTemplate`.
+
+__`--pdf-printBackground`__ Print background graphics. Defaults to false.
+
+__`--pdf-landscape`__ Paper orientation. Defaults to false.
+
+__`--pdf-pageRanges`__ Paper ranges to print, e.g. `"1-5, 8, 11-13"`.
+
+__`--pdf-format`__ Paper format (e.g. `A4`, `Letter`). Takes priority over width/height. Defaults to A4.
+
+__`--pdf-width`__ Paper width, accepts values with units (e.g. `210mm`).
+
+__`--pdf-height`__ Paper height, accepts values with units.
+
+__`--pdf-margin-top`__ Top margin, accepts values with units.
+
+__`--pdf-margin-right`__ Right margin, accepts values with units.
+
+__`--pdf-margin-bottom`__ Bottom margin, accepts values with units.
+
+__`--pdf-margin-left`__ Left margin, accepts values with units.
+
+__`--pdf-preferCSSPageSize`__ Give any CSS `@page` size declared in the page priority over `--pdf-format` / width / height options.
+
+__`--pdf-omitBackground`__ Hide the default white background, allowing screenshots with transparency. Defaults to true.
 
 ### ePub
 
@@ -787,10 +836,30 @@ Such as, for which projects you want to generate a pdf and pass also all additio
 Simply pass all arguments as `arguments` with the long name and without the starting dashes.
 This way you can generate a very detailed project configuration and overview.
 
+**Project settings:**
+
+`--project-no-meta` Disable the generation of meta information for OpenGraph and Twitter-cards.
+
+`--project-no-rdf` Disable the generation of JSON-LD.
+
+`--project-no-categories` Disable the filter for categories/tags.
+
+`--project-category-blur` Instead of hiding courses that do not match a selected category, blur them.
+
+`--project-generate-scorm12` Generate a SCORM 1.2 package for every course. Pass additional SCORM settings alongside this flag.
+
+`--project-generate-scorm2004` Generate a SCORM 2004 package for every course. Pass additional SCORM settings alongside this flag.
+
+`--project-generate-ims` Generate IMS resources for every course. Pass additional IMS settings alongside this flag.
+
+`--project-generate-pdf` PDFs are automatically generated and added to every card. Pass additional PDF settings alongside this flag.
+
+`--project-generate-cache` Only generate new files if they do not already exist.
+
 
 ### RDF & JSON-LD
 
-The LiaScript metainformation can be exported to RDF, either as json-ld or as n-quads. The option `--pdf-preview` generates a console output that can be used to inspect the result. Otherwise the result is stored in a file, defined by `-o`, the file-ending is either `.jsonld` or `.nq`, depending on the `--rdf-format`
+The LiaScript metainformation can be exported to RDF, either as json-ld or as n-quads. The option `--rdf-preview` generates a console output that can be used to inspect the result. Otherwise the result is stored in a file, defined by `-o`, the file-ending is either `.jsonld` or `.nq`, depending on the `--rdf-format`
 
 ``` shell
 liaex --format rdf --rdf-preview -i https://raw.githubusercontent.com/liaScript/docs/master/README.md
@@ -891,6 +960,7 @@ liaex --format rdf --rdf-preview -i ../LiaBooks/docs/README.md
 * `--rdf-type`: By default this type of resource is associated with `Course`, but you can use this param if you want to define `EducationalResource` or something else...
 * `--rdf-educationalLevel`: This is currently not defined, but can be injected, typically these are beginner, intermediate, advanced, ...
 * `--rdf-license`: Use this to specify the URL of the associated license to your course. This tool will automatically check if there is a LICENSE file in your project root and add this.
+* `--rdf-template`: Use a URL or local JSON file as a base template for the RDF output.
 
 #### What LiaScript meta-information is used
 
