@@ -26,7 +26,7 @@ Download and install the desktop application for your operating system directly 
 page. It provides the same web UI without needing to install Node.js or run any
 commands — just download, install, and open.
 
-<video src="https://res.cloudinary.com/dyzdjcx4u/video/upload/v1774526839/desktop-app_texsw4.webm" controls width="600"></video>
+<video src="https://github.com/user-attachments/assets/ec3aca40-d884-4406-80e7-20a608b5c5c7" controls width="600"></video>
 
 ### 2. Web UI (via CLI)
 
@@ -54,7 +54,7 @@ Then start the local web server:
 $ liaex serve
 ```
 
-<video src="https://res.cloudinary.com/dyzdjcx4u/video/upload/v1774526839/cli_ui_nlgjlg.webm" controls width="600"></video>
+<video src="https://github.com/user-attachments/assets/f9d02a38-f6e0-45ef-b7a1-f9f424f8f318" controls width="600"></video>
 
 This starts the LiaScript Export Server on port 3000 (default). You can specify a different port:
 
@@ -92,7 +92,7 @@ Once installed, use `liaex` or `liascript-exporter`. Core options:
 Format-specific options are documented in the sections below. You can also run
 `liaex --help` at any time to see the full list.
 
-<video src="https://res.cloudinary.com/dyzdjcx4u/video/upload/v1774526840/cli_cmd_om6rsc.webm" controls width="600"></video>
+<video src="https://github.com/user-attachments/assets/591a6c89-f91e-401f-8b6d-8523f7173d78" controls width="600"></video>
 
 ### Docker (Android export)
 
@@ -120,7 +120,7 @@ this repository:
 docker build -t liascript/exporter .
 ```
 
-<video src="https://res.cloudinary.com/dyzdjcx4u/video/upload/v1774526840/docker_cli_m6qho6.webm" controls width="600"></video>
+<video src="https://github.com/user-attachments/assets/f6cdc80d-1765-41bb-8f09-fa0a8fd26047" controls width="600"></video>
 
 You can also use the Docker container to run the web UI:
 
@@ -130,7 +130,7 @@ docker run --rm -p 4000:4000 liascript/exporter
 
 Then open <http://localhost:4000> in your browser to access the export UI.
 
-<video src="https://res.cloudinary.com/dyzdjcx4u/video/upload/v1774526840/docker_ui_aubhvl.webm" controls width="600"></video>
+<video src="https://github.com/user-attachments/assets/6af7cecb-f14f-4167-a523-c4e051b449e3" controls width="600"></video>
 
 ## Format Reference
 
