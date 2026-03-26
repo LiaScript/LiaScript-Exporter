@@ -26,7 +26,7 @@ Download and install the desktop application for your operating system directly 
 page. It provides the same web UI without needing to install Node.js or run any
 commands — just download, install, and open.
 
-<video src="./media/desktop-app.webm" controls width="600"></video>
+<video src="https://res.cloudinary.com/dyzdjcx4u/video/upload/v1774526839/desktop-app_texsw4.webm" controls width="600"></video>
 
 ### 2. Web UI (via CLI)
 
@@ -54,7 +54,7 @@ Then start the local web server:
 $ liaex serve
 ```
 
-<video src="./media/cli_ui.webm" controls width="600"></video>
+<video src="https://res.cloudinary.com/dyzdjcx4u/video/upload/v1774526839/cli_ui_nlgjlg.webm" controls width="600"></video>
 
 This starts the LiaScript Export Server on port 3000 (default). You can specify a different port:
 
@@ -92,7 +92,7 @@ Once installed, use `liaex` or `liascript-exporter`. Core options:
 Format-specific options are documented in the sections below. You can also run
 `liaex --help` at any time to see the full list.
 
-<video src="./media/cli_cmd.webm" controls width="600"></video>
+<video src="https://res.cloudinary.com/dyzdjcx4u/video/upload/v1774526840/cli_cmd_om6rsc.webm" controls width="600"></video>
 
 ### Docker (Android export)
 
@@ -120,7 +120,7 @@ this repository:
 docker build -t liascript/exporter .
 ```
 
-<video src="./media/docker_cli.webm" controls width="600"></video>
+<video src="https://res.cloudinary.com/dyzdjcx4u/video/upload/v1774526840/docker_cli_m6qho6.webm" controls width="600"></video>
 
 You can also use the Docker container to run the web UI:
 
@@ -130,7 +130,7 @@ docker run --rm -p 4000:4000 liascript/exporter
 
 Then open <http://localhost:4000> in your browser to access the export UI.
 
-<video src="./media/docker_ui.webm" controls width="600"></video>
+<video src="https://res.cloudinary.com/dyzdjcx4u/video/upload/v1774526840/docker_ui_aubhvl.webm" controls width="600"></video>
 
 ## Format Reference
 
