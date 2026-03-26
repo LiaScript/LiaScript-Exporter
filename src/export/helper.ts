@@ -196,11 +196,11 @@ export async function iframe(
       let path = window.location.pathname.replace("start.html", "")
       let iframe = document.getElementById("lia-container")
 
-      if (iframe) {          
+      if (iframe) {
         const src = path + "${
           index || 'index.html'
         }?" + path + "${readme.replace('./', '')}"
-        iframe.src = src 
+        iframe.src = src
       }
     </script>
 
