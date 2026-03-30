@@ -57,6 +57,7 @@ export interface ImsExportArguments {
   key?: string
   style?: string
   'ims-indexeddb'?: boolean
+  'lia-subfolder'?: boolean
 }
 
 export const format = 'ims'
@@ -72,8 +73,11 @@ export async function exporter(argument: ImsExportArguments, json: any) {
   let tmp = await helper.tmpDir()
 
   let tmpPath = path.join(tmp, 'pro')
+  const contentPath = argument['lia-subfolder']
+    ? path.join(tmpPath, 'content')
+    : tmpPath
 
-  // copy assets to temp
+  // copy assets to temp (always to root)
   await fs.copy(
     path.join(
       dirname,
@@ -99,15 +103,15 @@ export async function exporter(argument: ImsExportArguments, json: any) {
 
   await manifest(tmpPath, json.lia)
 
-  // copy base path or readme-directory into temp
-  await fs.copy(argument.path, tmpPath, {
+  // copy user course files into content/ (subfolder mode) or root
+  await fs.copy(argument.path, contentPath, {
     filter: helper.filterHidden(argument.path),
   })
 
   if (argument['ims-indexeddb']) {
     let newReadme = helper.random(20) + '.md'
 
-    let old_ = path.join(tmpPath, argument.readme)
+    let old_ = path.join(contentPath, argument.readme)
     let new_ = path.join(path.dirname(old_), newReadme)
 
     argument.readme = argument.readme.replace(
@@ -120,10 +124,14 @@ export async function exporter(argument: ImsExportArguments, json: any) {
 
   const jsonLD = await RDF.script(argument, json)
 
+  const iframeReadme = argument['lia-subfolder']
+    ? 'content/' + argument.readme.replace('./', '')
+    : argument.readme
+
   await helper.iframe(
     tmpPath,
     'start.html',
-    argument.readme,
+    iframeReadme,
     jsonLD,
     argument.style,
   )
