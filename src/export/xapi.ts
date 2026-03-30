@@ -120,6 +120,7 @@ export interface XapiExportArguments {
   'xapi-zip'?: boolean
   'xapi-mastery-threshold'?: number
   'xapi-progress-threshold'?: number
+  'lia-subfolder'?: boolean
 }
 
 export async function exporter(argument: XapiExportArguments, json: any) {
@@ -127,13 +128,16 @@ export async function exporter(argument: XapiExportArguments, json: any) {
   let tmp = await helper.tmpDir()
   const dirname = helper.dirname()
   let tmpPath = path.join(tmp, 'pro')
+  const contentPath = argument['lia-subfolder']
+    ? path.join(tmpPath, 'content')
+    : tmpPath
 
-  // copy assets to temp
+  // copy assets to temp (always to root)
   await fs.copy(path.join(dirname, './assets/xapi'), tmpPath)
   await fs.copy(path.join(dirname, './assets/common'), tmpPath)
 
-  // copy base path or readme-directory into temp
-  await fs.copy(argument.path, tmpPath)
+  // copy user course files into content/ (subfolder mode) or root
+  await fs.copy(argument.path, contentPath)
 
   // Read and modify index.html
   let index = fs.readFileSync(path.join(tmpPath, 'index.html'), 'utf8')
@@ -161,12 +165,16 @@ export async function exporter(argument: XapiExportArguments, json: any) {
   )
 
   // Add default course
+  const courseURL = argument['lia-subfolder']
+    ? 'content/' + path.basename(argument.readme)
+    : path.basename(argument.readme)
+
   index = helper.inject(
     `<script>
   if (!window.LIA) {
     window.LIA = {}
   }
-   window.LIA.defaultCourseURL = "${path.basename(argument.readme)}"
+   window.LIA.defaultCourseURL = "${courseURL}"
   </script>`,
     index,
   )
