@@ -221,6 +221,10 @@ __`--scorm-embed`__
 
 Embed the Markdown source directly into the JavaScript code. Use this for Moodle 4 and other LMS that impose restrictions on dynamic loading of external resources.
 
+__`--lia-subfolder`__
+
+Place course files (Markdown, images, audio, etc.) into a `content/` subfolder, keeping LiaScript app files at the root. Automatically implies `--scorm-embed` for LMS compatibility.
+
 ### SCORM2004
 
 This output format provides the same settings as `scorm1.2`, but it allows to
@@ -294,6 +298,8 @@ __`--ims-indexeddb`:__ By default no states are preserved, which means, if you
 reload the course, all quiz and coding states are destroyed. By using this
 option a course is generated, which stores the content within the browsers local
 `indexeddb`.
+
+__`--lia-subfolder`:__ Place course files (Markdown, images, audio, etc.) into a `content/` subfolder, keeping LiaScript app files at the root.
 
 ``` shell
 $ liaex -i project/README.md --format ims --output course --ims-indexeddb
@@ -701,6 +707,8 @@ $ liaex -i project/README.md --format xapi --output course
 `--xapi-debug` Enable debug logging for xAPI statements.
 
 `--xapi-zip` Package the output as a zip file.
+
+`--lia-subfolder` Place course files (Markdown, images, audio, etc.) into a `content/` subfolder, keeping LiaScript app files at the root.
 
 ### Project
 
