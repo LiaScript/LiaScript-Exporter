@@ -45,6 +45,11 @@ export function help() {
     '--scorm-embed',
     '             embed the Markdown into the JS code, use in Moodle 4 to handle restrictions with dynamic loading',
   )
+  COLOR.command(
+    null,
+    '--lia-subfolder',
+    '         place LiaScript content files into a "content/" subfolder, keeping SCORM spec files at the root',
+  )
 }
 
 export interface Scorm12ExportArguments {
@@ -61,6 +66,7 @@ export interface Scorm12ExportArguments {
   'scorm-iframe'?: boolean
   'scorm-embed'?: string | boolean
   'scorm-alwaysActive'?: boolean
+  'lia-subfolder'?: boolean
 }
 
 export const format = 'scorm1.2'
@@ -71,8 +77,11 @@ export async function exporter(argument: Scorm12ExportArguments, json: any) {
   const dirname = helper.dirname()
 
   let tmpPath = path.join(tmp, 'pro')
+  const contentPath = argument['lia-subfolder']
+    ? path.join(tmpPath, 'content')
+    : tmpPath
 
-  // copy assets to temp
+  // copy assets to temp (always to root)
   await fs.copy(path.join(dirname, './assets/scorm1.2'), tmpPath)
   await fs.copy(path.join(dirname, './assets/common'), tmpPath)
 
@@ -123,8 +132,8 @@ export async function exporter(argument: Scorm12ExportArguments, json: any) {
     return
   }
 
-  // copy base path or readme-directory into temp
-  await fs.copy(argument.path, tmpPath, {
+  // copy user course files into content/ (subfolder mode) or root
+  await fs.copy(argument.path, contentPath, {
     filter: helper.filterHidden(argument.path),
   })
 

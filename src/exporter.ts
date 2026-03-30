@@ -150,7 +150,7 @@ export class Exporter {
    * Exports to SCORM 1.2 format with embedded content if configured
    */
   private exportScorm12(argument: Arguments, json: any): void {
-    if (argument['scorm-embed']) {
+    if (argument['scorm-embed'] || argument['lia-subfolder']) {
       argument['scorm-embed'] = this.embed
     }
     SCORM12.exporter(argument, json)
@@ -160,7 +160,7 @@ export class Exporter {
    * Exports to SCORM 2004 format with embedded content if configured
    */
   private exportScorm2004(argument: Arguments, json: any): void {
-    if (argument['scorm-embed']) {
+    if (argument['scorm-embed'] || argument['lia-subfolder']) {
       argument['scorm-embed'] = this.embed
     }
     SCORM2004.exporter(argument, json)

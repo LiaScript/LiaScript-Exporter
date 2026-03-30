@@ -74,6 +74,7 @@ export function parseArguments(): Arguments {
     'scorm-iframe': argv['scorm-iframe'],
     'scorm-embed': argv['scorm-embed'],
     'scorm-alwaysActive': argv['scorm-alwaysActive'],
+    'lia-subfolder': argv['lia-subfolder'],
 
     // special IMS cases
     'ims-indexeddb': argv['ims-indexeddb'],
@@ -214,6 +215,7 @@ export function parsePresetsArguments(presetId: string): Arguments {
     'scorm-iframe': presetOptions['scorm-iframe'],
     'scorm-embed': presetOptions['scorm-embed'],
     'scorm-alwaysActive': presetOptions['scorm-alwaysActive'],
+    'lia-subfolder': presetOptions['lia-subfolder'],
 
     // IMS cases
     'ims-indexeddb': argv['ims-indexeddb'],
