@@ -63,6 +63,8 @@
   "settings.scorm.useIframeHint": "For better compatibility in some LMS",
   "settings.scorm.embedMarkdown": "Embed Markdown",
   "settings.scorm.embedMarkdownHint": "Recommended for Moodle 4",
+  "settings.liaSubfolder": "Separate Content Folder",
+  "settings.liaSubfolderHint": "Place course files (md, images, audio) in a content/ subfolder",
   "settings.xapi.title": "xAPI Settings",
   "settings.xapi.lrsEndpoint": "LRS Endpoint",
   "settings.xapi.lrsEndpointHint": "URL of the Learning Record Store (LRS) endpoint",

@@ -255,6 +255,7 @@ export class JobQueue extends EventEmitter {
             'translate',
             'debugging',
             'remove',
+            'lia',
           ],
           scorm2004: [
             'scorm',
@@ -264,9 +265,10 @@ export class JobQueue extends EventEmitter {
             'translate',
             'debugging',
             'remove',
+            'lia',
           ],
-          xapi: ['xapi'],
-          ims: ['ims'],
+          xapi: ['xapi', 'lia'],
+          ims: ['ims', 'lia'],
           web: ['web'],
           pdf: ['pdf'],
           android: ['android'],
@@ -283,25 +285,28 @@ export class JobQueue extends EventEmitter {
           'scorm1.2': (key: string) => {
             // Convert camelCase to kebab-case
             const kebabKey = key.replace(/([A-Z])/g, '-$1').toLowerCase()
-            // Add scorm- prefix if not already present and not a general option
-            if (
-              !key.startsWith('scorm') &&
-              !['mastery-score', 'typical-duration'].includes(kebabKey)
-            ) {
-              return key.startsWith('scorm') ? kebabKey : `scorm-${kebabKey}`
-            }
-            // Handle special cases
+            // Handle special cases first
+            if (key === 'liaSubfolder') return 'lia-subfolder'
             if (key === 'masteryScore') return 'scorm-masteryScore'
             if (key === 'typicalDuration') return 'scorm-typicalDuration'
             if (key === 'scormOrganization') return 'scorm-organization'
             if (key === 'scormIframe') return 'scorm-iframe'
             if (key === 'scormEmbed') return 'scorm-embed'
             if (key === 'scormAlwaysActive') return 'scorm-alwaysActive'
+            // Add scorm- prefix if not already present and not a general option
+            if (
+              !key.startsWith('scorm') &&
+              !['mastery-score', 'typical-duration'].includes(kebabKey)
+            ) {
+              return `scorm-${kebabKey}`
+            }
             return kebabKey
           },
           scorm2004: (key: string) => {
             // Same as scorm1.2
             const kebabKey = key.replace(/([A-Z])/g, '-$1').toLowerCase()
+            // Handle special cases first
+            if (key === 'liaSubfolder') return 'lia-subfolder'
             if (key === 'masteryScore') return 'scorm-masteryScore'
             if (key === 'typicalDuration') return 'scorm-typicalDuration'
             if (key === 'scormOrganization') return 'scorm-organization'
