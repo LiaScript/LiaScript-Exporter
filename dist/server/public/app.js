@@ -200,6 +200,16 @@ function initializeExportTabs() {
         document.querySelectorAll('input[name="preset"]').forEach((radio) => {
           radio.checked = false
         })
+        // Reset all option fields to their HTML defaults
+        document
+          .querySelectorAll('[name^="option_"]')
+          .forEach((field) => {
+            if (field.type === 'checkbox') {
+              field.checked = field.defaultChecked
+            } else {
+              field.value = field.defaultValue
+            }
+          })
       }
     })
   })
