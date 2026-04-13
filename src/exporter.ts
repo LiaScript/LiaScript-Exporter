@@ -171,12 +171,12 @@ export class Exporter {
    */
   private handleProjectExport(
     argument: Arguments,
-    string: string,
+    json: any,
     app: ElmApp,
   ): void {
     if (this.collection) {
       try {
-        PROJECT.storeNext(this.collection, JSON.parse(string))
+        PROJECT.storeNext(this.collection, json)
 
         const next = PROJECT.getNext(this.collection)
 
