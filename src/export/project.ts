@@ -68,15 +68,15 @@ export function help() {
   console.log(COLOR.heading('Project settings:'), '\n')
 
   COLOR.info(
-    'A project is a bundle for multiple LiaScript resource into a single project overview page, based on a provided yaml description.'
+    'A project is a bundle for multiple LiaScript resource into a single project overview page, based on a provided yaml description.',
   )
 
   console.log(
-    '\nLearn more: https://www.npmjs.com/package/@liascript/exporter#project \n'
+    '\nLearn more: https://www.npmjs.com/package/@liascript/exporter#project \n',
   )
   console.log('Example:')
   console.log(
-    '- Input:  https://github.com/LiaBooks/liabooks.github.com/blob/main/project.yaml'
+    '- Input:  https://github.com/LiaBooks/liabooks.github.com/blob/main/project.yaml',
   )
   console.log('- Output: https://liabooks.github.io')
   console.log('')
@@ -84,47 +84,47 @@ export function help() {
   COLOR.command(
     null,
     '--project-no-meta',
-    '         Disable the generation of meta information for OpenGraph and Twitter-cards.'
+    '         Disable the generation of meta information for OpenGraph and Twitter-cards.',
   )
   COLOR.command(
     null,
     '--project-no-rdf',
-    '          Disable the generation of json-ld.'
+    '          Disable the generation of json-ld.',
   )
   COLOR.command(
     null,
     '--project-no-categories',
-    '   Disable the filter for categories/tags.'
+    '   Disable the filter for categories/tags.',
   )
   COLOR.command(
     null,
     '--project-category-blur',
-    '   Enable this and the categories will be blurred instead of deleted.'
+    '   Enable this and the categories will be blurred instead of deleted.',
   )
   COLOR.command(
     null,
     '--project-generate-scrom12',
-    'SCORM12 and pass additional scrom settings.'
+    'SCORM12 and pass additional scrom settings.',
   )
   COLOR.command(
     null,
     '--project-generate-scrom2004',
-    'SCORM2004 and pass additional scrom settings.'
+    'SCORM2004 and pass additional scrom settings.',
   )
   COLOR.command(
     null,
     '--project-generate-ims',
-    '    IMS resources with additional config settings.'
+    '    IMS resources with additional config settings.',
   )
   COLOR.command(
     null,
     '--project-generate-pdf',
-    '    PDFs are automatically generated and added to every card.'
+    '    PDFs are automatically generated and added to every card.',
   )
   COLOR.command(
     null,
     '--project-generate-cache',
-    '  Only generate new files, if they do not exist.'
+    '  Only generate new files, if they do not exist.',
   )
 }
 
@@ -175,7 +175,7 @@ export async function exporter(argument: ProjectExportArguments, json: any) {
           let { html, json } = await toCard(
             argument,
             course.collection[j],
-            true
+            true,
           )
 
           subCards += `<div class='col-sm-6 col-md-4 col-lg-3 ${
@@ -375,6 +375,7 @@ export async function exporter(argument: ProjectExportArguments, json: any) {
 </head>
 <body>
     
+    ${generateNavbar(json.navbar)}
     <main>
         <div class="container-fluid" ${background} >
             <section class="py-5 text-center container">
@@ -421,6 +422,40 @@ export async function exporter(argument: ProjectExportArguments, json: any) {
 `
 
   helper.writeFile(output + '.html', helper.prettify(helper.prettify(html)))
+}
+
+function generateNavbar(navbar: any): string {
+  if (!navbar) return ''
+
+  const bg = navbar.background || '#0B6E75'
+  const theme = navbar.theme === 'light' ? 'navbar-light' : 'navbar-dark'
+  const brand = navbar.brand || ''
+  const links: any[] = navbar.links || []
+
+  let linkItems = ''
+  for (let i = 0; i < links.length; i++) {
+    const link = links[i]
+    const active = i === 0 ? ' active' : ''
+    linkItems += `
+                <li class="nav-item">
+                    <a class="nav-link${active}" href="${link.url || '#'}">${link.label || ''}</a>
+                </li>`
+  }
+
+  return `
+    <nav class="navbar navbar-expand-lg ${theme} sticky-top" style="background-color: ${bg};">
+        <div class="container">
+            <a class="navbar-brand" href="#">${brand}</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    ${linkItems}
+                </ul>
+            </div>
+        </div>
+    </nav>`
 }
 
 function removeContext(obj) {
@@ -485,7 +520,7 @@ function hash(url: string) {
 function toLinkCard(
   argument: any,
   course: any,
-  small: boolean = false
+  small: boolean = false,
 ): string {
   if (course.arguments) {
     argument = course.arguments.reduce((a, b) => {
@@ -510,14 +545,14 @@ function toLinkCard(
     tagList,
     {},
     course.logo,
-    course.link
+    course.link,
   )
 }
 
 async function toCard(
   argument: any,
   course: any,
-  small: boolean = false
+  small: boolean = false,
 ): Promise<{ html: string; json: any }> {
   // if other parameters are defined for a specific course
   // then they are treated
@@ -687,7 +722,7 @@ async function toCard(
       overwrite(course.comment, course.data.lia.comment),
       tagList,
       downloads,
-      overwrite(course.logo, course.data.lia.definition.logo)
+      overwrite(course.logo, course.data.lia.definition.logo),
     ),
     json: await RDF.parse(argument, course.data),
   }
@@ -709,7 +744,7 @@ function card(
     apk?: string
   },
   img_url?: string,
-  link?: string
+  link?: string,
 ): string {
   let image = ''
   if (img_url) {
@@ -802,10 +837,10 @@ function card(
       ${image}
       <div class="card-body" style="transform: rotate(0);">
       <a href="${link ? '' : 'https://liascript.github.io/course/?'}${
-    link || url
-  }" target="${
-    link && !link.startsWith('http') ? '_self' : '_blank'
-  }" class="link-dark stretched-link">
+        link || url
+      }" target="${
+        link && !link.startsWith('http') ? '_self' : '_blank'
+      }" class="link-dark stretched-link">
             <h${small ? 6 : 5} class="card-title">${title}</h${small ? 6 : 5}>
         </a>
         <p class="card-text">${comment}</p>

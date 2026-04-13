@@ -729,6 +729,22 @@ logo: https://upload.wikimedia.org/wikipedia/commons/thumb/8/81/Universitaetsbib
 
 icon: https://upload.wikimedia.org/wikipedia/commons/thumb/d/de/Logo_TU_Bergakademie_Freiberg.svg/242px-Logo_TU_Bergakademie_Freiberg.svg.png
 
+# Optional sticky navigation bar at the top of the page.
+# 'brand' is the text/logo shown on the left, 'background' sets the bar color,
+# 'theme' controls text contrast (dark = white text, light = dark text).
+# Each entry in 'links' becomes a nav item.
+navbar:
+  brand: My OER Collection
+  background: "#0B6E75"   # optional, defaults to #0B6E75
+  theme: dark             # dark | light, defaults to dark
+  links:
+    - label: Home
+      url: "#"
+    - label: Section 1
+      url: "#section-1"
+    - label: Section 2
+      url: "#section-2"
+
 footer: >
   Simply add a custom footer - that can also contain HTML
   <a href="https://liascript.github.io" target="_blank">Made with LiaScript</a>
@@ -863,6 +879,22 @@ Simply pass all arguments as `arguments` with the long name and without the star
 This way you can generate a very detailed project configuration and overview.
 
 **Project settings:**
+
+**Navbar (YAML key):** Add a `navbar` block to your project YAML to generate a sticky navigation bar at the top of the page:
+
+```yaml
+navbar:
+  brand: My OER Collection    # text shown on the left side
+  background: "#0B6E75"       # optional bar color (default: #0B6E75)
+  theme: dark                 # dark (white text) | light (dark text), default: dark
+  links:
+    - label: Home
+      url: "#"
+    - label: Section 1
+      url: "#section-1"
+```
+
+If `navbar` is absent, no navigation bar is rendered.
 
 `--project-no-meta` Disable the generation of meta information for OpenGraph and Twitter-cards.
 
