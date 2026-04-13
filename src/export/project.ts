@@ -276,12 +276,15 @@ export async function exporter(argument: ProjectExportArguments, json: any) {
   const html = `<!DOCTYPE html>
 <html>
 <head>
+    <meta charset="UTF-8">
     <title>${title}</title>
 
     <script type="application/ld+json">
     ${JSON.stringify(jsonLD, null, 2)}
     </script>
   
+    ${argument['project-no-meta'] ? '' : meta(json)}
+
     ${
       json.icon
         ? '<link rel="icon" type="image/x-icon" href="' + json.icon + '">'
@@ -485,22 +488,40 @@ function cleanHTML(html: string) {
 }
 
 function meta(json: any) {
-  const title =
-    json.meta?.title || cleanHTML(json.title) || 'LiaScript Course Index'
+  const title = (
+    json.meta?.title ||
+    cleanHTML(json.title) ||
+    'LiaScript Course Index'
+  ).trim()
 
-  const description = json.meta?.description || cleanHTML(json.comment)
+  let metaData = `<meta property="og:type" content="website">
+<meta property="og:title" content="${title}">
+<meta name="twitter:title" content="${title}">
+`
 
-  const image = json.meta?.image || json.logo
+  const description = (
+    json.meta?.description ||
+    cleanHTML(json.comment) ||
+    ''
+  ).trim()
 
-  return `<meta property="og:type" content="website">
-  <meta property="og:title" content="${title}">
-  <meta property="og:description" content="${description}">
-  <meta property="og:image" content="${image}">
+  if (description) {
+    metaData += `<meta name="description" content="${description}">
+<meta property="og:description" content="${description}">
+<meta name="twitter:description" content="${description}">
+`
+  }
 
-  <meta name="twitter:title" content="${title}">
-  <meta name="twitter:description" content="${description}">
-  <meta name="twitter:image" content="${image}">
-  `
+  const image = (json.meta?.image || json.logo || '').trim()
+
+  if (image) {
+    metaData += `<meta property="og:image" content="${image}">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="${image}">
+`
+  }
+
+  return metaData
 }
 
 function overwrite(check, defaultsTo) {
