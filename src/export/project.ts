@@ -461,7 +461,6 @@ export async function exporter(argument: ProjectExportArguments, json: any) {
             tags:           course.g,
             image:          course.i,
             url:            course.u + '#' + (n + 1),
-            indentation:    sec[2],
           });
         }
       });
@@ -541,17 +540,14 @@ export async function exporter(argument: ProjectExportArguments, json: any) {
             }).join('') + '</div>';
           }
 
-          var indent = item.indentation > 1 ? ' style="padding-left:' + ((item.indentation - 1) * 12) + 'px"' : '';
-          var prefix = item.indentation > 1 ? '<span class="text-muted me-1">' + '·'.repeat(item.indentation - 1) + '</span>' : '';
-
           html += '<a href="' + escapeHtml(item.url) + '" target="_blank" class="list-group-item list-group-item-action py-2 px-3">' +
-            '<div class="d-flex align-items-start"' + indent + '>' +
+            '<div class="d-flex align-items-start">' +
             imgHtml +
             '<div class="flex-grow-1 overflow-hidden">' +
             (isFirstFromCourse && item.sectionTitle !== item.courseTitle
               ? '<div class="text-muted small mb-1">' + highlight(item.courseTitle, matches, 'courseTitle') + '</div>'
               : '') +
-            '<div class="fw-semibold">' + prefix + highlight(item.sectionTitle, matches, 'sectionTitle') + '</div>' +
+            '<div class="fw-semibold">' + highlight(item.sectionTitle, matches, 'sectionTitle') + '</div>' +
             (item.sectionContent
               ? '<div class="text-muted small text-truncate-multiline">' + highlight(excerpt(item.sectionContent, 160), matches, 'sectionContent') + '</div>'
               : '') +
@@ -745,7 +741,6 @@ function buildCourseSearchEntry(course: any): any | null {
   const s = sections.map((sec: any) => [
     inlineToText(sec.title).trim(),
     markdownToText(sec.code || ''),
-    sec.indentation ?? 1,
   ])
 
   return { t: courseTitle, g: tags, i: image, u: baseUrl, s }
