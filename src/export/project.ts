@@ -526,7 +526,7 @@ export async function exporter(argument: ProjectExportArguments, json: any) {
           var item = r.item;
           var matches = r.matches;
           var baseUrl = item.url.split('#')[0];
-          var isFirstFromCourse = !seenUrls[baseUrl];
+          var seenUrl = seenUrls[baseUrl];
           seenUrls[baseUrl] = true;
 
           var imgHtml = item.image
@@ -544,10 +544,12 @@ export async function exporter(argument: ProjectExportArguments, json: any) {
             '<div class="d-flex align-items-start">' +
             imgHtml +
             '<div class="flex-grow-1 overflow-hidden">' +
-            (isFirstFromCourse && item.sectionTitle !== item.courseTitle
-              ? '<div class="text-muted small mb-1">' + highlight(item.courseTitle, matches, 'courseTitle') + '</div>'
+            '<div class="d-flex align-items-baseline gap-2">' +
+            '<div class="fw-semibold flex-shrink-0">' + highlight(item.sectionTitle, matches, 'sectionTitle') + '</div>' +
+            (item.sectionTitle !== item.courseTitle
+              ? '<div class="text-muted small text-truncate" style="min-width:0;">(' + highlight(item.courseTitle, matches, 'courseTitle') + ')</div>'
               : '') +
-            '<div class="fw-semibold">' + highlight(item.sectionTitle, matches, 'sectionTitle') + '</div>' +
+            '</div>' +
             (item.sectionContent
               ? '<div class="text-muted small text-truncate-multiline">' + highlight(excerpt(item.sectionContent, 160), matches, 'sectionContent') + '</div>'
               : '') +
