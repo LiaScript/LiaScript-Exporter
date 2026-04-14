@@ -152,6 +152,7 @@ export function parseArguments(): Arguments {
     'project-no-rdf': argv['project-no-rdf'],
     'project-no-categories': argv['project-no-categories'],
     'project-category-blur': argv['project-category-blur'],
+    'project-search': argv['project-search'],
     'project-generate-pdf': argv['project-generate-pdf'],
     'project-generate-ims': argv['project-generate-ims'],
     'project-generate-scorm12': argv['project-generate-scorm12'],

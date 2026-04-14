@@ -126,6 +126,11 @@ export function help() {
     '--project-generate-cache',
     '  Only generate new files, if they do not exist.',
   )
+  COLOR.command(
+    null,
+    '--project-search',
+    '        Enable full-text fuzzy search across all courses and sections.',
+  )
 }
 
 export interface ProjectExportArguments {
@@ -146,6 +151,7 @@ export interface ProjectExportArguments {
   'project-generate-scorm2004'?: boolean
   'project-generate-android'?: boolean
   'project-generate-cache'?: boolean
+  'project-search'?: boolean
 }
 
 export const format = 'project'
@@ -179,7 +185,7 @@ export async function exporter(argument: ProjectExportArguments, json: any) {
             true,
           )
 
-          if (searchEntry) searchIndex.push(searchEntry)
+          if (searchEntry && argument['project-search']) searchIndex.push(searchEntry)
           subCards += `<div class='col-sm-6 col-md-4 col-lg-3 ${
             course.grid ? 'mb-3' : ''
           }'>
@@ -230,7 +236,7 @@ export async function exporter(argument: ProjectExportArguments, json: any) {
       let { html, json, searchEntry } = await toCard(argument, course)
 
       cards += "<div class='col'>" + html + '</div>'
-      if (searchEntry) searchIndex.push(searchEntry)
+      if (searchEntry && argument['project-search']) searchIndex.push(searchEntry)
       itemList.push(json)
     }
   }
@@ -381,7 +387,7 @@ export async function exporter(argument: ProjectExportArguments, json: any) {
 <body>
     
     ${generateNavbar(json.navbar, !!searchIndex.length)}
-    <!-- Search Modal -->
+    ${searchIndex.length ? `<!-- Search Modal -->
     <div class="modal fade" id="searchModal" tabindex="-1" aria-labelledby="searchModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-lg modal-dialog-scrollable">
         <div class="modal-content">
@@ -403,7 +409,7 @@ export async function exporter(argument: ProjectExportArguments, json: any) {
     <style>
       .search-highlight { background-color: rgba(255, 193, 7, 0.4); padding: 0 1px; border-radius: 2px; font-weight: 600; }
       .text-truncate-multiline { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-    </style>
+    </style>` : ''}
     <main>
         <div class="container-fluid" ${background} >
             <section class="py-5 text-center container">
@@ -445,7 +451,7 @@ export async function exporter(argument: ProjectExportArguments, json: any) {
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/fuse.js@7.0.0/dist/fuse.min.js"></script>
+    ${searchIndex.length ? `<script src="https://cdn.jsdelivr.net/npm/fuse.js@7.0.0/dist/fuse.min.js"></script>
     <script>
       // Compact index: [{t, g, i, u, s: [[sectionTitle, sectionContent, indentation], ...]}]
       // Denormalize into flat records for Fuse
@@ -592,7 +598,7 @@ export async function exporter(argument: ProjectExportArguments, json: any) {
           document.getElementById('searchResults').innerHTML = '<p class="text-muted px-3">Start typing to search…</p>';
         });
       });
-    </script>
+    </script>` : ''}
 </body>
 </html> 
 `
