@@ -1095,7 +1095,7 @@ function card(
     footer = `<div class="card-footer">
     <div class="dropdown">
     <a class="btn btn-secondary btn-sm dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
-      Download as ...
+      Download ...
     </a>
   
     <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink" style="">
