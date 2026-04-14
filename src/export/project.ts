@@ -173,13 +173,13 @@ export async function exporter(argument: ProjectExportArguments, json: any) {
           ${toLinkCard(argument, course.collection[j], true)}
           </div>`
         } else {
-          let { html, json, searchEntries } = await toCard(
+          let { html, json, searchEntry } = await toCard(
             argument,
             course.collection[j],
             true,
           )
 
-          searchIndex.push(...searchEntries)
+          if (searchEntry) searchIndex.push(searchEntry)
           subCards += `<div class='col-sm-6 col-md-4 col-lg-3 ${
             course.grid ? 'mb-3' : ''
           }'>
@@ -227,10 +227,10 @@ export async function exporter(argument: ProjectExportArguments, json: any) {
     } else if (course.link) {
       cards += "<div class='col'>" + toLinkCard(argument, course) + '</div>'
     } else {
-      let { html, json, searchEntries } = await toCard(argument, course)
+      let { html, json, searchEntry } = await toCard(argument, course)
 
       cards += "<div class='col'>" + html + '</div>'
-      searchIndex.push(...searchEntries)
+      if (searchEntry) searchIndex.push(searchEntry)
       itemList.push(json)
     }
   }
@@ -447,9 +447,26 @@ export async function exporter(argument: ProjectExportArguments, json: any) {
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/fuse.js@7.0.0/dist/fuse.min.js"></script>
     <script>
+      // Compact index: [{t, g, i, u, s: [[sectionTitle, sectionContent, indentation], ...]}]
+      // Denormalize into flat records for Fuse
       var SEARCH_INDEX = ${JSON.stringify(searchIndex)};
+      var FLAT_INDEX = [];
+      SEARCH_INDEX.forEach(function(course) {
+        for (var n = 0; n < course.s.length; n++) {
+          var sec = course.s[n];
+          FLAT_INDEX.push({
+            courseTitle:    course.t,
+            sectionTitle:   sec[0],
+            sectionContent: sec[1],
+            tags:           course.g,
+            image:          course.i,
+            url:            course.u + '#' + (n + 1),
+            indentation:    sec[2],
+          });
+        }
+      });
 
-      var fuse = new Fuse(SEARCH_INDEX, {
+      var fuse = new Fuse(FLAT_INDEX, {
         keys: [
           { name: 'courseTitle',    weight: 0.35 },
           { name: 'sectionTitle',   weight: 0.30 },
@@ -694,17 +711,24 @@ function markdownToText(md: string): string {
 }
 
 /**
- * Builds per-course search index entries from the parsed LiaScript data.
- * Each section becomes one entry containing: course title, section title,
- * section content (cleaned), tags, image, url, and indentation level.
+ * Builds a compact course object for the search index.
+ * Shared fields (courseTitle, tags, image, baseUrl) are stored once per course.
+ * Per-section data is stored as a minimal array: [sectionTitle, sectionContent, indentation].
+ * The browser denormalizes this into flat records before passing to Fuse.
  */
-function buildCourseSearchEntries(course: any): any[] {
+function buildCourseSearchEntry(course: any): any | null {
   const lia = course.data?.lia
-  if (!lia) return []
+  if (!lia) return null
 
   const courseTitle = overwrite(course.title, lia.str_title) || ''
-  const courseUrl = 'https://LiaScript.github.io/course/?' + lia.readme
-  const image = overwrite(course.logo, lia.definition?.logo) || ''
+  const readmeUrl = lia.readme as string
+  const baseUrl = 'https://LiaScript.github.io/course/?' + readmeUrl
+  let image: string = overwrite(course.logo, lia.definition?.logo) || ''
+  if (image && !image.startsWith('http:') && !image.startsWith('https:')) {
+    try {
+      image = new URL(image, readmeUrl).toString()
+    } catch (_) {}
+  }
 
   let tags: string[] = []
   try {
@@ -716,25 +740,14 @@ function buildCourseSearchEntries(course: any): any[] {
     tags = []
   }
 
-  const entries: any[] = []
   const sections: any[] = lia.sections ? Array.from(lia.sections) : []
+  const s = sections.map((sec: any) => [
+    inlineToText(sec.title).trim(),
+    markdownToText(sec.code || ''),
+    sec.indentation ?? 1,
+  ])
 
-  for (let i = 0; i < sections.length; i++) {
-    const sec = sections[i]
-    const sectionTitle = inlineToText(sec.title).trim()
-    const sectionContent = markdownToText(sec.code || '')
-    entries.push({
-      courseTitle,
-      sectionTitle,
-      sectionContent,
-      tags,
-      image,
-      url: courseUrl + '#' + (i + 1),
-      indentation: sec.indentation ?? 1,
-    })
-  }
-
-  return entries
+  return { t: courseTitle, g: tags, i: image, u: baseUrl, s }
 }
 
 function meta(json: any) {
@@ -824,7 +837,7 @@ async function toCard(
   argument: any,
   course: any,
   small: boolean = false,
-): Promise<{ html: string; json: any; searchEntries: any[] }> {
+): Promise<{ html: string; json: any; searchEntry: any | null }> {
   // if other parameters are defined for a specific course
   // then they are treated
 
@@ -996,7 +1009,7 @@ async function toCard(
       overwrite(course.logo, course.data.lia.definition.logo),
     ),
     json: await RDF.parse(argument, course.data),
-    searchEntries: buildCourseSearchEntries(course),
+    searchEntry: buildCourseSearchEntry(course),
   }
 
   return rslt
