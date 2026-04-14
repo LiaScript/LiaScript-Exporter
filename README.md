@@ -914,6 +914,8 @@ If `navbar` is absent, no navigation bar is rendered.
 
 `--project-generate-cache` Only generate new files if they do not already exist.
 
+`--project-search` Enable full-text fuzzy search across all courses and sections. When set, a search index is built from all course titles, section titles, section content, and tags. If a `navbar` is defined, a search icon is added to it. If no navbar is present, a floating search button appears fixed in the bottom-right corner of the page. Searching opens a modal with live fuzzy results, each linking directly to the matching section of the course. The keyboard shortcut **Ctrl+K** (or **Cmd+K**) can be used to open the search from anywhere on the page.
+
 
 ### RDF & JSON-LD
 
