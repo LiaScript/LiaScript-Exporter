@@ -455,7 +455,7 @@ export async function exporter(argument: ProjectExportArguments, json: any) {
     <footer class="text-muted py-3">
         <div class="container">
             <p class="float-end">
-                <a href="#">Back to top</a>
+                <a href="#" aria-label="Go to top">↑ Top</a>
             </p>
             <p>${
               json.footer ||
@@ -630,6 +630,7 @@ function generateNavbar(navbar: any, hasSearch: boolean = false): string {
   const bg = navbar?.background || '#0B6E75'
   const theme = navbar?.theme === 'light' ? 'navbar-light' : 'navbar-dark'
   const brand = navbar?.brand || ''
+  const brandUrl = navbar?.url || '#'
   const links: any[] = navbar?.links || []
 
   let linkItems = ''
@@ -651,20 +652,52 @@ function generateNavbar(navbar: any, hasSearch: boolean = false): string {
     : ''
 
   return `
-    <nav class="navbar navbar-expand-lg ${theme} sticky-top" style="background-color: ${bg};">
-        <div class="container">
-            <a class="navbar-brand" href="#">${brand}</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+    <nav class="navbar navbar-expand ${theme} sticky-top" id="mainNavbar" style="background-color: ${bg};">
+        <div class="container-fluid px-4">
+            <a class="navbar-brand" href="${brandUrl}">${brand}</a>
+            <button class="navbar-toggler d-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
+                <ul class="navbar-nav ms-auto flex-nowrap" style="white-space:nowrap;">
                     ${linkItems}
                     ${searchItem}
                 </ul>
             </div>
         </div>
-    </nav>`
+    </nav>
+    <script>
+      (function() {
+        var nav = document.getElementById('mainNavbar');
+        var toggler = nav.querySelector('.navbar-toggler');
+        var collapse = document.getElementById('navbarNav');
+        var brand = nav.querySelector('.navbar-brand');
+
+        function check() {
+          // Measure in expanded state (navbar-expand makes collapse display:flex via Bootstrap CSS)
+          nav.classList.add('navbar-expand');
+          collapse.classList.remove('show');
+
+          var navWidth = nav.offsetWidth;
+          var brandWidth = brand ? brand.offsetWidth : 0;
+          var listWidth = collapse.scrollWidth;
+
+          var overflows = (brandWidth + listWidth + 48) > navWidth;
+          if (overflows) {
+            nav.classList.remove('navbar-expand');
+            toggler.classList.remove('d-none');
+            collapse.classList.remove('show');
+          } else {
+            // navbar-expand already set above; Bootstrap CSS shows collapse as flex automatically
+            toggler.classList.add('d-none');
+          }
+        }
+
+        document.addEventListener('DOMContentLoaded', check);
+        var ro = new ResizeObserver(check);
+        ro.observe(nav);
+      })();
+    </script>`
 }
 
 function removeContext(obj) {
