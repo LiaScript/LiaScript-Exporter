@@ -156,6 +156,7 @@ export async function exporter(argument: ProjectExportArguments, json: any) {
   let cards = ''
   const output = argument.output
   const itemList: any[] = []
+  const searchIndex: any[] = []
 
   for (let i = 0; i < json.collection.length; i++) {
     let course = json.collection[i]
@@ -172,12 +173,13 @@ export async function exporter(argument: ProjectExportArguments, json: any) {
           ${toLinkCard(argument, course.collection[j], true)}
           </div>`
         } else {
-          let { html, json } = await toCard(
+          let { html, json, searchEntries } = await toCard(
             argument,
             course.collection[j],
             true,
           )
 
+          searchIndex.push(...searchEntries)
           subCards += `<div class='col-sm-6 col-md-4 col-lg-3 ${
             course.grid ? 'mb-3' : ''
           }'>
@@ -225,10 +227,10 @@ export async function exporter(argument: ProjectExportArguments, json: any) {
     } else if (course.link) {
       cards += "<div class='col'>" + toLinkCard(argument, course) + '</div>'
     } else {
-      let { html, json } = await toCard(argument, course)
+      let { html, json, searchEntries } = await toCard(argument, course)
 
       cards += "<div class='col'>" + html + '</div>'
-
+      searchIndex.push(...searchEntries)
       itemList.push(json)
     }
   }
@@ -378,7 +380,30 @@ export async function exporter(argument: ProjectExportArguments, json: any) {
 </head>
 <body>
     
-    ${generateNavbar(json.navbar)}
+    ${generateNavbar(json.navbar, !!searchIndex.length)}
+    <!-- Search Modal -->
+    <div class="modal fade" id="searchModal" tabindex="-1" aria-labelledby="searchModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+          <div class="modal-header border-0 pb-0">
+            <div class="input-group">
+              <span class="input-group-text bg-white border-end-0" style="border-radius: 8px 0 0 8px;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001l3.85 3.85a1 1 0 0 0 1.415-1.415l-3.85-3.85zm-5.242 1.656a5.5 5.5 0 1 1 0-11 5.5 5.5 0 0 1 0 11z"/></svg>
+              </span>
+              <input type="text" id="searchInput" class="form-control border-start-0 ps-0" placeholder="Search courses and sections… (Ctrl+K)" autocomplete="off" style="border-radius: 0 8px 8px 0; box-shadow: none;">
+            </div>
+            <button type="button" class="btn-close ms-2" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body pt-2 px-0">
+            <div id="searchResults"><p class="text-muted px-3">Start typing to search…</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <style>
+      .search-highlight { background-color: rgba(255, 193, 7, 0.4); padding: 0 1px; border-radius: 2px; font-weight: 600; }
+      .text-truncate-multiline { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    </style>
     <main>
         <div class="container-fluid" ${background} >
             <section class="py-5 text-center container">
@@ -420,6 +445,138 @@ export async function exporter(argument: ProjectExportArguments, json: any) {
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fuse.js@7.0.0/dist/fuse.min.js"></script>
+    <script>
+      var SEARCH_INDEX = ${JSON.stringify(searchIndex)};
+
+      var fuse = new Fuse(SEARCH_INDEX, {
+        keys: [
+          { name: 'courseTitle',    weight: 0.35 },
+          { name: 'sectionTitle',   weight: 0.30 },
+          { name: 'sectionContent', weight: 0.20 },
+          { name: 'tags',           weight: 0.15 },
+        ],
+        includeScore: true,
+        includeMatches: true,
+        threshold: 0.4,
+        minMatchCharLength: 2,
+      });
+
+      function highlight(text, matches, key) {
+        if (!text || !matches) return escapeHtml(text || '');
+        var match = matches.find(function(m) { return m.key === key; });
+        if (!match || !match.indices || !match.indices.length) return escapeHtml(text);
+        var result = '';
+        var last = 0;
+        var indices = match.indices.slice().sort(function(a,b){ return a[0]-b[0]; });
+        indices.forEach(function(pair) {
+          result += escapeHtml(text.slice(last, pair[0]));
+          result += '<mark class="search-highlight">' + escapeHtml(text.slice(pair[0], pair[1]+1)) + '</mark>';
+          last = pair[1] + 1;
+        });
+        result += escapeHtml(text.slice(last));
+        return result;
+      }
+
+      function escapeHtml(str) {
+        return String(str)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;');
+      }
+
+      function excerpt(text, maxLen) {
+        if (!text) return '';
+        if (text.length <= maxLen) return text;
+        return text.slice(0, maxLen) + '…';
+      }
+
+      function renderResults(query) {
+        var container = document.getElementById('searchResults');
+        if (!query || query.length < 2) {
+          container.innerHTML = '<p class="text-muted px-3">Start typing to search…</p>';
+          return;
+        }
+        var results = fuse.search(query, { limit: 20 });
+        if (!results.length) {
+          container.innerHTML = '<p class="text-muted px-3">No results found.</p>';
+          return;
+        }
+
+        var html = '';
+        var seenUrls = {};
+        results.forEach(function(r) {
+          var item = r.item;
+          var matches = r.matches;
+          var isFirstFromCourse = !seenUrls[item.url];
+          seenUrls[item.url] = true;
+
+          var imgHtml = item.image
+            ? '<div class="flex-shrink-0 me-3" style="width:64px;height:48px;background-image:url(&quot;' + escapeHtml(item.image) + '&quot;);background-size:cover;background-position:center;border-radius:4px;"></div>'
+            : '';
+
+          var tagHtml = '';
+          if (item.tags && item.tags.length) {
+            tagHtml = '<div class="mt-1">' + item.tags.map(function(t) {
+              return '<span class="badge rounded-pill bg-light text-dark me-1" style="font-size:0.7rem;">' + escapeHtml(t) + '</span>';
+            }).join('') + '</div>';
+          }
+
+          var indent = item.indentation > 1 ? ' style="padding-left:' + ((item.indentation - 1) * 12) + 'px"' : '';
+          var prefix = item.indentation > 1 ? '<span class="text-muted me-1">' + '·'.repeat(item.indentation - 1) + '</span>' : '';
+
+          html += '<a href="' + escapeHtml(item.url) + '" target="_blank" class="list-group-item list-group-item-action py-2 px-3">' +
+            '<div class="d-flex align-items-start"' + indent + '>' +
+            imgHtml +
+            '<div class="flex-grow-1 overflow-hidden">' +
+            (isFirstFromCourse && item.sectionTitle !== item.courseTitle
+              ? '<div class="text-muted small mb-1">' + highlight(item.courseTitle, matches, 'courseTitle') + '</div>'
+              : '') +
+            '<div class="fw-semibold">' + prefix + highlight(item.sectionTitle, matches, 'sectionTitle') + '</div>' +
+            (item.sectionContent
+              ? '<div class="text-muted small text-truncate-multiline">' + highlight(excerpt(item.sectionContent, 160), matches, 'sectionContent') + '</div>'
+              : '') +
+            tagHtml +
+            '</div>' +
+            '</div>' +
+            '</a>';
+        });
+        container.innerHTML = '<div class="list-group list-group-flush">' + html + '</div>';
+      }
+
+      document.addEventListener('DOMContentLoaded', function() {
+        var input = document.getElementById('searchInput');
+        var modal = document.getElementById('searchModal');
+
+        input.addEventListener('input', function() {
+          renderResults(this.value.trim());
+        });
+
+        // Ctrl+K / Cmd+K shortcut
+        document.addEventListener('keydown', function(e) {
+          if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+            e.preventDefault();
+            var bsModal = bootstrap.Modal.getOrCreateInstance(modal);
+            bsModal.show();
+          }
+          if (e.key === 'Escape') {
+            var bsModal = bootstrap.Modal.getInstance(modal);
+            if (bsModal) bsModal.hide();
+          }
+        });
+
+        modal.addEventListener('shown.bs.modal', function() {
+          input.focus();
+          input.select();
+        });
+
+        modal.addEventListener('hidden.bs.modal', function() {
+          input.value = '';
+          document.getElementById('searchResults').innerHTML = '<p class="text-muted px-3">Start typing to search…</p>';
+        });
+      });
+    </script>
 </body>
 </html> 
 `
@@ -427,13 +584,13 @@ export async function exporter(argument: ProjectExportArguments, json: any) {
   helper.writeFile(output + '.html', helper.prettify(helper.prettify(html)))
 }
 
-function generateNavbar(navbar: any): string {
-  if (!navbar) return ''
+function generateNavbar(navbar: any, hasSearch: boolean = false): string {
+  if (!navbar && !hasSearch) return ''
 
-  const bg = navbar.background || '#0B6E75'
-  const theme = navbar.theme === 'light' ? 'navbar-light' : 'navbar-dark'
-  const brand = navbar.brand || ''
-  const links: any[] = navbar.links || []
+  const bg = navbar?.background || '#0B6E75'
+  const theme = navbar?.theme === 'light' ? 'navbar-light' : 'navbar-dark'
+  const brand = navbar?.brand || ''
+  const links: any[] = navbar?.links || []
 
   let linkItems = ''
   for (let i = 0; i < links.length; i++) {
@@ -444,6 +601,12 @@ function generateNavbar(navbar: any): string {
                     <a class="nav-link${active}" href="${link.url || '#'}">${link.label || ''}</a>
                 </li>`
   }
+
+  const searchButton = hasSearch
+    ? `<button class="btn btn-link nav-link ms-2" type="button" data-bs-toggle="modal" data-bs-target="#searchModal" title="Search (Ctrl+K)" style="opacity:0.85;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16"><path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001l3.85 3.85a1 1 0 0 0 1.415-1.415l-3.85-3.85zm-5.242 1.656a5.5 5.5 0 1 1 0-11 5.5 5.5 0 0 1 0 11z"/></svg>
+            </button>`
+    : ''
 
   return `
     <nav class="navbar navbar-expand-lg ${theme} sticky-top" style="background-color: ${bg};">
@@ -456,6 +619,7 @@ function generateNavbar(navbar: any): string {
                 <ul class="navbar-nav ms-auto">
                     ${linkItems}
                 </ul>
+                ${searchButton}
             </div>
         </div>
     </nav>`
@@ -485,6 +649,92 @@ async function moveFile(oldPath, newPath) {
 
 function cleanHTML(html: string) {
   return html.replace(/<[^>]+>/g, '')
+}
+
+/**
+ * Recursively extracts plain text from the Elm inline-encoded JSON structure.
+ * Each section title is an array of inline nodes like {"Chars": "..."}, {"Bold": [...]}, etc.
+ */
+function inlineToText(node: any): string {
+  if (!node) return ''
+  if (typeof node === 'string') return node
+  if (Array.isArray(node)) return node.map(inlineToText).join('')
+  if (node.Chars) return node.Chars
+  if (node.Symbol) return node.Symbol
+  if (node.Verbatim) return node.Verbatim
+  if (node.Bold) return inlineToText(node.Bold)
+  if (node.Italic) return inlineToText(node.Italic)
+  if (node.Strike) return inlineToText(node.Strike)
+  if (node.Underline) return inlineToText(node.Underline)
+  if (node.Superscript) return inlineToText(node.Superscript)
+  if (node.Ref) return ''
+  return ''
+}
+
+/**
+ * Strips common Markdown syntax from a raw section code string to produce
+ * cleaner plain text for the search index.
+ */
+function markdownToText(md: string): string {
+  return md
+    .replace(/```[\s\S]*?```/g, '') // fenced code blocks
+    .replace(/`[^`]+`/g, '') // inline code
+    .replace(/--\{\{[\d\s\-]+\}\}--/g, '') // LiaScript block animations --{{n}}--
+    .replace(/\{\{[\d\s\-]+\}\}/g, '') // LiaScript inline animations {{n}} / {{n-m}}
+    .replace(/@[\w.]+(\([^)]*\))?/g, '') // LiaScript macros @Macro or @Macro(...)
+    .replace(/<[^>]+>/g, '') // HTML tags
+    .replace(/!\[.*?\]\(.*?\)/g, '') // images
+    .replace(/\[([^\]]+)\]\([^)]*\)/g, '$1') // links → label
+    .replace(/^#+\s+/gm, '') // headings
+    .replace(/[*_]{1,3}([^*_]+)[*_]{1,3}/g, '$1') // bold/italic markers
+    .replace(/^\s*[-*+>]\s+/gm, '') // list markers / blockquotes
+    .replace(/[|\-]{2,}/g, ' ') // table separators
+    .replace(/\s+/g, ' ')
+    .trim()
+}
+
+/**
+ * Builds per-course search index entries from the parsed LiaScript data.
+ * Each section becomes one entry containing: course title, section title,
+ * section content (cleaned), tags, image, url, and indentation level.
+ */
+function buildCourseSearchEntries(course: any): any[] {
+  const lia = course.data?.lia
+  if (!lia) return []
+
+  const courseTitle = overwrite(course.title, lia.str_title) || ''
+  const courseUrl = 'https://LiaScript.github.io/course/?' + lia.readme
+  const image = overwrite(course.logo, lia.definition?.logo) || ''
+
+  let tags: string[] = []
+  try {
+    tags =
+      (course.tags ||
+        lia.definition?.macro?.tags?.split(',').map((t: string) => t.trim())) ??
+      []
+  } catch (_) {
+    tags = []
+  }
+
+  const entries: any[] = []
+  const sections: any[] = lia.sections ? Array.from(lia.sections) : []
+
+  for (let i = 0; i < sections.length; i++) {
+    const sec = sections[i]
+    const sectionTitle = inlineToText(sec.title).trim()
+    const sectionContent = markdownToText(sec.code || '')
+    entries.push({
+      courseTitle,
+      sectionTitle,
+      sectionContent,
+      tags,
+      image,
+      url: courseUrl + '#' + (i + 1),
+      indentation: sec.indentation ?? 1,
+    })
+  }
+
+  return entries
 }
 
 function meta(json: any) {
@@ -574,7 +824,7 @@ async function toCard(
   argument: any,
   course: any,
   small: boolean = false,
-): Promise<{ html: string; json: any }> {
+): Promise<{ html: string; json: any; searchEntries: any[] }> {
   // if other parameters are defined for a specific course
   // then they are treated
 
@@ -746,6 +996,7 @@ async function toCard(
       overwrite(course.logo, course.data.lia.definition.logo),
     ),
     json: await RDF.parse(argument, course.data),
+    searchEntries: buildCourseSearchEntries(course),
   }
 
   return rslt
