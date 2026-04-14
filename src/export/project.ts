@@ -618,10 +618,12 @@ function generateNavbar(navbar: any, hasSearch: boolean = false): string {
                 </li>`
   }
 
-  const searchButton = hasSearch
-    ? `<button class="btn btn-link nav-link ms-2" type="button" data-bs-toggle="modal" data-bs-target="#searchModal" title="Search (Ctrl+K)" style="opacity:0.85;">
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16"><path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001l3.85 3.85a1 1 0 0 0 1.415-1.415l-3.85-3.85zm-5.242 1.656a5.5 5.5 0 1 1 0-11 5.5 5.5 0 0 1 0 11z"/></svg>
-            </button>`
+  const searchItem = hasSearch
+    ? `<li class="nav-item">
+                        <button class="btn nav-link" type="button" data-bs-toggle="modal" data-bs-target="#searchModal" title="Search (Ctrl+K)">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16"><path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001l3.85 3.85a1 1 0 0 0 1.415-1.415l-3.85-3.85zm-5.242 1.656a5.5 5.5 0 1 1 0-11 5.5 5.5 0 0 1 0 11z"/></svg>
+                        </button>
+                    </li>`
     : ''
 
   return `
@@ -634,8 +636,8 @@ function generateNavbar(navbar: any, hasSearch: boolean = false): string {
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     ${linkItems}
+                    ${searchItem}
                 </ul>
-                ${searchButton}
             </div>
         </div>
     </nav>`
