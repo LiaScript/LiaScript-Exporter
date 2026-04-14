@@ -526,8 +526,9 @@ export async function exporter(argument: ProjectExportArguments, json: any) {
         results.forEach(function(r) {
           var item = r.item;
           var matches = r.matches;
-          var isFirstFromCourse = !seenUrls[item.url];
-          seenUrls[item.url] = true;
+          var baseUrl = item.url.split('#')[0];
+          var isFirstFromCourse = !seenUrls[baseUrl];
+          seenUrls[baseUrl] = true;
 
           var imgHtml = item.image
             ? '<div class="flex-shrink-0 me-3" style="width:64px;height:48px;background-image:url(&quot;' + escapeHtml(item.image) + '&quot;);background-size:cover;background-position:center;border-radius:4px;"></div>'
