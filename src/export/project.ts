@@ -185,7 +185,8 @@ export async function exporter(argument: ProjectExportArguments, json: any) {
             true,
           )
 
-          if (searchEntry && argument['project-search']) searchIndex.push(searchEntry)
+          if (searchEntry && argument['project-search'])
+            searchIndex.push(searchEntry)
           subCards += `<div class='col-sm-6 col-md-4 col-lg-3 ${
             course.grid ? 'mb-3' : ''
           }'>
@@ -236,7 +237,8 @@ export async function exporter(argument: ProjectExportArguments, json: any) {
       let { html, json, searchEntry } = await toCard(argument, course)
 
       cards += "<div class='col'>" + html + '</div>'
-      if (searchEntry && argument['project-search']) searchIndex.push(searchEntry)
+      if (searchEntry && argument['project-search'])
+        searchIndex.push(searchEntry)
       itemList.push(json)
     }
   }
@@ -387,7 +389,17 @@ export async function exporter(argument: ProjectExportArguments, json: any) {
 <body>
     
     ${generateNavbar(json.navbar, !!searchIndex.length)}
-    ${searchIndex.length ? `<!-- Search Modal -->
+    ${
+      searchIndex.length && !json.navbar
+        ? `<!-- Search FAB -->
+    <button id="searchFab" type="button" data-bs-toggle="modal" data-bs-target="#searchModal" title="Search (Ctrl+K)" style="position:fixed;bottom:1.5rem;right:1.5rem;z-index:1030;width:52px;height:52px;border-radius:50%;background:#0B6E75;border:none;color:#fff;box-shadow:0 2px 8px rgba(0,0,0,0.25);display:flex;align-items:center;justify-content:center;">
+      <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 16 16"><path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001l3.85 3.85a1 1 0 0 0 1.415-1.415l-3.85-3.85zm-5.242 1.656a5.5 5.5 0 1 1 0-11 5.5 5.5 0 0 1 0 11z"/></svg>
+    </button>`
+        : ''
+    }
+    ${
+      searchIndex.length
+        ? `<!-- Search Modal -->
     <div class="modal fade" id="searchModal" tabindex="-1" aria-labelledby="searchModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-lg modal-dialog-scrollable">
         <div class="modal-content">
@@ -409,7 +421,9 @@ export async function exporter(argument: ProjectExportArguments, json: any) {
     <style>
       .search-highlight { background-color: rgba(255, 193, 7, 0.4); padding: 0 1px; border-radius: 2px; font-weight: 600; }
       .text-truncate-multiline { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-    </style>` : ''}
+    </style>`
+        : ''
+    }
     <main>
         <div class="container-fluid" ${background} >
             <section class="py-5 text-center container">
@@ -451,7 +465,9 @@ export async function exporter(argument: ProjectExportArguments, json: any) {
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
-    ${searchIndex.length ? `<script src="https://cdn.jsdelivr.net/npm/fuse.js@7.0.0/dist/fuse.min.js"></script>
+    ${
+      searchIndex.length
+        ? `<script src="https://cdn.jsdelivr.net/npm/fuse.js@7.0.0/dist/fuse.min.js"></script>
     <script>
       // Compact index: [{t, g, i, u, s: [[sectionTitle, sectionContent, indentation], ...]}]
       // Denormalize into flat records for Fuse
@@ -598,7 +614,9 @@ export async function exporter(argument: ProjectExportArguments, json: any) {
           document.getElementById('searchResults').innerHTML = '<p class="text-muted px-3">Start typing to search…</p>';
         });
       });
-    </script>` : ''}
+    </script>`
+        : ''
+    }
 </body>
 </html> 
 `
@@ -607,7 +625,7 @@ export async function exporter(argument: ProjectExportArguments, json: any) {
 }
 
 function generateNavbar(navbar: any, hasSearch: boolean = false): string {
-  if (!navbar && !hasSearch) return ''
+  if (!navbar) return ''
 
   const bg = navbar?.background || '#0B6E75'
   const theme = navbar?.theme === 'light' ? 'navbar-light' : 'navbar-dark'
