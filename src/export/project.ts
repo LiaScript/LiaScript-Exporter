@@ -449,7 +449,7 @@ export async function exporter(argument: ProjectExportArguments, json: any) {
     <script>
       // Compact index: [{t, g, i, u, s: [[sectionTitle, sectionContent, indentation], ...]}]
       // Denormalize into flat records for Fuse
-      var SEARCH_INDEX = ${JSON.stringify(searchIndex)};
+      var SEARCH_INDEX = JSON.parse(${JSON.stringify(JSON.stringify(searchIndex))});
       var FLAT_INDEX = [];
       SEARCH_INDEX.forEach(function(course) {
         for (var n = 0; n < course.s.length; n++) {
