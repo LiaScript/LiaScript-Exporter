@@ -103,13 +103,13 @@ export function help() {
   )
   COLOR.command(
     null,
-    '--project-generate-scrom12',
-    'SCORM12 and pass additional scrom settings.',
+    '--project-generate-scorm12',
+    'SCORM12 and pass additional scorm settings.',
   )
   COLOR.command(
     null,
-    '--project-generate-scrom2004',
-    'SCORM2004 and pass additional scrom settings.',
+    '--project-generate-scorm2004',
+    'SCORM2004 and pass additional scorm settings.',
   )
   COLOR.command(
     null,
@@ -997,7 +997,7 @@ async function toCard(
 
   // SCORM12
   if (repo && argument['project-generate-scorm12']) {
-    argument.output = 'assets/scrom12/' + backupOutput
+    argument.output = 'assets/scorm12/' + backupOutput
     const asset = argument.output + '.zip'
 
     if (
@@ -1091,9 +1091,12 @@ function card(
   let image = ''
   if (img_url) {
     if (!(img_url.startsWith('http:') || img_url.startsWith('https:'))) {
-      const fullImageUrl = new URL(img_url, url)
-
-      img_url = fullImageUrl.toString()
+      try {
+        const fullImageUrl = new URL(img_url, url)
+        img_url = fullImageUrl.toString()
+      } catch (e) {
+        // url is not a valid base (e.g. empty string); keep img_url as-is
+      }
     }
 
     image =
