@@ -636,7 +636,7 @@ function generateNavbar(navbar: any, hasSearch: boolean = false): string {
   let linkItems = ''
   for (let i = 0; i < links.length; i++) {
     const link = links[i]
-    const active = i === 0 ? ' active' : ''
+    const active = link.active === true ? ' active' : ''
     linkItems += `
                 <li class="nav-item">
                     <a class="nav-link${active}" href="${link.url || '#'}">${link.label || ''}</a>
