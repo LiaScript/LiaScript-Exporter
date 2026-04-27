@@ -96,7 +96,7 @@
     "@types/node": "^20.19.27",
     "@types/temp": "^0.9.1",
     "@types/unzipper": "^0.10.11",
-    "electron": "^30.5.1",
+    "electron": "^39.8.5",
     "electron-builder": "^24.9.1",
     "elm": "^0.19.1-6",
     "parcel": "^2.16.3"
