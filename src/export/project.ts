@@ -676,7 +676,6 @@ function generateNavbar(navbar: any, hasSearch: boolean = false): string {
         function check() {
           // Measure in expanded state (navbar-expand makes collapse display:flex via Bootstrap CSS)
           nav.classList.add('navbar-expand');
-          collapse.classList.remove('show');
 
           var navWidth = nav.offsetWidth;
           var brandWidth = brand ? brand.offsetWidth : 0;
@@ -686,7 +685,6 @@ function generateNavbar(navbar: any, hasSearch: boolean = false): string {
           if (overflows) {
             nav.classList.remove('navbar-expand');
             toggler.classList.remove('d-none');
-            collapse.classList.remove('show');
           } else {
             // navbar-expand already set above; Bootstrap CSS shows collapse as flex automatically
             toggler.classList.add('d-none');
