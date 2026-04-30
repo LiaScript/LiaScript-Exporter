@@ -754,7 +754,7 @@ function markdownToText(md: string): string {
     .replace(/`[^`]+`/g, '') // inline code
     .replace(/--\{\{[\d\s\-]+\}\}--/g, '') // LiaScript block animations --{{n}}--
     .replace(/\{\{[^\}]+\}\}/g, '') // LiaScript inline animations {{n}} / {{n-m}}
-    .replace(/\[\[[^\]]+\}\]/g, '') // LiaScript quizzes [[X]]
+    .replace(/\[\[[^\]]+\]\]/g, '') // LiaScript quizzes [[X]]
     .replace(/\[\([^\)]+\)\]/g, '') // LiaScript quizzes [(X)]
     .replace(/@[\w.]+(\([^)]*\))?/g, '') // LiaScript macros @Macro or @Macro(...)
     .replace(/<[^>]+>/g, '') // HTML tags
