@@ -753,7 +753,9 @@ function markdownToText(md: string): string {
     .replace(/```[\s\S]*?```/g, '') // fenced code blocks
     .replace(/`[^`]+`/g, '') // inline code
     .replace(/--\{\{[\d\s\-]+\}\}--/g, '') // LiaScript block animations --{{n}}--
-    .replace(/\{\{[\d\s\-]+\}\}/g, '') // LiaScript inline animations {{n}} / {{n-m}}
+    .replace(/\{\{[^\}]+\}\}/g, '') // LiaScript inline animations {{n}} / {{n-m}}
+    .replace(/\[\[[^\]]+\}\]/g, '') // LiaScript quizzes [[X]]
+    .replace(/\[\([^\)]+\)\]/g, '') // LiaScript quizzes [(X)]
     .replace(/@[\w.]+(\([^)]*\))?/g, '') // LiaScript macros @Macro or @Macro(...)
     .replace(/<[^>]+>/g, '') // HTML tags
     .replace(/!\[.*?\]\(.*?\)/g, '') // images
@@ -763,6 +765,8 @@ function markdownToText(md: string): string {
     .replace(/^\s*[-*+>]\s+/gm, '') // list markers / blockquotes
     .replace(/[|\-]{2,}/g, ' ') // table separators
     .replace(/\s+/g, ' ')
+    .replace(/\*{3,}/g, '') // excess asterisks
+    .replace(/\-{2,}/g, '') // excess dashes 
     .trim()
 }
 
