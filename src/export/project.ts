@@ -691,7 +691,18 @@ function generateNavbar(navbar: any, hasSearch: boolean = false): string {
           }
         }
 
-        document.addEventListener('DOMContentLoaded', check);
+        document.addEventListener('DOMContentLoaded', function() {
+          check();
+          // Collapse navbar when a nav link is clicked (mobile/toggler mode)
+          collapse.querySelectorAll('.nav-link').forEach(function(link) {
+            link.addEventListener('click', function() {
+              if (!toggler.classList.contains('d-none')) {
+                var bsCollapse = bootstrap.Collapse.getOrCreateInstance(collapse);
+                bsCollapse.hide();
+              }
+            });
+          });
+        });
         var ro = new ResizeObserver(check);
         ro.observe(nav);
       })();
