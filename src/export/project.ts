@@ -467,53 +467,48 @@ export async function exporter(argument: ProjectExportArguments, json: any) {
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
     ${
       searchIndex.length
-        ? `<script src="https://cdn.jsdelivr.net/npm/fuse.js@7.0.0/dist/fuse.min.js"></script>
+        ? `<script src="https://cdn.jsdelivr.net/npm/minisearch@7/dist/umd/index.min.js"></script>
     <script>
-      // Compact index: [{t, g, i, u, s: [[sectionTitle, sectionContent, indentation], ...]}]
-      // Denormalize into flat records for Fuse
+      // Compact index: [{t, g, i, u, s: [[sectionTitle, sectionContent], ...]}]
+      // Denormalize into flat records for MiniSearch
       var SEARCH_INDEX = JSON.parse(${JSON.stringify(JSON.stringify(searchIndex))});
       var FLAT_INDEX = [];
+      var _id = 0;
       SEARCH_INDEX.forEach(function(course) {
         for (var n = 0; n < course.s.length; n++) {
           var sec = course.s[n];
           FLAT_INDEX.push({
+            id:             _id++,
             courseTitle:    course.t,
             sectionTitle:   sec[0],
             sectionContent: sec[1],
-            tags:           course.g,
+            tagsText:       Array.isArray(course.g) ? course.g.join(' ') : '',
+            tagsArr:        course.g || [],
             image:          course.i,
             url:            course.u + '#' + (n + 1),
           });
         }
       });
 
-      var fuse = new Fuse(FLAT_INDEX, {
-        keys: [
-          { name: 'courseTitle',    weight: 0.35 },
-          { name: 'sectionTitle',   weight: 0.30 },
-          { name: 'sectionContent', weight: 0.20 },
-          { name: 'tags',           weight: 0.15 },
-        ],
-        includeScore: true,
-        includeMatches: true,
-        threshold: 0.4,
-        minMatchCharLength: 2,
+      var miniSearch = new MiniSearch({
+        fields: ['courseTitle', 'sectionTitle', 'sectionContent', 'tagsText'],
+        storeFields: ['courseTitle', 'sectionTitle', 'sectionContent', 'tagsArr', 'image', 'url'],
+        searchOptions: {
+          boost: { sectionTitle: 3, courseTitle: 2, tagsText: 1.5 },
+          fuzzy: 0.2,
+          prefix: true,
+        },
       });
+      miniSearch.addAll(FLAT_INDEX);
 
-      function highlight(text, matches, key) {
-        if (!text || !matches) return escapeHtml(text || '');
-        var match = matches.find(function(m) { return m.key === key; });
-        if (!match || !match.indices || !match.indices.length) return escapeHtml(text);
-        var result = '';
-        var last = 0;
-        var indices = match.indices.slice().sort(function(a,b){ return a[0]-b[0]; });
-        indices.forEach(function(pair) {
-          result += escapeHtml(text.slice(last, pair[0]));
-          result += '<mark class="search-highlight">' + escapeHtml(text.slice(pair[0], pair[1]+1)) + '</mark>';
-          last = pair[1] + 1;
-        });
-        result += escapeHtml(text.slice(last));
-        return result;
+      function highlight(text, terms) {
+        if (!text || !terms || !terms.length) return escapeHtml(text || '');
+        var pattern = new RegExp('(' + terms.join('|') + ')', 'gi');
+        return text.split(pattern).map(function(part, i) {
+          return (i % 2 === 1)
+            ? '<mark class="search-highlight">' + escapeHtml(part) + '</mark>'
+            : escapeHtml(part);
+        }).join('');
       }
 
       function escapeHtml(str) {
@@ -536,44 +531,39 @@ export async function exporter(argument: ProjectExportArguments, json: any) {
           container.innerHTML = '<p class="text-muted px-3">Start typing to search…</p>';
           return;
         }
-        var results = fuse.search(query, { limit: 20 });
+        var results = miniSearch.search(query).slice(0, 20);
         if (!results.length) {
           container.innerHTML = '<p class="text-muted px-3">No results found.</p>';
           return;
         }
 
         var html = '';
-        var seenUrls = {};
         results.forEach(function(r) {
-          var item = r.item;
-          var matches = r.matches;
-          var baseUrl = item.url.split('#')[0];
-          var seenUrl = seenUrls[baseUrl];
-          seenUrls[baseUrl] = true;
+          var terms = r.terms;
 
-          var imgHtml = item.image
-            ? '<div class="flex-shrink-0 me-3" style="width:64px;height:48px;background-image:url(&quot;' + escapeHtml(item.image) + '&quot;);background-size:cover;background-position:center;border-radius:4px;"></div>'
+          var imgHtml = r.image
+            ? '<div class="flex-shrink-0 me-3" style="width:64px;height:48px;background-image:url(&quot;' + escapeHtml(r.image) + '&quot;);background-size:cover;background-position:center;border-radius:4px;"></div>'
             : '';
 
           var tagHtml = '';
-          if (item.tags && item.tags.length) {
-            tagHtml = '<div class="mt-1">' + item.tags.map(function(t) {
+          if (r.tagsArr && r.tagsArr.length) {
+            tagHtml = '<div class="mt-1">' + r.tagsArr.map(function(t) {
               return '<span class="badge rounded-pill bg-light text-dark me-1" style="font-size:0.7rem;">' + escapeHtml(t) + '</span>';
             }).join('') + '</div>';
           }
 
-          html += '<a href="' + escapeHtml(item.url) + '" target="_blank" class="list-group-item list-group-item-action py-2 px-3">' +
+          html += '<a href="' + escapeHtml(r.url) + '" target="_blank" class="list-group-item list-group-item-action py-2 px-3">' +
             '<div class="d-flex align-items-start">' +
             imgHtml +
             '<div class="flex-grow-1 overflow-hidden">' +
             '<div class="d-flex align-items-baseline gap-2">' +
-            '<div class="fw-semibold flex-shrink-0">' + highlight(item.sectionTitle, matches, 'sectionTitle') + '</div>' +
-            (item.sectionTitle !== item.courseTitle
-              ? '<div class="text-muted small text-truncate" style="min-width:0;">(' + highlight(item.courseTitle, matches, 'courseTitle') + ')</div>'
+            '<div class="fw-semibold flex-shrink-0">' + highlight(r.sectionTitle, terms) + '</div>' +
+            (r.sectionTitle !== r.courseTitle
+              ? '<div class="text-muted small text-truncate" style="min-width:0;">(' + highlight(r.courseTitle, terms) + ')</div>'
               : '') +
             '</div>' +
-            (item.sectionContent
-              ? '<div class="text-muted small text-truncate-multiline">' + highlight(excerpt(item.sectionContent, 160), matches, 'sectionContent') + '</div>'
+            (r.sectionContent
+              ? '<div class="text-muted small text-truncate-multiline">' + highlight(excerpt(r.sectionContent, 160), terms) + '</div>'
               : '') +
             tagHtml +
             '</div>' +
