@@ -55,6 +55,34 @@ presets:
       scormEmbed: true  # Empfohlen für Moodle 4
       format: scorm1.2
 
+  - id: moodle5
+    name: Moodle5.x
+    logo:
+      icon: 🎓
+      url: ../assets/moodle.svg
+    format: scorm1.2
+    subtitle: SCORM 1.2
+    description:
+      de: >
+        Moodle ist das weltweit am häufigsten verwendete Open-Source-Lernmanagementsystem.
+        Diese Konfiguration verwendet SCORM 1.2 mit Embed-Modus für Moodle 5.x Kompatibilität.
+        <a href='https://moodle.org' target='_blank'>Mehr erfahren</a>
+      en: >
+        Moodle is the world's most widely used open-source learning management system.
+        This configuration uses SCORM 1.2 with embed mode for Moodle 5.x compatibility.
+        <a href='https://moodle.org' target='_blank'>Learn more</a>
+    options:
+      # SCORM-spezifische Einstellungen
+      responsiveVoice: false
+      translateWithGoogle: false
+      debugging: false
+      removeBase: false
+      scormOrganization: ""
+      typicalDuration: "PT0H5M0S"
+      scormIframe: false
+      scormEmbed: true  # Empfohlen für Moodle 5
+      format: scorm1.2
+
   - id: ilias
     name: ILIAS
     logo:
@@ -109,7 +137,34 @@ presets:
       scormEmbed: false
       format: scorm2004
 
-  - id: scormCloud
+  - id: scormcloud-1.2
+    name: ScormCloud
+    logo:
+      icon: 🌩️
+      url: ../assets/scorm.png
+    format: scorm1.2
+    subtitle: SCORM 1.2
+    description: 
+      de: >
+        ScormCloud ist eine kommerzielle SCORM-Hosting-Plattform, die von Rustici Software betrieben wird.
+        Diese Konfiguration bietet universelle SCORM 1.2 Einstellungen für maximale Kompatibilität.
+        <a href='https://scorm.com/scorm-solved/scorm-cloud-features/' target='_blank'>Mehr erfahren</a>
+      en: >
+        ScormCloud is a commercial SCORM hosting platform operated by Rustici Software.
+        This configuration provides universal SCORM 1.2 settings for maximum compatibility.
+        <a href='https://scorm.com/scorm-solved/scorm-cloud-features/' target='_blank'>Learn more</a>
+    options:
+      responsiveVoice: false
+      translateWithGoogle: false
+      debugging: false
+      removeBase: false
+      scormOrganization: ""
+      typicalDuration: "PT0H5M0S"
+      scormIframe: true
+      scormEmbed: false
+      format: scorm1.2
+
+  - id: scormcloud-2004
     name: ScormCloud
     logo:
       icon: 🌩️
@@ -132,7 +187,7 @@ presets:
       removeBase: false
       scormOrganization: ""
       typicalDuration: "PT0H5M0S"
-      scormIframe: false
+      scormIframe: true
       scormEmbed: false
       format: scorm2004
 
