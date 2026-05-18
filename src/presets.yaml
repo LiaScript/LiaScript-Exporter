@@ -132,7 +132,7 @@ presets:
       removeBase: false
       scormOrganization: ""
       typicalDuration: "PT0H5M0S"
-      scormIframe: false
+      scormIframe: true
       scormEmbed: false
       format: scorm2004
 
