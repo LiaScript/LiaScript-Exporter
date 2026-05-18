@@ -24,7 +24,7 @@
   "scripts": {
     "__postinstall": "npx puppeteer browsers install chrome",
     "__preinstall": "cd LiaScript && npm i && npm run build:scorm1.2 && cp -r dist ../assets/scorm1.2",
-    "build:assets": "npm run clean && npm run asset:scorm1.2 && npm run asset:scorm2004 && npm run asset:xapi && npm run asset:web && npm run asset:indexeddb && npm run asset:pdf && npm run asset:capacitor && npm run asset:logo && npm run fix:file && npm run asset:deduplicate && cp -r dist/assets/common/* dist/assets/pdf",
+    "build:assets": "npm run clean && npm run asset:scorm1.2 && npm run asset:scorm2004 && npm run asset:xapi && npm run asset:web && npm run asset:indexeddb && npm run asset:pdf && npm run asset:capacitor && npm run asset:logo && npm run fix:file",
     "build:docker": "docker build -t liascript/exporter:latest .",
     "clean": "rm -rf dist/assets/*",
     "asset:logo": "cp -r LiaScript/resources dist",
@@ -37,7 +37,7 @@
     "asset:capacitor": "cd LiaScript && git stash && git checkout feat/capacitor8 && rm -rf node_modules && npm i && npm run build:indexeddb && cp -r dist ../dist/assets/capacitor && git checkout development && rm -rf node_modules && npm i",
     "asset:deduplicate": "./scripts/deduplicate-assets.sh",
     "build": "npx parcel build --no-cache --no-source-maps src/index.ts && npm run shebang && npm run copy:public && npm run copy:presets",
-    "build:all": "npm run clean && npm run build:assets && npm run build && npm run minify",
+    "build:all": "npm run clean && npm run build:assets && npm run asset:deduplicate && cp -r dist/assets/common/* dist/assets/pdf && npm run build && npm run minify",
     "build:debug": "npx parcel build --target node --no-minify --log-level 5 src/index.ts",
     "watch": "npx parcel serve --no-cache --no-source-maps src/index.ts --out-dir dist --out-file index.js",
     "copy:public": "node scripts/copy-files.js",
