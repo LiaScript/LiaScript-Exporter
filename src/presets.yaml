@@ -115,16 +115,16 @@ presets:
     logo:
       icon: 🏛️
       url: ../assets/opal.png
-    format: scorm2004
-    subtitle: SCORM 2004
+    format: scorm1.2
+    subtitle: SCORM 1.2
     description:
       de: >
         OPAL (Online-Plattform für Akademisches Lehren und Lernen) ist das zentrale LMS
-        für sächsische Hochschulen. Optimiert für SCORM 2004.
+        für sächsische Hochschulen. Optimiert für SCORM 1.2.
         <a href='https://bildungsportal.sachsen.de/opal' target='_blank'>Mehr erfahren</a>
       en: >
         OPAL (Online Platform for Academic Teaching and Learning) is the central LMS
-        for Saxon universities. Optimized for SCORM 2004.
+        for Saxon universities. Optimized for SCORM 1.2.
         <a href='https://bildungsportal.sachsen.de/opal' target='_blank'>Learn more</a>
     options:
       responsiveVoice: false
