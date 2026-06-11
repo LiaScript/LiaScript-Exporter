@@ -17,6 +17,7 @@
   "git.branchPlaceholder": "main",
   "git.subdirectory": "Unterverzeichnis",
   "git.subdirPlaceholder": "docs/",
+  "git.file": "Bestimmte Datei",
   "exportTabs.presets": "Bekannte Konfigurationen",
   "exportTabs.formats": "Formate",
   "formats.scorm12.title": "SCORM 1.2",

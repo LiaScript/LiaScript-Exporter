@@ -1,6 +1,6 @@
 import { FastifyPluginAsync } from 'fastify'
 import { jobQueue } from '../server'
-import { writeFile, mkdir, readFile } from 'fs/promises'
+import { writeFile, mkdir, readFile, access } from 'fs/promises'
 import { join, basename, dirname } from 'path'
 import { realpathSync } from 'fs'
 import { randomUUID } from 'crypto'
@@ -127,6 +127,8 @@ export const exportRouter: FastifyPluginAsync = async (fastify) => {
               jobData.source.gitBranch = value
             } else if (fieldName === 'gitSubdir') {
               jobData.source.gitSubdir = value
+            } else if (fieldName === 'gitFile') {
+              jobData.source.gitFile = value
             } else if (fieldName.startsWith('option_')) {
               const optionName = fieldName.substring(7)
               jobData.options[optionName] = value
@@ -190,12 +192,25 @@ export const exportRouter: FastifyPluginAsync = async (fastify) => {
             fastify.log.info(`Git repository cloned to: ${repoPath}`)
 
             // Find main markdown file
-            const mainMarkdown = await findMainMarkdown(repoPath)
-            if (!mainMarkdown) {
-              return reply.code(400).send({
-                error:
-                  'No markdown file found in Git repository. Please include a README.md or any .md file.',
-              })
+            let mainMarkdown: string | null = null
+            if (jobData.source.gitFile) {
+              const specificFile = join(repoPath, jobData.source.gitFile)
+              try {
+                await access(specificFile)
+                mainMarkdown = specificFile
+              } catch {
+                return reply.code(400).send({
+                  error: `Specified file not found in repository: ${jobData.source.gitFile}`,
+                })
+              }
+            } else {
+              mainMarkdown = await findMainMarkdown(repoPath)
+              if (!mainMarkdown) {
+                return reply.code(400).send({
+                  error:
+                    'No markdown file found in Git repository. Please include a README.md or any .md file.',
+                })
+              }
             }
 
             fastify.log.info(`Found main markdown: ${mainMarkdown}`)
@@ -226,6 +241,7 @@ export const exportRouter: FastifyPluginAsync = async (fastify) => {
           jobData.source.gitUrl = body.gitUrl
           jobData.source.gitBranch = body.gitBranch
           jobData.source.gitSubdir = body.gitSubdir
+          jobData.source.gitFile = body.gitFile
         } else {
           return reply.code(400).send({
             error: 'Invalid request format',

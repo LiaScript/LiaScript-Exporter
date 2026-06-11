@@ -545,8 +545,10 @@ function initializeForm() {
         formData.append('gitUrl', document.getElementById('gitUrl').value)
         const gitBranch = document.getElementById('gitBranch').value
         const gitSubdir = document.getElementById('gitSubdir').value
+        const gitFile = document.getElementById('gitFile').value
         if (gitBranch) formData.append('gitBranch', gitBranch)
         if (gitSubdir) formData.append('gitSubdir', gitSubdir)
+        if (gitFile) formData.append('gitFile', gitFile)
       }
 
       // Add export target
