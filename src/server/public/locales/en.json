@@ -246,5 +246,9 @@
   "status.autoRefresh": "Page will refresh automatically",
   "status.refreshNow": "Refresh Now",
   "status.error": "Error",
-  "status.errorMessage": "Error loading status"
+  "status.errorMessage": "Error loading status",
+  "update.available": "A new version is available!",
+  "update.button": "Download update",
+  "update.downloading": "Starting download...",
+  "update.restart": "Restart to install"
 }

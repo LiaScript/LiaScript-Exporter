@@ -83,7 +83,59 @@ document.addEventListener('DOMContentLoaded', async () => {
   initializeExportSelection()
   initializeFormatDescription()
   initializePresetDescription()
+  checkForUpdates()
 })
+
+async function checkForUpdates() {
+  if (!window.electronAPI?.checkForUpdates) return
+
+  const banner = document.getElementById('update-banner')
+  const btn = document.getElementById('update-btn')
+  if (!banner || !btn) return
+
+  try {
+    const result = await window.electronAPI.checkForUpdates()
+    if (!result.hasUpdate) return
+    banner.style.display = 'flex'
+
+    if (!result.supported) {
+      // Unsupported format (e.g. .deb/.rpm/.tar.gz): open the releases page instead of self-updating
+      btn.onclick = () => {
+        if (window.electronAPI?.openExternal) {
+          window.electronAPI.openExternal(result.releaseUrl)
+        } else {
+          window.open(result.releaseUrl, '_blank')
+        }
+      }
+      return
+    }
+
+    // Supported format: download in-app, show progress, then restart to install
+    window.electronAPI.onUpdateProgress?.((data) => {
+      btn.textContent = `Downloading... ${data.percent}%`
+      btn.disabled = true
+    })
+
+    window.electronAPI.onUpdateDownloaded?.(() => {
+      btn.textContent = window.i18n?.t('update.restart') ?? 'Restart to install'
+      btn.disabled = false
+      btn.onclick = () => window.electronAPI.installUpdate()
+    })
+
+    window.electronAPI.onUpdateError?.(() => {
+      btn.textContent = window.i18n?.t('update.button') ?? 'Download update'
+      btn.disabled = false
+    })
+
+    btn.onclick = async () => {
+      btn.textContent = window.i18n?.t('update.downloading') ?? 'Starting download...'
+      btn.disabled = true
+      await window.electronAPI.downloadUpdate()
+    }
+  } catch (_) {
+    // silently ignore
+  }
+}
 
 // Load presets from server
 async function loadPresets() {

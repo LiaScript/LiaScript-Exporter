@@ -246,5 +246,9 @@
   "status.autoRefresh": "Seite wird automatisch aktualisiert",
   "status.refreshNow": "Jetzt aktualisieren",
   "status.error": "Fehler",
-  "status.errorMessage": "Fehler beim Laden des Status"
+  "status.errorMessage": "Fehler beim Laden des Status",
+  "update.available": "Eine neue Version ist verfügbar!",
+  "update.button": "Update herunterladen",
+  "update.downloading": "Download wird gestartet...",
+  "update.restart": "Neu starten und installieren"
 }

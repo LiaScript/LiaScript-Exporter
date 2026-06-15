@@ -22,6 +22,16 @@ contextBridge.exposeInMainWorld('electronAPI', {
   
   // File dialog
   openFileDialog: () => ipcRenderer.invoke('dialog:openFile'),
+
+  // Update check
+  checkForUpdates: () => ipcRenderer.invoke('app:checkForUpdates'),
+  downloadUpdate: () => ipcRenderer.invoke('app:downloadUpdate'),
+  installUpdate: () => ipcRenderer.invoke('app:installUpdate'),
+  openExternal: (url) => ipcRenderer.invoke('shell:openExternal', url),
+  onUpdateAvailable: (cb) => ipcRenderer.on('update:available', (_e, data) => cb(data)),
+  onUpdateProgress: (cb) => ipcRenderer.on('update:progress', (_e, data) => cb(data)),
+  onUpdateDownloaded: (cb) => ipcRenderer.on('update:downloaded', () => cb()),
+  onUpdateError: (cb) => ipcRenderer.on('update:error', () => cb()),
 });
 
 // Log that the preload script has loaded

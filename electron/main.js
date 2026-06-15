@@ -1,6 +1,11 @@
-const { app, BrowserWindow, ipcMain, dialog } = require('electron');
+const { app, BrowserWindow, ipcMain, dialog, shell, globalShortcut } = require('electron');
 const path = require('path');
 const fs = require('fs');
+const https = require('https');
+const { autoUpdater } = require('electron-updater');
+
+// App version, normalized to strip the `--<electron-version>` suffix (e.g. 3.2.10--1.0.8 -> 3.2.10)
+const APP_VERSION = require('../package.json').version.replace(/--.*$/, '');
 
 let mainWindow;
 let serverInstance;
@@ -36,11 +41,97 @@ function createWindow() {
   mainWindow.on('closed', () => {
     mainWindow = null;
   });
+
+  globalShortcut.register('F12', () => {
+    if (mainWindow) mainWindow.webContents.toggleDevTools();
+  });
 }
 
 app.whenReady().then(() => {
   createWindow();
   
+  // Register IPC handler for opening external URLs
+  ipcMain.handle('shell:openExternal', async (event, url) => {
+    await shell.openExternal(url);
+  });
+
+  // Auto-updater setup (AppImage, NSIS, DMG only — others fall back to releases page)
+  autoUpdater.autoDownload = false;
+  autoUpdater.autoInstallOnAppQuit = false;
+  autoUpdater.channel = 'latest';
+  autoUpdater.allowPrerelease = false;
+
+  const updatableFormats = ['appimage', 'nsis', 'dmg'];
+
+  function getInstallerType() {
+    if (process.platform === 'linux') return process.env.APPIMAGE ? 'appimage' : 'other';
+    if (process.platform === 'win32') return fs.existsSync(path.join(process.resourcesPath, '..', 'Uninstall LiaScript-Exporter.exe')) ? 'nsis' : 'other';
+    if (process.platform === 'darwin') return 'dmg';
+    return 'other';
+  }
+
+  autoUpdater.on('update-available', (info) => {
+    if (mainWindow) mainWindow.webContents.send('update:available', { version: info.version });
+  });
+
+  autoUpdater.on('download-progress', (progress) => {
+    if (mainWindow) mainWindow.webContents.send('update:progress', { percent: Math.round(progress.percent) });
+  });
+
+  autoUpdater.on('update-downloaded', () => {
+    if (mainWindow) mainWindow.webContents.send('update:downloaded');
+  });
+
+  autoUpdater.on('error', () => {
+    if (mainWindow) mainWindow.webContents.send('update:error');
+  });
+
+  ipcMain.handle('app:checkForUpdates', async () => {
+    if (!updatableFormats.includes(getInstallerType())) {
+      // Fallback: check GitHub API and return release URL for unsupported formats
+      return new Promise((resolve) => {
+        https.get({
+          hostname: 'api.github.com',
+          path: '/repos/LiaScript/LiaScript-Exporter/releases/latest',
+          headers: { 'User-Agent': 'LiaScript-Exporter' }
+        }, (res) => {
+          let data = '';
+          res.on('data', (chunk) => { data += chunk; });
+          res.on('end', () => {
+            try {
+              const release = JSON.parse(data);
+              const latestVersion = release.tag_name.replace(/^v/, '');
+              resolve({
+                supported: false,
+                hasUpdate: latestVersion !== APP_VERSION,
+                releaseUrl: release.html_url
+              });
+            } catch {
+              resolve({ supported: false, hasUpdate: false });
+            }
+          });
+        }).on('error', () => resolve({ supported: false, hasUpdate: false }));
+      });
+    }
+    try {
+      const result = await autoUpdater.checkForUpdates();
+      const latestVersion = result?.updateInfo?.version;
+      const hasUpdate = !!latestVersion && latestVersion !== APP_VERSION;
+      return { supported: true, hasUpdate, version: latestVersion };
+    } catch (e) {
+      console.error('[update-check] autoUpdater error:', e.message);
+      return { supported: false, hasUpdate: false };
+    }
+  });
+
+  ipcMain.handle('app:downloadUpdate', async () => {
+    await autoUpdater.downloadUpdate();
+  });
+
+  ipcMain.handle('app:installUpdate', () => {
+    autoUpdater.quitAndInstall();
+  });
+
   // Register IPC handler for file dialog
   ipcMain.handle('dialog:openFile', async () => {
     const result = await dialog.showOpenDialog(mainWindow, {
