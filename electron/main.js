@@ -124,9 +124,8 @@ app.whenReady().then(() => {
     }
     try {
       const result = await autoUpdater.checkForUpdates();
-      const latestVersion = result?.updateInfo?.version;
-      const hasUpdate = !!latestVersion && latestVersion !== APP_VERSION;
-      return { supported: true, hasUpdate, version: latestVersion };
+      const hasUpdate = !!result?.isUpdateAvailable;
+      return { supported: true, hasUpdate, version: result?.updateInfo?.version };
     } catch (e) {
       console.error('[update-check] autoUpdater error:', e.message);
       return { supported: false, hasUpdate: false };
