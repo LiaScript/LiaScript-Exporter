@@ -31,7 +31,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
   onUpdateAvailable: (cb) => ipcRenderer.on('update:available', (_e, data) => cb(data)),
   onUpdateProgress: (cb) => ipcRenderer.on('update:progress', (_e, data) => cb(data)),
   onUpdateDownloaded: (cb) => ipcRenderer.on('update:downloaded', () => cb()),
-  onUpdateError: (cb) => ipcRenderer.on('update:error', () => cb()),
+  onUpdateError: (cb) => ipcRenderer.on('update:error', (_e, data) => cb(data)),
 });
 
 // Log that the preload script has loaded

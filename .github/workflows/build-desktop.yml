@@ -116,9 +116,9 @@ jobs:
             release/*.zip
             release/*.dmg
             release/*.AppImage
-            release/@liascript/*.deb
-            release/@liascript/*.rpm
-            release/@liascript/*.tar.gz
+            release/*.deb
+            release/*.rpm
+            release/*.tar.gz
             release/*.yml
           retention-days: 30
 
@@ -131,9 +131,9 @@ jobs:
             release/*.zip
             release/*.dmg
             release/*.AppImage
-            release/@liascript/*.deb
-            release/@liascript/*.rpm
-            release/@liascript/*.tar.gz
+            release/*.deb
+            release/*.rpm
+            release/*.tar.gz
             release/*.yml
           draft: false
           prerelease: false

@@ -55,16 +55,25 @@ app.whenReady().then(() => {
     await shell.openExternal(url);
   });
 
-  // Auto-updater setup (AppImage, NSIS, DMG only — others fall back to releases page)
+  // Auto-updater setup. Self-updatable formats download + install in-app; anything
+  // else falls back to opening the GitHub releases page for a manual download.
   autoUpdater.autoDownload = false;
   autoUpdater.autoInstallOnAppQuit = false;
   autoUpdater.channel = 'latest';
   autoUpdater.allowPrerelease = false;
 
-  const updatableFormats = ['appimage', 'nsis', 'dmg'];
+  // deb/rpm/pacman self-update via the system package manager (prompts for sudo at install time).
+  const updatableFormats = ['appimage', 'nsis', 'dmg', 'deb', 'rpm', 'pacman'];
 
   function getInstallerType() {
-    if (process.platform === 'linux') return process.env.APPIMAGE ? 'appimage' : 'other';
+    if (process.platform === 'linux') {
+      if (process.env.APPIMAGE) return 'appimage';
+      try {
+        return fs.readFileSync(path.join(process.resourcesPath, 'package-type'), 'utf8').trim() || 'other';
+      } catch {
+        return 'other';
+      }
+    }
     if (process.platform === 'win32') return fs.existsSync(path.join(process.resourcesPath, '..', 'Uninstall LiaScript-Exporter.exe')) ? 'nsis' : 'other';
     if (process.platform === 'darwin') return 'dmg';
     return 'other';
@@ -82,8 +91,8 @@ app.whenReady().then(() => {
     if (mainWindow) mainWindow.webContents.send('update:downloaded');
   });
 
-  autoUpdater.on('error', () => {
-    if (mainWindow) mainWindow.webContents.send('update:error');
+  autoUpdater.on('error', (err) => {
+    if (mainWindow) mainWindow.webContents.send('update:error', { message: err && (err.message || String(err)) });
   });
 
   ipcMain.handle('app:checkForUpdates', async () => {

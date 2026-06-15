@@ -113,7 +113,7 @@
       }
     ],
     "executableName": "liascript-exporter",
-    "artifactName": "${name}-${version}.${ext}",
+    "artifactName": "${productName}-${version}.${ext}",
     "desktop": {
       "Name": "LiaScript Exporter",
       "Comment": "Export LiaScript courses to various formats",

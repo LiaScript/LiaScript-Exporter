@@ -122,9 +122,11 @@ async function checkForUpdates() {
       btn.onclick = () => window.electronAPI.installUpdate()
     })
 
-    window.electronAPI.onUpdateError?.(() => {
+    window.electronAPI.onUpdateError?.((data) => {
       btn.textContent = window.i18n?.t('update.button') ?? 'Download update'
       btn.disabled = false
+      const label = banner.querySelector('span')
+      if (label && data?.message) label.textContent = `Update failed: ${data.message}`
     })
 
     btn.onclick = async () => {
