@@ -40,6 +40,26 @@ export function displayHelp(): void {
   COLOR.command('-h', '--help', 'show this help')
   COLOR.command('-i', '--input', 'file to be used as input')
   COLOR.command(
+    '',
+    '--git-url',
+    'clone a git/GitHub repository and export from it (used instead of -i)',
+  )
+  COLOR.command(
+    '',
+    '--git-branch',
+    'branch or tag to checkout when using --git-url (default: repository default)',
+  )
+  COLOR.command(
+    '',
+    '--git-subdir',
+    'subdirectory within the cloned repository to use as the root',
+  )
+  COLOR.command(
+    '',
+    '--git-file',
+    'specific markdown file within the repository (default: README.md or first .md found)',
+  )
+  COLOR.command(
     '-p',
     '--path',
     'path to be packed, if not set, the path of the input file is used',

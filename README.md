@@ -71,6 +71,10 @@ The web interface allows you to:
 
 All exports are processed asynchronously in a queue, with only one export running at a time. After submitting an export, you'll receive a job ID and can track the progress on a status page.
 
+> **Note:** the **Git repository** source (in both the desktop app and the web
+> UI) requires [`git`](https://git-scm.com/downloads) to be installed and
+> available on your `PATH`. Uploading files does not need git.
+
 ### 3. CLI
 
 For scripting, automation, or CI/CD pipelines, the exporter can be used directly from the command line. Install the same way as above (Node.js + `npm install -g @liascript/exporter`).
@@ -87,10 +91,64 @@ Once installed, use `liaex` or `liascript-exporter`. Core options:
 -s --style    additional CSS to inject
 -v --version  print version
 -k --key      ResponsiveVoice key for text-to-speech
+
+   --git-url     clone a git/GitHub repository and export from it (used instead of -i)
+   --git-branch  branch or tag to checkout (default: repository default)
+   --git-subdir  subdirectory within the repository to use as the root
+   --git-file    specific markdown file to export (default: README.md or first .md found)
 ```
 
 Format-specific options are documented in the sections below. You can also run
 `liaex --help` at any time to see the full list.
+
+### Export from a Git repository
+
+Instead of pointing `-i` at a local file, you can let the exporter clone a
+repository and export directly from it with `--git-url`. The repo is cloned to a
+temporary directory and removed automatically when the export finishes.
+
+> **Note:** this requires [`git`](https://git-scm.com/downloads) to be installed
+> and available on your `PATH`.
+
+``` bash
+# Export the README.md of a repository to SCORM 2004
+liaex --git-url https://github.com/LiaScript/LiaScript -f scorm2004 -o course
+
+# Export a specific file from a branch/subdirectory
+liaex --git-url https://github.com/user/repo \
+  --git-branch main \
+  --git-subdir docs \
+  --git-file 01_Intro.md \
+  -f web -o course
+```
+
+### Presets
+
+Presets bundle a format together with the recommended options for a specific
+learning platform, so you don't have to remember the right `--scorm-*` flags for
+each LMS. Use them with `-f presets` followed by the preset flag:
+
+``` bash
+liaex -f presets --scormcloud-2004 -i course/README.md -o course
+```
+
+| Preset flag         | Platform     | Format    |
+| ------------------- | ------------ | --------- |
+| `--moodle3`         | Moodle 3.x   | scorm1.2  |
+| `--moodle4`         | Moodle 4.x   | scorm1.2  |
+| `--moodle5`         | Moodle 5.x   | scorm1.2  |
+| `--ilias`           | ILIAS        | scorm1.2  |
+| `--opal`            | OPAL         | scorm1.2  |
+| `--scormcloud-1.2`  | SCORM Cloud  | scorm1.2  |
+| `--scormcloud-2004` | SCORM Cloud  | scorm2004 |
+| `--openolat`        | OpenOlat     | scorm1.2  |
+| `--openedx`         | Open edX     | scorm2004 |
+| `--learnworlds`     | LearnWorlds  | scorm2004 |
+
+Run `liaex -f presets` to list the available presets, or
+`liaex -f presets --<preset>` (without an input) to print a preset's full
+configuration. Any extra options you pass on the command line override the
+preset's defaults.
 
 <video src="https://github.com/user-attachments/assets/591a6c89-f91e-401f-8b6d-8523f7173d78" controls width="600"></video>
 
