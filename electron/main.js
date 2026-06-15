@@ -63,7 +63,7 @@ app.whenReady().then(() => {
   autoUpdater.allowPrerelease = false;
 
   // deb/rpm/pacman self-update via the system package manager (prompts for sudo at install time).
-  const updatableFormats = ['appimage', 'nsis', 'dmg', 'deb', 'rpm', 'pacman'];
+  const updatableFormats = ['appimage', 'nsis', 'deb', 'rpm', 'pacman'];
 
   function getInstallerType() {
     if (process.platform === 'linux') {
