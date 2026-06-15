@@ -76,6 +76,7 @@
     "epub-gen": "^0.1.0",
     "fastify": "^4.26.0",
     "fs-extra": "^11.3.3",
+    "isomorphic-git": "^1.38.4",
     "jsonld": "^9.0.0",
     "minimist": "^1.2.5",
     "node-fetch": "^2.7.0",

@@ -1,11 +1,9 @@
-import { createReadStream } from 'fs'
+import fs, { createReadStream } from 'fs'
 import { readdir, stat, rm } from 'fs/promises'
 import { join, extname } from 'path'
 import unzipper from 'unzipper'
-import { exec } from 'child_process'
-import { promisify } from 'util'
-
-const execAsync = promisify(exec)
+import git from 'isomorphic-git'
+import http from 'isomorphic-git/http/node'
 
 /**
  * Extracts a ZIP file to a target directory
@@ -111,19 +109,18 @@ export async function cloneGitRepo(
   subdir?: string,
 ): Promise<string> {
   try {
-    // Build git clone command
-    const branchArg = branch ? `--branch ${branch}` : ''
-    const cmd = `git clone --depth 1 ${branchArg} "${gitUrl}" "${cloneDir}"`
+    console.log(`Cloning git repository: ${gitUrl}${branch ? ` (branch: ${branch})` : ''}`)
 
-    console.log(`Cloning git repository: ${cmd}`)
-    const { stdout, stderr } = await execAsync(cmd)
-
-    if (stderr && !stderr.includes('Cloning into')) {
-      console.warn('Git clone warnings:', stderr)
-    }
-    if (stdout) {
-      console.log('Git clone output:', stdout)
-    }
+    // Clone using isomorphic-git (pure JS) so no system `git` binary is required.
+    await git.clone({
+      fs,
+      http,
+      dir: cloneDir,
+      url: gitUrl,
+      ref: branch,
+      singleBranch: true,
+      depth: 1,
+    })
 
     // If subdirectory specified, return the full path to it
     const finalPath = subdir ? join(cloneDir, subdir) : cloneDir

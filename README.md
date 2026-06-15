@@ -71,10 +71,6 @@ The web interface allows you to:
 
 All exports are processed asynchronously in a queue, with only one export running at a time. After submitting an export, you'll receive a job ID and can track the progress on a status page.
 
-> **Note:** the **Git repository** source (in both the desktop app and the web
-> UI) requires [`git`](https://git-scm.com/downloads) to be installed and
-> available on your `PATH`. Uploading files does not need git.
-
 ### 3. CLI
 
 For scripting, automation, or CI/CD pipelines, the exporter can be used directly from the command line. Install the same way as above (Node.js + `npm install -g @liascript/exporter`).
@@ -106,9 +102,6 @@ Format-specific options are documented in the sections below. You can also run
 Instead of pointing `-i` at a local file, you can let the exporter clone a
 repository and export directly from it with `--git-url`. The repo is cloned to a
 temporary directory and removed automatically when the export finishes.
-
-> **Note:** this requires [`git`](https://git-scm.com/downloads) to be installed
-> and available on your `PATH`.
 
 ``` bash
 # Export the README.md of a repository to SCORM 2004
