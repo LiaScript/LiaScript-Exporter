@@ -109,6 +109,12 @@ export async function cloneGitRepo(
   subdir?: string,
 ): Promise<string> {
   try {
+    // Users may enter a scheme-less URL (e.g. "github.com/user/repo"); isomorphic-git
+    // requires an explicit scheme, so default to https.
+    if (!/^https?:\/\//i.test(gitUrl)) {
+      gitUrl = `https://${gitUrl.replace(/^\/+/, '')}`
+    }
+
     console.log(`Cloning git repository: ${gitUrl}${branch ? ` (branch: ${branch})` : ''}`)
 
     // Clone using isomorphic-git (pure JS) so no system `git` binary is required.

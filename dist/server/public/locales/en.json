@@ -13,6 +13,7 @@
   "files.remove": "Remove",
   "git.repoUrl": "Repository URL",
   "git.repoUrlRequired": "Repository URL *",
+  "git.repoUrlPlaceholder": "github.com/user/repo",
   "git.branch": "Branch / Tag",
   "git.branchPlaceholder": "main",
   "git.subdirectory": "Subdirectory",

@@ -106,7 +106,9 @@
                   type="text"
                   id="gitUrl"
                   name="gitUrl"
-                  placeholder="https://github.com/user/repo.git"
+                  autocomplete="off"
+                  data-i18n-placeholder="git.repoUrlPlaceholder"
+                  placeholder="github.com/user/repo"
                 />
               </div>
               <div class="form-row">
@@ -1315,12 +1317,11 @@
                     >Font Size</label
                   >
                   <input
-                    type="number"
+                    type="text"
+                    inputmode="numeric"
                     id="docxFontSize"
                     name="option_docx-font-size"
                     placeholder="22"
-                    min="10"
-                    max="100"
                   />
                   <span class="hint" data-i18n="settings.docx.fontSizeHint"
                     >Font size in half-points (22 = 11pt)</span
@@ -1412,12 +1413,11 @@
                     >Timeout (ms)</label
                   >
                   <input
-                    type="number"
+                    type="text"
+                    inputmode="numeric"
                     id="docxTimeout"
                     name="option_docx-timeout"
                     placeholder="15000"
-                    min="1000"
-                    max="120000"
                   />
                   <span class="hint" data-i18n="settings.docx.timeoutHint"
                     >Wait time for complete loading (15000 = 15 seconds)</span

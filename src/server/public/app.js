@@ -19,6 +19,8 @@ function initializeNumberInputs() {
     },
     { id: 'pdfScale', min: 0.1, max: 2, isInteger: false, value: 1 },
     { id: 'pdfTimeout', min: 1000, max: null, isInteger: true, value: 15000 },
+    { id: 'docxFontSize', min: 10, max: 100, isInteger: true, value: null },
+    { id: 'docxTimeout', min: 1000, max: 120000, isInteger: true, value: null },
   ]
 
   numberInputs.forEach((config) => {
@@ -217,13 +219,6 @@ function initializeTabs() {
 
       tab.classList.add('active')
       document.getElementById(`${targetTab}-panel`).classList.add('active')
-
-      // Clear validation states
-      if (targetTab === 'upload') {
-        document.getElementById('gitUrl').removeAttribute('required')
-      } else {
-        document.getElementById('gitUrl').setAttribute('required', 'required')
-      }
     })
   })
 }

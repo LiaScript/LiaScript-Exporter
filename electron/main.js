@@ -38,6 +38,17 @@ function createWindow() {
       app.quit();
     });
 
+  // Diagnostics
+  mainWindow.webContents.on('render-process-gone', (_e, details) => {
+    console.error('[renderer] render-process-gone:', JSON.stringify(details));
+  });
+  mainWindow.webContents.on('unresponsive', () => {
+    console.error('[renderer] became unresponsive');
+  });
+  mainWindow.webContents.on('did-fail-load', (_e, errorCode, errorDescription, validatedURL) => {
+    console.error('[renderer] did-fail-load:', errorCode, errorDescription, validatedURL);
+  });
+
   mainWindow.on('closed', () => {
     mainWindow = null;
   });
