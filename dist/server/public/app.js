@@ -76,6 +76,11 @@ function initializeNumberInputs() {
 // Initialize app
 document.addEventListener('DOMContentLoaded', async () => {
   initializeNumberInputs()
+  // Attach the embed message listener synchronously, before the first await, so
+  // it is in place before the embedding iframe's load event can fire. Otherwise
+  // a project pushed by the embedder right after load would be lost while we are
+  // still awaiting loadPresets().
+  initializeEmbedMessaging()
   await loadPresets()
   initializeTabs()
   initializeExportTabs()
@@ -87,6 +92,62 @@ document.addEventListener('DOMContentLoaded', async () => {
   initializePresetDescription()
   checkForUpdates()
 })
+
+// Embedding support: when this UI is loaded inside an <iframe> (e.g. the
+// LiaScript LiveEditor), the parent can push a complete project to us via
+// postMessage instead of the user having to upload files manually. We announce
+// readiness on load and feed any received File/Blob into the normal upload flow.
+function initializeEmbedMessaging() {
+  // Only relevant when actually embedded.
+  const isEmbedded = window.parent && window.parent !== window
+  if (!isEmbedded) return
+
+  window.addEventListener('message', (event) => {
+    const payload = event.data
+
+    // Respond to a readiness ping so the embedder doesn't have to rely on
+    // catching our initial (one-shot) ready broadcast.
+    if (payload && payload.type === 'liaexporter:ping') {
+      const target = event.source || window.parent
+      if (target) {
+        target.postMessage({ type: 'liaexporter:ready' }, event.origin || '*')
+      }
+      return
+    }
+
+    // Accept either a bare File/Blob or a wrapper { type, file/files }.
+    let incoming = []
+    if (payload instanceof File || payload instanceof Blob) {
+      incoming = [payload]
+    } else if (payload && payload.type === 'liaexporter:project') {
+      if (Array.isArray(payload.files)) incoming = payload.files
+      else if (payload.file) incoming = [payload.file]
+    } else {
+      return
+    }
+
+    if (incoming.length === 0) return
+
+    // A Blob received via postMessage has no name -> wrap it as a named File so
+    // the server-side ZIP detection (isZipFile) and file list work correctly.
+    const files = incoming.map((f) =>
+      f instanceof File
+        ? f
+        : new File([f], 'project.zip', {
+            type: f.type || 'application/zip',
+          }),
+    )
+
+    // Switch to the upload source tab and inject the files as if dropped.
+    const uploadTab = document.querySelector('.tab-button[data-tab="upload"]')
+    if (uploadTab) uploadTab.click()
+
+    handleFiles(files)
+  })
+
+  // Tell the parent we are ready to receive a project.
+  window.parent.postMessage({ type: 'liaexporter:ready' }, '*')
+}
 
 async function checkForUpdates() {
   if (!window.electronAPI?.checkForUpdates) return

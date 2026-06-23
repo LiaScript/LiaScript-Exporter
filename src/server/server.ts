@@ -50,6 +50,28 @@ export async function startServer(
     logger: loggerConfig,
   })
 
+  // Allow cross-origin API access so a browser app on another origin (e.g. the
+  // LiaScript LiveEditor) can talk to this server directly. The iframe-embed
+  // flow is same-origin and does not need this, but a direct/remote API client
+  // does. Loaded defensively so the server still starts if the optional
+  // dependency is missing.
+  try {
+    const fastifyCors = (await import('@fastify/cors')).default
+    await fastify.register(fastifyCors, { origin: true })
+  } catch (err) {
+    fastify.log.warn(
+      '@fastify/cors not available - cross-origin API requests will be blocked',
+    )
+  }
+
+  // Allow this UI to be embedded in an <iframe> by the LiveEditor (or any other
+  // host). We deliberately do NOT send X-Frame-Options, and set a permissive
+  // frame-ancestors policy instead so framing works across origins.
+  fastify.addHook('onSend', async (_request, reply, payload) => {
+    reply.header('Content-Security-Policy', 'frame-ancestors *')
+    return payload
+  })
+
   // Register plugins
   await fastify.register(fastifyMultipart, {
     limits: {
