@@ -1,9 +1,8 @@
 import * as helper from './helper'
 import * as RDF from './rdf'
 import * as COLOR from '../colorize'
-
-const path = require('path')
-const fs = require('fs-extra')
+import * as path from '../fs/path'
+import type { ExportFS } from '../fs/types'
 
 /**
  * Help function for xAPI export
@@ -111,6 +110,8 @@ export interface XapiExportArguments {
   path: string
   key?: string
   style?: string
+  /** Storage backing; supplied by the CLI or the browser host. */
+  fs?: ExportFS
   'xapi-endpoint'?: string
   'xapi-auth'?: string
   'xapi-actor'?: string
@@ -124,9 +125,11 @@ export interface XapiExportArguments {
 }
 
 export async function exporter(argument: XapiExportArguments, json: any) {
+  const fs = argument.fs!
+
   // make temp folder
-  let tmp = await helper.tmpDir()
-  const dirname = helper.dirname()
+  let tmp = await fs.tmpDir()
+  const dirname = fs.assetRoot()
   let tmpPath = path.join(tmp, 'pro')
   const contentPath = argument['lia-subfolder']
     ? path.join(tmpPath, 'content')
@@ -140,7 +143,7 @@ export async function exporter(argument: XapiExportArguments, json: any) {
   await fs.copy(argument.path, contentPath)
 
   // Read and modify index.html
-  let index = fs.readFileSync(path.join(tmpPath, 'index.html'), 'utf8')
+  let index = await fs.readFile(path.join(tmpPath, 'index.html'))
 
   // Change responsive key
   if (argument.key) {
@@ -150,7 +153,7 @@ export async function exporter(argument: XapiExportArguments, json: any) {
   console.log('Adding xAPI configuration ...', json.lia.sections.length)
 
   index = helper.inject('<script src="config.js"></script>', index)
-  await helper.writeFile(
+  await fs.writeFile(
     path.join(tmpPath, 'config.js'),
     'window.config_ = ' +
       JSON.stringify({
@@ -361,21 +364,25 @@ export async function exporter(argument: XapiExportArguments, json: any) {
   try {
     index = helper.inject(jsonLD, index)
     index = helper.prettify(index)
-    await helper.writeFile(path.join(tmpPath, 'index.html'), index)
+    await fs.writeFile(path.join(tmpPath, 'index.html'), index)
   } catch (e) {
     console.warn(e)
     return
   }
 
-  // Find all resources in the package
-  const getAllFiles = function (dirPath: string, arrayOfFiles: string[] = []) {
-    const files = fs.readdirSync(dirPath)
+  // Find all resources in the package. Traversal stays sequential and
+  // depth-first in readDir order, because that order is what determines the
+  // <resource> ordering written into tincan.xml.
+  const getAllFiles = async function (
+    dirPath: string,
+    arrayOfFiles: string[] = [],
+  ): Promise<string[]> {
+    const files = await fs.readDir(dirPath)
 
-    files.forEach(function (file: string) {
+    for (const file of files) {
       const filePath: string = path.join(dirPath, file)
-      const stat = fs.statSync(filePath)
-      if (stat.isDirectory()) {
-        arrayOfFiles = getAllFiles(filePath, arrayOfFiles)
+      if (await fs.isDirectory(filePath)) {
+        arrayOfFiles = await getAllFiles(filePath, arrayOfFiles)
       } else {
         // Get path relative to tmpPath
         const relativePath: string = path.relative(tmpPath, filePath)
@@ -384,12 +391,12 @@ export async function exporter(argument: XapiExportArguments, json: any) {
           arrayOfFiles.push(relativePath)
         }
       }
-    })
+    }
 
     return arrayOfFiles
   }
 
-  const resources = getAllFiles(tmpPath)
+  const resources = await getAllFiles(tmpPath)
 
   // Generate tincan.xml file
   const courseTitle = json.lia.str_title || 'LiaScript Course'
@@ -407,26 +414,25 @@ export async function exporter(argument: XapiExportArguments, json: any) {
   )
 
   // Write tincan.xml to the root of the package
-  await helper.writeFile(path.join(tmpPath, 'tincan.xml'), tincanXml)
+  await fs.writeFile(path.join(tmpPath, 'tincan.xml'), tincanXml)
 
   // Create zip or move to output
+  const outputParent = path.dirname(argument.output)
+  await fs.ensureDir(outputParent)
+
   if (argument['xapi-zip']) {
-    // Always create a zip for xAPI packages
-    // Ensure output directory's parent exists
-    const outputParent = path.dirname(argument.output)
-    await fs.ensureDir(outputParent)
-
-    // Create zip file
-    helper.zip(tmpPath, argument.output)
+    // Always create a zip for xAPI packages.
+    // Awaited, unlike the previous helper.zip call, which could let the
+    // process exit before the archive was finalized.
+    await fs.writeZip(tmpPath, argument.output)
   } else {
-    // Ensure output directory's parent exists
-    const outputParent = path.dirname(argument.output)
-    await fs.ensureDir(outputParent)
-
-    // Move files from temp to output
-    await fs.move(tmpPath, argument.output, {
-      filter: helper.filterHidden(argument.path),
-      overwrite: true,
+    // Copy with filter, then drop the temp tree. ExportFS.move takes no
+    // filter, so this mirrors what web.ts does for the same step; both
+    // backings overwrite by default.
+    await fs.ensureDir(argument.output)
+    await fs.copy(tmpPath, argument.output, {
+      filter: helper.filterHidden(tmpPath),
     })
+    await fs.remove(tmpPath)
   }
 }

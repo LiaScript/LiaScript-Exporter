@@ -1,9 +1,9 @@
 import * as helper from './helper'
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const jsonld = require('jsonld')
-import * as fs from 'fs-extra'
 import fetch from 'node-fetch'
 import * as COLOR from '../colorize'
+import type { ExportFS } from '../fs/types'
 
 // Type definitions
 export interface RDFArguments {
@@ -14,6 +14,8 @@ export interface RDFArguments {
   path: string
   key?: string
   style?: string
+  /** Storage backing; supplied by the CLI or the browser host. */
+  fs?: ExportFS
   'rdf-format'?: string
   'rdf-preview'?: string
   'rdf-url'?: string
@@ -142,6 +144,8 @@ export async function exporter(
   argument: RDFArguments,
   json: any,
 ): Promise<void> {
+  const fs = argument.fs!
+
   try {
     let doc = await parse(argument, json)
 
@@ -220,10 +224,14 @@ export async function compact(doc: SchemaDoc): Promise<SchemaDoc> {
 
 /**
  * Loads and expands a template from a URL or local file.
+ * @param fs Storage backing used to read a local template
  * @param templatePath URL or file path to the template
  * @returns Expanded JSON-LD document or empty object if template is not provided
  */
-async function loadTemplate(templatePath?: string): Promise<SchemaDoc> {
+async function loadTemplate(
+  fs: ExportFS,
+  templatePath?: string,
+): Promise<SchemaDoc> {
   if (!templatePath) {
     return {}
   }
@@ -238,7 +246,7 @@ async function loadTemplate(templatePath?: string): Promise<SchemaDoc> {
       }
       data = await resp.json()
     } else {
-      const fileContent = await fs.readFile(templatePath, 'utf8')
+      const fileContent = await fs.readFile(templatePath)
       data = JSON.parse(fileContent)
     }
 
@@ -350,7 +358,7 @@ export async function parse(
 ): Promise<SchemaDoc> {
   try {
     // Load template if provided
-    let doc = await loadTemplate(argument['rdf-template'])
+    let doc = await loadTemplate(argument.fs!, argument['rdf-template'])
 
     // Set core properties
     setCoreProperties(doc, json, argument['rdf-type'])
