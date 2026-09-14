@@ -76,6 +76,7 @@
     "electron-updater": "^6.8.9",
     "epub-gen": "^0.1.0",
     "fastify": "^4.26.0",
+    "fflate": "^0.8.3",
     "fs-extra": "^11.3.3",
     "isomorphic-git": "^1.38.4",
     "jsonld": "^9.0.0",
