@@ -141,9 +141,9 @@ export class Exporter {
    * Exports to JSON format
    */
   private exportJson(argument: Arguments, string: string): void {
-    fs.writeFile(argument.output + '.json', string, function (err) {
-      if (err) console.error(err)
-    })
+    argument.fs!.writeFile(argument.output + '.json', string).catch((err) =>
+      console.error(err),
+    )
   }
 
   /**

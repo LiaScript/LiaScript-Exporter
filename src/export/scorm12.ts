@@ -1,4 +1,5 @@
 import * as helper from './helper'
+import { NodeFS } from '../fs'
 import * as RDF from './rdf'
 import * as COLOR from '../colorize'
 
@@ -108,6 +109,8 @@ export async function exporter(argument: Scorm12ExportArguments, json: any) {
 
   if (argument['scorm-iframe']) {
     await helper.iframe(
+      // TODO(exportfs): replace with the threaded fs when scorm12 is ported
+      new NodeFS(),
       tmpPath,
       'start.html',
       argument.readme,

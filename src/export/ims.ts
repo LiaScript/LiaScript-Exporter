@@ -1,4 +1,5 @@
 import * as helper from './helper'
+import { NodeFS } from '../fs'
 import * as RDF from './rdf'
 import * as COLOR from '../colorize'
 
@@ -129,6 +130,8 @@ export async function exporter(argument: ImsExportArguments, json: any) {
     : argument.readme
 
   await helper.iframe(
+    // TODO(exportfs): replace with the threaded fs when ims is ported
+    new NodeFS(),
     tmpPath,
     'start.html',
     iframeReadme,

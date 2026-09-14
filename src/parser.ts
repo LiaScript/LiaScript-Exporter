@@ -13,6 +13,7 @@ import * as DOCX from './export/docx'
 import * as PRESETS from './export/presets'
 import path from 'path'
 import { ExportFormat } from './types'
+import { ExportFS, NodeFS } from './fs'
 
 // @ts-expect-error - minimist has no type definitions
 import minimist from 'minimist'
@@ -26,6 +27,16 @@ type BaseArguments = {
   path: string
   key?: string
   style?: string
+
+  /**
+   * Storage backing for this export.
+   *
+   * Optional while exporters are ported one at a time: those still calling
+   * `fs-extra` directly ignore it, ported ones use it instead and so become
+   * runnable in the browser. Defaults to a `NodeFS` when the CLI builds the
+   * arguments. Once every format is ported this can become required.
+   */
+  fs?: ExportFS
 }
 
 // Compose all export-specific arguments into a single type
@@ -344,6 +355,11 @@ export function parsePresetsArguments(presetId: string): Arguments {
  */
 export function validateAndNormalize(argument: Arguments): Arguments {
   argument.format = argument.format.toLowerCase()
+
+  // Every CLI path lands here, so this is the one place the disk backing needs
+  // to be supplied. A caller that already set one (the browser, or a test)
+  // keeps it.
+  argument.fs = argument.fs || new NodeFS()
 
   if (argument.format == ANDROID.format) {
     argument['android-sdk'] =

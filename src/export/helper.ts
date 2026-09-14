@@ -4,6 +4,8 @@ import fetch from 'node-fetch'
 import * as temp from 'temp'
 import * as fs from 'fs-extra'
 import * as path from 'path'
+import { ExportFS } from '../fs'
+import * as fsPath from '../fs/path'
 const archiver = require('archiver')
 const beautify = require('simply-beautiful')
 
@@ -79,13 +81,20 @@ export function writeFile(filename: string, content: string): Promise<string> {
  */
 export function filterHidden(
   sourceDir: string,
+  resolve: (p: string) => string = path.resolve,
 ): (src: string, dest: string) => boolean {
+  // `sourceDir` may be relative (the CLI defaults `argument.path` to '.') while
+  // the `src` handed to the filter is absolute, so it has to be resolved
+  // against the same base first. In the browser both are already absolute
+  // MemoryFS paths and the default resolve is a no-op.
+  const base = resolve(sourceDir)
+
   return function (src: string, dest: string): boolean {
     // Get the relative path of the source folder being copied
-    const relPath = path.relative(path.resolve(sourceDir), src)
+    const relPath = fsPath.relative(base, src)
 
     // Split the relative path into its components
-    const components = relPath.split(path.sep)
+    const components = fsPath.segments(relPath)
 
     // Check each component for hidden folders
     for (const component of components) { 
@@ -172,6 +181,7 @@ export function isURL(uri: string): boolean {
  * @returns Promise that resolves when the file is written
  */
 export async function iframe(
+  fs: ExportFS,
   tmpPath: string,
   filename: string,
   readme: string,
@@ -179,8 +189,8 @@ export async function iframe(
   style?: string,
   index?: string,
 ): Promise<string> {
-  await writeFile(
-    path.join(tmpPath, filename),
+  await fs.writeFile(
+    fsPath.join(tmpPath, filename),
     prettify(`<!DOCTYPE html>
     <html style="height:100%; overflow: hidden">
     <head>

@@ -1,4 +1,5 @@
 import * as helper from './helper'
+import { NodeFS } from '../fs'
 
 import * as RDF from './rdf'
 
@@ -73,6 +74,8 @@ export async function exporter(argument: Scorm2004ExportArguments, json: any) {
 
   if (argument['scorm-iframe']) {
     await helper.iframe(
+      // TODO(exportfs): replace with the threaded fs when scorm2004 is ported
+      new NodeFS(),
       tmpPath,
       'start.html',
       argument.readme,
