@@ -1,13 +1,34 @@
 'use strict'
 
-import fetch from 'node-fetch'
-import * as temp from 'temp'
-import * as fs from 'fs-extra'
-import * as path from 'path'
 import type { ExportFS } from '../fs/types'
 import * as fsPath from '../fs/path'
-const archiver = require('archiver')
 const beautify = require('simply-beautiful')
+
+/*
+ * Node-only dependencies, required lazily because `helper` is imported by every
+ * exporter, the browser-ported ones included. A static import *runs* fs-extra's
+ * module body at load, which throws in a browser (graceful-fs probing
+ * `fs.realpath.native`) and kills the page before the UI starts. The functions
+ * below that need them run only under Node; drop both once every format is
+ * ported.
+ *
+ * NOTE: call sites must write `require(...)` literally — aliasing it compiles
+ * to `void 0` under Parcel's CommonJS transform and fails at runtime.
+ */
+function nodeFS() {
+  return require('fs-extra')
+}
+
+function nodePath() {
+  return require('path')
+}
+
+/**
+ * Native in the browser and on modern Node; node-fetch is the fallback for the
+ * older runtimes the CLI still supports.
+ */
+export const fetch: typeof globalThis.fetch =
+  globalThis.fetch ?? ((...args: any[]) => require('node-fetch')(...args))
 
 // Constants
 const TEMP_DIR_PREFIX = 'lia'
@@ -28,6 +49,8 @@ const BEAUTIFY_OPTIONS = {
  * @returns Promise that resolves to the path of the created temporary directory
  */
 export function tmpDir(): Promise<string> {
+  const temp = require('temp')
+
   return new Promise((resolve, reject) => {
     temp.mkdir(TEMP_DIR_PREFIX, function (err: Error | null, tmpPath: string) {
       if (err) reject(err)
@@ -47,7 +70,7 @@ export function dirname(): string {
   const fs_ = require('fs')
   const resolved = fs_.realpathSync(mainFile)
 
-  return path.dirname(resolved)
+  return nodePath().dirname(resolved)
 }
 
 /**
@@ -67,7 +90,7 @@ export function sleep(ms: number): Promise<void> {
  */
 export function writeFile(filename: string, content: string): Promise<string> {
   return new Promise((resolve, reject) => {
-    fs.writeFile(filename, content, function (err: Error | null) {
+    nodeFS().writeFile(filename, content, function (err: Error | null) {
       if (err) reject(err)
       else resolve('ok')
     })
@@ -81,13 +104,16 @@ export function writeFile(filename: string, content: string): Promise<string> {
  */
 export function filterHidden(
   sourceDir: string,
-  resolve: (p: string) => string = path.resolve,
+  resolve?: (p: string) => string,
 ): (src: string, dest: string) => boolean {
   // `sourceDir` may be relative (the CLI defaults `argument.path` to '.') while
-  // the `src` handed to the filter is absolute, so it has to be resolved
-  // against the same base first. In the browser both are already absolute
-  // MemoryFS paths and the default resolve is a no-op.
-  const base = resolve(sourceDir)
+  // `src` is absolute, so both need the same base. An already-absolute path
+  // needs no resolving, which is how the browser avoids the Node require.
+  const base = resolve
+    ? resolve(sourceDir)
+    : fsPath.isAbsolute(sourceDir)
+      ? sourceDir
+      : nodePath().resolve(sourceDir)
 
   return function (src: string, dest: string): boolean {
     // Get the relative path of the source folder being copied
@@ -229,12 +255,14 @@ export async function iframe(
  * @returns Promise that resolves when the archive is finalized
  */
 export async function zip(dir: string, filename: string): Promise<void> {
+  const path = nodePath()
+
   return new Promise((resolve, reject) => {
-    const output = fs.createWriteStream(
+    const output = nodeFS().createWriteStream(
       path.dirname(filename) + '/' + path.basename(filename + '.zip'),
     )
 
-    const archive = archiver('zip', {
+    const archive = require('archiver')('zip', {
       zlib: { level: ZIP_COMPRESSION_LEVEL }, // Sets the compression level.
     })
 

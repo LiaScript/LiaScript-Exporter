@@ -13,6 +13,11 @@ export function segments(p: string): string[] {
   return p.replace(/\\/g, '/').split('/').filter((s) => s.length > 0)
 }
 
+/** True if `p` starts at a root, matching `path.posix.isAbsolute`. */
+export function isAbsolute(p: string): boolean {
+  return /^[\\/]/.test(p)
+}
+
 /** Normalises separators and resolves `.` / `..` segments. */
 export function normalize(p: string): string {
   const absolute = /^[\\/]/.test(p)

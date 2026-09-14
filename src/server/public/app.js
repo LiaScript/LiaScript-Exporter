@@ -202,12 +202,27 @@ async function checkForUpdates() {
   }
 }
 
-// Load presets from server
+/**
+ * True when this page bundles the exporter and can export in the browser.
+ *
+ * The same UI is served by the export server, by the Electron app and as a
+ * static site. Only the static build loads `webapp.js`, which publishes
+ * `window.LiaExporter`; everywhere else these calls go to the API as before.
+ */
+function hasLocalExporter() {
+  return typeof window !== 'undefined' && !!window.LiaExporter
+}
+
+// Load presets, from the bundle when running standalone, else from the server
 async function loadPresets() {
   try {
-    const response = await fetch('/api/presets')
-    const data = await response.json()
-    presetsConfig = data.presets
+    if (hasLocalExporter()) {
+      presetsConfig = window.LiaExporter.presets()
+    } else {
+      const response = await fetch('/api/presets')
+      const data = await response.json()
+      presetsConfig = data.presets
+    }
     renderPresets()
   } catch (error) {
     console.error('Failed to load presets:', error)
@@ -697,23 +712,38 @@ function initializeForm() {
         }
       }
 
-      // Submit to API
-      const response = await fetch('/api/export', {
-        method: 'POST',
-        body: formData,
-      })
+      let result
 
-      if (!response.ok) {
-        const error = await response.json()
-        throw new Error(
-          error.error ||
-            (window.i18n
-              ? window.i18n.t('submit.errorFailed')
-              : 'Export failed'),
+      if (hasLocalExporter()) {
+        // Standalone build: the export runs in this tab and records a local
+        // job, returning the same shape the API does so the flow below is
+        // identical — confirmation, status page, then download.
+        result = await window.LiaExporter.exportFormData(
+          formData,
+          (message) => {
+            submitBtn.textContent = message
+          },
         )
+      } else {
+        // Submit to API
+        const response = await fetch('/api/export', {
+          method: 'POST',
+          body: formData,
+        })
+
+        if (!response.ok) {
+          const error = await response.json()
+          throw new Error(
+            error.error ||
+              (window.i18n
+                ? window.i18n.t('submit.errorFailed')
+                : 'Export failed'),
+          )
+        }
+
+        result = await response.json()
       }
 
-      const result = await response.json()
       showConfirmation(result)
 
       // Reset form
@@ -756,7 +786,8 @@ function showConfirmation(result) {
     <p class="success-message">${window.i18n ? window.i18n.t('modal.successMessage') : 'Your export has been successfully added to the queue.'}</p>
   `
 
-  statusLink.href = `/status.html?jobId=${result.jobId}`
+  // Relative, so this also works when served under a sub-path.
+  statusLink.href = `status.html?jobId=${result.jobId}`
 
   modal.classList.remove('hidden')
 

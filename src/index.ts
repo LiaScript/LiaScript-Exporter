@@ -18,13 +18,32 @@ import {
   validateAndNormalize,
   parsePresetsArguments,
 } from './parser'
-import { Exporter } from './exporter'
+import { Exporter, registerServerExporters } from './exporter'
 import { startServer } from './server/server'
 import * as PRESETS from './export/presets'
 import { getGitOptions, prepareGitExport } from './gitExport'
 
+import * as PDF from './export/pdf'
+import * as EPUB from './export/epub'
+import * as DOCX from './export/docx'
+import * as ANDROID from './export/android'
+import * as PROJECT_EXPORT from './export/project'
+
 // Setup global XMLHttpRequest for Node.js environment
 global.XMLHttpRequest = XMLHttpRequest
+
+/*
+ * The browser-incapable formats are imported here, by the Node entry point, and
+ * handed to the exporter — they drag in Puppeteer and Gradle tooling, so keeping
+ * them out of `exporter.ts`'s import graph is what lets both builds share it.
+ */
+registerServerExporters({
+  [PDF.format]: PDF,
+  [EPUB.format]: EPUB,
+  [DOCX.format]: DOCX,
+  [ANDROID.format]: ANDROID,
+  [PROJECT_EXPORT.format]: PROJECT_EXPORT,
+})
 
 const argv = minimist(process.argv.slice(2))
 

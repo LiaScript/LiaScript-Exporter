@@ -243,6 +243,7 @@
   "status.completedAt": "Abgeschlossen am",
   "status.downloadReady": "Ihr Export ist bereit zum Download!",
   "status.downloadButton": "Datei herunterladen",
+  "status.resultGone": "Dieser Export ist nicht mehr verf\u00fcgbar \u2014 die Datei wird nur gespeichert, solange die Seite ge\u00f6ffnet bleibt. Bitte erneut exportieren.",
   "status.processing": "Ihr Export wird verarbeitet...",
   "status.autoRefresh": "Seite wird automatisch aktualisiert",
   "status.refreshNow": "Jetzt aktualisieren",

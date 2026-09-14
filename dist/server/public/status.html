@@ -5,19 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Export Status - LiaScript Exporter</title>
 
-    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="styles.css" />
     
-    <script src="/i18n.js"></script>
+    <script src="i18n.js"></script>
   </head>
   <body>
     <nav class="navbar">
       <div class="navbar-container">
-        <a href="/" class="navbar-brand">
+        <a href="./" class="navbar-brand">
           <img src="./assets/icon.svg" alt="LiaScript" />
         </a>
         <ul class="navbar-menu">
-          <li><a href="/" class="navbar-link" data-i18n="nav.home">Home</a></li>
-          <li><a href="/status.html" class="navbar-link active" data-i18n="nav.status">Status</a></li>
+          <li><a href="./" class="navbar-link" data-i18n="nav.home">Home</a></li>
+          <li><a href="status.html" class="navbar-link active" data-i18n="nav.status">Status</a></li>
           <li class="language-selector-container">
             <select id="language-selector" class="language-selector">
               <option value="en">EN</option>
@@ -45,7 +45,7 @@
         </section>
 
         <div style="text-align: center; margin-top: 2rem">
-          <a href="/" class="btn-secondary" data-i18n="status.backHome">Back to Home</a>
+          <a href="./" class="btn-secondary" data-i18n="status.backHome">Back to Home</a>
         </div>
       </main>
 
@@ -80,7 +80,7 @@
           const lastJobId = localStorage.getItem('lastJobId')
           if (lastJobId) {
             jobId = lastJobId
-            window.history.replaceState({}, '', `/status.html?jobId=${jobId}`)
+            window.history.replaceState({}, '', `status.html?jobId=${jobId}`)
             loadStatus()
             refreshInterval = setInterval(loadStatus, 3000)
           } else {
@@ -102,15 +102,48 @@
 
       initializeStatus()
 
+      /**
+       * Reads the job from the standalone build's local record, shaped like the
+       * export service's /api/job response so displayStatus needs no branch.
+       *
+       * Jobs live in IndexedDB, so they survive the navigation here and a
+       * reload; they are dropped after a day (see src/webapp/jobs.ts).
+       */
+      async function localJob() {
+        const job = await window.LiaExporter.job(jobId)
+
+        if (!job) {
+          throw new Error(window.i18n ? window.i18n.t('status.error') : 'Job not found')
+        }
+
+        return {
+          queuePosition: 0,
+          job: {
+            id: job.id,
+            status: job.status,
+            error: job.error,
+            createdAt: job.createdAt,
+            startedAt: job.createdAt,
+            completedAt: job.completedAt,
+            source: { type: 'upload', files: new Array(job.fileCount) },
+            target: { format: job.format, preset: job.preset },
+          },
+        }
+      }
+
       async function loadStatus() {
         try {
-          const response = await fetch(`/api/job/${jobId}`)
+          const data = window.LiaExporter
+            ? await localJob()
+            : await (async () => {
+                const response = await fetch(`api/job/${jobId}`)
 
-          if (!response.ok) {
-            throw new Error(window.i18n ? window.i18n.t('status.error') : 'Job not found')
-          }
+                if (!response.ok) {
+                  throw new Error(window.i18n ? window.i18n.t('status.error') : 'Job not found')
+                }
 
-          const data = await response.json()
+                return response.json()
+              })()
           window.lastJobData = data
           displayStatus(data)
 
@@ -243,8 +276,21 @@
         document.getElementById('statusContent').innerHTML = content    
       }
 
-      function downloadResult() {
-        window.location.href = `/api/download/${jobId}`
+      async function downloadResult() {
+        if (window.LiaExporter) {
+          // The standalone build keeps the bytes in IndexedDB, so they survive
+          // the navigation here; they expire after a day (see jobs.ts).
+          if (!(await window.LiaExporter.download(jobId))) {
+            alert(
+              window.i18n
+                ? window.i18n.t('status.resultGone')
+                : 'This export is no longer available — the file is kept only while the page stays open. Please export again.',
+            )
+          }
+          return
+        }
+
+        window.location.href = `api/download/${jobId}`
       }
     </script>
   </body>

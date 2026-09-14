@@ -70,6 +70,8 @@ export interface Scorm12ExportArguments {
   'lia-subfolder'?: boolean
   /** Storage backing; supplied by the CLI or the browser host. */
   fs?: ExportFS
+  /** Packager schema location; only the browser sets it. See scormAdapter. */
+  'scorm-schema-root'?: string
 }
 
 export const format = 'scorm1.2'
@@ -145,7 +147,7 @@ export async function exporter(argument: Scorm12ExportArguments, json: any) {
 
   let config = {
     // Storage backing, so the packager writes through the same abstraction
-    fs: scormAdapter(fs),
+    fs: scormAdapter(fs, argument['scorm-schema-root']),
     version: '1.2',
     organization: argument['scorm-organization'] || 'LiaScript',
     title: json.lia.str_title,

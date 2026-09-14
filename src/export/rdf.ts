@@ -1,9 +1,33 @@
 import * as helper from './helper'
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const jsonld = require('jsonld')
-import fetch from 'node-fetch'
 import * as COLOR from '../colorize'
 import type { ExportFS } from '../fs/types'
+
+/**
+ * Registers JSON-LD contexts to serve locally instead of over the network.
+ *
+ * `jsonld.compact` dereferences `http://schema.org/` at runtime, which a
+ * browser blocks by CORS (schema.org sends no `Access-Control-Allow-Origin`).
+ * Answering from a bundled copy fixes that, and drops the third-party request.
+ *
+ * Contexts must be served verbatim: a trimmed subset compacts differently (the
+ * published context declares `@vocab`) and would diverge from the CLI's output.
+ */
+export function useLocalContexts(contexts: Record<string, any>): void {
+  const fallback = jsonld.documentLoader
+
+  jsonld.documentLoader = async (url: string) => {
+    // schema.org is referenced both with and without a trailing slash.
+    const document = contexts[url] ?? contexts[url.replace(/\/$/, '')]
+
+    if (document) {
+      return { contextUrl: null, document, documentUrl: url }
+    }
+
+    return fallback(url)
+  }
+}
 
 // Type definitions
 export interface RDFArguments {
@@ -240,7 +264,7 @@ async function loadTemplate(
     let data: any
 
     if (helper.isURL(templatePath)) {
-      const resp = await fetch(templatePath, {})
+      const resp = await helper.fetch(templatePath, {})
       if (!resp.ok) {
         throw new Error(`Failed to fetch template: ${resp.statusText}`)
       }

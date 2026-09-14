@@ -1,0 +1,73 @@
+<!DOCTYPE html><html lang="en"><head><script type="importmap">{"imports":{"8bmy8":"/common.ae3ba603.zip","d91QW":"/web.3d1b0e6d.zip"}}</script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>LiaScript Exporter</title>
+    <style>body {
+  max-width: 48rem;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+  font-family: system-ui, sans-serif;
+  line-height: 1.5;
+}
+
+textarea {
+  width: 100%;
+  min-height: 14rem;
+  padding: .5rem;
+  font-family: ui-monospace, monospace;
+  font-size: .9rem;
+}
+
+.row {
+  flex-wrap: wrap;
+  align-items: center;
+  gap: .75rem;
+  margin: 1rem 0;
+  display: flex;
+}
+
+#status {
+  color: #555;
+  margin-left: auto;
+}
+
+#status.error {
+  color: #b00;
+}
+
+button, select {
+  padding: .5rem .75rem;
+  font-size: 1rem;
+}
+</style>
+  </head>
+  <body>
+    <h1>LiaScript Exporter</h1>
+    <p>Everything runs in this tab — your course is never uploaded.</p>
+
+    <textarea id="markdown" spellcheck="false"># Hello
+
+A first course.
+
+    {{1}}
+What is 2 + 2?
+
+    [[4]]
+[[?]] Count on your fingers.
+</textarea>
+
+    <div class="row">
+      <label for="format">Format</label>
+      <select id="format">
+        <option value="web">web</option>
+        <option value="json">json</option>
+        <option value="fulljson">fulljson</option>
+      </select>
+      <button id="export">Export</button>
+      <span id="status"></span>
+    </div>
+
+    <script type="module" src="/webapp.31de21dd.js"></script>
+  
+
+</body></html>

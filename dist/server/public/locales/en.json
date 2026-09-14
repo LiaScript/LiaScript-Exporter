@@ -243,6 +243,7 @@
   "status.completedAt": "Completed",
   "status.downloadReady": "Your export is ready for download!",
   "status.downloadButton": "Download File",
+  "status.resultGone": "This export is no longer available \u2014 the file is kept only while the page stays open. Please export again.",
   "status.processing": "Processing your export...",
   "status.autoRefresh": "Page will refresh automatically",
   "status.refreshNow": "Refresh Now",

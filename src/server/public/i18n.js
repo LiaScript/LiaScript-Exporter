@@ -12,7 +12,15 @@ class I18n {
 
   async loadLanguage(lang) {
     try {
-      const response = await fetch(`/locales/${lang}.json`)
+      // The standalone build inlines its translations and publishes them as
+      // window.LiaLocales, so there is nothing to fetch.
+      if (window.LiaLocales && window.LiaLocales[lang]) {
+        this.translations[lang] = window.LiaLocales[lang]
+        return true
+      }
+
+      // Relative, so this also works when served under a sub-path.
+      const response = await fetch(`locales/${lang}.json`)
       if (!response.ok) {
         throw new Error(`Failed to load language file: ${lang}`)
       }
