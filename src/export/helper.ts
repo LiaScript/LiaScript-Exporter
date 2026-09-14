@@ -4,7 +4,7 @@ import fetch from 'node-fetch'
 import * as temp from 'temp'
 import * as fs from 'fs-extra'
 import * as path from 'path'
-import { ExportFS } from '../fs'
+import type { ExportFS } from '../fs/types'
 import * as fsPath from '../fs/path'
 const archiver = require('archiver')
 const beautify = require('simply-beautiful')

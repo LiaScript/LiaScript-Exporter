@@ -1,7 +1,7 @@
 import * as helper from './helper'
 import * as RDF from './rdf'
 import * as path from '../fs/path'
-import { ExportFS } from '../fs'
+import type { ExportFS } from '../fs/types'
 
 // Constants
 const HTML_FILE = 'index.html'

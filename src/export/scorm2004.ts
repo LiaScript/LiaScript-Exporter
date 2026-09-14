@@ -1,11 +1,11 @@
 import * as helper from './helper'
-import { NodeFS } from '../fs'
+import type { ExportFS } from '../fs/types'
+import { scormAdapter } from '../fs/scorm-adapter'
+import * as path from '../fs/path'
 
 import * as RDF from './rdf'
 
 const scormPackager = require('@liascript/simple-scorm-packager')
-const path = require('path')
-const fs = require('fs-extra')
 
 export interface Scorm2004ExportArguments {
   input: string
@@ -22,14 +22,18 @@ export interface Scorm2004ExportArguments {
   'scorm-embed'?: string | boolean
   'scorm-alwaysActive'?: boolean
   'lia-subfolder'?: boolean
+  /** Storage backing; supplied by the CLI or the browser host. */
+  fs?: ExportFS
 }
 
 export const format = 'scorm2004'
 
 export async function exporter(argument: Scorm2004ExportArguments, json: any) {
+  const fs = argument.fs!
+
   // make temp folder
-  let tmp = await helper.tmpDir()
-  const dirname = helper.dirname()
+  let tmp = await fs.tmpDir()
+  const dirname = fs.assetRoot()
 
   let tmpPath = path.join(tmp, 'pro')
   const contentPath = argument['lia-subfolder']
@@ -40,7 +44,7 @@ export async function exporter(argument: Scorm2004ExportArguments, json: any) {
   await fs.copy(path.join(dirname, './assets/scorm2004'), tmpPath)
   await fs.copy(path.join(dirname, './assets/common'), tmpPath)
 
-  let index = fs.readFileSync(path.join(tmpPath, 'index.html'), 'utf8')
+  let index = await fs.readFile(path.join(tmpPath, 'index.html'))
 
   // change responsive key
   if (argument.key) {
@@ -68,14 +72,13 @@ export async function exporter(argument: Scorm2004ExportArguments, json: any) {
     }
   }
 
-  await helper.writeFile(path.join(tmpPath, 'config.js'), conf)
+  await fs.writeFile(path.join(tmpPath, 'config.js'), conf)
 
   const jsonLD = await RDF.script(argument, json)
 
   if (argument['scorm-iframe']) {
     await helper.iframe(
-      // TODO(exportfs): replace with the threaded fs when scorm2004 is ported
-      new NodeFS(),
+      fs,
       tmpPath,
       'start.html',
       argument.readme,
@@ -86,7 +89,7 @@ export async function exporter(argument: Scorm2004ExportArguments, json: any) {
 
   if (argument['scorm-embed']) {
     index = helper.inject('<script src="course.js"></script>', index, true)
-    await helper.writeFile(
+    await fs.writeFile(
       path.join(tmpPath, 'course.js'),
       'window["liascript_course"] = ' + JSON.stringify(argument['scorm-embed'])
     )
@@ -94,7 +97,7 @@ export async function exporter(argument: Scorm2004ExportArguments, json: any) {
 
   try {
     index = helper.inject(jsonLD, index)
-    await helper.writeFile(path.join(tmpPath, 'index.html'), index)
+    await fs.writeFile(path.join(tmpPath, 'index.html'), index)
   } catch (e) {
     console.warn(e)
     return
@@ -106,6 +109,8 @@ export async function exporter(argument: Scorm2004ExportArguments, json: any) {
   })
 
   let config = {
+    // Storage backing, so the packager writes through the same abstraction
+    fs: scormAdapter(fs),
     version: '2004 4th Edition',
     organization: argument['scorm-organization'] || 'LiaScript',
     title: json.lia.str_title,
