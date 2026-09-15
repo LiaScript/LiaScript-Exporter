@@ -119,7 +119,11 @@ initializeStatus();
             target: {
                 format: job.format,
                 preset: job.preset
-            }
+            },
+            // Ends at the print dialog rather than a download. The export
+            // service renders with Puppeteer and returns a real .pdf, so its
+            // own records never carry this.
+            print: !!job.print
         }
     };
 }
@@ -196,7 +200,21 @@ function displayStatus(data) {
             </div>
           ` : ''}
 
-          ${job.status === 'completed' ? `
+          ${job.status === 'completed' ? job.print ? `
+            <div style="margin-top: 1.5rem;">
+              <button class="btn-primary" onclick="downloadResult()">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="6 9 6 2 18 2 18 9"></polyline>
+                  <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+                  <rect x="6" y="14" width="12" height="8"></rect>
+                </svg>
+                ${t('status.printButton', 'Open Print Dialog')}
+              </button>
+              <p style="margin-top: 0.75rem; color: #555;">
+                ${t('status.printHint', 'The course opens in a new tab and the print dialog appears \u2014 choose "Save as PDF" as the destination.')}
+              </p>
+            </div>
+          ` : `
             <div style="margin-top: 1.5rem;">
               <button class="btn-primary" onclick="downloadResult()">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -213,9 +231,24 @@ function displayStatus(data) {
 }
 async function downloadResult() {
     if (window.LiaExporter) {
-        // The standalone build keeps the bytes in IndexedDB, so they survive
-        // the navigation here; they expire after a day (see jobs.ts).
-        if (!await window.LiaExporter.download(jobId)) alert(window.i18n ? window.i18n.t('status.resultGone') : "This export is no longer available \u2014 the file is kept only while the page stays open. Please export again.");
+        // Bytes live in IndexedDB, so they survive the navigation here (see
+        // jobs.ts). `pdf` opens the print dialog instead — called straight
+        // from this click, since the popup needs the user gesture.
+        const result = await window.LiaExporter.download(jobId);
+        if (result !== 'ok') {
+            const messages = {
+                blocked: [
+                    'status.printBlocked',
+                    'The print tab was blocked. Please allow pop-ups for this page and try again.'
+                ],
+                gone: [
+                    'status.resultGone',
+                    "This export is no longer available \u2014 the file is kept only while the page stays open. Please export again."
+                ]
+            };
+            const [key, fallback] = messages[result] || messages.gone;
+            alert(window.i18n ? window.i18n.t(key) : fallback);
+        }
         return;
     }
     window.location.href = `api/download/${jobId}`;

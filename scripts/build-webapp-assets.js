@@ -17,8 +17,8 @@ const { zipSync } = require('fflate')
 /**
  * Asset directories the browser-portable formats read. `common` is shared by
  * every format, `web` doubles as the `ims` payload, and `indexeddb` backs the
- * `--*-indexeddb` variants. `pdf` is absent deliberately: it still drives
- * Puppeteer and has no browser render path yet.
+ * `--*-indexeddb` variants. `pdf` is not here: it renders a page instead of
+ * writing files, and is copied verbatim by scripts/copy-webapp-pdf.js.
  */
 const BUNDLES = ['common', 'web', 'xapi', 'scorm1.2', 'scorm2004', 'indexeddb']
 

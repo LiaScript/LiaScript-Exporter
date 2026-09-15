@@ -131,19 +131,31 @@
         }
       }
 
+      /**
+       * Whether this job ends at the print dialog rather than a download.
+       *
+       * Only the in-tab build prints: the export service renders with
+       * Puppeteer and returns a real .pdf to download.
+       */
+      function isPrintJob(job) {
+        return !!window.LiaExporter && job.target.format === 'pdf'
+      }
+
+      /** Reads the job from the export service. */
+      async function remoteJob() {
+        const response = await fetch(`api/job/${jobId}`)
+
+        if (!response.ok) {
+          throw new Error(window.i18n ? window.i18n.t('status.error') : 'Job not found')
+        }
+
+        return response.json()
+      }
+
       async function loadStatus() {
         try {
-          const data = window.LiaExporter
-            ? await localJob()
-            : await (async () => {
-                const response = await fetch(`api/job/${jobId}`)
+          const data = window.LiaExporter ? await localJob() : await remoteJob()
 
-                if (!response.ok) {
-                  throw new Error(window.i18n ? window.i18n.t('status.error') : 'Job not found')
-                }
-
-                return response.json()
-              })()
           window.lastJobData = data
           displayStatus(data)
 
@@ -257,7 +269,23 @@
 
           ${
             job.status === 'completed'
-              ? `
+              ? isPrintJob(job)
+                ? `
+            <div style="margin-top: 1.5rem;">
+              <button class="btn-primary" onclick="downloadResult()">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="6 9 6 2 18 2 18 9"></polyline>
+                  <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+                  <rect x="6" y="14" width="12" height="8"></rect>
+                </svg>
+                ${t('status.printButton', 'Open Print Dialog')}
+              </button>
+              <p style="margin-top: 0.75rem; color: #555;">
+                ${t('status.printHint', 'The course opens in a new tab and the print dialog appears — choose "Save as PDF" as the destination.')}
+              </p>
+            </div>
+          `
+                : `
             <div style="margin-top: 1.5rem;">
               <button class="btn-primary" onclick="downloadResult()">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -280,12 +308,24 @@
         if (window.LiaExporter) {
           // The standalone build keeps the bytes in IndexedDB, so they survive
           // the navigation here; they expire after a day (see jobs.ts).
-          if (!(await window.LiaExporter.download(jobId))) {
-            alert(
-              window.i18n
-                ? window.i18n.t('status.resultGone')
-                : 'This export is no longer available — the file is kept only while the page stays open. Please export again.',
-            )
+          // `pdf` opens the print dialog instead — called straight from this
+          // click, since a popup needs the user gesture.
+          const result = await window.LiaExporter.download(jobId)
+
+          if (result !== 'ok') {
+            const messages = {
+              blocked: [
+                'status.printBlocked',
+                'The print tab was blocked. Please allow pop-ups for this page and try again.',
+              ],
+              gone: [
+                'status.resultGone',
+                'This export is no longer available — the file is kept only while the page stays open. Please export again.',
+              ],
+            }
+            const [key, fallback] = messages[result] || messages.gone
+
+            alert(window.i18n ? window.i18n.t(key) : fallback)
           }
           return
         }

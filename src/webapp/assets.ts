@@ -37,6 +37,8 @@ const REQUIRED: Record<string, string[]> = {
   json: [],
   fulljson: [],
   rdf: [],
+  // `pdf` seeds nothing: it renders from loose static assets, not the store.
+  pdf: [],
   web: ['web', 'common'],
   ims: ['web', 'common'],
   xapi: ['xapi', 'common'],

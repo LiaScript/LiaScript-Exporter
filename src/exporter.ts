@@ -23,7 +23,8 @@ import { Arguments } from './parser'
 import * as fsPath from './fs/path'
 
 /*
- * Formats that cannot run in a browser, named here rather than imported.
+ * Formats that cannot be part of the browser bundle, named here rather than
+ * imported.
  *
  * `pdf`, `docx` and `epub` import Puppeteer at module scope, `android` shells
  * out to Gradle, and `project` imports all four plus `child_process`. A static
@@ -31,6 +32,11 @@ import * as fsPath from './fs/path'
  * graph, which Parcel then fails to bundle. The Node entry point registers the
  * real exporters instead, so the browser build simply never has them and
  * reports a clear error.
+ *
+ * "Server only" is about this module graph, not what the browser can produce:
+ * `pdf` also renders in a print tab, returning from `exportCourse` before the
+ * `Exporter` is built, so the `PDF` branches below stay Node's.
+ * @see [src/webapp/pdf.ts](./webapp/pdf.ts)
  *
  * @see registerServerExporters, called by [src/index.ts](./index.ts)
  */

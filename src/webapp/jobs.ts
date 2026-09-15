@@ -12,6 +12,8 @@
  * 5 MB, while a `web` export alone is 6.4 MB.
  */
 
+import { PrintJob } from './pdf'
+
 const DB_NAME = 'liaex'
 const DB_VERSION = 1
 const STORE = 'jobs'
@@ -34,6 +36,8 @@ export interface Job {
   /** The finished export; present once completed. */
   filename?: string
   bytes?: Uint8Array
+  /** Set instead of `bytes` for `pdf`; its presence marks a job as printed. */
+  print?: PrintJob
 }
 
 function open(): Promise<IDBDatabase> {
@@ -112,10 +116,10 @@ async function update(id: string, changes: Partial<Job>): Promise<void> {
   )
 }
 
-/** Marks a job finished and stores the bytes to download. */
+/** Marks a job finished, storing the bytes to download or the print job. */
 export async function complete(
   id: string,
-  result: { bytes: Uint8Array; filename: string },
+  result: Pick<Job, 'bytes' | 'filename' | 'print'>,
 ): Promise<void> {
   await update(id, { status: 'completed', ...result })
 }

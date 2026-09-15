@@ -5,6 +5,7 @@ import { Arguments } from '../parser'
 import { Exporter } from '../exporter'
 import { useLocalContexts } from '../export/rdf'
 import { AssetLoader, SCORM_SCHEMA_ROOT } from './assets'
+import { prepare as preparePrint, PrintJob } from './pdf'
 
 import schemaOrg from './contexts/schema.org.json'
 
@@ -29,11 +30,13 @@ export interface Course {
   files?: Record<string, Uint8Array>
 }
 
-/** The finished export, ready to hand to a download. */
-export interface Export {
-  bytes: Uint8Array
-  filename: string
-}
+/**
+ * The finished export: bytes to download, or — for `pdf` — the {@link PrintJob}
+ * the print tab needs. `print` is what tells the two apart downstream.
+ */
+export type Export =
+  | { bytes: Uint8Array; filename: string; print?: undefined }
+  | { print: PrintJob; bytes?: undefined; filename?: undefined }
 
 /**
  * Exports a course entirely in the browser.
@@ -49,6 +52,13 @@ export async function exportCourse(
   options: Record<string, any> = {},
   onProgress?: (message: string) => void,
 ): Promise<Export> {
+  // `pdf` produces no files: nothing to seed, nothing for the Exporter.
+  if (format === 'pdf') {
+    onProgress?.('Preparing…')
+
+    return { print: await preparePrint(course.markdown, course.files, options) }
+  }
+
   const fs = new MemoryFS()
 
   onProgress?.('Loading assets…')

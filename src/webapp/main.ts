@@ -12,6 +12,7 @@
 import { toOptions } from '../export/options'
 import { exportCourse, download, Course } from './index'
 import * as jobs from './jobs'
+import { print as printPdf } from './pdf'
 
 import moodleLogo from 'url:./static/logos/moodle.svg'
 import scormLogo from 'url:./static/logos/scorm.png'
@@ -63,6 +64,7 @@ const SUPPORTED = new Set([
   'rdf',
   'scorm1.2',
   'scorm2004',
+  'pdf',
 ])
 
 /** Reads the course out of the form's uploaded files. */
@@ -190,16 +192,29 @@ const LiaExporter = {
     return jobs.get(id)
   },
 
-  /** Hands a finished job's bytes to the browser as a download. */
-  async download(id: string): Promise<boolean> {
+  /**
+   * Finishes a job: a download for most formats, the print dialog for `pdf`.
+   * `'gone'` means the record expired, `'blocked'` that the browser refused the
+   * print tab, so the UI can say which happened.
+   *
+   * Must be called from a user gesture, or the print tab is blocked as a popup;
+   * the IndexedDB read below stays inside the activation window.
+   */
+  async download(id: string): Promise<'ok' | 'gone' | 'blocked'> {
     const job = await jobs.get(id)
 
-    if (!job?.bytes || !job.filename) {
-      return false
+    if (!job) return 'gone'
+
+    if (job.print) {
+      return printPdf(job.print) ? 'ok' : 'blocked'
+    }
+
+    if (!job.bytes || !job.filename) {
+      return 'gone'
     }
 
     download(job.bytes, job.filename)
-    return true
+    return 'ok'
   },
 }
 
