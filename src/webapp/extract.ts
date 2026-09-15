@@ -237,6 +237,48 @@ export async function formulas(
 }
 
 /**
+ * Extracts each formula as MathML, for formats that render it natively.
+ *
+ * The counterpart to {@link formulas}, which rasterises because DOCX cannot
+ * represent a `<math>` tree. EPUB3 can, so the markup is kept: it stays
+ * selectable, scales with the reader's font, and needs no KaTeX stylesheet —
+ * which is why this path does not have to load {@link KATEX_CSS} at all.
+ */
+export function mathml(doc: Document): Map<number, string> {
+  const extracted = new Map<number, string>()
+
+  tag(doc, 'lia-formula', 'data-formula-index').forEach((host, index) => {
+    const shadow = host.shadowRoot
+
+    if (!shadow) return
+
+    const katex = shadow.querySelector('.katex')
+
+    if (!katex) return
+
+    const math = katex.querySelector('.katex-mathml math')
+
+    if (math) {
+      extracted.set(index, math.outerHTML)
+      return
+    }
+
+    // No MathML: fall back to the visual markup, which needs the shadow root's
+    // own styles to mean anything once lifted out of it.
+    const clone = katex.cloneNode(true) as HTMLElement
+    let styles = ''
+
+    shadow.querySelectorAll('style').forEach((style) => {
+      styles += `<style>${style.textContent || ''}</style>`
+    })
+
+    extracted.set(index, styles + clone.outerHTML)
+  })
+
+  return extracted
+}
+
+/**
  * Draws `element` into a canvas and returns it as a PNG.
  *
  * Staged off-screen rather than hidden: `visibility: hidden` and `display: none`

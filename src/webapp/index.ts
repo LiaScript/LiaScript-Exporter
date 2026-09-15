@@ -6,6 +6,7 @@ import { Exporter } from '../exporter'
 import { useLocalContexts } from '../export/rdf'
 import { AssetLoader, SCORM_SCHEMA_ROOT } from './assets'
 import { prepare as preparePrint, PrintJob } from './pdf'
+import * as epub from './epub'
 
 import schemaOrg from './contexts/schema.org.json'
 
@@ -59,15 +60,27 @@ export async function exportCourse(
     return { print: await preparePrint(course.markdown, course.files, options) }
   }
 
-  // `docx` renders the course rather than transforming its markdown, so it runs
-  // outside the Exporter and returns bytes directly — there is no store for
-  // `collect` to find them in.
+  // `docx` and `epub` render the course rather than transforming its markdown,
+  // so they run outside the Exporter and return bytes directly — there is no
+  // store for `collect` to find them in.
   if (format === 'docx') {
     const { exporter: toDocx } = await import('./docx')
 
     return {
       bytes: await toDocx(course.markdown, course.files, options, onProgress),
       filename: `${course.name}.docx`,
+    }
+  }
+
+  if (format === 'epub') {
+    return {
+      bytes: await epub.exporter(
+        course.markdown,
+        course.files,
+        options,
+        onProgress,
+      ),
+      filename: `${course.name}.epub`,
     }
   }
 

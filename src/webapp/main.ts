@@ -66,6 +66,7 @@ const SUPPORTED = new Set([
   'scorm2004',
   'pdf',
   'docx',
+  'epub',
 ])
 
 /** Reads the course out of the form's uploaded files. */
