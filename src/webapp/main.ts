@@ -65,6 +65,7 @@ const SUPPORTED = new Set([
   'scorm1.2',
   'scorm2004',
   'pdf',
+  'docx',
 ])
 
 /** Reads the course out of the form's uploaded files. */

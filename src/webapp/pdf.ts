@@ -18,7 +18,7 @@
  * and Parcel flattens the tree so those 404. Copied verbatim by
  * `scripts/copy-webapp-pdf.js` and served from this fixed path.
  */
-const PDF_ENTRY = 'pdf/index.html'
+export const PDF_ENTRY = 'pdf/index.html'
 
 /** Matches the CLI's page defaults; the assets carry no `@page` rule. */
 const MARGIN = { top: 80, right: 30, bottom: 80, left: 30 }

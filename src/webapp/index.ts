@@ -59,6 +59,18 @@ export async function exportCourse(
     return { print: await preparePrint(course.markdown, course.files, options) }
   }
 
+  // `docx` renders the course rather than transforming its markdown, so it runs
+  // outside the Exporter and returns bytes directly — there is no store for
+  // `collect` to find them in.
+  if (format === 'docx') {
+    const { exporter: toDocx } = await import('./docx')
+
+    return {
+      bytes: await toDocx(course.markdown, course.files, options, onProgress),
+      filename: `${course.name}.docx`,
+    }
+  }
+
   const fs = new MemoryFS()
 
   onProgress?.('Loading assets…')

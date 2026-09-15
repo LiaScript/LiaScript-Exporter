@@ -20,3 +20,4 @@ yarn-error.log*
 src/webapp/index.html
 src/webapp/status.html
 src/webapp/static/
+dist/webapp/
