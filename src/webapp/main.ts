@@ -13,6 +13,7 @@ import { toOptions } from '../export/options'
 import { exportCourse, download, Course } from './index'
 import * as jobs from './jobs'
 import { print as printPdf } from './pdf'
+import { isZipFile, unpackZip } from './zip'
 
 import moodleLogo from 'url:./static/logos/moodle.svg'
 import scormLogo from 'url:./static/logos/scorm.png'
@@ -77,10 +78,24 @@ async function readCourse(formData: FormData): Promise<Course> {
     throw new Error('Please choose a course file to export.')
   }
 
+  // An archive carries its own directory structure, so it is unpacked rather
+  // than treated as a file alongside the course. The server does the same
+  // ahead of the export ([export.ts](../server/routes/export.ts)).
+  const zipFile = files.find((f) => isZipFile(f.name))
+
+  if (zipFile) {
+    return unpackZip(zipFile)
+  }
+
   // The markdown file is the course; anything alongside it (images, imports)
   // is carried into the store so exporters can copy it.
-  const markdownFile =
-    files.find((f) => /\.(md|markdown)$/i.test(f.name)) ?? files[0]
+  const markdownFile = files.find((f) => /\.(md|markdown)$/i.test(f.name))
+
+  if (!markdownFile) {
+    throw new Error(
+      'No markdown file found. Please choose a .md course file, or a .zip containing one.',
+    )
+  }
 
   const extra: Record<string, Uint8Array> = {}
 
