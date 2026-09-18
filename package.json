@@ -1,6 +1,6 @@
 {
   "name": "@liascript/exporter",
-  "version": "3.3.8--1.1.0",
+  "version": "3.3.9--2.0.1",
   "description": "A generic exporter for LiaScript",
   "main": "dist/index.js",
   "repository": {
@@ -117,5 +117,18 @@
       "context": "node",
       "optimize": true
     }
+  },
+  "allowScripts": {
+    "spawn-sync@1.0.15": true,
+    "puppeteer@24.34.0": true,
+    "msgpackr-extract@3.0.3": true,
+    "elm@0.19.1-6": true,
+    "@parcel/watcher@2.5.1": true,
+    "@swc/core@1.15.7": true,
+    "@turbodocx/html-to-docx@1.20.1": true,
+    "lmdb@2.8.5": true,
+    "itwcw-package-analytics@1.0.6": true,
+    "ejs@2.7.4": true,
+    "electron@30.5.1": true
   }
 }
