@@ -704,6 +704,10 @@ function externalize(
 
       const name = `image_${images.length}.${extension(mediaType)}`
 
+      // Becomes its own file, parsed as standalone XML rather than as part of
+      // a chapter, so the chapter-level repairs never reach it.
+      if (mediaType === 'image/svg+xml') bytes = repairSvg(bytes)
+
       images.push({ name, mediaType, bytes })
 
       const href = `images/${name}`
@@ -712,6 +716,19 @@ function externalize(
       return `${prefix}${href}"`
     },
   )
+}
+
+/**
+ * Strips comments from an extracted SVG, which `sanitize()` never sees.
+ *
+ * These are hand-written by the course author, who writes prose in them, and a
+ * `--` there is a fatal XML error ("From Error to P -- to summing").
+ */
+function repairSvg(bytes: Uint8Array): Uint8Array {
+  const source = new TextDecoder().decode(bytes)
+  const svg = source.replace(/<!--[\s\S]*?-->/g, '')
+
+  return svg === source ? bytes : new TextEncoder().encode(svg)
 }
 
 /** Decodes base64 to bytes. */
@@ -773,14 +790,26 @@ function mediaTypeFor(source: string): string {
  * - A namespace-prefixed tag that is not a real element — `<jc:trillian.mit.edu>`,
  *   as written in prose — is an undeclared namespace and fails the parse, so it
  *   is escaped back into the text it was meant to be.
+ * - `&nbsp;` is undeclared in XHTML. It is the only named reference that reaches
+ *   output: the chapters come from `innerHTML`, whose serializer emits it for
+ *   U+00A0 and decodes every other named entity to a literal character.
+ * - An inline `<svg>` may use `xlink:href` without declaring the prefix, which
+ *   is only ever bound to the one URI. Declared per element, so a sibling `<svg>`
+ *   that does not use it stays untouched.
+ * - Chartist binds the reserved xmlns namespace on the label spans inside a
+ *   chart's `<foreignObject>`. That is fatal in XML and means nothing on a span.
  */
 function sanitize(html: string): string {
   const VOID =
     'area|base|br|col|embed|hr|img|input|link|meta|param|source|track|wbr'
 
+  const XLINK = 'http://www.w3.org/1999/xlink'
+
   return (
     html
       .replace(/<!--[\s\S]*?-->/g, '')
+      .replace(/&nbsp;/g, '&#160;')
+      .replace(/\s+xmlns="http:\/\/www\.w3\.org\/2000\/xmlns\/"/g, '')
       // Close void elements, leaving ones already self-closed alone.
       .replace(
         new RegExp(`<(${VOID})\\b([^>]*?)\\s*/?>`, 'gi'),
@@ -791,5 +820,18 @@ function sanitize(html: string): string {
         /<((?!\/?\s*(?:svg|math|xlink|xml|xmlns|epub)[:\s>])[a-zA-Z][a-zA-Z0-9]*:[^\s>]+[^>]*)>/g,
         '&lt;$1&gt;',
       )
+      // Matched whole, so the prefix test sees this SVG's content alone.
+      .replace(/<svg\b[^>]*>[\s\S]*?<\/svg>/g, (element) => {
+        const open = element.slice(0, element.indexOf('>') + 1)
+
+        if (!element.includes('xlink:') || open.includes('xmlns:xlink')) {
+          return element
+        }
+
+        return (
+          open.replace(/\s*\/?>$/, ` xmlns:xlink="${XLINK}">`) +
+          element.slice(open.length)
+        )
+      })
   )
 }
