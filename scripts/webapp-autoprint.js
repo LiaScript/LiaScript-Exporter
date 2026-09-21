@@ -18,6 +18,19 @@
     return
   }
 
+  /*
+   * A course may call `alert`, `confirm` or `prompt` — and each freezes this document until a human dismisses
+   * it, stalling the render before it can reach the print dialog. The CLI
+   * answers the same problem with Puppeteer's `page.on('dialog', …)`.
+   */
+  window.alert = function () {}
+  window.confirm = function () {
+    return true
+  }
+  window.prompt = function (message, fallback) {
+    return fallback === undefined ? '' : fallback
+  }
+
   window.addEventListener(
     'puppeteer:ready',
     function () {

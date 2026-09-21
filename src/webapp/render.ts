@@ -16,15 +16,6 @@
 import { PDF_ENTRY, prepare, PrintJob } from './pdf'
 
 /**
- * How long to wait for the render before giving up.
- *
- * Generous on purpose: the render itself settles for 5s before signalling, and
- * a large course with many code blocks takes longer still. The CLI passes
- * `timeout: 15000` to `page.goto` but then waits on the signal unbounded.
- */
-const RENDER_TIMEOUT_MS = 120000
-
-/**
  * The render's "I am done" signal.
  *
  * LiaScript dispatches this on its own `window` once the course has settled,
@@ -103,15 +94,12 @@ function mount(
     const fail = (message: string) => {
       if (settled) return
       settled = true
-      clearTimeout(timer)
+      stopWatching()
       dispose()
       reject(new Error(message))
     }
 
-    const timer = setTimeout(
-      () => fail('the course took too long to render'),
-      RENDER_TIMEOUT_MS,
-    )
+    let stopWatching = () => {}
 
     frame.addEventListener('load', () => {
       const win = frame.contentWindow
@@ -121,6 +109,9 @@ function mount(
         fail('the render could not be reached')
         return
       }
+
+      silenceDialogs(win)
+      stopWatching = watchProgress(doc, onProgress)
 
       win.addEventListener(
         READY_EVENT,
@@ -139,7 +130,7 @@ function mount(
           }
 
           settled = true
-          clearTimeout(timer)
+          stopWatching()
           onProgress?.('Extracting content…')
           resolve({ document: doc, window: win, dispose })
         },
@@ -151,4 +142,48 @@ function mount(
 
     document.body.appendChild(frame)
   })
+}
+
+/**
+ * Stops the course's own scripts from blocking the render on a modal.
+ */
+function silenceDialogs(win: Window): void {
+  const view = win as any
+
+  view.alert = () => {}
+  view.confirm = () => true
+  view.prompt = (_message?: string, fallback?: string) => fallback ?? ''
+}
+
+/**
+ * Reports which slide the render is on, and returns a function to stop.
+ */
+function watchProgress(
+  doc: Document,
+  onProgress?: (message: string) => void,
+): () => void {
+  if (!onProgress) return () => {}
+
+  const title = doc.querySelector('title')
+
+  if (!title) return () => {}
+
+  let last = ''
+
+  const report = () => {
+    const slide = doc.title.split('·')[0].trim()
+
+    // The error report has its own title, and `mount` reports that failure.
+    if (!slide || slide === last || doc.title.indexOf(ERROR_TITLE) >= 0) return
+
+    last = slide
+    onProgress(`Rendering: ${slide}`)
+  }
+
+  const observer = new MutationObserver(report)
+
+  observer.observe(title, { childList: true, characterData: true, subtree: true })
+  report()
+
+  return () => observer.disconnect()
 }
