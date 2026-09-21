@@ -163,8 +163,9 @@ async function loadCover(
  * — except formulas, which stay as markup.
  */
 function assemble(doc: Document, view: Window): Chapter[] {
-  // Before cloning: shadow roots and computed styles exist only on the live
-  // document, and the clone must carry the `data-*-index` tags placed here.
+  // First: shadow roots and computed styles are readable only while the
+  // document is live, and the rewrite below relies on the `data-*-index` tags
+  // these place.
   const charts = extract.charts(doc)
   const abcTerminal = extract.abc(doc, true)
   const abcStandalone = extract.abc(doc, false)
@@ -174,7 +175,8 @@ function assemble(doc: Document, view: Window): Chapter[] {
   const code = extract.code(doc, view)
   const terminals = extract.terminals(doc)
 
-  const body = doc.body.cloneNode(true) as HTMLElement
+  // Rewritten in place rather than on a clone.
+  const body = doc.body
 
   strip(body)
   replaceMedia(body)
