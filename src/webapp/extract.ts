@@ -19,6 +19,39 @@
  *   document converter cannot render MathML and KaTeX's output is HTML, not SVG.
  */
 
+import * as path from '../fs/path'
+
+/**
+ * Whether a URL still resolves once the document leaves the app.
+ *
+ * A course's own files reach the render as `blob:` URLs and its markdown
+ * references them relatively, so neither survives export — only an absolute
+ * remote address means anything to a reader opening the file elsewhere.
+ */
+export function isRemote(url: string): boolean {
+  return /^(https?:|\/\/)/i.test(url)
+}
+
+/**
+ * The file's own name, for labelling media that carries no description.
+ */
+export function filename(url: string): string {
+  if (/^data:/i.test(url)) return 'Media'
+
+  return path.basename(url.split(/[?#]/)[0]) || 'Media'
+}
+
+/**
+ * Removes the inline event handlers LiaScript renders with.
+ */
+export function stripHandlers(body: HTMLElement): void {
+  const handlers = ['onload', 'onerror', 'onclick']
+
+  body
+    .querySelectorAll(handlers.map((name) => `[${name}]`).join(','))
+    .forEach((el) => handlers.forEach((name) => el.removeAttribute(name)))
+}
+
 /** Escapes text for inclusion in HTML. */
 function escape(text: string): string {
   return text

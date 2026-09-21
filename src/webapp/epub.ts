@@ -231,8 +231,6 @@ function strip(body: HTMLElement): void {
     .forEach((el) => el.remove())
 
   body.querySelectorAll('img').forEach((img) => {
-    img.removeAttribute('onerror')
-    img.removeAttribute('onclick')
     img.removeAttribute('loading')
   })
 
@@ -316,6 +314,8 @@ function strand(body: HTMLElement): void {
       }
     })
   })
+
+  extract.stripHandlers(body)
 }
 
 /**
@@ -329,8 +329,8 @@ function replaceMedia(body: HTMLElement): void {
   const doc = body.ownerDocument
 
   body.querySelectorAll('figure.lia-figure').forEach((figure) => {
-    const media = figure.querySelector('.lia-figure__media')
-    const type = media?.getAttribute('data-media-type')
+    const holder = figure.querySelector('.lia-figure__media')
+    const type = holder?.getAttribute('data-media-type')
 
     if (type !== 'iframe' && type !== 'movie') return
 
@@ -362,8 +362,14 @@ function replaceMedia(body: HTMLElement): void {
       wrapper.appendChild(img)
     }
 
-    wrapper.appendChild(link(doc, url, '▶ Watch video: '))
-    figure.replaceWith(wrapper)
+    // A YouTube thumbnail already carries the title, so the link only has to
+    // point somewhere; a local file still cannot be linked to at all.
+    wrapper.appendChild(media(doc, figure, url, '▶ Watch video: '))
+
+    const anchor = figure.parentElement
+    const target = anchor?.tagName === 'A' ? anchor : figure
+
+    target.replaceWith(wrapper)
   })
 
   const bare = (selector: string, prefix: string) => {
@@ -374,7 +380,7 @@ function replaceMedia(body: HTMLElement): void {
         ''
 
       if (url) {
-        el.replaceWith(link(doc, url, prefix))
+        el.replaceWith(media(doc, el, url, prefix))
       } else {
         el.remove()
       }
@@ -396,8 +402,52 @@ function replaceMedia(body: HTMLElement): void {
   })
 }
 
+/**
+ * Stands in for a media element the format cannot play.
+ *
+ * What the reader gets depends on whether the source is reachable from outside
+ * the book: a remote URL becomes a real link, while a course-relative path
+ * cannot resolve once the file is out of the app, so it is named rather than
+ * linked. The label prefers the author's own words — `alt`, then `title`, then
+ * `aria-label` — and falls back to the file's name so the reader can still tell
+ * that something was left out.
+ */
+function media(
+  doc: Document,
+  el: Element,
+  url: string,
+  prefix: string,
+): HTMLElement {
+  const described =
+    el.getAttribute('alt') ||
+    el.getAttribute('title') ||
+    el.querySelector('a.lia-print-only')?.textContent ||
+    el.querySelector('figcaption')?.textContent ||
+    ''
+
+  const label = described.trim() || extract.filename(url)
+
+  if (extract.isRemote(url)) {
+    return link(doc, url, prefix, label)
+  }
+
+  const p = doc.createElement('p')
+  p.setAttribute(
+    'style',
+    'text-align: center; font-size: 0.9em; margin: 0.5em 0;',
+  )
+  p.textContent = prefix + label
+
+  return p
+}
+
 /** A centred paragraph holding one link. */
-function link(doc: Document, url: string, prefix: string): HTMLElement {
+function link(
+  doc: Document,
+  url: string,
+  prefix: string,
+  label?: string,
+): HTMLElement {
   const p = doc.createElement('p')
   p.setAttribute(
     'style',
@@ -406,7 +456,9 @@ function link(doc: Document, url: string, prefix: string): HTMLElement {
 
   const a = doc.createElement('a')
   a.href = url
-  a.textContent = prefix + url
+  // Never the raw URL when a label is given: an inlined source would otherwise
+  // put its entire base64 payload on screen as the link text.
+  a.textContent = prefix + (label ?? url)
 
   p.appendChild(a)
 

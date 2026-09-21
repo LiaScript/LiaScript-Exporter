@@ -87,9 +87,19 @@ function mimeType(name: string): string {
       gif: 'image/gif',
       svg: 'image/svg+xml',
       webp: 'image/webp',
+      avif: 'image/avif',
       mp4: 'video/mp4',
+      m4v: 'video/mp4',
       webm: 'video/webm',
+      ogv: 'video/ogg',
+      mov: 'video/quicktime',
+      avi: 'video/x-msvideo',
+      mkv: 'video/x-matroska',
       mp3: 'audio/mpeg',
+      m4a: 'audio/mp4',
+      aac: 'audio/aac',
+      opus: 'audio/opus',
+      flac: 'audio/flac',
       ogg: 'audio/ogg',
       wav: 'audio/wav',
       md: 'text/markdown',
@@ -115,33 +125,70 @@ export async function prepare(
   files: Record<string, Uint8Array> = {},
   options: Record<string, any> = {},
 ): Promise<PrintJob> {
-  // Longest first: a shorter key that prefixes another must not pre-empt it.
-  const names = Object.keys(files).sort((a, b) => b.length - a.length)
-  let source = markdown
+  const edits: Array<{ index: number; length: number; name: string }> = []
+  const wanted = new Set<string>()
 
-  for (const name of names) {
-    const url = await dataURL(files[name], mimeType(name))
+  for (const match of matchReferences(markdown)) {
+    const name = match.name
 
-    // Only in a link or image target: a bare replace would also hit the
-    // filename where it is merely mentioned in prose.
-    source = source.replace(reference(name), (match) => match.replace(name, url))
+    if (!(name in files) || isTimedMedia(mimeType(name))) continue
+
+    edits.push(match)
+    wanted.add(name)
   }
 
+  const urls = new Map<string, string>()
+
+  for (const name of wanted) {
+    urls.set(name, await dataURL(files[name], mimeType(name)))
+  }
+
+  const parts: string[] = []
+  let cursor = 0
+
+  for (const edit of edits) {
+    // The name sits at the end of the match, behind the `](`/`]: ` that marks
+    // it as a target — everything before it is kept as written.
+    parts.push(markdown.slice(cursor, edit.index + edit.length - edit.name.length))
+    parts.push(urls.get(edit.name)!)
+    cursor = edit.index + edit.length
+  }
+
+  parts.push(markdown.slice(cursor))
+
   return {
-    markdown: source,
+    markdown: parts.join(''),
     css: pageRule(options),
     theme: options['pdf-theme'],
   }
 }
 
 /**
- * Matches a file path where markdown uses one as a target: `](path)`,
- * `](path "title")`, or a `[id]: path` reference definition.
+ * Whether a media type is one no target format can embed.
+ *
+ * Every document format turns a `<video>` into a link to its source — see
+ * `bare('video', '▶ ')` in [docx.ts](./docx.ts) and [epub.ts](./epub.ts) — and
+ * print cannot play one either, so inlining the bytes would only turn that link
+ * into a multi-megabyte data URL. Asked of {@link mimeType} so that the one
+ * table decides what a file is.
  */
-function reference(name: string): RegExp {
-  const escaped = name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+function isTimedMedia(type: string): boolean {
+  return type.startsWith('video/') || type.startsWith('audio/')
+}
 
-  return new RegExp(`(?:\\]\\(\\s*|\\]:\\s*)${escaped}(?=[\\s)"']|$)`, 'g')
+/**
+ * Every path markdown uses as a target: `](path)`, `](path "title")`, or a
+ * `[id]: path` reference definition.
+ */
+function* matchReferences(
+  markdown: string,
+): Generator<{ index: number; length: number; name: string }> {
+  const pattern = /(?:\]\(\s*|\]:\s*)([^\s)"']+)/g
+  let match: RegExpExecArray | null
+
+  while ((match = pattern.exec(markdown)) !== null) {
+    yield { index: match.index, length: match[0].length, name: match[1] }
+  }
 }
 
 /** Encodes bytes as a data URL. */
