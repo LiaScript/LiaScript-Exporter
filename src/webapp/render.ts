@@ -111,6 +111,7 @@ function mount(
       }
 
       silenceDialogs(win)
+      blockEmbeds(win)
       stopWatching = watchProgress(doc, onProgress)
 
       win.addEventListener(
@@ -142,6 +143,88 @@ function mount(
 
     document.body.appendChild(frame)
   })
+}
+
+/** Where a blocked embed's URL is parked; both exporters read it as a source. */
+export const EMBED_SRC = 'data-embed-src'
+
+/** Hosts whose iframes are players. Anything else keeps loading. */
+const EMBED_HOSTS =
+  /(?:^|\.)(?:youtube\.com|youtube-nocookie\.com|youtu\.be|soundcloud\.com|vimeo\.com|dailymotion\.com)(?:$|\/|:)/
+
+/**
+ * Stops embedded players from loading.
+ *
+ * `docx.ts` and `epub.ts` reduce every embed to a link, so the player is
+ * fetched only to be thrown away — paying in requests, memory and, for audio,
+ * sound during the export. The URL moves to {@link EMBED_SRC} so the link still
+ * has somewhere to point.
+ */
+function blockEmbeds(win: Window): void {
+  // The render's own globals: patching ours would leave the frame's untouched.
+  const view = win as any
+
+  const frame = view.HTMLIFrameElement.prototype as HTMLIFrameElement
+  const src = Object.getOwnPropertyDescriptor(frame, 'src')
+  const markup = Object.getOwnPropertyDescriptor(
+    view.Element.prototype,
+    'innerHTML',
+  )
+  const setAttribute: typeof Element.prototype.setAttribute =
+    view.Element.prototype.setAttribute
+
+  const embedded = (value: unknown): boolean => {
+    if (typeof value !== 'string' || !value) return false
+
+    try {
+      return EMBED_HOSTS.test(new URL(value, win.location.href).hostname)
+    } catch {
+      return false
+    }
+  }
+
+  /** Renames the `src` of every embed iframe in a markup string. */
+  const park = (value: string): string =>
+    typeof value === 'string' && value.indexOf('<iframe') >= 0
+      ? value.replace(
+          /(<iframe\b[^>]*?)\ssrc\s*=\s*(["'])(.*?)\2/gi,
+          (whole, head, quote, url) =>
+            embedded(url)
+              ? `${head} ${EMBED_SRC}=${quote}${url}${quote}`
+              : whole,
+        )
+      : value
+
+  if (src?.set) {
+    Object.defineProperty(frame, 'src', {
+      configurable: true,
+      enumerable: src.enumerable,
+      get(this: HTMLIFrameElement) {
+        return this.getAttribute('src') || ''
+      },
+      set(this: HTMLIFrameElement, value: string) {
+        if (embedded(value)) {
+          setAttribute.call(this, EMBED_SRC, value)
+        } else {
+          src.set!.call(this, value)
+        }
+      },
+    })
+  }
+
+  if (markup?.set) {
+    Object.defineProperty(view.Element.prototype, 'innerHTML', {
+      configurable: true,
+      enumerable: markup.enumerable,
+      get(this: Element) {
+        return markup.get!.call(this)
+      },
+      // Rewritten as a string: parsing it first would start the requests.
+      set(this: Element, value: string) {
+        markup.set!.call(this, park(value))
+      },
+    })
+  }
 }
 
 /**

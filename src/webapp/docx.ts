@@ -13,7 +13,7 @@
  */
 
 import * as extract from './extract'
-import { render } from './render'
+import { render, EMBED_SRC } from './render'
 
 /** Where `scripts/copy-webapp-docx.js` puts the converter. */
 const CONVERTER = 'docx/html-to-docx.browser.js'
@@ -277,6 +277,7 @@ function replaceMedia(body: HTMLElement): void {
     const url =
       figure.querySelector('a.lia-print-only')?.getAttribute('href') ||
       figure.querySelector('iframe')?.getAttribute('src') ||
+      figure.querySelector('iframe')?.getAttribute(EMBED_SRC) ||
       figure.querySelector('video')?.getAttribute('src') ||
       figure.querySelector('video source')?.getAttribute('src') ||
       ''
@@ -317,6 +318,7 @@ function replaceMedia(body: HTMLElement): void {
     body.querySelectorAll(selector).forEach((el) => {
       const url =
         el.getAttribute('src') ||
+        el.getAttribute(EMBED_SRC) ||
         el.querySelector('source')?.getAttribute('src') ||
         ''
 
