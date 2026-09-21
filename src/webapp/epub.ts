@@ -61,8 +61,30 @@ export async function exporter(
   // appears in several, and each copy would otherwise become its own file.
   const seen = new Map<string, string>()
 
-  for (const chapter of chapters) {
-    chapter.data = sanitize(externalize(chapter.data, images, seen))
+  let packaged = 0
+  let failed = 0
+
+  for (const [index, chapter] of chapters.entries()) {
+    // Before `externalize`, which then treats them as any other local image.
+    const fetched = await absorb(chapter.data, images, seen)
+
+    packaged += fetched.packaged
+    failed += fetched.failed
+
+    if (fetched.packaged || fetched.failed) {
+      onProgress?.(
+        `Fetching linked images (chapter ${index + 1} of ${chapters.length})…`,
+      )
+    }
+
+    chapter.data = sanitize(externalize(fetched.html, images, seen))
+  }
+
+  if (packaged || failed) {
+    onProgress?.(
+      `Packaged ${packaged} linked image${packaged === 1 ? '' : 's'}` +
+        (failed ? `; ${failed} could not be fetched` : ''),
+    )
   }
 
   const cover = await loadCover(options, files)
@@ -668,6 +690,82 @@ function chapters(body: HTMLElement): Chapter[] {
   })
 
   return list
+}
+
+/**
+ * Packages images the course only links to.
+ *
+ * An EPUB is a sealed container, so a chapter pointing at `https://…` shows a
+ * broken image offline. Mirrors the CLI's own pass ([epub.ts](../export/epub.ts),
+ * "Fetching external/URL-based images as data URIs"), with two differences: the
+ * fetches are sequential, since a large course already peaks near the browser's
+ * memory ceiling, and each one is given a timeout.
+ *
+ * Failures are counted rather than swallowed, because a good share of them are
+ * permanent — a host sending no CORS header is unreadable to any browser, and a
+ * dead URL has nothing to fetch — and the count is what tells those apart from
+ * having dropped everything silently.
+ */
+async function absorb(
+  html: string,
+  images: Resource[],
+  seen: Map<string, string>,
+): Promise<{ html: string; packaged: number; failed: number }> {
+  const PATTERN = /(<img\b[^>]*?\bsrc=")(https?:\/\/[^"]+)"/g
+  const TIMEOUT_MS = 15000
+
+  // Collected up front, since `replace` cannot await the fetches.
+  const urls = Array.from(html.matchAll(PATTERN), (match) => match[2])
+
+  let packaged = 0
+  let failed = 0
+
+  for (const url of new Set(urls)) {
+    if (seen.has(url)) continue
+
+    try {
+      const response = await fetch(url, {
+        signal: AbortSignal.timeout(TIMEOUT_MS),
+      })
+
+      if (!response.ok) throw new Error(`HTTP ${response.status}`)
+
+      const buffer = await response.arrayBuffer()
+
+      // The URL is only the fallback: a thumbnail endpoint may have no extension.
+      const served = response.headers.get('content-type')?.split(';')[0]?.trim()
+      const mediaType =
+        served && served.startsWith('image/') ? served : mediaTypeFor(url)
+
+      let bytes: Uint8Array = new Uint8Array(buffer)
+
+      // Parsed as standalone XML, so out of reach of the chapter-level repairs.
+      if (mediaType === 'image/svg+xml') bytes = repairSvg(bytes)
+
+      const name = `image_${images.length}.${extension(mediaType)}`
+
+      images.push({ name, mediaType, bytes })
+      seen.set(url, `images/${name}`)
+
+      packaged += 1
+    } catch (error) {
+      // Left pointing at the remote URL, which still resolves online: a failure
+      // degrades to the old behaviour rather than losing the reference.
+      console.warn('could not package a remote image:', url, error)
+
+      failed += 1
+    }
+  }
+
+  return {
+    html: html.replace(PATTERN, (match, prefix: string, url: string) => {
+      const href = seen.get(url)
+
+      return href ? `${prefix}${href}"` : match
+    }),
+    packaged,
+    failed,
+  }
 }
 
 /**
