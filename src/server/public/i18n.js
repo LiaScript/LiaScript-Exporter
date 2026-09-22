@@ -50,13 +50,20 @@ class I18n {
     this.updateDynamicContent()
   }
 
-  t(key, fallback = '') {
+  t(key, fallback = '', params = null) {
     const translation =
       this.translations[this.currentLanguage]?.[key] ||
       this.translations[this.fallbackLanguage]?.[key] ||
       fallback ||
       key
-    return translation
+
+    // An unknown `{name}` is left as written, so a mistyped placeholder is
+    // visible rather than silently blank.
+    if (!params) return translation
+
+    return translation.replace(/\{(\w+)\}/g, (whole, name) =>
+      name in params ? String(params[name]) : whole,
+    )
   }
 
   // Update all elements with data-i18n attribute

@@ -2,6 +2,7 @@
 
 import { unzipSync } from 'fflate'
 import { MemoryFS } from '../fs/memory'
+import { ExportError } from './errors'
 
 import commonBundle from 'url:./static/assets/common.zip'
 import webBundle from 'url:./static/assets/web.zip'
@@ -73,7 +74,11 @@ export class AssetLoader {
     const required = REQUIRED[format]
 
     if (!required) {
-      throw new Error(`"${format}" cannot be exported in the browser`)
+      throw new ExportError(
+        'errors.assets.unsupportedFormat',
+        '"{format}" cannot be exported in the browser',
+        { format },
+      )
     }
 
     const flag = INDEXEDDB_FLAG[format]
@@ -115,8 +120,10 @@ export class AssetLoader {
     const response = await fetch(url)
 
     if (!response.ok) {
-      throw new Error(
-        `could not load the "${bundle}" assets (${response.status} from ${url})`,
+      throw new ExportError(
+        'errors.assets.loadFailed',
+        'could not load the "{bundle}" assets ({status} from {url})',
+        { bundle, status: response.status, url },
       )
     }
 

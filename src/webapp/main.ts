@@ -15,6 +15,7 @@ import * as jobs from './jobs'
 import { print as printPdf } from './pdf'
 import { isZipFile, unpackZip } from './zip'
 import { fetchCourse } from './github'
+import { ExportError, translate } from './errors'
 
 import moodleLogo from 'url:./static/logos/moodle.svg'
 import scormLogo from 'url:./static/logos/scorm.png'
@@ -99,7 +100,10 @@ async function readCourse(
   const files = formData.getAll('files').filter((f): f is File => f instanceof File)
 
   if (files.length === 0) {
-    throw new Error('Please choose a course file to export.')
+    throw new ExportError(
+      'errors.upload.noFile',
+      'Please choose a course file to export.',
+    )
   }
 
   // An archive carries its own directory structure, so it is unpacked rather
@@ -116,7 +120,8 @@ async function readCourse(
   const markdownFile = files.find((f) => /\.(md|markdown)$/i.test(f.name))
 
   if (!markdownFile) {
-    throw new Error(
+    throw new ExportError(
+      'errors.upload.noMarkdown',
       'No markdown file found. Please choose a .md course file, or a .zip containing one.',
     )
   }
@@ -155,7 +160,11 @@ function resolveTarget(formData: FormData): {
     const preset = presetsConfig.presets.find((p: any) => p.id === presetId)
 
     if (!preset) {
-      throw new Error(`Unknown preset "${presetId}"`)
+      throw new ExportError(
+        'errors.export.unknownPreset',
+        'Unknown preset "{preset}"',
+        { preset: presetId },
+      )
     }
 
     const format = preset.format || 'scorm2004'
@@ -192,8 +201,10 @@ const LiaExporter = {
     const { format, options } = resolveTarget(formData)
 
     if (!SUPPORTED.has(format)) {
-      throw new Error(
-        `"${format}" needs the export service — it cannot run in a browser.`,
+      throw new ExportError(
+        'errors.export.serverOnly',
+        '"{format}" needs the export service — it cannot run in a browser.',
+        { format },
       )
     }
 
@@ -254,6 +265,16 @@ const LiaExporter = {
 
     download(job.bytes, job.filename)
     return 'ok'
+  },
+
+  /**
+   * The message to show for a failed export, in the current language. The
+   * export modules carry locale keys; this is where they meet `window.i18n`.
+   */
+  message(error: unknown): string {
+    const i18n = (window as any).i18n
+
+    return translate(error, i18n ? (key: string) => i18n.t(key) : undefined)
   },
 }
 

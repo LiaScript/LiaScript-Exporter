@@ -751,10 +751,17 @@ function initializeForm() {
       selectedFiles = []
       updateFileList()
     } catch (error) {
+      // The standalone exporter translates its own errors; anything else has
+      // only the message it came with.
+      const detail =
+        window.LiaExporter && window.LiaExporter.message
+          ? window.LiaExporter.message(error)
+          : error.message
+
       alert(
         (window.i18n
           ? window.i18n.t('submit.errorCreating')
-          : 'Error creating export: ') + error.message,
+          : 'Error creating export: ') + detail,
       )
     } finally {
       submitBtn.disabled = false

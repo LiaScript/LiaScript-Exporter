@@ -12,6 +12,7 @@
  */
 
 import { unzipSync } from 'fflate'
+import { ExportError } from './errors'
 
 /** Directories that never hold course content, skipped like the server does. */
 const SKIPPED_DIRECTORIES = ['node_modules', 'dist', 'build']
@@ -94,8 +95,10 @@ export async function unpackZip(file: File): Promise<UnpackedZip> {
   const main = findMainMarkdown(paths)
 
   if (!main) {
-    throw new Error(
-      `No markdown file found in "${file.name}". Please include a README.md or any .md file.`,
+    throw new ExportError(
+      'errors.zip.noMarkdown',
+      'No markdown file found in "{file}". Please include a README.md or any .md file.',
+      { file: file.name },
     )
   }
 
