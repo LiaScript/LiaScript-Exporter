@@ -106,12 +106,12 @@ export async function unpackZip(file: File): Promise<UnpackedZip> {
   const files: Record<string, Uint8Array> = {}
 
   for (const path of paths) {
-    if (path === main) continue
-
     // Files outside the course's own directory cannot be referenced relative to
     // it, so they are dropped rather than given a misleading `../` key.
     if (!path.startsWith(directory)) continue
 
+    // The course file is kept here too, so the export carries the same tree the
+    // archive held; `exportCourse` stages it by name and skips the duplicate.
     files[path.slice(directory.length)] = entries[path]
   }
 

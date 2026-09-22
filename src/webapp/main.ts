@@ -14,6 +14,7 @@ import { exportCourse, download, Course } from './index'
 import * as jobs from './jobs'
 import { print as printPdf } from './pdf'
 import { isZipFile, unpackZip } from './zip'
+import { fetchCourse } from './github'
 
 import moodleLogo from 'url:./static/logos/moodle.svg'
 import scormLogo from 'url:./static/logos/scorm.png'
@@ -70,8 +71,31 @@ const SUPPORTED = new Set([
   'epub',
 ])
 
-/** Reads the course out of the form's uploaded files. */
-async function readCourse(formData: FormData): Promise<Course> {
+/** Reads a form field as a non-empty string, or undefined. */
+function field(formData: FormData, name: string): string | undefined {
+  const value = formData.get(name)
+
+  return typeof value === 'string' && value.trim() ? value.trim() : undefined
+}
+
+/** Reads the course out of the form: a GitHub repository, or uploaded files. */
+async function readCourse(
+  formData: FormData,
+  onProgress?: (message: string) => void,
+): Promise<Course> {
+  const gitUrl = field(formData, 'gitUrl')
+
+  // A repository is a whole-directory source like an archive, and yields the
+  // same `Course` shape.
+  if (gitUrl) {
+    return fetchCourse(gitUrl, {
+      branch: field(formData, 'gitBranch'),
+      subdir: field(formData, 'gitSubdir'),
+      file: field(formData, 'gitFile'),
+      onProgress,
+    })
+  }
+
   const files = formData.getAll('files').filter((f): f is File => f instanceof File)
 
   if (files.length === 0) {
@@ -165,12 +189,6 @@ const LiaExporter = {
     formData: FormData,
     onProgress?: (message: string) => void,
   ): Promise<{ jobId: string; queuePosition: number }> {
-    if (formData.get('gitUrl')) {
-      throw new Error(
-        'Exporting straight from a Git URL is not available in the browser yet — download the course and upload it instead.',
-      )
-    }
-
     const { format, options } = resolveTarget(formData)
 
     if (!SUPPORTED.has(format)) {
@@ -179,13 +197,17 @@ const LiaExporter = {
       )
     }
 
-    const course = await readCourse(formData)
+    const course = await readCourse(formData, onProgress)
     const preset = formData.get('preset')
 
     const jobId = await jobs.start({
       format,
       preset: typeof preset === 'string' && preset ? preset : undefined,
-      fileCount: formData.getAll('files').length,
+      // A fetched course has no uploads to count, so the files it carries stand
+      // in — the status page reports what the export actually holds either way.
+      fileCount:
+        formData.getAll('files').length ||
+        Object.keys(course.files ?? {}).length + 1,
     })
 
     try {

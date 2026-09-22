@@ -96,10 +96,14 @@ export async function exportCourse(
 
   // The course has to live in the store: exporters copy `argument.path`
   // wholesale into their temp dir, and rewrite the readme in place.
-  const readme = 'README.md'
+  const readme = `${course.name}.md`
   await fs.writeFile(`${COURSE_ROOT}/${readme}`, course.markdown)
 
   for (const [name, bytes] of Object.entries(course.files ?? {})) {
+    // The staged course wins over a file of the same name: it is the document
+    // the user actually asked to export.
+    if (name === readme) continue
+
     await fs.writeFileRaw(`${COURSE_ROOT}/${name}`, bytes)
   }
 
