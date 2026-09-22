@@ -189,9 +189,58 @@ async function assemble(
   replaceFormulas(body, formulas)
   replaceTerminals(body, terminals)
   replaceCode(body, code)
+  await labelUnreachable(body)
   captions(body)
 
   return document_(chapters(body), options)
+}
+
+/**
+ * Replaces remote images the converter cannot embed with a link.
+ *
+ * The converter fetches them itself but drops the whole element on failure,
+ * alt text included, so nothing tells the reader an image was there — and a
+ * real course carries plenty it cannot reach, between CORS-less hosts and dead
+ * URLs. It reports nothing back, hence the separate check.
+ */
+async function labelUnreachable(body: HTMLElement): Promise<void> {
+  const doc = body.ownerDocument
+  const images = Array.from(body.querySelectorAll('img[src^="http"]'))
+
+  // One verdict per URL: a thumbnail repeated across chapters is common.
+  const reachable = new Map<string, boolean>()
+
+  for (const img of images) {
+    const url = img.getAttribute('src')!
+
+    if (!reachable.has(url)) {
+      try {
+        // Only the status is wanted, and course images run to megabytes; the
+        // converter downloads them again anyway.
+        const response = await fetch(url, {
+          method: 'HEAD',
+          signal: AbortSignal.timeout(15000),
+        })
+
+        await response.body?.cancel()
+
+        reachable.set(url, response.ok)
+      } catch {
+        reachable.set(url, false)
+      }
+    }
+
+    if (reachable.get(url)) continue
+
+    // The figure goes too, as in `replaceMedia`: a `<figure>` whose `<img>`
+    // became a paragraph is a shape the converter discards.
+    const figure = img.closest('figure.lia-figure')
+    const anchor = (figure ?? img).parentElement
+    const target =
+      anchor?.tagName === 'A' ? anchor : (figure ?? img)
+
+    target.replaceWith(media(doc, img, url, '🖼 '))
+  }
 }
 
 /** Removes chrome that has no place in a document. */
@@ -206,6 +255,30 @@ function strip(body: HTMLElement): void {
   // Galleries lay out as a flex row, which the converter cannot express.
   body.querySelectorAll('.lia-gallery').forEach((gallery) => {
     gallery.setAttribute('style', 'display: block; margin-bottom: 1em;')
+  })
+
+  /*
+   * A blockquote holding anything but plain text aborts the whole export.
+   *
+   * `@turbodocx/html-to-docx` 1.20.1 recurses into one with `aM(e, t)` against
+   * an `(e, t, n)` signature, `n` being the document that registers media and
+   * fonts. Everything inside therefore sees `undefined` and throws on whatever
+   * it needs first — `imageProcessing`, `createMediaFile`, `createFont`.
+   *
+   * All of them are unwrapped rather than a chosen few: LiaScript renders every
+   * quote as `<blockquote><p class="lia-paragraph">`, so there is no bare-text
+   * case left to protect, and the failure costs the entire export. The quote's
+   * indentation goes with the tag, which the converter keys on instead of CSS.
+   */
+  body.querySelectorAll('blockquote').forEach((quote) => {
+    const div = quote.ownerDocument.createElement('div')
+
+    // Italics is the one quote marker that does survive the conversion.
+    div.setAttribute('style', 'font-style: italic;')
+
+    while (quote.firstChild) div.appendChild(quote.firstChild)
+
+    quote.replaceWith(div)
   })
 
   body.querySelectorAll('img').forEach((img) => {

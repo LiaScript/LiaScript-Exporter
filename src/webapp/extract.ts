@@ -261,7 +261,7 @@ export async function formulas(
       clone.classList.add('katex-display')
     }
 
-    const raster = await rasterize(doc, view, clone)
+    const raster = await rasterize(doc, clone)
 
     if (raster) extracted.set(index, raster)
   }
@@ -320,7 +320,6 @@ export function mathml(doc: Document): Map<number, string> {
  */
 async function rasterize(
   doc: Document,
-  view: Window,
   element: HTMLElement,
 ): Promise<Raster | undefined> {
   // `html2canvas` is a UMD bundle: depending on how the bundler interops it, the
@@ -330,19 +329,67 @@ async function rasterize(
   const html2canvas =
     typeof module === 'function' ? module : (module.default ?? module)
 
-  const stage = doc.createElement('div')
+  /*
+   * Staged in an iframe of its own rather than in the course document.
+   *
+   * `html2canvas` deep-clones the whole `documentElement` its target lives in,
+   * on every call.
+   */
+  const host = doc.createElement('iframe')
+
+  host.setAttribute(
+    'style',
+    'position:absolute;left:-10000px;top:0;width:2000px;height:2000px;border:0;',
+  )
+
+  doc.body.appendChild(host)
+
+  const frame = host.contentDocument
+
+  if (!frame) {
+    host.remove()
+    console.warn('could not stage a formula for rendering')
+
+    return undefined
+  }
+
+  // The stylesheets must be *applied* before the formula is measured — they
+  // carry the math `@font-face` rules — and a cloned `<link>` fetches
+  // asynchronously, so each one is awaited.
+  const sheets = Array.from(
+    doc.querySelectorAll('link[rel="stylesheet"], style'),
+  ).map((node) => {
+    const copy = frame.head.appendChild(node.cloneNode(true)) as HTMLElement
+
+    if (copy.tagName !== 'LINK') return Promise.resolve()
+
+    return new Promise<void>((resolve) => {
+      copy.onload = () => resolve()
+      // An unstyled formula still beats failing the export.
+      copy.onerror = () => resolve()
+    })
+  })
+
+  await Promise.all(sheets)
+
+  const stage = frame.createElement('div')
 
   // The padding is not cosmetic: it absorbs the overflow described below.
   stage.setAttribute(
     'style',
-    'position:absolute;left:-10000px;top:0;width:max-content;' +
+    'position:absolute;left:0;top:0;width:max-content;' +
       'padding:8px 16px;background:#fff;',
   )
 
-  stage.appendChild(element)
-  doc.body.appendChild(stage)
+  stage.appendChild(frame.importNode(element, true))
+  frame.body.appendChild(stage)
+  frame.body.setAttribute('style', 'margin:0;')
 
   try {
+    // The frame's own fonts, not the course's: measuring before they land
+    // undersizes the box.
+    await (frame as any).fonts?.ready
+
     /*
      * `scrollWidth`/`scrollHeight` rather than the bounding box: KaTeX lays parts
      * of a formula out with negative offsets and fractional advances, so content
@@ -361,9 +408,10 @@ async function rasterize(
       logging: false,
       width,
       height,
-      // The stage is off-screen, so the capture must be offset to reach it.
-      windowWidth: view.innerWidth,
-      windowHeight: view.innerHeight,
+      // The staging frame's own viewport, since that is the document being
+      // cloned; the stage sits at its origin.
+      windowWidth: width,
+      windowHeight: height,
     })
 
     return { source: canvas.toDataURL('image/png'), width, height }
@@ -375,7 +423,8 @@ async function rasterize(
 
     return undefined
   } finally {
-    stage.remove()
+    // The frame, not just the stage: it is the copy that costs memory.
+    host.remove()
   }
 }
 
