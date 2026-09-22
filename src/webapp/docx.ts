@@ -142,6 +142,8 @@ async function assemble(
   const code = extract.code(doc, view)
   const terminals = extract.terminals(doc)
 
+  const reachable = await probeImages(doc.body)
+
   // Rewritten in place rather than on a clone.
   const body = doc.body
 
@@ -150,7 +152,6 @@ async function assemble(
 
   swap(body, 'lia-chart[data-chart-index]', 'data-chart-index', charts, {
     alt: (el) => el.getAttribute('aria-label') || 'Chart',
-    figure: true,
   })
 
   swap(
@@ -158,7 +159,7 @@ async function assemble(
     '.lia-code-terminal[data-abc-index]',
     'data-abc-index',
     abcTerminal,
-    { alt: 'ABC Music Notation', figure: true },
+    { alt: 'ABC Music Notation' },
   )
 
   swap(
@@ -166,16 +167,11 @@ async function assemble(
     'lia-abcjs[data-standalone-abc-index]',
     'data-standalone-abc-index',
     abcStandalone,
-    { alt: 'ABC Music Notation', figure: true },
+    { alt: 'ABC Music Notation' },
   )
 
   swap(body, 'figure.lia-figure[data-svg-index]', 'data-svg-index', figures, {
     alt: 'Diagram',
-    reuse: true,
-    figureStyle:
-      'margin: 1.5em auto; padding: 1.5em; background-color: #f8f9fa; ' +
-      'border: 1px solid #dee2e6; border-radius: 4px; text-align: center; ' +
-      'page-break-inside: avoid; max-width: 90%;',
   })
 
   swap(
@@ -183,61 +179,76 @@ async function assemble(
     'svg[data-inline-svg-index]',
     'data-inline-svg-index',
     inlineSvgs,
-    { alt: 'Graphic', figure: true },
+    { alt: 'Graphic' },
   )
 
   replaceFormulas(body, formulas)
   replaceTerminals(body, terminals)
   replaceCode(body, code)
-  await labelUnreachable(body)
+  labelUnreachable(body, reachable)
   captions(body)
 
   return document_(chapters(body), options)
 }
 
 /**
- * Replaces remote images the converter cannot embed with a link.
+ * Asks which remote images can actually be fetched.
  *
- * The converter fetches them itself but drops the whole element on failure,
- * alt text included, so nothing tells the reader an image was there — and a
- * real course carries plenty it cannot reach, between CORS-less hosts and dead
- * URLs. It reports nothing back, hence the separate check.
+ * Separate from {@link labelUnreachable} so the rewrite stays synchronous —
+ * see the note at the call site.
  */
-async function labelUnreachable(body: HTMLElement): Promise<void> {
-  const doc = body.ownerDocument
-  const images = Array.from(body.querySelectorAll('img[src^="http"]'))
-
+async function probeImages(body: HTMLElement): Promise<Map<string, boolean>> {
   // One verdict per URL: a thumbnail repeated across chapters is common.
   const reachable = new Map<string, boolean>()
 
-  for (const img of images) {
+  for (const img of Array.from(body.querySelectorAll('img[src^="http"]'))) {
     const url = img.getAttribute('src')!
 
-    if (!reachable.has(url)) {
-      try {
-        // Only the status is wanted, and course images run to megabytes; the
-        // converter downloads them again anyway.
-        const response = await fetch(url, {
-          method: 'HEAD',
-          signal: AbortSignal.timeout(15000),
-        })
+    if (reachable.has(url)) continue
 
-        await response.body?.cancel()
+    try {
+      // Only the status is wanted, and course images run to megabytes; the
+      // converter downloads them again anyway.
+      const response = await fetch(url, {
+        method: 'HEAD',
+        signal: AbortSignal.timeout(15000),
+      })
 
-        reachable.set(url, response.ok)
-      } catch {
-        reachable.set(url, false)
-      }
+      await response.body?.cancel()
+
+      reachable.set(url, response.ok)
+    } catch {
+      reachable.set(url, false)
     }
+  }
 
-    if (reachable.get(url)) continue
+  return reachable
+}
+
+/**
+ * Replaces remote images the converter cannot embed with a link.
+ *
+ * The converter drops the whole element on failure, alt text included, and
+ * reports nothing back — hence the separate check in {@link probeImages}.
+ */
+function labelUnreachable(
+  body: HTMLElement,
+  reachable: Map<string, boolean>,
+): void {
+  const doc = body.ownerDocument
+
+  for (const img of Array.from(body.querySelectorAll('img[src^="http"]'))) {
+    const url = img.getAttribute('src')!
+
+    // Unprobed means it appeared after the probe ran; leave it alone rather
+    // than label a working image as unreachable.
+    if (reachable.get(url) !== false) continue
 
     // The figure goes too, as in `replaceMedia`: a `<figure>` whose `<img>`
     // became a paragraph is a shape the converter discards.
     const figure = img.closest('figure.lia-figure')
     const anchor = (figure ?? img).parentElement
-    const target =
-      anchor?.tagName === 'A' ? anchor : (figure ?? img)
+    const target = anchor?.tagName === 'A' ? anchor : (figure ?? img)
 
     target.replaceWith(media(doc, img, url, '🖼 '))
   }
@@ -287,7 +298,8 @@ function strip(body: HTMLElement): void {
 
   extract.stripHandlers(body)
 
-  // The converter wants `<img>` as a direct child of `<figure>`.
+  // The converter wants `<img>` as a direct child of `<figure>`; the figure
+  // itself is unwrapped in `captions`, after the passes that select on it.
   body
     .querySelectorAll('figure.lia-figure > .lia-figure__media')
     .forEach((media) => {
@@ -329,6 +341,16 @@ function captions(body: HTMLElement): void {
 
     figure.parentNode?.insertBefore(p, figure.nextSibling)
     caption.remove()
+  })
+
+  // Every remaining figure becomes a paragraph — see `framed`. Runs after the
+  // passes above, which select on `figure.lia-figure`.
+  body.querySelectorAll('figure').forEach((figure) => {
+    const p = framed(figure.ownerDocument)
+
+    while (figure.firstChild) p.appendChild(figure.firstChild)
+
+    figure.replaceWith(p)
   })
 }
 
@@ -373,7 +395,7 @@ function replaceMedia(body: HTMLElement): void {
         'style',
         'max-width: 100%; height: auto; display: block; margin: 0 auto;',
       )
-      wrapper.appendChild(img)
+      wrapper.appendChild(framed(doc, img))
     }
 
     // A YouTube thumbnail already carries the title, so the link only has to
@@ -454,6 +476,28 @@ function media(
   return p
 }
 
+/**
+ * Wraps an image in its own paragraph.
+ *
+ * The converter writes an image it reaches outside a paragraph twice — two
+ * media files and two relationships, of which it draws one. The paragraph must
+ * replace the wrapper, not sit inside it: `<figure><p><img></p></figure>` is
+ * dropped entirely. Margins are points because the converter ignores `em`.
+ */
+function framed(doc: Document, child?: Element): HTMLElement {
+  const p = doc.createElement('p')
+
+  p.setAttribute(
+    'style',
+    'margin-top: 12pt; margin-bottom: 12pt; text-align: center; ' +
+      'page-break-inside: avoid;',
+  )
+
+  if (child) p.appendChild(child)
+
+  return p
+}
+
 /** A centred paragraph holding one link. */
 function link(
   doc: Document,
@@ -482,14 +526,7 @@ function swap(
   selector: string,
   attribute: string,
   images: Map<number, string>,
-  options: {
-    alt: string | ((el: Element) => string)
-    /** Wrap the image in a new `<figure>`. */
-    figure?: boolean
-    /** Keep the element and put the image inside it. */
-    reuse?: boolean
-    figureStyle?: string
-  },
+  options: { alt: string | ((el: Element) => string) },
 ): void {
   const doc = body.ownerDocument
 
@@ -509,23 +546,7 @@ function swap(
       'max-width: 100%; height: auto; display: block; margin: 0 auto;',
     )
 
-    if (options.reuse) {
-      el.innerHTML = ''
-      el.appendChild(img)
-
-      if (options.figureStyle) el.setAttribute('style', options.figureStyle)
-    } else if (options.figure) {
-      const figure = doc.createElement('figure')
-      figure.setAttribute(
-        'style',
-        options.figureStyle ||
-          'margin: 1.5em auto; text-align: center; page-break-inside: avoid;',
-      )
-      figure.appendChild(img)
-      el.replaceWith(figure)
-    } else {
-      el.replaceWith(img)
-    }
+    el.replaceWith(framed(doc, img))
   })
 }
 
@@ -569,7 +590,7 @@ function replaceFormulas(
       return
     }
 
-    const wrapper = doc.createElement('div')
+    const wrapper = doc.createElement('p')
     wrapper.setAttribute('style', 'text-align: center; margin: 1em 0;')
     wrapper.appendChild(img)
 
@@ -591,7 +612,7 @@ function replaceTerminals(
     const image = terminal.querySelector('img')
 
     if (image) {
-      terminal.replaceWith(image)
+      terminal.replaceWith(framed(doc, image))
       return
     }
 

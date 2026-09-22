@@ -179,15 +179,113 @@ function isTimedMedia(type: string): boolean {
 /**
  * Every path markdown uses as a target: `](path)`, `](path "title")`, or a
  * `[id]: path` reference definition.
+ *
+ * Code is skipped: a course that documents markdown prints link syntax as an
+ * example, and rewriting it swaps 51 characters for a base64 blob the reader
+ * then sees in full. Link shape alone is not enough — inside code it is text.
  */
 function* matchReferences(
   markdown: string,
 ): Generator<{ index: number; length: number; name: string }> {
   const pattern = /(?:\]\(\s*|\]:\s*)([^\s)"']+)/g
+  const skip = code(markdown)
+  let next = 0
   let match: RegExpExecArray | null
 
   while ((match = pattern.exec(markdown)) !== null) {
+    // Both run left to right, so this resumes rather than rescans.
+    while (next < skip.length && skip[next].end <= match.index) next++
+
+    if (next < skip.length && skip[next].start <= match.index) continue
+
     yield { index: match.index, length: match[0].length, name: match[1] }
+  }
+}
+
+/** Code regions, in source order and non-overlapping. */
+function code(markdown: string): Array<{ start: number; end: number }> {
+  const regions: Array<{ start: number; end: number }> = []
+  let cursor = 0
+
+  // Fences first, then the inline spans in the gaps between them, so the two
+  // kinds cannot overlap and the result is already ordered.
+  for (const fence of [...fencedBlocks(markdown), null]) {
+    const end = fence ? fence.start : markdown.length
+
+    regions.push(...backtickSpans(markdown, cursor, end))
+
+    if (fence) {
+      regions.push(fence)
+      cursor = fence.end
+    }
+  }
+
+  return regions
+}
+
+/**
+ * Fenced code blocks, ``` or ~~~.
+ *
+ * Follows CommonMark's closing rule — same character, at least as long as the
+ * opener, no info string — because a markdown tutorial nests a ``` block
+ * inside a ```` one, which a naive toggle would pair up wrongly. An unclosed
+ * fence runs to the end of the document.
+ */
+function fencedBlocks(markdown: string): Array<{ start: number; end: number }> {
+  const blocks: Array<{ start: number; end: number }> = []
+  const line = /^[ \t]*(`{3,}|~{3,})(.*)$/gm
+  let open: { start: number; marker: string } | null = null
+  let match: RegExpExecArray | null
+
+  while ((match = line.exec(markdown)) !== null) {
+    const marker = match[1]
+
+    if (open === null) {
+      // An info string may not contain a backtick — that is what stops a
+      // lone `` `code` `` line opening a block.
+      if (marker[0] === '`' && match[2].includes('`')) continue
+
+      open = { start: match.index, marker }
+    } else if (
+      marker[0] === open.marker[0] &&
+      marker.length >= open.marker.length &&
+      match[2].trim() === ''
+    ) {
+      blocks.push({ start: open.start, end: match.index + match[0].length })
+      open = null
+    }
+  }
+
+  if (open !== null) blocks.push({ start: open.start, end: markdown.length })
+
+  return blocks
+}
+
+/**
+ * Inline code spans within `[start, end)`: a run of backticks closed by the
+ * next run of exactly that length. A span may not cross a blank line, so one
+ * stray backtick cannot hide the rest of the document.
+ */
+function* backtickSpans(
+  markdown: string,
+  start: number,
+  end: number,
+): Generator<{ start: number; end: number }> {
+  const run = /`+/g
+  run.lastIndex = start
+  let match: RegExpExecArray | null
+
+  while ((match = run.exec(markdown)) !== null && match.index < end) {
+    const closer = new RegExp(`(?<!\`)\`{${match[0].length}}(?!\`)`, 'g')
+    closer.lastIndex = match.index + match[0].length
+
+    const close = closer.exec(markdown)
+
+    if (close === null || close.index >= end) continue
+    if (markdown.slice(match.index, close.index).includes('\n\n')) continue
+
+    yield { start: match.index, end: close.index + close[0].length }
+    run.lastIndex = close.index + close[0].length
   }
 }
 
