@@ -72,6 +72,14 @@ const SUPPORTED = new Set([
   'epub',
 ])
 
+/**
+ * Jobs this tab is running, so a repeated {@link LiaExporter.run} is ignored
+ * rather than exporting twice. Only this tab's, deliberately: a record in the
+ * database could not be cleared when a tab goes away, which is the very case
+ * {@link jobs.claim} has to recover from.
+ */
+const running = new Set<string>()
+
 /** Reads a form field as a non-empty string, or undefined. */
 function field(formData: FormData, name: string): string | undefined {
   const value = formData.get(name)
@@ -190,9 +198,13 @@ const LiaExporter = {
    * Exports the course described by the UI's form.
    *
    * Returns the `{ jobId }` shape `/api/export` returns, so the UI follows one
-   * flow either way: confirmation, status page, download. The export is already
-   * finished by the time this resolves — the job record exists to give the
-   * status page something to show and somewhere to keep the bytes.
+   * flow either way: confirmation, status page, download. Like the service,
+   * this only accepts the job — {@link run} does the work, on the status page.
+   * Exporting here instead would tie the export to the home page and finish it
+   * before the status page had anything to show.
+   *
+   * The source is read first, so a bad repository URL or an archive with no
+   * markdown still fails on the home page, where the form can be fixed.
    */
   async exportFormData(
     formData: FormData,
@@ -213,6 +225,8 @@ const LiaExporter = {
 
     const jobId = await jobs.start({
       format,
+      options,
+      course,
       preset: typeof preset === 'string' && preset ? preset : undefined,
       // A fetched course has no uploads to count, so the files it carries stand
       // in — the status page reports what the export actually holds either way.
@@ -221,20 +235,45 @@ const LiaExporter = {
         Object.keys(course.files ?? {}).length + 1,
     })
 
-    try {
-      const result = await exportCourse(course, format, options, onProgress)
-      await jobs.complete(jobId, result)
-    } catch (error) {
-      await jobs.fail(
-        jobId,
-        error instanceof Error ? error.message : String(error),
-      )
-      throw error
-    }
-
     // Nothing is queued, so the position is always zero — the field exists to
     // match the service's response shape.
     return { jobId, queuePosition: 0 }
+  },
+
+  /**
+   * Runs an unfinished job, where the service's queue would. Called by the
+   * status page on every poll; does nothing if the job is missing, finished, or
+   * already running.
+   */
+  async run(id: string, onProgress?: (message: string) => void): Promise<void> {
+    if (running.has(id)) return
+
+    running.add(id)
+
+    try {
+      const job = await jobs.claim(id)
+
+      if (!job || !job.course) return
+
+      const report = (message: string) => {
+        onProgress?.(message)
+        void jobs.progress(id, message)
+      }
+
+      try {
+        const result = await exportCourse(
+          job.course,
+          job.format,
+          job.options,
+          report,
+        )
+        await jobs.complete(id, result)
+      } catch (error) {
+        await jobs.fail(id, LiaExporter.message(error))
+      }
+    } finally {
+      running.delete(id)
+    }
   },
 
   /** Job record for the status page, or undefined if it is unknown. */

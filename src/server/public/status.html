@@ -120,8 +120,9 @@
           queuePosition: 0,
           job: {
             id: job.id,
-            status: job.status,
+            status: job.status === 'queued' ? 'processing' : job.status,
             error: job.error,
+            progress: job.progress,
             createdAt: job.createdAt,
             startedAt: job.createdAt,
             completedAt: job.completedAt,
@@ -152,6 +153,31 @@
 
           window.lastJobData = data
           displayStatus(data)
+
+          // Standalone build: this page is the queue, so it offers every
+          // unfinished job to `run` — including one left `processing` by a
+          // reload, which nothing else would ever pick up again. `run` decides
+          // whether it is really free; calling it twice is harmless. Progress
+          // is shown as it arrives rather than at the next poll.
+          if (
+            window.LiaExporter &&
+            data.job.status !== 'completed' &&
+            data.job.status !== 'failed'
+          ) {
+            window.LiaExporter
+              .run(jobId, (message) => {
+                window.lastJobData.job.progress = message
+                displayStatus(window.lastJobData)
+              })
+              .then(loadStatus)
+              .catch((error) => {
+                clearInterval(refreshInterval)
+                const errorMsg = window.i18n ? window.i18n.t('status.errorMessage') : 'Error loading status'
+                document.getElementById('statusContent').innerHTML = `
+                  <p class="error-message">${errorMsg}: ${error.message}</p>
+                `
+              })
+          }
 
           // Stop refreshing if job is completed or failed
           if (data.job.status === 'completed' || data.job.status === 'failed') {
@@ -190,6 +216,10 @@
           completed: t('status.statusCompleted', 'Completed'),
           failed: t('status.statusFailed', 'Failed'),
         }[job.status]
+
+        // The standalone build reports what it is doing; that is more useful
+        // than the label alone, since a big course spends minutes here.
+        if (job.progress) statusText = job.progress
 
         let progressPercent = 0
         if (job.status === 'processing') progressPercent = 50

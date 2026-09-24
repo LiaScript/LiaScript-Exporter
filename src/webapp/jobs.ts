@@ -12,6 +12,7 @@
  * 5 MB, while a `web` export alone is 6.4 MB.
  */
 
+import { Course } from './index'
 import { PrintJob } from './pdf'
 
 const DB_NAME = 'liaex'
@@ -23,9 +24,16 @@ const RETENTION_MS = 24 * 60 * 60 * 1000
 
 export interface Job {
   id: string
-  status: 'processing' | 'completed' | 'failed'
+  /** The service's own states, so the status page needs no translation. */
+  status: 'queued' | 'processing' | 'completed' | 'failed'
   /** Format actually exported. */
   format: string
+  /** The export's input; dropped once the job finishes, it is large. */
+  course?: Course
+  /** Export options, resolved from the preset and the form. */
+  options: Record<string, any>
+  /** What the running export is doing, for the status page. */
+  progress?: string
   /** Preset the user chose, when they chose one. */
   preset?: string
   /** Number of files the user supplied. */
@@ -81,11 +89,13 @@ async function withStore<T>(
   })
 }
 
-/** Records a newly started export and returns its id. */
+/** Records an export waiting to be run, and returns its id. */
 export async function start(details: {
   format: string
   preset?: string
   fileCount: number
+  course: Course
+  options: Record<string, any>
 }): Promise<string> {
   const id = `local-${Date.now().toString(36)}-${Math.random()
     .toString(36)
@@ -94,7 +104,7 @@ export async function start(details: {
   await withStore('readwrite', (store) =>
     store.put({
       id,
-      status: 'processing',
+      status: 'queued',
       createdAt: Date.now(),
       ...details,
     } as Job),
@@ -111,9 +121,49 @@ async function update(id: string, changes: Partial<Job>): Promise<void> {
 
   if (!job) return
 
-  await withStore('readwrite', (store) =>
-    store.put({ ...job, completedAt: Date.now(), ...changes }),
-  )
+  await withStore('readwrite', (store) => store.put({ ...job, ...changes }))
+}
+
+/**
+ * Takes a job nobody is running, returning it only to the first caller —
+ * without this the status page's own poll would start the export again every
+ * three seconds.
+ *
+ * A `processing` job that still has its course is reclaimed, because the export
+ * runs in the tab: {@link finish} is what drops the course, so a job left
+ * mid-flight can only mean the tab running it went away (a reload, or a close
+ * and a later visit to the status link). Nothing else would ever resume it.
+ */
+export async function claim(id: string): Promise<Job | undefined> {
+  const job = await get(id)
+
+  if (!job) return undefined
+
+  const abandoned = job.status === 'processing' && !!job.course
+
+  if (job.status !== 'queued' && !abandoned) return undefined
+
+  await update(id, { status: 'processing' })
+
+  return job
+}
+
+/** Records how far a running export has got. */
+export async function progress(id: string, message: string): Promise<void> {
+  await update(id, { progress: message })
+}
+
+/**
+ * Marks a job over. The course was only an input, and keeping it would double
+ * what a finished job costs.
+ */
+async function finish(id: string, changes: Partial<Job>): Promise<void> {
+  await update(id, {
+    completedAt: Date.now(),
+    course: undefined,
+    progress: undefined,
+    ...changes,
+  })
 }
 
 /** Marks a job finished, storing the bytes to download or the print job. */
@@ -121,12 +171,12 @@ export async function complete(
   id: string,
   result: Pick<Job, 'bytes' | 'filename' | 'print'>,
 ): Promise<void> {
-  await update(id, { status: 'completed', ...result })
+  await finish(id, { status: 'completed', ...result })
 }
 
 /** Marks a job failed, recording why. */
 export async function fail(id: string, error: string): Promise<void> {
-  await update(id, { status: 'failed', error })
+  await finish(id, { status: 'failed', error })
 }
 
 /** Looks up one job, or undefined when it is unknown or expired. */
