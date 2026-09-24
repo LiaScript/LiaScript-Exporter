@@ -5,28 +5,19 @@ import * as COLOR from '../colorize'
 import type { ExportFS } from '../fs/types'
 
 /**
- * Registers JSON-LD contexts to serve locally instead of over the network.
+ * Loads schema.org contexts over https.
  *
  * `jsonld.compact` dereferences `http://schema.org/` at runtime, which a
- * browser blocks by CORS (schema.org sends no `Access-Control-Allow-Origin`).
- * Answering from a bundled copy fixes that, and drops the third-party request.
- *
- * Contexts must be served verbatim: a trimmed subset compacts differently (the
- * published context declares `@vocab`) and would diverge from the CLI's output.
+ * browser blocks: the redirect to https carries no CORS header, and an https
+ * page may not fetch plain http anyway. The https endpoint does send
+ * `Access-Control-Allow-Origin: *`, so only the scheme needs changing — the
+ * output keeps `http://schema.org/` as its `@context`, same as the CLI.
  */
-export function useLocalContexts(contexts: Record<string, any>): void {
+export function useHttpsSchemaOrg(): void {
   const fallback = jsonld.documentLoader
 
-  jsonld.documentLoader = async (url: string) => {
-    // schema.org is referenced both with and without a trailing slash.
-    const document = contexts[url] ?? contexts[url.replace(/\/$/, '')]
-
-    if (document) {
-      return { contextUrl: null, document, documentUrl: url }
-    }
-
-    return fallback(url)
-  }
+  jsonld.documentLoader = (url: string) =>
+    fallback(url.replace(/^http:\/\/schema\.org(?=\/|$)/, 'https://schema.org'))
 }
 
 // Type definitions
@@ -58,6 +49,14 @@ interface LiaDefinition {
   macro?: {
     comment?: string
     tags?: string
+  }
+}
+
+/** The parts of the Elm parser's JSON output that the RDF export reads. */
+interface LiaJSON {
+  lia: {
+    str_title: string
+    definition: LiaDefinition
   }
 }
 
@@ -378,7 +377,7 @@ async function enrichMetadata(
  */
 export async function parse(
   argument: RDFArguments,
-  json: string,
+  json: LiaJSON,
 ): Promise<SchemaDoc> {
   try {
     // Load template if provided

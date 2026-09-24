@@ -3,19 +3,12 @@
 import { MemoryFS } from '../fs/memory'
 import { Arguments } from '../parser'
 import { Exporter } from '../exporter'
-import { useLocalContexts } from '../export/rdf'
+import { useHttpsSchemaOrg } from '../export/rdf'
 import { AssetLoader, SCORM_SCHEMA_ROOT } from './assets'
 import { prepare as preparePrint, PrintJob } from './pdf'
 import * as epub from './epub'
 
-import schemaOrg from './contexts/schema.org.json'
-
-// Serve schema.org from the bundle: the fetch jsonld would otherwise make is
-// blocked by CORS in a browser.
-useLocalContexts({
-  'http://schema.org': schemaOrg,
-  'https://schema.org': schemaOrg,
-})
+useHttpsSchemaOrg()
 
 /** Where the course is staged inside the store before exporting. */
 const COURSE_ROOT = '/course'
