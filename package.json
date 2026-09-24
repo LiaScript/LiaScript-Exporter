@@ -76,7 +76,7 @@
     "@fastify/multipart": "^8.1.0",
     "@fastify/static": "^7.0.1",
     "@lesjoursfr/html-to-epub": "^6.0.1",
-    "@liascript/simple-scorm-packager": "file:../../simple-scorm-packager",
+    "@liascript/simple-scorm-packager": "^0.3.1",
     "@turbodocx/html-to-docx": "^1.20.1",
     "archiver": "^7.0.1",
     "electron-updater": "^6.8.9",
@@ -140,7 +140,10 @@
       "optimize": true
     },
     "webapp": {
-      "source": ["src/webapp/index.html", "src/webapp/status.html"],
+      "source": [
+        "src/webapp/index.html",
+        "src/webapp/status.html"
+      ],
       "context": "browser"
     }
   }
