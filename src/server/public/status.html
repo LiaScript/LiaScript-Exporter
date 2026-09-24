@@ -84,20 +84,23 @@
             loadStatus()
             refreshInterval = setInterval(loadStatus, 3000)
           } else {
-            // No job found
-            document.getElementById('statusContent').innerHTML = `
-              <div style="text-align: center; padding: 3rem 1rem;">
-                <p style="color: var(--text-muted); margin-bottom: 1rem;" data-i18n="status.noExport">No export found</p>
-                <p style="color: var(--text-muted); font-size: 0.9rem;" data-i18n="status.noExportMessage">Start a new export on the home page.</p>
-              </div>
-            `
-            // Re-translate the new content
-            if (window.i18n) {
-              window.i18n.updatePageTranslations()
-            }
-            document.getElementById('refreshInfo').style.display = 'none'
+            showNoExport()
           }
         }
+      }
+
+      function showNoExport() {
+        document.getElementById('statusContent').innerHTML = `
+          <div style="text-align: center; padding: 3rem 1rem;">
+            <p style="color: var(--text-muted); margin-bottom: 1rem;" data-i18n="status.noExport">No export found</p>
+            <p style="color: var(--text-muted); font-size: 0.9rem;" data-i18n="status.noExportMessage">Start a new export on the home page.</p>
+          </div>
+        `
+        // Re-translate the new content
+        if (window.i18n) {
+          window.i18n.updatePageTranslations()
+        }
+        document.getElementById('refreshInfo').style.display = 'none'
       }
 
       initializeStatus()
@@ -148,6 +151,9 @@
       }
 
       async function loadStatus() {
+        // Discarded: do not redraw over the empty state.
+        if (!jobId) return
+
         try {
           const data = window.LiaExporter ? await localJob() : await remoteJob()
 
@@ -155,9 +161,8 @@
           displayStatus(data)
 
           // Standalone build: this page is the queue, so it offers every
-          // unfinished job to `run` — including one left `processing` by a
-          // reload, which nothing else would ever pick up again. `run` decides
-          // whether it is really free; calling it twice is harmless. Progress
+          // unfinished job to `run`, including one cut off by a reload. `run`
+          // ignores a job this tab already runs. Progress
           // is shown as it arrives rather than at the next poll.
           if (
             window.LiaExporter &&
@@ -166,6 +171,8 @@
           ) {
             window.LiaExporter
               .run(jobId, (message) => {
+                if (!jobId) return
+
                 window.lastJobData.job.progress = message
                 displayStatus(window.lastJobData)
               })
@@ -323,9 +330,51 @@
           `
               : ''
           }
+
+          ${
+            // Standalone build only; `localJob` shows unfinished as processing.
+            window.LiaExporter && job.status === 'processing'
+              ? `
+            <div style="margin-top: 1.5rem;">
+              <button class="btn-secondary" onclick="discardJob()">
+                ${t('status.discardButton', 'Discard Export')}
+              </button>
+            </div>
+          `
+              : ''
+          }
         `
 
-        document.getElementById('statusContent').innerHTML = content    
+        document.getElementById('statusContent').innerHTML = content
+      }
+
+      // An export running in this tab cannot be stopped: it finishes and its
+      // result is dropped.
+      async function discardJob() {
+        const t = (key, fallback) => window.i18n ? window.i18n.t(key, fallback) : fallback
+
+        if (!confirm(t(
+          'status.discardConfirm',
+          'Discard this export? A new export can then be started. If it is already running in this tab it cannot be stopped: it keeps using the tab until it ends and its result is thrown away. Reload the page to stop it sooner.',
+        ))) return
+
+        try {
+          await window.LiaExporter.discard(jobId)
+        } catch (error) {
+          alert(`${t('status.discardFailed', 'The export could not be discarded')}: ${error.message}`)
+          return
+        }
+
+        clearInterval(refreshInterval)
+
+        if (localStorage.getItem('lastJobId') === jobId) {
+          localStorage.removeItem('lastJobId')
+        }
+
+        jobId = null
+        window.lastJobData = null
+        window.history.replaceState({}, '', 'status.html')
+        showNoExport()
       }
 
       async function downloadResult() {

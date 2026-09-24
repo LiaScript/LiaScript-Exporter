@@ -764,6 +764,12 @@ function initializeForm() {
       selectedFiles = []
       updateFileList()
     } catch (error) {
+      // Needs a link to the blocking job, which alert() cannot carry.
+      if (error && error.key === 'submit.busy') {
+        showBusy(error)
+        return
+      }
+
       // The standalone exporter translates its own errors; anything else has
       // only the message it came with.
       const detail =
@@ -787,34 +793,56 @@ function initializeForm() {
 
 // Show confirmation modal
 function showConfirmation(result) {
-  // Save job ID to localStorage
-  localStorage.setItem('lastJobId', result.jobId)
-
-  const modal = document.getElementById('confirmationModal')
-  const details = document.getElementById('confirmationDetails')
-  const statusLink = document.getElementById('statusLink')
-  const closeBtn = document.getElementById('closeModal')
-
-  details.innerHTML = `
+  openModal(
+    'modal.title',
+    'Export Started',
+    `
     <p><strong>${window.i18n ? window.i18n.t('modal.jobId') : 'Job ID'}:</strong> ${result.jobId}</p>
     <p><strong>${window.i18n ? window.i18n.t('modal.queuePosition') : 'Position in queue'}:</strong> ${result.queuePosition}</p>
     <p class="success-message">${window.i18n ? window.i18n.t('modal.successMessage') : 'Your export has been successfully added to the queue.'}</p>
-  `
+  `,
+    result.jobId,
+  )
+}
+
+/** Explains a refused submission, linking to the job that blocks it. */
+function showBusy(error) {
+  openModal(
+    'submit.busyTitle',
+    'Export Already in Progress',
+    `<p>${escapeHtml(window.LiaExporter.message(error))}</p>`,
+    error.params.jobId,
+  )
+}
+
+/** Opens the modal with a title, a body, and a status link to `jobId`. */
+function openModal(titleKey, titleFallback, html, jobId) {
+  localStorage.setItem('lastJobId', jobId)
+
+  const modal = document.getElementById('confirmationModal')
+  const title = modal.querySelector('h2')
+
+  // data-i18n too, so a language switch keeps this title.
+  title.setAttribute('data-i18n', titleKey)
+  title.textContent = window.i18n ? window.i18n.t(titleKey) : titleFallback
+
+  document.getElementById('confirmationDetails').innerHTML = html
 
   // Relative, so this also works when served under a sub-path.
-  statusLink.href = `status.html?jobId=${result.jobId}`
+  document.getElementById('statusLink').href = `status.html?jobId=${jobId}`
 
   modal.classList.remove('hidden')
 
-  closeBtn.addEventListener('click', () => {
+  // Assigned, not added, so reopening does not stack handlers.
+  document.getElementById('closeModal').onclick = () => {
     modal.classList.add('hidden')
-  })
+  }
 
-  modal.addEventListener('click', (e) => {
+  modal.onclick = (e) => {
     if (e.target === modal) {
       modal.classList.add('hidden')
     }
-  })
+  }
 }
 
 // Format description display

@@ -73,10 +73,8 @@ const SUPPORTED = new Set([
 ])
 
 /**
- * Jobs this tab is running, so a repeated {@link LiaExporter.run} is ignored
- * rather than exporting twice. Only this tab's, deliberately: a record in the
- * database could not be cleared when a tab goes away, which is the very case
- * {@link jobs.claim} has to recover from.
+ * Jobs this tab is running, so the status page's poll does not export twice.
+ * Per tab, since a record could not be cleared when its tab goes away.
  */
 const running = new Set<string>()
 
@@ -220,6 +218,20 @@ const LiaExporter = {
       )
     }
 
+    // One job at a time, deliberately unlike the service's queue
+    // (src/server/queue/jobQueue.ts): a job only runs while its status page is
+    // open, and one export can take gigabytes. Before `readCourse`, so nothing
+    // is fetched.
+    const blocking = await jobs.unfinished()
+
+    if (blocking) {
+      throw new ExportError(
+        'submit.busy',
+        'Another export ({jobId}) has not finished yet. This version runs one export at a time, and only while its status page is open — open it to let it finish, or discard it there.',
+        { jobId: blocking.id },
+      )
+    }
+
     const course = await readCourse(formData, onProgress)
     const preset = formData.get('preset')
 
@@ -251,9 +263,9 @@ const LiaExporter = {
     running.add(id)
 
     try {
-      const job = await jobs.claim(id)
+      const job = await jobs.get(id)
 
-      if (!job || !job.course) return
+      if (!job || !jobs.isUnfinished(job) || !job.course) return
 
       const report = (message: string) => {
         onProgress?.(message)
@@ -279,6 +291,14 @@ const LiaExporter = {
   /** Job record for the status page, or undefined if it is unknown. */
   async job(id: string): Promise<jobs.Job | undefined> {
     return jobs.get(id)
+  },
+
+  /**
+   * Deletes a job. One running in this tab cannot be stopped; its result is
+   * dropped.
+   */
+  async discard(id: string): Promise<void> {
+    await jobs.remove(id)
   },
 
   /**

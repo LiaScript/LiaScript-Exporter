@@ -24,8 +24,8 @@ const RETENTION_MS = 24 * 60 * 60 * 1000
 
 export interface Job {
   id: string
-  /** The service's own states, so the status page needs no translation. */
-  status: 'queued' | 'processing' | 'completed' | 'failed'
+  /** The service's states minus `processing`: a job is `queued` until done. */
+  status: 'queued' | 'completed' | 'failed'
   /** Format actually exported. */
   format: string
   /** The export's input; dropped once the job finishes, it is large. */
@@ -125,27 +125,11 @@ async function update(id: string, changes: Partial<Job>): Promise<void> {
 }
 
 /**
- * Takes a job nobody is running, returning it only to the first caller —
- * without this the status page's own poll would start the export again every
- * three seconds.
- *
- * A `processing` job that still has its course is reclaimed, because the export
- * runs in the tab: {@link finish} is what drops the course, so a job left
- * mid-flight can only mean the tab running it went away (a reload, or a close
- * and a later visit to the status link). Nothing else would ever resume it.
+ * Shared by `run` and {@link unfinished}, so a job cannot block submission
+ * while refusing to run.
  */
-export async function claim(id: string): Promise<Job | undefined> {
-  const job = await get(id)
-
-  if (!job) return undefined
-
-  const abandoned = job.status === 'processing' && !!job.course
-
-  if (job.status !== 'queued' && !abandoned) return undefined
-
-  await update(id, { status: 'processing' })
-
-  return job
+export function isUnfinished(job: Job): boolean {
+  return job.status === 'queued'
 }
 
 /** Records how far a running export has got. */
@@ -185,6 +169,28 @@ export async function get(id: string): Promise<Job | undefined> {
 }
 
 /**
+ * The oldest unfinished job. Expired jobs are cleared first, or a stranded one
+ * would block submission for good.
+ */
+export async function unfinished(): Promise<Job | undefined> {
+  await cleanup()
+
+  const all = await withStore(
+    'readonly',
+    (store) => store.getAll() as IDBRequest<Job[]>,
+  )
+
+  return all
+    .filter(isUnfinished)
+    .sort((a, b) => a.createdAt - b.createdAt)[0]
+}
+
+/** Deletes a job. */
+export async function remove(id: string): Promise<void> {
+  await withStore('readwrite', (store) => store.delete(id))
+}
+
+/**
  * Drops jobs older than {@link RETENTION_MS}. Exports are megabytes each, and
  * keeping them all would get the whole database evicted, recent ones included.
  */
@@ -198,7 +204,7 @@ async function cleanup(): Promise<void> {
     const stale = all.filter((job) => job.createdAt < cutoff)
 
     for (const job of stale) {
-      await withStore('readwrite', (store) => store.delete(job.id))
+      await remove(job.id)
     }
   } catch (_) {
     // Cleanup is opportunistic; a failure here must not break an export.
