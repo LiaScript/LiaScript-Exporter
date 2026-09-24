@@ -89,6 +89,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   initializeForm()
   initializeExportSelection()
   initializeFormatDescription()
+  initializeFormatNotices()
   initializePresetDescription()
   checkForUpdates()
 })
@@ -863,6 +864,84 @@ function initializeFormatDescription() {
     })
   })
 }
+/**
+ * Notices the standalone build attaches to some formats: a badge on the tile
+ * and a callout under the description while the format is selected. The server
+ * and Electron app export every format without limits, so they show none.
+ */
+const FORMAT_NOTICES = {
+  unavailable: {
+    link: 'https://github.com/LiaScript/LiaScript-Exporter#docker-android-export',
+    fallback: {
+      badge: 'Docker only',
+      text: 'This format cannot be exported in the browser. Use the Docker image instead.',
+      link: 'Docker instructions',
+    },
+  },
+  largeCourses: {
+    link: 'https://github.com/LiaScript/LiaScript-Exporter/releases',
+    fallback: {
+      badge: 'Large courses',
+      text: 'For very large courses we recommend the desktop app — the browser may run out of memory.',
+      link: 'Download the desktop app',
+    },
+  },
+}
+
+function initializeFormatNotices() {
+  if (!hasLocalExporter() || !window.LiaExporter.formatNotice) return
+
+  const t = (key, fallback) =>
+    window.i18n ? window.i18n.t(key, fallback) : fallback
+
+  // Translated now and again on language change via data-i18n
+  const translated = (tag, key, fallback) => {
+    const element = document.createElement(tag)
+    element.dataset.i18n = key
+    element.textContent = t(key, fallback)
+    return element
+  }
+
+  const descriptionBox = document.getElementById('format-description')
+  const callout = document.createElement('div')
+  callout.className = 'format-notice'
+  callout.hidden = true
+  descriptionBox.appendChild(callout)
+
+  document.querySelectorAll('input[name="format"]').forEach((radio) => {
+    const kind = window.LiaExporter.formatNotice(radio.value)
+
+    if (!kind) {
+      radio.addEventListener('change', () => (callout.hidden = true))
+      return
+    }
+
+    const notice = FORMAT_NOTICES[kind]
+    const key = `formats.notice.${kind}`
+    const tile = radio.closest('.preset-tile')
+
+    tile.classList.add(`format-${kind}`)
+    const badge = translated('span', `${key}.badge`, notice.fallback.badge)
+    badge.className = 'format-badge'
+    tile.appendChild(badge)
+
+    radio.addEventListener('change', () => {
+      const link = translated('a', `${key}.link`, notice.fallback.link)
+      link.href = notice.link
+      link.target = '_blank'
+      link.rel = 'noopener'
+
+      callout.className = `format-notice format-notice--${kind}`
+      callout.replaceChildren(
+        translated('span', `${key}.text`, notice.fallback.text),
+        ' ',
+        link,
+      )
+      callout.hidden = false
+    })
+  })
+}
+
 // Pick the right language from a preset description object {de: '...', en: '...'}
 function getPresetDescription(descriptionData) {
   if (!descriptionData) return ''

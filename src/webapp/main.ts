@@ -72,6 +72,9 @@ const SUPPORTED = new Set([
   'epub',
 ])
 
+/** Formats rendered as one document in memory; big courses strain the tab. */
+const IN_MEMORY = new Set(['pdf', 'docx', 'epub'])
+
 /**
  * Jobs this tab is running, so the status page's poll does not export twice.
  * Per tab, since a record could not be cleared when its tab goes away.
@@ -190,6 +193,17 @@ const LiaExporter = {
   /** Formats this build can handle, for greying out the rest. */
   supports(format: string): boolean {
     return SUPPORTED.has(format)
+  },
+
+  /**
+   * What the UI should say about a format beyond its description:
+   * `unavailable` when it cannot run here, `largeCourses` when it builds the
+   * whole document in memory and a big course may exhaust the tab.
+   */
+  formatNotice(format: string): 'unavailable' | 'largeCourses' | null {
+    if (!SUPPORTED.has(format)) return 'unavailable'
+    if (IN_MEMORY.has(format)) return 'largeCourses'
+    return null
   },
 
   /**
