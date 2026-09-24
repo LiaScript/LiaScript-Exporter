@@ -12,8 +12,8 @@
  * 5 MB, while a `web` export alone is 6.4 MB.
  */
 
-import { Course } from './index'
-import { PrintJob } from './pdf'
+import { Course } from './export'
+import { PrintJob } from './formats/pdf'
 
 const DB_NAME = 'liaex'
 const DB_VERSION = 1

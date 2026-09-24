@@ -5,8 +5,8 @@ import { Arguments } from '../parser'
 import { Exporter } from '../exporter'
 import { useHttpsSchemaOrg } from '../export/rdf'
 import { AssetLoader, SCORM_SCHEMA_ROOT } from './assets'
-import { prepare as preparePrint, PrintJob } from './pdf'
-import * as epub from './epub'
+import { prepare as preparePrint, PrintJob } from './formats/pdf'
+import * as epub from './formats/epub'
 
 useHttpsSchemaOrg()
 
@@ -57,7 +57,7 @@ export async function exportCourse(
   // so they run outside the Exporter and return bytes directly — there is no
   // store for `collect` to find them in.
   if (format === 'docx') {
-    const { exporter: toDocx } = await import('./docx')
+    const { exporter: toDocx } = await import('./formats/docx')
 
     return {
       bytes: await toDocx(course.markdown, course.files, options, onProgress),

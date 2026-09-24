@@ -9,7 +9,7 @@
  * import; and a `url:` import of a `.js` file makes Parcel bundle it as code
  * rather than emit it as an asset, yielding an undefined URL.
  *
- * `src/webapp/docx.ts` loads it from this fixed `docx/` path.
+ * `src/webapp/formats/docx.ts` loads it from this fixed `docx/` path.
  *
  * Usage: node scripts/copy-webapp-docx.js <dist-dir>
  */

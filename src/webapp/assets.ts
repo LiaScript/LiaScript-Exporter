@@ -4,13 +4,13 @@ import { unzipSync } from 'fflate'
 import { MemoryFS } from '../fs/memory'
 import { ExportError } from './errors'
 
-import commonBundle from 'url:./static/assets/common.zip'
-import webBundle from 'url:./static/assets/web.zip'
-import xapiBundle from 'url:./static/assets/xapi.zip'
-import scorm12Bundle from 'url:./static/assets/scorm1.2.zip'
-import scorm2004Bundle from 'url:./static/assets/scorm2004.zip'
-import indexeddbBundle from 'url:./static/assets/indexeddb.zip'
-import scormSchemas from 'url:./static/assets/scorm-schemas.zip'
+import commonBundle from 'url:./generated/assets/common.zip'
+import webBundle from 'url:./generated/assets/web.zip'
+import xapiBundle from 'url:./generated/assets/xapi.zip'
+import scorm12Bundle from 'url:./generated/assets/scorm1.2.zip'
+import scorm2004Bundle from 'url:./generated/assets/scorm2004.zip'
+import indexeddbBundle from 'url:./generated/assets/indexeddb.zip'
+import scormSchemas from 'url:./generated/assets/scorm-schemas.zip'
 
 const BUNDLES: Record<string, string> = {
   common: commonBundle,

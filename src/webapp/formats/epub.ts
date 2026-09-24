@@ -3,7 +3,7 @@
 /**
  * Browser EPUB export.
  *
- * Mirrors [epub.ts](../export/epub.ts) without Puppeteer: the course is rendered
+ * Mirrors [epub.ts](../../export/epub.ts) without Puppeteer: the course is rendered
  * in an iframe ([render.ts](./render.ts)), scraped in place
  * ([extract.ts](./extract.ts)), rewritten into XHTML chapters here, and packaged
  * by [epub-builder.ts](./epub-builder.ts).
@@ -696,7 +696,7 @@ function chapters(body: HTMLElement): Chapter[] {
  * Packages images the course only links to.
  *
  * An EPUB is a sealed container, so a chapter pointing at `https://…` shows a
- * broken image offline. Mirrors the CLI's own pass ([epub.ts](../export/epub.ts),
+ * broken image offline. Mirrors the CLI's own pass ([epub.ts](../../export/epub.ts),
  * "Fetching external/URL-based images as data URIs"), with two differences: the
  * fetches are sequential, since a large course already peaks near the browser's
  * memory ceiling, and each one is given a timeout.

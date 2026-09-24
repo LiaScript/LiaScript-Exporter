@@ -10,24 +10,24 @@
  */
 
 import { toOptions } from '../export/options'
-import { exportCourse, download, Course } from './index'
+import { exportCourse, download, Course } from './export'
 import * as jobs from './jobs'
-import { print as printPdf } from './pdf'
-import { isZipFile, unpackZip } from './zip'
-import { fetchCourse } from './github'
+import { print as printPdf } from './formats/pdf'
+import { isZipFile, unpackZip } from './import/zip'
+import { fetchCourse } from './import/github'
 import { ExportError, translate } from './errors'
 
-import moodleLogo from 'url:./static/logos/moodle.svg'
-import scormLogo from 'url:./static/logos/scorm.png'
-import iliasLogo from 'url:./static/logos/ilias.png'
-import opalLogo from 'url:./static/logos/opal.png'
-import openolatLogo from 'url:./static/logos/openolat.png'
-import edxLogo from 'url:./static/logos/edx.svg'
-import learnworldsLogo from 'url:./static/logos/learnworlds.png'
+import moodleLogo from 'url:./generated/logos/moodle.svg'
+import scormLogo from 'url:./generated/logos/scorm.png'
+import iliasLogo from 'url:./generated/logos/ilias.png'
+import opalLogo from 'url:./generated/logos/opal.png'
+import openolatLogo from 'url:./generated/logos/openolat.png'
+import edxLogo from 'url:./generated/logos/edx.svg'
+import learnworldsLogo from 'url:./generated/logos/learnworlds.png'
 
 // Converted from presets.yaml by scripts/build-webapp-assets.js — neither the
 // YAML transformer nor the `yaml` library survives bundling.
-import presetsConfig from './static/presets.json'
+import presetsConfig from './generated/presets.json'
 
 // Locales are inlined for the same reason; i18n.js reads them off the global
 // rather than fetching `locales/<lang>.json`.

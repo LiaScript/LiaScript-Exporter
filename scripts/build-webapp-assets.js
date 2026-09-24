@@ -30,7 +30,7 @@ const ASSETS = path.join(__dirname, '..', 'dist', 'assets')
  * fallback rather than a 404 — so a stale `.zip` comes back as a page of HTML
  * and fails deep inside `unzipSync` as "invalid zip data".
  */
-const OUT = path.join(__dirname, '..', 'src', 'webapp', 'static', 'assets')
+const OUT = path.join(__dirname, '..', 'src', 'webapp', 'generated', 'assets')
 
 /** Collects every file under `dir` keyed by its path relative to `dir`. */
 function collect(dir, base = dir, into = {}) {
@@ -54,7 +54,7 @@ fs.mkdirSync(OUT, { recursive: true })
 // The UI fetches translations by path (see i18n.js), which Parcel does not
 // follow, so they are copied rather than bundled.
 const LOCALES_SRC = path.join(__dirname, '..', 'src', 'server', 'public', 'locales')
-const LOCALES_OUT = path.join(__dirname, '..', 'src', 'webapp', 'static', 'locales')
+const LOCALES_OUT = path.join(__dirname, '..', 'src', 'webapp', 'generated', 'locales')
 
 fs.mkdirSync(LOCALES_OUT, { recursive: true })
 
@@ -73,7 +73,7 @@ console.log(`locales    ${fs.readdirSync(LOCALES_SRC).length} files`)
 const YAML = require('yaml')
 
 const PRESETS_SRC = path.join(__dirname, '..', 'src', 'presets.yaml')
-const PRESETS_OUT = path.join(__dirname, '..', 'src', 'webapp', 'static', 'presets.json')
+const PRESETS_OUT = path.join(__dirname, '..', 'src', 'webapp', 'generated', 'presets.json')
 
 fs.writeFileSync(
   PRESETS_OUT,
@@ -85,7 +85,7 @@ console.log('presets    converted to presets.json')
 // Preset logos are named by presets.yaml data (`url: ../assets/moodle.svg`),
 // not by markup, so no bundler can find them; copied verbatim instead.
 const LOGOS_SRC = path.join(__dirname, '..', 'src', 'server', 'public', 'assets')
-const LOGOS_OUT = path.join(__dirname, '..', 'src', 'webapp', 'static', 'logos')
+const LOGOS_OUT = path.join(__dirname, '..', 'src', 'webapp', 'generated', 'logos')
 
 fs.mkdirSync(LOGOS_OUT, { recursive: true })
 

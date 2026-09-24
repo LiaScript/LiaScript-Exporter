@@ -4,7 +4,7 @@
  * Pulls rendered content out of a course document.
  *
  * The browser counterpart to the `page.evaluate` helpers in
- * [docx.ts](../export/docx.ts) and [epub.ts](../export/epub.ts). Those marshal
+ * [docx.ts](../../export/docx.ts) and [epub.ts](../../export/epub.ts). Those marshal
  * results through Puppeteer as JSON, tagging elements with `data-*-index`
  * attributes and rebuilding the mapping on the far side. Here the document is in
  * hand, so each helper returns a `Map` keyed by the same index — the tagging is
@@ -19,7 +19,7 @@
  *   document converter cannot render MathML and KaTeX's output is HTML, not SVG.
  */
 
-import * as path from '../fs/path'
+import * as path from '../../fs/path'
 
 /**
  * Whether a URL still resolves once the document leaves the app.

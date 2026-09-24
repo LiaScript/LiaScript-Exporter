@@ -7,7 +7,7 @@
  * Runs after Parcel, which owns the output directory and clears it. These files
  * bypass the bundler: the render lazy-loads ~550 siblings (ace modes, fonts,
  * workers) by relative name, and Parcel flattens and renames them, so they
- * would 404. `src/webapp/pdf.ts` points at this fixed `pdf/` path.
+ * would 404. `src/webapp/formats/pdf.ts` points at this fixed `pdf/` path.
  *
  * Usage: node scripts/copy-webapp-pdf.js <dist-dir>
  */

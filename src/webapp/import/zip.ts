@@ -4,7 +4,7 @@
  * Reading an uploaded course out of a ZIP archive.
  *
  * The browser counterpart to the server's
- * [zipExtractor](../server/utils/zipExtractor.ts): the server unpacks to a temp
+ * [zipExtractor](../../server/utils/zipExtractor.ts): the server unpacks to a temp
  * directory and hands the exporter a path, while here the entries stay in
  * memory and become the `files` map of a {@link Course}. The selection rules
  * are deliberately the same, so the same archive yields the same course either
@@ -12,7 +12,7 @@
  */
 
 import { unzipSync } from 'fflate'
-import { ExportError } from './errors'
+import { ExportError } from '../errors'
 
 /** Directories that never hold course content, skipped like the server does. */
 const SKIPPED_DIRECTORIES = ['node_modules', 'dist', 'build']

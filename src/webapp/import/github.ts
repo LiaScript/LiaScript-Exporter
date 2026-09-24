@@ -4,27 +4,27 @@
  * Importing a course straight from a GitHub repository.
  *
  * The browser counterpart to the server's `cloneGitRepo`
- * ([zipExtractor](../server/utils/zipExtractor.ts)). Cloning is impossible
+ * ([zipExtractor](../../server/utils/zipExtractor.ts)). Cloning is impossible
  * here — github.com's git-upload-pack sends no `Access-Control-Allow-Origin`,
  * and the only workaround is a third-party CORS proxy, which would route the
  * user's course through someone else's server. `api.github.com` and
  * `raw.githubusercontent.com` are both CORS-open, so fetching needs none.
  *
  * Downloads go through `raw`, not the blob API that
- * [LiveEditor](../../../LiveEditor/src/ts/GitHubRepo.ts) uses for its diffing:
+ * [LiveEditor](../../../../LiveEditor/src/ts/GitHubRepo.ts) uses for its diffing:
  * blobs are billed one request *per file* against the 60-per-hour anonymous
  * quota (48 of 60 for one import of `LiaScript/docs`), raw is not billed at
  * all. So an import costs exactly one request — the tree call.
  */
 
-import { ExportError } from './errors'
+import { ExportError } from '../errors'
 
 const API = 'https://api.github.com'
 const RAW = 'https://raw.githubusercontent.com'
 
 /**
  * Size ceilings, matching the service's own upload limit
- * ([server.ts](../server/server.ts) `limits.fileSize`). 100 MB is also GitHub's
+ * ([server.ts](../../server/server.ts) `limits.fileSize`). 100 MB is also GitHub's
  * hard blob ceiling, so the per-file cap can never reject a real file.
  */
 const MAX_FILE_BYTES = 100 * 1024 * 1024

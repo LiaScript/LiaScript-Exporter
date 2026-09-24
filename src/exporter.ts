@@ -36,7 +36,7 @@ import * as fsPath from './fs/path'
  * "Server only" is about this module graph, not what the browser can produce:
  * `pdf` also renders in a print tab, returning from `exportCourse` before the
  * `Exporter` is built, so the `PDF` branches below stay Node's.
- * @see [src/webapp/pdf.ts](./webapp/pdf.ts)
+ * @see [src/webapp/formats/pdf.ts](./webapp/formats/pdf.ts)
  *
  * @see registerServerExporters, called by [src/index.ts](./index.ts)
  */

@@ -3,7 +3,7 @@
 /**
  * Browser DOCX export.
  *
- * Mirrors [docx.ts](../export/docx.ts) without Puppeteer: the course is rendered
+ * Mirrors [docx.ts](../../export/docx.ts) without Puppeteer: the course is rendered
  * in an iframe ([render.ts](./render.ts)), scraped in place
  * ([extract.ts](./extract.ts)), rewritten into document-shaped HTML here, and
  * handed to `@turbodocx/html-to-docx`, which builds the OOXML zip in memory.
