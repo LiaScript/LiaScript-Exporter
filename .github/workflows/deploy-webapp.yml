@@ -1,0 +1,80 @@
+name: Deploy Web App to GitHub Pages
+
+on:
+    push:
+        tags:
+            - "*.*.*"
+    workflow_dispatch:
+
+permissions:
+    contents: read
+    pages: write
+    id-token: write
+
+# One deployment at a time; a newer push supersedes a queued one, but a running
+# deployment is allowed to finish.
+concurrency:
+    group: pages
+    cancel-in-progress: false
+
+jobs:
+    build:
+        name: Build web app
+        runs-on: ubuntu-latest
+
+        env:
+            # The web app needs neither; skipping saves two large downloads.
+            PUPPETEER_SKIP_DOWNLOAD: "true"
+            ELECTRON_SKIP_BINARY_DOWNLOAD: "1"
+
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v4
+
+            # The format assets under dist/assets/ are committed, but the
+            # exporter itself imports LiaScript's Worker.elm, so the submodule
+            # and its Elm toolchain are still required.
+            - name: Initialize LiaScript submodule
+              run: git submodule update --init --recursive LiaScript
+
+            - name: Setup Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: "24"
+                  cache: "npm"
+
+            - name: Install dependencies
+              run: npm ci --allow-git=all
+
+            - name: Set ELM_HOME
+              run: echo "ELM_HOME=${GITHUB_WORKSPACE}/.elm" >> $GITHUB_ENV
+
+            - name: Build LiaScript prebuild and apply Elm patches
+              run: |
+                  cd LiaScript
+                  npm install --allow-git=all
+                  npm run prebuild
+                  make -C patches/elm-patch ELM_HOME=${ELM_HOME} || echo "Patches already applied or skipped"
+                  rm -rf elm-stuff .parcel-cache
+
+            - name: Build web app
+              run: npm run webapp:build
+
+            - name: Upload Pages artifact
+              uses: actions/upload-pages-artifact@v3
+              with:
+                  path: dist/webapp/build
+
+    deploy:
+        name: Deploy to GitHub Pages
+        needs: build
+        runs-on: ubuntu-latest
+
+        environment:
+            name: github-pages
+            url: ${{ steps.deployment.outputs.page_url }}
+
+        steps:
+            - name: Deploy
+              id: deployment
+              uses: actions/deploy-pages@v4
