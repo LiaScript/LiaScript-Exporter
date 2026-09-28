@@ -37,11 +37,40 @@ const SHARED_REWRITES = [
   ['src="./assets/icon.svg"', 'src="../../server/public/assets/icon.svg"'],
 ]
 
+/** Where the web app is published — see .github/workflows/deploy-webapp.yml. */
+const SITE_URL = 'https://liascript.github.io/LiaScript-Exporter/'
+
+const DESCRIPTION =
+  'Export LiaScript courses to SCORM, IMS, xAPI, PDF, ePub, DOCX and more — ' +
+  'directly in your browser, no installation, your course never leaves your device.'
+
+/*
+ * Search and link-preview tags. Web app only: they name the public URL, which
+ * would be wrong on a local server. The preview image is absolute, as link
+ * previews require, so it points at the repository rather than at a file
+ * Parcel would rename.
+ */
+const SEO_TAGS = [
+  `    <meta name="description" content="${DESCRIPTION}" />`,
+  `    <link rel="canonical" href="${SITE_URL}" />`,
+  '    <meta property="og:type" content="website" />',
+  '    <meta property="og:site_name" content="LiaScript" />',
+  '    <meta property="og:title" content="LiaScript Exporter" />',
+  `    <meta property="og:description" content="${DESCRIPTION}" />`,
+  `    <meta property="og:url" content="${SITE_URL}" />`,
+  '    <meta property="og:image" content="https://raw.githubusercontent.com/LiaScript/LiaScript-Exporter/master/electron/build/icons/512x512.png" />',
+  '    <meta name="twitter:card" content="summary" />',
+].join('\n')
+
 const PAGES = [
   {
     file: 'index.html',
     rewrites: [
       ...SHARED_REWRITES,
+      [
+        '    <title>LiaScript Exporter</title>',
+        `    <title>LiaScript Exporter</title>\n${SEO_TAGS}`,
+      ],
       [
         '    <script src="app.js"></script>',
         `${EXPORTER_SCRIPT}\n    <script src="../../server/public/app.js"></script>`,
@@ -52,6 +81,11 @@ const PAGES = [
     file: 'status.html',
     rewrites: [
       ...SHARED_REWRITES,
+      // One page per export job; nothing a search engine should list.
+      [
+        '    <title>Export Status - LiaScript Exporter</title>',
+        '    <title>Export Status - LiaScript Exporter</title>\n    <meta name="robots" content="noindex" />',
+      ],
       // status.html has no app.js; the bundle goes before its inline script.
       ['    <script>', `${EXPORTER_SCRIPT}\n    <script>`],
     ],
@@ -68,6 +102,8 @@ for (const page of PAGES) {
   // clamps that to the root so it works on the server by accident, but a
   // bundler resolves it literally and fails.
   html = html.split('"../assets/').join('"../../server/public/assets/')
+  // Favicons, which every page links.
+  html = html.split('href="./assets/').join('href="../../server/public/assets/')
 
   for (const [from, to] of page.rewrites) {
     if (!html.includes(from)) {
