@@ -1,7 +1,7 @@
 import * as helper from './helper'
 import * as RDF from './rdf'
-import * as path from 'path'
-import * as fs from 'fs-extra'
+import * as path from '../fs/path'
+import type { ExportFS } from '../fs/types'
 
 // Constants
 const HTML_FILE = 'index.html'
@@ -20,6 +20,8 @@ export interface WebExportArguments {
   path: string
   key?: string
   style?: string
+  /** Storage backing; supplied by the CLI or the browser host. */
+  fs?: ExportFS
   'web-iframe'?: boolean
   'web-indexeddb'?: boolean | string
   'web-zip'?: boolean
@@ -66,28 +68,29 @@ export async function exporter(
 ): Promise<void> {
   const errors: ExportError[] = []
   let tempPath: string | null = null
+  const fs = argument.fs!
 
   try {
     // make temp folder
-    const tmp = (await helper.tmpDir()) as string
-    const dirname = helper.dirname()
+    const tmp = await fs.tmpDir()
     tempPath = path.join(tmp, TEMP_FOLDER_NAME)
 
     // Copy assets to temp
-    await copyAssets(dirname, tempPath, argument['web-indexeddb'])
+    await copyAssets(fs, tempPath, argument['web-indexeddb'])
 
     // Copy base path or readme-directory into temp
     await fs.copy(argument.path, tempPath)
 
     // Rename the readme if necessary and update argument
     const readmePath = await handleReadmeRename(
+      fs,
       tempPath,
       argument.readme,
       argument['web-indexeddb'],
     )
 
     // Read and process index.html
-    let indexContent = await fs.readFile(path.join(tempPath, HTML_FILE), 'utf8')
+    let indexContent = await fs.readFile(path.join(tempPath, HTML_FILE))
 
     // Inject ResponsiveVoice key if provided
     if (argument.key) {
@@ -105,6 +108,7 @@ export async function exporter(
 
     // Write final output
     await writeOutput(
+      fs,
       tempPath,
       indexContent,
       readmePath,
@@ -114,7 +118,7 @@ export async function exporter(
     )
 
     // Move or zip the output
-    await finalizeOutput(tempPath, argument)
+    await finalizeOutput(fs, tempPath, argument)
 
     // Report any non-critical errors
     if (errors.length > 0) {
@@ -144,14 +148,15 @@ export async function exporter(
  * Copy required assets to the temporary directory
  */
 async function copyAssets(
-  dirname: string,
+  fs: ExportFS,
   tmpPath: string,
   useIndexedDB?: boolean | string,
 ): Promise<void> {
   const assetsDir = useIndexedDB ? './assets/indexeddb' : './assets/web'
+  const root = fs.assetRoot()
 
-  await fs.copy(path.join(dirname, assetsDir), tmpPath)
-  await fs.copy(path.join(dirname, './assets/common'), tmpPath)
+  await fs.copy(path.join(root, assetsDir), tmpPath)
+  await fs.copy(path.join(root, './assets/common'), tmpPath)
 }
 
 /**
@@ -159,6 +164,7 @@ async function copyAssets(
  * @returns The final readme path (relative or renamed)
  */
 async function handleReadmeRename(
+  fs: ExportFS,
   tmpPath: string,
   readmePath: string,
   webIndexedDB?: boolean | string,
@@ -253,6 +259,7 @@ function updateMetadata(
  * Write the final output (iframe or regular)
  */
 async function writeOutput(
+  fs: ExportFS,
   tmpPath: string,
   indexContent: string,
   readmePath: string,
@@ -262,8 +269,9 @@ async function writeOutput(
 ): Promise<void> {
   try {
     if (argument['web-iframe']) {
-      await helper.writeFile(path.join(tmpPath, START_HTML_FILE), indexContent)
+      await fs.writeFile(path.join(tmpPath, START_HTML_FILE), indexContent)
       await helper.iframe(
+        fs,
         tmpPath,
         HTML_FILE,
         readmePath,
@@ -275,7 +283,7 @@ async function writeOutput(
       indexContent = helper.inject(jsonLD, indexContent)
       indexContent = helper.prettify(indexContent)
 
-      await helper.writeFile(path.join(tmpPath, HTML_FILE), indexContent)
+      await fs.writeFile(path.join(tmpPath, HTML_FILE), indexContent)
     }
   } catch (error) {
     errors.push({ step: 'Write output', error, critical: true })
@@ -287,19 +295,20 @@ async function writeOutput(
  * Finalize output by creating zip or moving directory
  */
 async function finalizeOutput(
+  fs: ExportFS,
   tmpPath: string,
   argument: WebExportArguments,
 ): Promise<void> {
   if (argument['web-zip']) {
-    await helper.zip(tmpPath, argument.output)
+    await fs.writeZip(tmpPath, argument.output)
   } else {
     // Ensure output directory exists before copying
     await fs.ensureDir(argument.output)
 
-    // Copy with filter, then remove temp
+    // Copy with filter, then remove temp. Both backings overwrite by default,
+    // which is what the previous explicit `overwrite: true` asked for.
     await fs.copy(tmpPath, argument.output, {
       filter: helper.filterHidden(tmpPath),
-      overwrite: true,
     })
     await fs.remove(tmpPath)
   }

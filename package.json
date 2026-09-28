@@ -26,6 +26,12 @@
     "__preinstall": "cd LiaScript && npm i --allow-git=all && npm run build:scorm1.2 && cp -r dist ../assets/scorm1.2",
     "build:assets": "npm run clean && npm run asset:scorm1.2 && npm run asset:scorm2004 && npm run asset:xapi && npm run asset:web && npm run asset:indexeddb && npm run asset:pdf && npm run asset:capacitor && npm run asset:logo && npm run fix:file",
     "build:docker": "docker build -t liascript/exporter:latest .",
+    "webapp:assets": "node scripts/build-webapp-assets.js",
+    "webapp:html": "node scripts/build-webapp-html.js",
+    "webapp:pdf": "node scripts/copy-webapp-pdf.js",
+    "webapp:docx": "node scripts/copy-webapp-docx.js",
+    "webapp:dev": "rm -rf dist/webapp/dev && npm run webapp:assets && npm run webapp:html && npm run webapp:pdf dist/webapp/dev && npm run webapp:docx dist/webapp/dev && npx parcel serve --target webapp --dist-dir dist/webapp/dev --port 1234",
+    "webapp:build": "rm -rf dist/webapp/build && npm run webapp:assets && npm run webapp:html && npx parcel build --target webapp --dist-dir dist/webapp/build --public-url ./ && npm run webapp:pdf dist/webapp/build && npm run webapp:docx dist/webapp/build",
     "clean": "rm -rf dist/assets/*",
     "asset:logo": "cp -r LiaScript/resources dist",
     "asset:web": "cd LiaScript && npm i --allow-git=all && npm run build:base && cp -r dist ../dist/assets/web",
@@ -70,13 +76,15 @@
     "@fastify/multipart": "^8.1.0",
     "@fastify/static": "^7.0.1",
     "@lesjoursfr/html-to-epub": "^6.0.1",
-    "@liascript/simple-scorm-packager": "^0.3.0",
+    "@liascript/simple-scorm-packager": "^0.3.1",
     "@turbodocx/html-to-docx": "^1.20.1",
     "archiver": "^7.0.1",
     "electron-updater": "^6.8.9",
     "epub-gen": "^0.1.0",
     "fastify": "^4.26.0",
+    "fflate": "^0.8.3",
     "fs-extra": "^11.3.3",
+    "html2canvas": "^1.4.1",
     "isomorphic-git": "^1.38.4",
     "jsonld": "^9.0.0",
     "minimist": "^1.2.5",
@@ -95,14 +103,28 @@
   },
   "devDependencies": {
     "@parcel/transformer-elm": "^2.16.3",
+    "@parcel/transformer-inline-string": "^2.16.3",
+    "@parcel/transformer-yaml": "^2.16.3",
     "@types/fs-extra": "^11.0.4",
     "@types/node": "^20.19.27",
     "@types/temp": "^0.9.1",
     "@types/unzipper": "^0.10.11",
+    "assert": "^2.1.0",
+    "browserify-zlib": "^0.2.0",
+    "constants-browserify": "^1.0.0",
+    "crypto-browserify": "^3.12.1",
     "electron": "^30.5.1",
     "electron-builder": "^24.9.1",
     "elm": "^0.19.1-6",
-    "parcel": "^2.16.3"
+    "https-browserify": "^1.0.0",
+    "os-browserify": "^0.3.0",
+    "parcel": "^2.16.3",
+    "path-browserify": "^1.0.1",
+    "stream-browserify": "^3.0.0",
+    "stream-http": "^3.2.0",
+    "url": "^0.11.4",
+    "util": "^0.12.5",
+    "vm-browserify": "^1.1.2"
   },
   "puppeteer": {
     "chrome-headless-shell": {
@@ -116,6 +138,13 @@
     "main": {
       "context": "node",
       "optimize": true
+    },
+    "webapp": {
+      "source": [
+        "src/webapp/generated/index.html",
+        "src/webapp/generated/status.html"
+      ],
+      "context": "browser"
     }
   },
   "allowScripts": {

@@ -1,9 +1,24 @@
 import * as helper from './helper'
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const jsonld = require('jsonld')
-import * as fs from 'fs-extra'
-import fetch from 'node-fetch'
 import * as COLOR from '../colorize'
+import type { ExportFS } from '../fs/types'
+
+/**
+ * Loads schema.org contexts over https.
+ *
+ * `jsonld.compact` dereferences `http://schema.org/` at runtime, which a
+ * browser blocks: the redirect to https carries no CORS header, and an https
+ * page may not fetch plain http anyway. The https endpoint does send
+ * `Access-Control-Allow-Origin: *`, so only the scheme needs changing — the
+ * output keeps `http://schema.org/` as its `@context`, same as the CLI.
+ */
+export function useHttpsSchemaOrg(): void {
+  const fallback = jsonld.documentLoader
+
+  jsonld.documentLoader = (url: string) =>
+    fallback(url.replace(/^http:\/\/schema\.org(?=\/|$)/, 'https://schema.org'))
+}
 
 // Type definitions
 export interface RDFArguments {
@@ -14,6 +29,8 @@ export interface RDFArguments {
   path: string
   key?: string
   style?: string
+  /** Storage backing; supplied by the CLI or the browser host. */
+  fs?: ExportFS
   'rdf-format'?: string
   'rdf-preview'?: string
   'rdf-url'?: string
@@ -32,6 +49,14 @@ interface LiaDefinition {
   macro?: {
     comment?: string
     tags?: string
+  }
+}
+
+/** The parts of the Elm parser's JSON output that the RDF export reads. */
+interface LiaJSON {
+  lia: {
+    str_title: string
+    definition: LiaDefinition
   }
 }
 
@@ -142,6 +167,8 @@ export async function exporter(
   argument: RDFArguments,
   json: any,
 ): Promise<void> {
+  const fs = argument.fs!
+
   try {
     let doc = await parse(argument, json)
 
@@ -220,10 +247,14 @@ export async function compact(doc: SchemaDoc): Promise<SchemaDoc> {
 
 /**
  * Loads and expands a template from a URL or local file.
+ * @param fs Storage backing used to read a local template
  * @param templatePath URL or file path to the template
  * @returns Expanded JSON-LD document or empty object if template is not provided
  */
-async function loadTemplate(templatePath?: string): Promise<SchemaDoc> {
+async function loadTemplate(
+  fs: ExportFS,
+  templatePath?: string,
+): Promise<SchemaDoc> {
   if (!templatePath) {
     return {}
   }
@@ -232,13 +263,13 @@ async function loadTemplate(templatePath?: string): Promise<SchemaDoc> {
     let data: any
 
     if (helper.isURL(templatePath)) {
-      const resp = await fetch(templatePath, {})
+      const resp = await helper.fetch(templatePath, {})
       if (!resp.ok) {
         throw new Error(`Failed to fetch template: ${resp.statusText}`)
       }
       data = await resp.json()
     } else {
-      const fileContent = await fs.readFile(templatePath, 'utf8')
+      const fileContent = await fs.readFile(templatePath)
       data = JSON.parse(fileContent)
     }
 
@@ -346,11 +377,11 @@ async function enrichMetadata(
  */
 export async function parse(
   argument: RDFArguments,
-  json: string,
+  json: LiaJSON,
 ): Promise<SchemaDoc> {
   try {
     // Load template if provided
-    let doc = await loadTemplate(argument['rdf-template'])
+    let doc = await loadTemplate(argument.fs!, argument['rdf-template'])
 
     // Set core properties
     setCoreProperties(doc, json, argument['rdf-type'])

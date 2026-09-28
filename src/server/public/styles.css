@@ -415,6 +415,59 @@ header h1 {
   box-shadow: 0 0 0 3px rgba(20, 115, 117, 0.1);
 }
 
+/* Format notices of the standalone build (see initializeFormatNotices) */
+.format-badge {
+  position: absolute;
+  top: 0.3rem;
+  right: 0.4rem;
+  padding: 0.05rem 0.45rem;
+  border-radius: 999px;
+  font-size: 0.65rem;
+  font-weight: 600;
+  pointer-events: none;
+}
+
+.format-largeCourses .format-badge {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.format-unavailable .format-badge {
+  background: var(--border);
+  color: var(--secondary);
+}
+
+/* Still selectable, so its notice can explain why it cannot run here */
+.format-unavailable .preset-content > * {
+  filter: grayscale(1);
+  opacity: 0.45;
+}
+
+.format-notice {
+  margin-top: 0.75rem;
+  padding: 0.75rem 1rem;
+  border-left: 4px solid;
+  border-radius: 6px;
+  line-height: 1.5;
+}
+
+.format-notice--largeCourses {
+  background: #fffbeb;
+  border-color: #f59e0b;
+  color: #78350f;
+}
+
+.format-notice--unavailable {
+  background: #f1f5f9;
+  border-color: var(--secondary);
+  color: var(--text);
+}
+
+.format-notice a {
+  color: var(--turquoise);
+  font-weight: 600;
+}
+
 .preset-content h3 {
   font-size: 1rem;
   margin-bottom: 0.25rem;

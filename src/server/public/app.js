@@ -89,6 +89,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   initializeForm()
   initializeExportSelection()
   initializeFormatDescription()
+  initializeFormatNotices()
   initializePresetDescription()
   checkForUpdates()
 })
@@ -202,12 +203,35 @@ async function checkForUpdates() {
   }
 }
 
-// Load presets from server
+/**
+ * True when this page bundles the exporter and can export in the browser.
+ *
+ * The same UI is served by the export server, by the Electron app and as a
+ * static site. Only the static build loads `webapp.js`, which publishes
+ * `window.LiaExporter`; everywhere else these calls go to the API as before.
+ */
+function hasLocalExporter() {
+  return typeof window !== 'undefined' && !!window.LiaExporter
+}
+
+// Writes the submit button's label, leaving its icon in place.
+function setSubmitLabel(message) {
+  const submitBtn = document.getElementById('submitBtn')
+  const label = submitBtn && submitBtn.querySelector('span')
+
+  if (label) label.textContent = message
+}
+
+// Load presets, from the bundle when running standalone, else from the server
 async function loadPresets() {
   try {
-    const response = await fetch('/api/presets')
-    const data = await response.json()
-    presetsConfig = data.presets
+    if (hasLocalExporter()) {
+      presetsConfig = window.LiaExporter.presets()
+    } else {
+      const response = await fetch('/api/presets')
+      const data = await response.json()
+      presetsConfig = data.presets
+    }
     renderPresets()
   } catch (error) {
     console.error('Failed to load presets:', error)
@@ -636,11 +660,11 @@ function initializeForm() {
       }
     }
 
-    // Disable submit button
+    // Disable submit button. Only its label is written.
     submitBtn.disabled = true
-    submitBtn.textContent = window.i18n
-      ? window.i18n.t('submit.starting')
-      : 'Starting export...'
+    setSubmitLabel(
+      window.i18n ? window.i18n.t('submit.starting') : 'Starting export...',
+    )
 
     try {
       const formData = new FormData()
@@ -697,23 +721,43 @@ function initializeForm() {
         }
       }
 
-      // Submit to API
-      const response = await fetch('/api/export', {
-        method: 'POST',
-        body: formData,
-      })
+      let result
 
-      if (!response.ok) {
-        const error = await response.json()
-        throw new Error(
-          error.error ||
-            (window.i18n
-              ? window.i18n.t('submit.errorFailed')
-              : 'Export failed'),
+      if (hasLocalExporter()) {
+        // Standalone build: the export runs in this tab against a local job
+        // record, returning the same shape the API does so the flow below is
+        // identical — confirmation, status page, then download.
+        let announced = false
+
+        result = await window.LiaExporter.exportFormData(
+          formData,
+          (message) => {
+            if (announced) return
+
+            announced = true
+            setSubmitLabel(message)
+          },
         )
+      } else {
+        // Submit to API
+        const response = await fetch('/api/export', {
+          method: 'POST',
+          body: formData,
+        })
+
+        if (!response.ok) {
+          const error = await response.json()
+          throw new Error(
+            error.error ||
+              (window.i18n
+                ? window.i18n.t('submit.errorFailed')
+                : 'Export failed'),
+          )
+        }
+
+        result = await response.json()
       }
 
-      const result = await response.json()
       showConfirmation(result)
 
       // Reset form
@@ -721,54 +765,85 @@ function initializeForm() {
       selectedFiles = []
       updateFileList()
     } catch (error) {
+      // Needs a link to the blocking job, which alert() cannot carry.
+      if (error && error.key === 'submit.busy') {
+        showBusy(error)
+        return
+      }
+
+      // The standalone exporter translates its own errors; anything else has
+      // only the message it came with.
+      const detail =
+        window.LiaExporter && window.LiaExporter.message
+          ? window.LiaExporter.message(error)
+          : error.message
+
       alert(
         (window.i18n
           ? window.i18n.t('submit.errorCreating')
-          : 'Error creating export: ') + error.message,
+          : 'Error creating export: ') + detail,
       )
     } finally {
       submitBtn.disabled = false
-      submitBtn.innerHTML = `
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-          <polyline points="7 10 12 15 17 10"></polyline>
-          <line x1="12" y1="15" x2="12" y2="3"></line>
-        </svg>
-        ${window.i18n ? window.i18n.t('submit.button') : 'Start Export'}
-      `
+      setSubmitLabel(
+        window.i18n ? window.i18n.t('submit.button') : 'Start Export',
+      )
     }
   })
 }
 
 // Show confirmation modal
 function showConfirmation(result) {
-  // Save job ID to localStorage
-  localStorage.setItem('lastJobId', result.jobId)
-
-  const modal = document.getElementById('confirmationModal')
-  const details = document.getElementById('confirmationDetails')
-  const statusLink = document.getElementById('statusLink')
-  const closeBtn = document.getElementById('closeModal')
-
-  details.innerHTML = `
+  openModal(
+    'modal.title',
+    'Export Started',
+    `
     <p><strong>${window.i18n ? window.i18n.t('modal.jobId') : 'Job ID'}:</strong> ${result.jobId}</p>
     <p><strong>${window.i18n ? window.i18n.t('modal.queuePosition') : 'Position in queue'}:</strong> ${result.queuePosition}</p>
     <p class="success-message">${window.i18n ? window.i18n.t('modal.successMessage') : 'Your export has been successfully added to the queue.'}</p>
-  `
+  `,
+    result.jobId,
+  )
+}
 
-  statusLink.href = `/status.html?jobId=${result.jobId}`
+/** Explains a refused submission, linking to the job that blocks it. */
+function showBusy(error) {
+  openModal(
+    'submit.busyTitle',
+    'Export Already in Progress',
+    `<p>${escapeHtml(window.LiaExporter.message(error))}</p>`,
+    error.params.jobId,
+  )
+}
+
+/** Opens the modal with a title, a body, and a status link to `jobId`. */
+function openModal(titleKey, titleFallback, html, jobId) {
+  localStorage.setItem('lastJobId', jobId)
+
+  const modal = document.getElementById('confirmationModal')
+  const title = modal.querySelector('h2')
+
+  // data-i18n too, so a language switch keeps this title.
+  title.setAttribute('data-i18n', titleKey)
+  title.textContent = window.i18n ? window.i18n.t(titleKey) : titleFallback
+
+  document.getElementById('confirmationDetails').innerHTML = html
+
+  // Relative, so this also works when served under a sub-path.
+  document.getElementById('statusLink').href = `status.html?jobId=${jobId}`
 
   modal.classList.remove('hidden')
 
-  closeBtn.addEventListener('click', () => {
+  // Assigned, not added, so reopening does not stack handlers.
+  document.getElementById('closeModal').onclick = () => {
     modal.classList.add('hidden')
-  })
+  }
 
-  modal.addEventListener('click', (e) => {
+  modal.onclick = (e) => {
     if (e.target === modal) {
       modal.classList.add('hidden')
     }
-  })
+  }
 }
 
 // Format description display
@@ -789,6 +864,84 @@ function initializeFormatDescription() {
     })
   })
 }
+/**
+ * Notices the standalone build attaches to some formats: a badge on the tile
+ * and a callout under the description while the format is selected. The server
+ * and Electron app export every format without limits, so they show none.
+ */
+const FORMAT_NOTICES = {
+  unavailable: {
+    link: 'https://github.com/LiaScript/LiaScript-Exporter#docker-android-export',
+    fallback: {
+      badge: 'Docker only',
+      text: 'This format cannot be exported in the browser. Use the Docker image instead.',
+      link: 'Docker instructions',
+    },
+  },
+  largeCourses: {
+    link: 'https://github.com/LiaScript/LiaScript-Exporter/releases',
+    fallback: {
+      badge: 'Large courses',
+      text: 'For very large courses we recommend the desktop app — the browser may run out of memory.',
+      link: 'Download the desktop app',
+    },
+  },
+}
+
+function initializeFormatNotices() {
+  if (!hasLocalExporter() || !window.LiaExporter.formatNotice) return
+
+  const t = (key, fallback) =>
+    window.i18n ? window.i18n.t(key, fallback) : fallback
+
+  // Translated now and again on language change via data-i18n
+  const translated = (tag, key, fallback) => {
+    const element = document.createElement(tag)
+    element.dataset.i18n = key
+    element.textContent = t(key, fallback)
+    return element
+  }
+
+  const descriptionBox = document.getElementById('format-description')
+  const callout = document.createElement('div')
+  callout.className = 'format-notice'
+  callout.hidden = true
+  descriptionBox.appendChild(callout)
+
+  document.querySelectorAll('input[name="format"]').forEach((radio) => {
+    const kind = window.LiaExporter.formatNotice(radio.value)
+
+    if (!kind) {
+      radio.addEventListener('change', () => (callout.hidden = true))
+      return
+    }
+
+    const notice = FORMAT_NOTICES[kind]
+    const key = `formats.notice.${kind}`
+    const tile = radio.closest('.preset-tile')
+
+    tile.classList.add(`format-${kind}`)
+    const badge = translated('span', `${key}.badge`, notice.fallback.badge)
+    badge.className = 'format-badge'
+    tile.appendChild(badge)
+
+    radio.addEventListener('change', () => {
+      const link = translated('a', `${key}.link`, notice.fallback.link)
+      link.href = notice.link
+      link.target = '_blank'
+      link.rel = 'noopener'
+
+      callout.className = `format-notice format-notice--${kind}`
+      callout.replaceChildren(
+        translated('span', `${key}.text`, notice.fallback.text),
+        ' ',
+        link,
+      )
+      callout.hidden = false
+    })
+  })
+}
+
 // Pick the right language from a preset description object {de: '...', en: '...'}
 function getPresetDescription(descriptionData) {
   if (!descriptionData) return ''

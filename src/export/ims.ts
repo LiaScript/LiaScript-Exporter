@@ -1,9 +1,8 @@
 import * as helper from './helper'
 import * as RDF from './rdf'
 import * as COLOR from '../colorize'
-
-const path = require('path')
-const fs = require('fs-extra')
+import * as path from '../fs/path'
+import type { ExportFS } from '../fs/types'
 
 export function help() {
   console.log('')
@@ -56,6 +55,8 @@ export interface ImsExportArguments {
   path: string
   key?: string
   style?: string
+  /** Storage backing; supplied by the CLI or the browser host. */
+  fs?: ExportFS
   'ims-indexeddb'?: boolean
   'lia-subfolder'?: boolean
 }
@@ -67,10 +68,12 @@ export async function exporter(argument: ImsExportArguments, json: any) {
     json = JSON.parse(json)
   }
 
-  const dirname = helper.dirname()
+  const fs = argument.fs!
+
+  const dirname = fs.assetRoot()
 
   // make temp folder
-  let tmp = await helper.tmpDir()
+  let tmp = await fs.tmpDir()
 
   let tmpPath = path.join(tmp, 'pro')
   const contentPath = argument['lia-subfolder']
@@ -87,7 +90,7 @@ export async function exporter(argument: ImsExportArguments, json: any) {
   )
   await fs.copy(path.join(dirname, './assets/common'), tmpPath)
 
-  let index = fs.readFileSync(path.join(tmpPath, 'index.html'), 'utf8')
+  let index = await fs.readFile(path.join(tmpPath, 'index.html'))
 
   // change responsive key
   if (argument.key) {
@@ -95,13 +98,13 @@ export async function exporter(argument: ImsExportArguments, json: any) {
   }
 
   try {
-    await helper.writeFile(path.join(tmpPath, 'index.html'), index)
+    await fs.writeFile(path.join(tmpPath, 'index.html'), index)
   } catch (e) {
     console.warn(e)
     return
   }
 
-  await manifest(tmpPath, json.lia)
+  await manifest(fs, tmpPath, json.lia)
 
   // copy user course files into content/ (subfolder mode) or root
   await fs.copy(argument.path, contentPath, {
@@ -129,6 +132,7 @@ export async function exporter(argument: ImsExportArguments, json: any) {
     : argument.readme
 
   await helper.iframe(
+    fs,
     tmpPath,
     'start.html',
     iframeReadme,
@@ -136,10 +140,10 @@ export async function exporter(argument: ImsExportArguments, json: any) {
     argument.style,
   )
 
-  await helper.zip(tmpPath, argument.output)
+  await fs.writeZip(tmpPath, argument.output)
 }
 
-async function manifest(tmpPath: any, meta: any) {
+async function manifest(fs: ExportFS, tmpPath: string, meta: any) {
   let keywords = ''
 
   try {
@@ -152,7 +156,7 @@ async function manifest(tmpPath: any, meta: any) {
     }
   } catch (e) {}
 
-  await helper.writeFile(
+  await fs.writeFile(
     path.join(tmpPath, 'imsmanifest.xml'),
     `<manifest xmlns="http://www.imsglobal.org/xsd/imscp_v1p1" xmlns:imsmd="http://www.imsglobal.org/xsd/imsmd_v1p2"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"

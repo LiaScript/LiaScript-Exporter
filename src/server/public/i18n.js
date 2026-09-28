@@ -12,7 +12,15 @@ class I18n {
 
   async loadLanguage(lang) {
     try {
-      const response = await fetch(`/locales/${lang}.json`)
+      // The standalone build inlines its translations and publishes them as
+      // window.LiaLocales, so there is nothing to fetch.
+      if (window.LiaLocales && window.LiaLocales[lang]) {
+        this.translations[lang] = window.LiaLocales[lang]
+        return true
+      }
+
+      // Relative, so this also works when served under a sub-path.
+      const response = await fetch(`locales/${lang}.json`)
       if (!response.ok) {
         throw new Error(`Failed to load language file: ${lang}`)
       }
@@ -42,13 +50,20 @@ class I18n {
     this.updateDynamicContent()
   }
 
-  t(key, fallback = '') {
+  t(key, fallback = '', params = null) {
     const translation =
       this.translations[this.currentLanguage]?.[key] ||
       this.translations[this.fallbackLanguage]?.[key] ||
       fallback ||
       key
-    return translation
+
+    // An unknown `{name}` is left as written, so a mistyped placeholder is
+    // visible rather than silently blank.
+    if (!params) return translation
+
+    return translation.replace(/\{(\w+)\}/g, (whole, name) =>
+      name in params ? String(params[name]) : whole,
+    )
   }
 
   // Update all elements with data-i18n attribute

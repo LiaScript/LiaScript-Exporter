@@ -5,19 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Export Status - LiaScript Exporter</title>
 
-    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="styles.css" />
     
-    <script src="/i18n.js"></script>
+    <script src="i18n.js"></script>
   </head>
   <body>
     <nav class="navbar">
       <div class="navbar-container">
-        <a href="/" class="navbar-brand">
+        <a href="./" class="navbar-brand">
           <img src="./assets/icon.svg" alt="LiaScript" />
         </a>
         <ul class="navbar-menu">
-          <li><a href="/" class="navbar-link" data-i18n="nav.home">Home</a></li>
-          <li><a href="/status.html" class="navbar-link active" data-i18n="nav.status">Status</a></li>
+          <li><a href="./" class="navbar-link" data-i18n="nav.home">Home</a></li>
+          <li><a href="status.html" class="navbar-link active" data-i18n="nav.status">Status</a></li>
           <li class="language-selector-container">
             <select id="language-selector" class="language-selector">
               <option value="en">EN</option>
@@ -45,7 +45,7 @@
         </section>
 
         <div style="text-align: center; margin-top: 2rem">
-          <a href="/" class="btn-secondary" data-i18n="status.backHome">Back to Home</a>
+          <a href="./" class="btn-secondary" data-i18n="status.backHome">Back to Home</a>
         </div>
       </main>
 
@@ -80,39 +80,111 @@
           const lastJobId = localStorage.getItem('lastJobId')
           if (lastJobId) {
             jobId = lastJobId
-            window.history.replaceState({}, '', `/status.html?jobId=${jobId}`)
+            window.history.replaceState({}, '', `status.html?jobId=${jobId}`)
             loadStatus()
             refreshInterval = setInterval(loadStatus, 3000)
           } else {
-            // No job found
-            document.getElementById('statusContent').innerHTML = `
-              <div style="text-align: center; padding: 3rem 1rem;">
-                <p style="color: var(--text-muted); margin-bottom: 1rem;" data-i18n="status.noExport">No export found</p>
-                <p style="color: var(--text-muted); font-size: 0.9rem;" data-i18n="status.noExportMessage">Start a new export on the home page.</p>
-              </div>
-            `
-            // Re-translate the new content
-            if (window.i18n) {
-              window.i18n.updatePageTranslations()
-            }
-            document.getElementById('refreshInfo').style.display = 'none'
+            showNoExport()
           }
         }
       }
 
+      function showNoExport() {
+        document.getElementById('statusContent').innerHTML = `
+          <div style="text-align: center; padding: 3rem 1rem;">
+            <p style="color: var(--text-muted); margin-bottom: 1rem;" data-i18n="status.noExport">No export found</p>
+            <p style="color: var(--text-muted); font-size: 0.9rem;" data-i18n="status.noExportMessage">Start a new export on the home page.</p>
+          </div>
+        `
+        // Re-translate the new content
+        if (window.i18n) {
+          window.i18n.updatePageTranslations()
+        }
+        document.getElementById('refreshInfo').style.display = 'none'
+      }
+
       initializeStatus()
 
+      /**
+       * Reads the job from the standalone build's local record, shaped like the
+       * export service's /api/job response so displayStatus needs no branch.
+       *
+       * Jobs live in IndexedDB, so they survive the navigation here and a
+       * reload; they are dropped after a day (see src/webapp/jobs.ts).
+       */
+      async function localJob() {
+        const job = await window.LiaExporter.job(jobId)
+
+        if (!job) {
+          throw new Error(window.i18n ? window.i18n.t('status.error') : 'Job not found')
+        }
+
+        return {
+          queuePosition: 0,
+          job: {
+            id: job.id,
+            status: job.status === 'queued' ? 'processing' : job.status,
+            error: job.error,
+            progress: job.progress,
+            createdAt: job.createdAt,
+            startedAt: job.createdAt,
+            completedAt: job.completedAt,
+            source: { type: 'upload', files: new Array(job.fileCount) },
+            target: { format: job.format, preset: job.preset },
+            // Ends at the print dialog rather than a download. The export
+            // service renders with Puppeteer and returns a real .pdf, so its
+            // own records never carry this.
+            print: !!job.print,
+          },
+        }
+      }
+
+      /** Reads the job from the export service. */
+      async function remoteJob() {
+        const response = await fetch(`api/job/${jobId}`)
+
+        if (!response.ok) {
+          throw new Error(window.i18n ? window.i18n.t('status.error') : 'Job not found')
+        }
+
+        return response.json()
+      }
+
       async function loadStatus() {
+        // Discarded: do not redraw over the empty state.
+        if (!jobId) return
+
         try {
-          const response = await fetch(`/api/job/${jobId}`)
+          const data = window.LiaExporter ? await localJob() : await remoteJob()
 
-          if (!response.ok) {
-            throw new Error(window.i18n ? window.i18n.t('status.error') : 'Job not found')
-          }
-
-          const data = await response.json()
           window.lastJobData = data
           displayStatus(data)
+
+          // Standalone build: this page is the queue, so it offers every
+          // unfinished job to `run`, including one cut off by a reload. `run`
+          // ignores a job this tab already runs. Progress
+          // is shown as it arrives rather than at the next poll.
+          if (
+            window.LiaExporter &&
+            data.job.status !== 'completed' &&
+            data.job.status !== 'failed'
+          ) {
+            window.LiaExporter
+              .run(jobId, (message) => {
+                if (!jobId) return
+
+                window.lastJobData.job.progress = message
+                displayStatus(window.lastJobData)
+              })
+              .then(loadStatus)
+              .catch((error) => {
+                clearInterval(refreshInterval)
+                const errorMsg = window.i18n ? window.i18n.t('status.errorMessage') : 'Error loading status'
+                document.getElementById('statusContent').innerHTML = `
+                  <p class="error-message">${errorMsg}: ${error.message}</p>
+                `
+              })
+          }
 
           // Stop refreshing if job is completed or failed
           if (data.job.status === 'completed' || data.job.status === 'failed') {
@@ -151,6 +223,10 @@
           completed: t('status.statusCompleted', 'Completed'),
           failed: t('status.statusFailed', 'Failed'),
         }[job.status]
+
+        // The standalone build reports what it is doing; that is more useful
+        // than the label alone, since a big course spends minutes here.
+        if (job.progress) statusText = job.progress
 
         let progressPercent = 0
         if (job.status === 'processing') progressPercent = 50
@@ -224,7 +300,23 @@
 
           ${
             job.status === 'completed'
-              ? `
+              ? job.print
+                ? `
+            <div style="margin-top: 1.5rem;">
+              <button class="btn-primary" onclick="downloadResult()">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="6 9 6 2 18 2 18 9"></polyline>
+                  <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+                  <rect x="6" y="14" width="12" height="8"></rect>
+                </svg>
+                ${t('status.printButton', 'Open Print Dialog')}
+              </button>
+              <p style="margin-top: 0.75rem; color: #555;">
+                ${t('status.printHint', 'The course opens in a new tab and the print dialog appears — choose "Save as PDF" as the destination.')}
+              </p>
+            </div>
+          `
+                : `
             <div style="margin-top: 1.5rem;">
               <button class="btn-primary" onclick="downloadResult()">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -238,13 +330,79 @@
           `
               : ''
           }
+
+          ${
+            // Standalone build only; `localJob` shows unfinished as processing.
+            window.LiaExporter && job.status === 'processing'
+              ? `
+            <div style="margin-top: 1.5rem;">
+              <button class="btn-secondary" onclick="discardJob()">
+                ${t('status.discardButton', 'Discard Export')}
+              </button>
+            </div>
+          `
+              : ''
+          }
         `
 
-        document.getElementById('statusContent').innerHTML = content    
+        document.getElementById('statusContent').innerHTML = content
       }
 
-      function downloadResult() {
-        window.location.href = `/api/download/${jobId}`
+      // An export running in this tab cannot be stopped: it finishes and its
+      // result is dropped.
+      async function discardJob() {
+        const t = (key, fallback) => window.i18n ? window.i18n.t(key, fallback) : fallback
+
+        if (!confirm(t(
+          'status.discardConfirm',
+          'Discard this export? A new export can then be started. If it is already running in this tab it cannot be stopped: it keeps using the tab until it ends and its result is thrown away. Reload the page to stop it sooner.',
+        ))) return
+
+        try {
+          await window.LiaExporter.discard(jobId)
+        } catch (error) {
+          alert(`${t('status.discardFailed', 'The export could not be discarded')}: ${error.message}`)
+          return
+        }
+
+        clearInterval(refreshInterval)
+
+        if (localStorage.getItem('lastJobId') === jobId) {
+          localStorage.removeItem('lastJobId')
+        }
+
+        jobId = null
+        window.lastJobData = null
+        window.history.replaceState({}, '', 'status.html')
+        showNoExport()
+      }
+
+      async function downloadResult() {
+        if (window.LiaExporter) {
+          // Bytes live in IndexedDB, so they survive the navigation here (see
+          // jobs.ts). `pdf` opens the print dialog instead — called straight
+          // from this click, since the popup needs the user gesture.
+          const result = await window.LiaExporter.download(jobId)
+
+          if (result !== 'ok') {
+            const messages = {
+              blocked: [
+                'status.printBlocked',
+                'The print tab was blocked. Please allow pop-ups for this page and try again.',
+              ],
+              gone: [
+                'status.resultGone',
+                'This export is no longer available — the file is kept only while the page stays open. Please export again.',
+              ],
+            }
+            const [key, fallback] = messages[result] || messages.gone
+
+            alert(window.i18n ? window.i18n.t(key) : fallback)
+          }
+          return
+        }
+
+        window.location.href = `api/download/${jobId}`
       }
     </script>
   </body>

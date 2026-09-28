@@ -2,17 +2,28 @@ import * as helper from './export/helper'
 import * as WEB from './export/web'
 import * as SCORM12 from './export/scorm12'
 import * as SCORM2004 from './export/scorm2004'
-import * as PDF from './export/pdf'
-import * as EPUB from './export/epub'
 import * as IMS from './export/ims'
-import * as ANDROID from './export/android'
 import * as PROJECT from './export/project'
 import * as RDF from './export/rdf'
 import * as XAPI from './export/xapi'
-import * as DOCX from './export/docx'
+
+/*
+ * Server-only formats are imported for their argument types only: `parser.ts`
+ * is reached from the browser build (it owns `Arguments`), and a value import
+ * would put Puppeteer and the Android toolchain in its graph for the bundler to
+ * choke on. `ANDROID_FORMAT` below is inlined for the same reason.
+ */
+import type * as PDF from './export/pdf'
+import type * as EPUB from './export/epub'
+import type * as ANDROID from './export/android'
+import type * as DOCX from './export/docx'
+
+/** Mirrors `ANDROID.format`, inlined to keep that module out of the graph. */
+const ANDROID_FORMAT = 'android'
 import * as PRESETS from './export/presets'
 import path from 'path'
 import { ExportFormat } from './types'
+import { ExportFS, NodeFS } from './fs'
 
 // @ts-expect-error - minimist has no type definitions
 import minimist from 'minimist'
@@ -26,6 +37,24 @@ type BaseArguments = {
   path: string
   key?: string
   style?: string
+
+  /**
+   * Storage backing for this export.
+   *
+   * Optional while exporters are ported one at a time: those still calling
+   * `fs-extra` directly ignore it, ported ones use it instead and so become
+   * runnable in the browser. Defaults to a `NodeFS` when the CLI builds the
+   * arguments. Once every format is ported this can become required.
+   */
+  fs?: ExportFS
+
+  /**
+   * Where the SCORM packager's own schemas live, when they are not at its
+   * install location — which is the case in the browser, where they are seeded
+   * into the store. Left undefined under Node, so the packager resolves them
+   * itself. See `src/fs/scorm-adapter.ts`.
+   */
+  'scorm-schema-root'?: string
 }
 
 // Compose all export-specific arguments into a single type
@@ -345,7 +374,12 @@ export function parsePresetsArguments(presetId: string): Arguments {
 export function validateAndNormalize(argument: Arguments): Arguments {
   argument.format = argument.format.toLowerCase()
 
-  if (argument.format == ANDROID.format) {
+  // Every CLI path lands here, so this is the one place the disk backing needs
+  // to be supplied. A caller that already set one (the browser, or a test)
+  // keeps it.
+  argument.fs = argument.fs || new NodeFS()
+
+  if (argument.format == ANDROID_FORMAT) {
     argument['android-sdk'] =
       argument['android-sdk'] ||
       process.env.ANDROID_SDK_ROOT ||

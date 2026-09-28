@@ -6,6 +6,7 @@ import * as fs from 'fs-extra'
 import { tmpdir } from 'os'
 import * as YAML from 'yaml'
 import { removeDirectory } from '../utils/zipExtractor'
+import { toOptions, toCliArguments } from '../../export/options'
 
 export interface ExportJob {
   id: string
@@ -223,12 +224,6 @@ export class JobQueue extends EventEmitter {
           format = job.target.format || 'web'
         }
 
-        // Merge preset options with user-provided options (user options take precedence)
-        const mergedOptions = { ...presetOptions, ...(job.options || {}) }
-
-        // Remove 'format' from options as it's already used to set the --format parameter
-        delete mergedOptions.format
-
         // Create output directory
         const outputDir = path.join(tmpdir(), 'liaex-exports', job.id)
         await fs.ensureDir(outputDir)
@@ -245,145 +240,9 @@ export class JobQueue extends EventEmitter {
           outputFile,
         ]
 
-        // Define which option prefixes are valid for each format
-        const formatOptionPrefixes: Record<string, string[]> = {
-          'scorm1.2': [
-            'scorm',
-            'mastery',
-            'typical',
-            'responsi',
-            'translate',
-            'debugging',
-            'remove',
-            'lia',
-          ],
-          scorm2004: [
-            'scorm',
-            'mastery',
-            'typical',
-            'responsi',
-            'translate',
-            'debugging',
-            'remove',
-            'lia',
-          ],
-          xapi: ['xapi', 'lia'],
-          ims: ['ims', 'lia'],
-          web: ['web'],
-          pdf: ['pdf'],
-          android: ['android'],
-          ios: ['ios'],
-          epub: ['epub'],
-          docx: ['docx'],
-          json: ['json'],
-          rdf: ['rdf'],
-          h5p: ['h5p'],
-        }
-
-        // Map option names to their CLI equivalents for each format
-        const optionMapping: Record<string, (key: string) => string> = {
-          'scorm1.2': (key: string) => {
-            // Convert camelCase to kebab-case
-            const kebabKey = key.replace(/([A-Z])/g, '-$1').toLowerCase()
-            // Handle special cases first
-            if (key === 'liaSubfolder') return 'lia-subfolder'
-            if (key === 'masteryScore') return 'scorm-masteryScore'
-            if (key === 'typicalDuration') return 'scorm-typicalDuration'
-            if (key === 'scormOrganization') return 'scorm-organization'
-            if (key === 'scormIframe') return 'scorm-iframe'
-            if (key === 'scormEmbed') return 'scorm-embed'
-            if (key === 'scormAlwaysActive') return 'scorm-alwaysActive'
-            // Add scorm- prefix if not already present and not a general option
-            if (
-              !key.startsWith('scorm') &&
-              !['mastery-score', 'typical-duration'].includes(kebabKey)
-            ) {
-              return `scorm-${kebabKey}`
-            }
-            return kebabKey
-          },
-          scorm2004: (key: string) => {
-            // Same as scorm1.2
-            const kebabKey = key.replace(/([A-Z])/g, '-$1').toLowerCase()
-            // Handle special cases first
-            if (key === 'liaSubfolder') return 'lia-subfolder'
-            if (key === 'masteryScore') return 'scorm-masteryScore'
-            if (key === 'typicalDuration') return 'scorm-typicalDuration'
-            if (key === 'scormOrganization') return 'scorm-organization'
-            if (key === 'scormIframe') return 'scorm-iframe'
-            if (key === 'scormEmbed') return 'scorm-embed'
-            if (key === 'scormAlwaysActive') return 'scorm-alwaysActive'
-            return kebabKey
-          },
-        }
-
-        // Default mapper for formats without special mapping
-        const defaultMapper = (key: string) => {
-          // If the key already contains hyphens (kebab-case), return as-is
-          if (key.includes('-')) {
-            return key
-          }
-          // Otherwise convert camelCase to kebab-case
-          return key.replace(/([A-Z])/g, '-$1').toLowerCase()
-        }
-
-        // Get valid prefixes for the current format
-        const validPrefixes = formatOptionPrefixes[format] || []
-        const mapper = optionMapping[format] || defaultMapper
-
-        for (const [key, value] of Object.entries(mergedOptions)) {
-          // First check if this option is relevant for the current format
-          // by checking the original key name before mapping
-          const lowerKey = key.toLowerCase()
-
-          // Skip options that clearly belong to other formats
-          if (validPrefixes.length > 0) {
-            const belongsToThisFormat = validPrefixes.some((prefix) =>
-              lowerKey.startsWith(prefix),
-            )
-
-            // Also check if it's a format-specific option we don't want
-            const belongsToOtherFormat = [
-              'xapi',
-              'web',
-              'pdf',
-              'epub',
-              'docx',
-              'android',
-              'ios',
-              'ims',
-              'json',
-              'rdf',
-              'h5p',
-              'app',
-              'package',
-            ].some(
-              (otherPrefix) =>
-                !validPrefixes.includes(otherPrefix) &&
-                lowerKey.startsWith(otherPrefix),
-            )
-
-            if (!belongsToThisFormat || belongsToOtherFormat) {
-              console.log(`[DEBUG]   SKIPPING option: ${key}`)
-              continue
-            }
-          }
-
-          // Convert option name to CLI format
-          const mappedKey = mapper(key)
-
-          // Convert to CLI argument
-          const cliKey = `--${mappedKey}`
-
-          // Handle boolean values (both actual booleans and string booleans)
-          if (value === true || value === 'true') {
-            args.push(cliKey)
-          } else if (value === false || value === 'false') {
-            // Don't add false flags
-          } else if (value !== undefined && value !== null && value !== '') {
-            args.push(cliKey, String(value))
-          }
-        }
+        // Option names and per-format filtering live in ../../export/options
+        // so the browser applies exactly the same rules — see that module.
+        args.push(...toCliArguments(toOptions(format, presetOptions, job.options || {})))
 
         // Run export in separate process using the CLI
         let cliPath: string

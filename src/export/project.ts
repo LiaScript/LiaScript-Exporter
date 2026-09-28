@@ -10,61 +10,15 @@ import * as XAPI from './xapi'
 import * as RDF from './rdf'
 import * as COLOR from '../colorize'
 
+// Re-exported from ./collection so existing importers keep working; the
+// exporter imports them from there directly to avoid this module's Node deps.
+export { getNext, storeNext } from './collection'
+
 const fs = require('fs-extra')
 const path = require('path')
 const { execSync } = require('child_process')
 
 var Categories: Set<string> = new Set([])
-
-export function getNext(collection: any): string | null {
-  if (collection['collection']) {
-    collection = collection['collection']
-  }
-
-  if (collection['url'] && collection['data'] === undefined) {
-    return collection['url']
-  } else {
-    for (let i = 0; i < collection.length; i++) {
-      let course = collection[i]
-
-      if (course.collection) {
-        let url = getNext(course)
-
-        if (url) {
-          return url
-        }
-      } else if (course.url && course.data === undefined) {
-        return course.url
-      }
-    }
-  }
-  return null
-}
-
-export function storeNext(collection: any, data: any) {
-  if (collection['collection']) {
-    collection = collection['collection']
-  }
-
-  for (let i = 0; i < collection.length; i++) {
-    if (collection[i].collection) {
-      for (let j = 0; j < collection[i].collection.length; j++) {
-        if (
-          collection[i].collection[j].url &&
-          collection[i].collection[j].data === undefined
-        ) {
-          collection[i].collection[j].data = data
-          return
-        }
-      }
-    } else if (collection[i].url && collection[i].data === undefined) {
-      collection[i].data = data
-      return
-    }
-  }
-
-  return
-}
 
 export function help() {
   console.log('')
