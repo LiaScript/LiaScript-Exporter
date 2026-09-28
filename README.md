@@ -7,6 +7,9 @@ Supported export formats include SCORM 1.2, SCORM 2004, IMS, xAPI, Web, PDF,
 ePub, DOCX, Android, and more. See the last section
 [LMS Support List](#LMS-Support-List)
 
+**Try it now in your browser: <https://liascript.github.io/LiaScript-Exporter/>**
+— no installation needed.
+
 > __But__, it is still the easiest way to share your courses via
 > __`https://LiaScript.github.io/course/?YOUR_REPO`__. The LiaScript course
 > website is a fully fledged "offline-first" Progressive Web App (PWA), which
@@ -17,18 +20,42 @@ ePub, DOCX, Android, and more. See the last section
 
 ## Usage
 
-The LiaScript-Exporter can be used in three ways:
+The LiaScript-Exporter can be used in four ways:
 
-### 1. Desktop App (recommended for most users)
+### 1. Web App (recommended for most users)
+
+Open **<https://liascript.github.io/LiaScript-Exporter/>** in your browser and
+start exporting. There is nothing to install, and everything runs in your
+browser: your course is never uploaded to a server.
+
+- Upload your course as Markdown files or as a `.zip` of the whole folder, or
+  import it from a public **GitHub repository**
+- All presets (Moodle, ILIAS, OPAL, SCORM Cloud, ...) and advanced settings are
+  available, just like in the desktop app
+- Supported formats: SCORM 1.2, SCORM 2004, IMS, xAPI, Web, PDF, ePub, DOCX,
+  JSON and RDF
+
+A few things work differently from the desktop app:
+
+- **Android** is not available in the browser. Use the
+  [Docker image](#docker-android-export) instead.
+- **PDF, ePub and DOCX** are created in the browser's memory, so very large
+  courses can be slow or run out of memory. For those, use the desktop app.
+- One export runs at a time, and only while its status page is open.
+- Private repositories and other git hosts (GitLab, ...) can't be imported;
+  download the course and upload it as a `.zip` instead.
+
+### 2. Desktop App
 
 Download and install the desktop application for your operating system directly from the
 [GitHub Releases](https://github.com/LiaScript/LiaScript-Exporter/releases)
 page. It provides the same web UI without needing to install Node.js or run any
-commands — just download, install, and open.
+commands — just download, install, and open. Exports run in a separate process
+rather than in a browser tab, so it is the better choice for very large courses.
 
 <video src="https://github.com/user-attachments/assets/05ddc764-8522-437a-b569-00b4df7d98b6" controls width="600"></video>
 
-### 2. Web UI (via CLI)
+### 3. Web UI (via CLI)
 
 Install Node.js first (it includes `npm`):
 
@@ -71,7 +98,7 @@ The web interface allows you to:
 
 All exports are processed asynchronously in a queue, with only one export running at a time. After submitting an export, you'll receive a job ID and can track the progress on a status page.
 
-### 3. CLI
+### 4. CLI
 
 For scripting, automation, or CI/CD pipelines, the exporter can be used directly from the command line. Install the same way as above (Node.js + `npm install -g @liascript/exporter`).
 
