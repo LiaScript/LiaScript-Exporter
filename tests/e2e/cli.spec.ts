@@ -4,6 +4,7 @@
  *
  *   npm run build && npm run test:cli
  *   DEEP=1 npm run test:cli          + xmllint and epubcheck (nightly)
+ *   NETWORK=1 npm run test:cli       + export straight from a git repository
  *
  * A case with a `bug` fails today because of a known exporter bug and is
  * marked `test.fail()`, so the suite stays green and turns red ("expected to
@@ -12,7 +13,8 @@
 import { spawn } from 'node:child_process'
 import * as fs from 'node:fs'
 import * as path from 'node:path'
-import { expect, test } from '@playwright/test'
+import { expect, test, TestInfo } from '@playwright/test'
+import { strFromU8, unzipSync } from 'fflate'
 import { checkOutput, Format } from '../checkers'
 import { checkRendered } from '../checkers/render'
 
@@ -22,6 +24,7 @@ const COURSE = 'tests/fixtures/course/README.md'
 const OUT_DIR = path.join(ROOT, 'test-results/cli-exports')
 
 const DEEP = !!process.env.DEEP && process.env.DEEP !== '0'
+const NETWORK = !!process.env.NETWORK && process.env.NETWORK !== '0'
 
 const QUICK_TIMEOUT = 90_000
 // Formats that print the course with their own Chrome
@@ -267,4 +270,80 @@ test.describe('failed exports exit non-zero', () => {
       expect(fs.readdirSync(testInfo.outputPath()).filter((n) => n.startsWith('out'))).toEqual([])
     })
   }
+})
+
+/*
+ * `--git-url` clones the course, then hands its path on by appending
+ * `--input` to process.argv, and removes the clone when the process exits.
+ * The server imports from git by its own route, so only this covers that path.
+ *
+ * Same source as the server's git tests: GIT_URL / GIT_BRANCH / GIT_SUBDIR
+ * override it, and the content check then only asks for valid JSON.
+ */
+test.describe('export from a git repository', () => {
+  const GIT_ARGS = process.env.GIT_URL
+    ? [
+        '--git-url', process.env.GIT_URL,
+        ...(process.env.GIT_BRANCH ? ['--git-branch', process.env.GIT_BRANCH] : []),
+        ...(process.env.GIT_SUBDIR ? ['--git-subdir', process.env.GIT_SUBDIR] : []),
+      ]
+    : ['--git-url', 'https://github.com/LiaPlayground/Quiz-Demo']
+  const GIT_COURSE_TEXT = process.env.GIT_URL ? [] : ['Quizze', 'Hier muss das Kreuz hin']
+
+  /** Runs the CLI with its own TMPDIR, so the clone it makes can be looked for. */
+  async function runGit(args: string[], testInfo: TestInfo) {
+    const tmp = testInfo.outputPath('tmp')
+    fs.mkdirSync(tmp, { recursive: true })
+
+    const run = await runCli([...GIT_ARGS, ...args], QUICK_TIMEOUT, { ...process.env, TMPDIR: tmp })
+    await testInfo.attach('cli.log', { body: run.log, contentType: 'text/plain' })
+    expect(run.timedOut, 'CLI still running').toBe(false)
+
+    const clones = path.join(tmp, 'liaex-git')
+    const left = fs.existsSync(clones) ? fs.readdirSync(clones) : []
+    expect(left, 'clone left behind').toEqual([])
+
+    return run
+  }
+
+  test.beforeEach(() => {
+    test.skip(!NETWORK, 'needs NETWORK=1')
+  })
+
+  test('exports the repository course', async ({}, testInfo) => {
+    const output = testInfo.outputPath('course')
+    const run = await runGit(['-f', 'json', '-o', output], testInfo)
+
+    expect(run.code, `CLI exit code; log:\n${run.log.slice(-2_000)}`).toBe(0)
+    const json = JSON.parse(fs.readFileSync(output + '.json', 'utf8'))
+    for (const text of GIT_COURSE_TEXT) {
+      expect(JSON.stringify(json)).toContain(text)
+    }
+  })
+
+  test('fails on a --git-file the repository does not have', async ({}, testInfo) => {
+    const output = testInfo.outputPath('course')
+    const run = await runGit(['--git-file', 'no/such.md', '-f', 'json', '-o', output], testInfo)
+
+    expect(run.code, `CLI exit code; log:\n${run.log.slice(-2_000)}`).not.toBe(0)
+    expect(run.log).toContain('Specified file not found in repository: no/such.md')
+    expect(fs.existsSync(output + '.json')).toBe(false)
+  })
+
+  test('exports with a preset', async ({}, testInfo) => {
+    const output = testInfo.outputPath('course')
+    const run = await runGit(['-f', 'presets', '--moodle4', '-o', output], testInfo)
+
+    expect(run.code, `CLI exit code; log:\n${run.log.slice(-2_000)}`).toBe(0)
+
+    // Not the scorm checker: that one compares against the fixture course.
+    const files = unzipSync(fs.readFileSync(output + '.zip'))
+    expect(Object.keys(files)).toContain('imsmanifest.xml')
+    // moodle4 embeds the course
+    const embedded = strFromU8(files['course.js'] ?? new Uint8Array())
+    expect(embedded, 'course.js').not.toBe('')
+    for (const text of GIT_COURSE_TEXT) {
+      expect(embedded).toContain(text)
+    }
+  })
 })
