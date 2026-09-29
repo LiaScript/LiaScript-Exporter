@@ -208,6 +208,7 @@
   "settings.noSettings": "Für dieses Format sind keine zusätzlichen Einstellungen verfügbar.",
   "submit.button": "Export starten",
   "submit.info": "Export-Aufträge werden in die Warteschlange gestellt.<br />Es wird immer nur ein Export gleichzeitig verarbeitet.",
+  "submit.infoLocal": "Exporte laufen in Ihrem Browser, einer nach dem anderen.<br />Lassen Sie nach dem Start die Statusseite des Exports geöffnet, bis er abgeschlossen ist.",
   "submit.starting": "Export wird gestartet...",
   "submit.errorNoFile": "Bitte laden Sie mindestens eine Datei hoch.",
   "submit.errorNoGitUrl": "Bitte geben Sie eine Git-Repository-URL ein.",

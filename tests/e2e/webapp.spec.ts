@@ -287,22 +287,72 @@ for (const c of CASES) {
 }
 
 test.describe('sources and targets', () => {
-  test('android is refused as server-only', async ({ browser }, testInfo) => {
+  test('the hint under the button describes in-tab exports, in both languages', async ({ browser }) => {
+    const session = await openApp(browser)
+    const info = session.page.locator('#submitInfo')
+
+    try {
+      // The service's "Export jobs are queued" is wrong here: nothing queues.
+      await expect(info).toContainText('Exports run in your browser')
+      await expect(info).toContainText('keep its status page open')
+      await expect(info).not.toContainText('queued')
+
+      await session.page.locator('#language-selector').selectOption('de')
+      await expect(info).toContainText('Exporte laufen in Ihrem Browser')
+      await expect(info).not.toContainText('Warteschlange')
+    } finally {
+      await session.context.close()
+    }
+  })
+
+  test('android is server-only: the notice shows and export is disabled', async ({ browser }, testInfo) => {
+    const session = await openApp(browser)
+    const { page } = session
+    const submit = page.locator('#submitBtn')
+
+    try {
+      await upload(page, courseUpload())
+      await choose(page, { format: 'android' })
+
+      await expect(page.locator('.format-notice--unavailable')).toBeVisible()
+      await expect(submit).toBeDisabled()
+      await expect(submit).toHaveAttribute('title', /browser/i)
+
+      // Any other target makes it available again, a format or a preset.
+      await choose(page, { format: 'json' })
+      await expect(submit).toBeEnabled()
+      await expect(submit).not.toHaveAttribute('title')
+
+      await choose(page, { format: 'android' })
+      await expect(submit).toBeDisabled()
+      await page.locator('[data-export-tab="presets"]').click()
+      await choose(page, { preset: 'moodle4' })
+      await expect(submit).toBeEnabled()
+
+      await attachLog(session, testInfo)
+      expect(session.dialogs).toEqual([])
+    } finally {
+      await session.context.close()
+    }
+  })
+
+  test('the service still refuses android if the form is submitted anyway', async ({ browser }, testInfo) => {
     const session = await openApp(browser)
 
     try {
       await choose(session.page, { format: 'android' })
-      // A required field: without it the browser's own validation stops the
-      // submit before the app can say android is unavailable.
       await session.page.locator('#toggleAdvanced').click()
       await session.page.locator('#androidAppId').fill('io.github.liascript.test')
       await upload(session.page, courseUpload())
 
-      const result = await submitAndCollect(session, 'android', QUICK_TIMEOUT)
+      // The disabled button blocks a click; a scripted submit is the only way
+      // left, and `exportFormData` must still refuse it.
+      await session.page.locator('#exportForm').evaluate((form: HTMLFormElement) => form.requestSubmit())
+      await expect.poll(() => session.dialogs.length, { timeout: 30_000 }).toBeGreaterThan(0)
       await attachLog(session, testInfo)
 
-      expect(result.status).toBe('refused')
-      expect(result.error).toMatch(/android/i)
+      expect(session.dialogs.join('\n')).toMatch(/android/i)
+      await expect(session.page.locator('#confirmationModal')).toBeHidden()
     } finally {
       await session.context.close()
     }
