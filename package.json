@@ -70,9 +70,10 @@
     "test:server": "playwright test --project=server",
     "test:webapp": "playwright test --project=webapp",
     "test:webapp:deep": "DEEP=1 playwright test --project=webapp",
+    "test:webapp:browsers": "playwright test --project=webapp-firefox --project=webapp-webkit",
     "test:build": "npm run build && npm run webapp:build",
-    "test:all": "npm run test:build && npm run test:types && npm run test:unit && playwright test",
-    "test:all:deep": "npm run test:setup && npm run test:build && npm run test:types && npm run test:unit && DEEP=1 playwright test"
+    "test:all": "npm run test:build && npm run test:types && npm run test:unit && playwright test --project=cli --project=server --project=webapp",
+    "test:all:deep": "npm run test:setup && npm run test:build && npm run test:types && npm run test:unit && DEEP=1 playwright test --project=cli --project=server --project=webapp"
   },
   "keywords": [
     "LiaScript",

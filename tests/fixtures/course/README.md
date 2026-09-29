@@ -78,10 +78,10 @@ arity bug), so the quote holds code, an image, a formula, a table and a list.
 >
 > ![MKQuoteImage alt](img/photo.jpg)
 >
-> $$ \frac{MK}{Quote} = x_{formula} $$
+> $$ \frac{a}{b} = x_{formula} $$
 >
-> | MKQuoteTable | x |
-> |--------------|---|
+> | MKQuoteTable | (x) |
+> |--------------|-----|
 > | a            | 1 |
 >
 > - MKQuoteList item

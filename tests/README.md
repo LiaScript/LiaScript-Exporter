@@ -9,7 +9,7 @@ exporter still exited 0.
 ## Running
 
 ```sh
-npm run test:all          # build CLI + web app, type check, unit tests, all e2e suites
+npm run test:all          # build CLI + web app, type check, unit tests, all e2e suites (Chromium)
 npm run test:all:deep     # the same, plus epubcheck and the SCORM/IMS XSDs
 ```
 
@@ -25,6 +25,7 @@ Single suites (build first, see below):
 | `npm run test:cli[:deep]` | every format through `dist/index.js` | `npm run build` |
 | `npm run test:server` | every format through `serve` + `POST /api/export` | `npm run build` |
 | `npm run test:webapp[:deep]` | every format through the browser web app UI | `npm run webapp:build` |
+| `npm run test:webapp:browsers` | the web app suite in Firefox and WebKit | `npm run webapp:build`, `npx playwright install firefox webkit` |
 
 The e2e suites test the built output, so rebuild after changing `src/`
 (`npm run test:build` rebuilds both). A stale `dist/` gives misleading results.
@@ -32,6 +33,13 @@ The e2e suites test the built output, so rebuild after changing `src/`
 Pick single tests with `-g`, for example `npm run test:cli -- -g "docx|epub"`.
 The ` › ` separator in the test titles does not match with `-g`, so filter on
 single words.
+
+### Other browsers
+
+The web app runs its exporters in the user's browser, so its suite also runs
+in Firefox and WebKit (`test:webapp:browsers`, not part of `test:all`). Only
+Chromium can save a PDF from a test, so there the pdf case checks the print
+view's text instead of a PDF.
 
 ### Environment variables
 

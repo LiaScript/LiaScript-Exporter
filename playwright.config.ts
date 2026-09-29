@@ -12,8 +12,9 @@ import { defineConfig } from '@playwright/test'
  *
  * The `webapp` project serves `dist/webapp/build` (run `npm run webapp:build`
  * first) and exports through its UI (NETWORK=1 adds the GitHub import).
+ * `webapp-firefox` and `webapp-webkit` run the same file in those browsers.
  *
- *   npm run test:all             both builds, types, unit tests, every project
+ *   npm run test:all             both builds, types, unit tests, cli + server + webapp
  *   npm run test:all:deep        the same with DEEP=1 (+ epubcheck download)
  */
 export default defineConfig({
@@ -43,6 +44,16 @@ export default defineConfig({
     {
       name: 'webapp',
       testMatch: 'webapp.spec.ts',
+    },
+    {
+      name: 'webapp-firefox',
+      testMatch: 'webapp.spec.ts',
+      use: { browserName: 'firefox' },
+    },
+    {
+      name: 'webapp-webkit',
+      testMatch: 'webapp.spec.ts',
+      use: { browserName: 'webkit' },
     },
   ],
 })

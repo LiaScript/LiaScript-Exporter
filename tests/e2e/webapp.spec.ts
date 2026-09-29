@@ -14,7 +14,12 @@
  * pdf has no file to download: the app opens LiaScript's print view in a new
  * tab, which calls `window.print()`. The test stubs `print`, waits for that
  * call and prints the tab with `page.pdf()` — the same Chrome print engine
- * "Save as PDF" uses, honouring the injected `@page` rule.
+ * "Save as PDF" uses, honouring the injected `@page` rule. Firefox and WebKit
+ * have no `page.pdf()` (their PDF is the user's print dialog), so there the
+ * print view's text in print media gets the pdf checks instead.
+ *
+ * The `webapp-firefox` and `webapp-webkit` projects run this file in those
+ * browsers: npm run test:webapp:browsers
  *
  * A case with a `bug` is marked `test.fail()`; delete the `bug` once fixed.
  */
@@ -23,6 +28,7 @@ import * as path from 'node:path'
 import { Browser, BrowserContext, expect, Page, test } from '@playwright/test'
 import { checkOutput, Format } from '../checkers'
 import { openPackage } from '../checkers/package'
+import { checkPrint } from '../checkers/pdf'
 import { checkRendered, servePackage } from '../checkers/render'
 import { COURSE_DIR, Fixture, LOCAL_FIXTURE, zipCourse } from '../fixtures/course'
 import { NETWORK_FIXTURE } from '../fixtures/network'
@@ -200,6 +206,8 @@ interface Result {
   error?: string
   /** The downloaded (or, for pdf, printed) file. */
   file?: string
+  /** For pdf outside Chromium: the print view's text in print media. */
+  printed?: string
 }
 
 /**
@@ -238,7 +246,17 @@ async function submitAndCollect(session: Session, name: string, timeout: number)
     const tab = await popup
 
     await tab.waitForFunction(() => (window as any).__printed === true, null, { timeout })
-    const file = path.join(OUT_DIR, `${name}.pdf`)
+
+    if (browserName(page) !== 'chromium') {
+      await tab.emulateMedia({ media: 'print' })
+      const printed = await printedText(tab)
+      fs.writeFileSync(path.join(outDir(page), `${name}.print.txt`), printed)
+      await tab.close()
+
+      return { status: 'completed', printed }
+    }
+
+    const file = path.join(outDir(page), `${name}.pdf`)
     await tab.pdf({ path: file, preferCSSPageSize: true, printBackground: true })
     await tab.close()
 
@@ -249,10 +267,35 @@ async function submitAndCollect(session: Session, name: string, timeout: number)
   await button.click()
   const saved = await download
 
-  const file = path.join(OUT_DIR, `${name}${path.extname(saved.suggestedFilename())}`)
+  const file = path.join(outDir(page), `${name}${path.extname(saved.suggestedFilename())}`)
   await saved.saveAs(file)
 
   return { status: 'completed', file }
+}
+
+function browserName(page: Page): string {
+  return page.context().browser()!.browserType().name()
+}
+
+/** One folder per browser: the projects run side by side. */
+function outDir(page: Page): string {
+  const dir = path.join(OUT_DIR, browserName(page))
+  fs.mkdirSync(dir, { recursive: true })
+  return dir
+}
+
+/**
+ * The text a print would show: what is visible in print media, plus the open
+ * shadow roots formulas and web components draw into (innerText skips them).
+ */
+function printedText(tab: Page): Promise<string> {
+  return tab.evaluate(() => {
+    const shadows = [...document.querySelectorAll('*')]
+      .flatMap((el) => (el.shadowRoot ? [...el.shadowRoot.children] : []))
+      .filter((child) => child.tagName !== 'STYLE')
+      .map((child) => (child instanceof HTMLElement ? child.innerText : child.textContent))
+    return [document.body.innerText, ...shadows].join('\n')
+  })
 }
 
 async function attachLog(session: Session, testInfo: import('@playwright/test').TestInfo) {
@@ -315,11 +358,11 @@ function exportMatrix(cases: Case[], matrix: Matrix): void {
         expect(result.status, result.error).toBe('completed')
         expect(session.dialogs, 'the app raised a dialog').toEqual([])
 
-        const check = await checkOutput(c.format, result.file!, {
-          method: 'webapp',
-          deep: DEEP,
-          fixture: matrix.fixture,
-        })
+        const options = { method: 'webapp' as const, deep: DEEP, fixture: matrix.fixture }
+        const check =
+          result.printed !== undefined
+            ? checkPrint(result.printed, options)
+            : await checkOutput(c.format, result.file!, options)
         await testInfo.attach('checker.json', {
           body: JSON.stringify(check, null, 2),
           contentType: 'application/json',

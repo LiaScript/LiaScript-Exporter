@@ -3,7 +3,7 @@
  * is read with pdf.js, so no system poppler is needed.
  */
 import * as fs from 'node:fs'
-import { LOCAL_FIXTURE, Method } from '../fixtures/course'
+import { Fixture, LOCAL_FIXTURE, Method } from '../fixtures/course'
 import { checkRenderedMarkers, checkSectionTitles, findMarkers } from './markers'
 import { CheckOptions, CheckResult, Problems } from './types'
 
@@ -70,20 +70,55 @@ export async function checkPdf(
       .filter((n): n is number => n !== null)
     problems.many('blank pages', blank.map(String))
 
-    // an image link shown in a code block, inlined as base64 and printed;
-    // whitespace is dropped because a long run wraps over lines
     const leaks = pages
-      .map((text, i) => (/data:[a-z]+\/[a-z0-9.+-]+;base64,/i.test(text.replace(/\s+/g, '')) ? i + 1 : null))
+      .map((text, i) => (printsDataUri(text) ? i + 1 : null))
       .filter((n): n is number => n !== null)
     problems.many('data: URI printed on pages', leaks.map(String))
 
-    const text = pages.join('\n')
-    checkSectionTitles(problems, text, fixture)
-
-    const markers = findMarkers(text)
-    checkRenderedMarkers(problems, 'pdf', method, markers, text, text, fixture)
-    return result(markers)
+    return result(checkPrintedText(problems, pages.join('\n'), method, fixture))
   } finally {
     await task.destroy()
   }
+}
+
+/**
+ * What a browser would print, checked without the PDF: Firefox and WebKit
+ * cannot save one from a test, so the web app suite reads the print view's
+ * text in print media instead. Same expectations as the PDF's text.
+ */
+export function checkPrint(text: string, options: CheckOptions = {}): CheckResult {
+  const problems = new Problems()
+  if (printsDataUri(text)) problems.add('data: URI printed', 'in the print view')
+
+  const fixture = options.fixture ?? LOCAL_FIXTURE
+  const markers = checkPrintedText(problems, text, options.method ?? 'cli', {
+    ...fixture,
+    knownGaps: {
+      ...fixture.knownGaps,
+      pdf: { ...fixture.knownGaps.pdf, ...PDF_ENGINE_TEXT },
+    },
+  })
+  return { format: 'pdf', problems: problems.list, markers, summary: {} }
+}
+
+/** Text Chrome's PDF engine adds, which a print view's text cannot show. */
+const PDF_ENGINE_TEXT = {
+  MKImageSvg: { reason: "Chrome's PDF carries an SVG image's alt text; the print view does not" },
+}
+
+/** Section titles and markers of printed text; returns the markers found. */
+function checkPrintedText(problems: Problems, text: string, method: Method, fixture: Fixture): string[] {
+  checkSectionTitles(problems, text, fixture)
+
+  const markers = findMarkers(text)
+  checkRenderedMarkers(problems, 'pdf', method, markers, text, text, fixture)
+  return markers
+}
+
+/**
+ * An image link shown in a code block, inlined as base64 and printed;
+ * whitespace is dropped because a long run wraps over lines.
+ */
+function printsDataUri(text: string): boolean {
+  return /data:[a-z]+\/[a-z0-9.+-]+;base64,/i.test(text.replace(/\s+/g, ''))
 }
