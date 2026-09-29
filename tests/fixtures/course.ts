@@ -9,6 +9,7 @@
  */
 import * as fs from 'node:fs'
 import * as path from 'node:path'
+import { zipSync } from 'fflate'
 
 export const COURSE_DIR = path.join(__dirname, 'course')
 export const COURSE_README = path.join(COURSE_DIR, 'README.md')
@@ -84,6 +85,26 @@ export function courseAssets(): string[] {
   return out.filter((file) => file !== 'README.md').sort()
 }
 
+/**
+ * The course directory as the zip a user would upload, `.hidden/` included,
+ * under a top-level `course/` folder.
+ */
+export function zipCourse(): Buffer {
+  const files: Record<string, Uint8Array> = {}
+
+  const walk = (dir: string) => {
+    for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+      const full = path.join(dir, entry.name)
+      if (entry.isDirectory()) walk(full)
+      else files[`course/${path.relative(COURSE_DIR, full).split(path.sep).join('/')}`] =
+        new Uint8Array(fs.readFileSync(full))
+    }
+  }
+
+  walk(COURSE_DIR)
+  return Buffer.from(zipSync(files))
+}
+
 /** Every marker written in the course source. */
 export function sourceMarkers(): string[] {
   const source = fs.readFileSync(COURSE_README, 'utf8')
@@ -111,12 +132,13 @@ export function renderedMarkers(): string[] {
 
 const MEDIA_LABEL =
   'audio/video labels become a link or player, the label text is not kept'
+const DOCX_ALT = 'image alt text is not written to the docx (the web app keeps it)'
 const HIDDEN_UNTIL_CLICKED =
   'quiz hints and explanations stay hidden until the reader asks for them'
 
 /**
- * Markers each rendered format is known to lose, measured on the CLI output on
- * 2026-09-29. A gap that starts to render is reported too, so this list can
+ * Markers each rendered format is known to lose, measured on the CLI and web
+ * app output on 2026-09-29. A gap that starts to render is reported too, so this list can
  * only shrink.
  */
 export const KNOWN_GAPS: Record<RenderedFormat, Record<string, KnownGap>> = {
@@ -136,13 +158,13 @@ export const KNOWN_GAPS: Record<RenderedFormat, Record<string, KnownGap>> = {
     MKQuizHint: { reason: HIDDEN_UNTIL_CLICKED },
     MKQuizExplanation: { reason: HIDDEN_UNTIL_CLICKED },
     MKSvgText: { reason: 'inline SVG is captured as an image' },
-    MKImagePng: { reason: 'image alt text is not written to the docx' },
-    MKImageJpg: { reason: 'image alt text is not written to the docx' },
-    MKImageSvg: { reason: 'image alt text is not written to the docx' },
-    MKGalleryA: { reason: 'image alt text is not written to the docx' },
-    MKGalleryB: { reason: 'image alt text is not written to the docx' },
-    MKQuoteImage: { reason: 'image alt text is not written to the docx' },
-    MKAfterFenceImage: { reason: 'image alt text is not written to the docx' },
+    MKImagePng: { reason: DOCX_ALT, only: ['cli'] },
+    MKImageJpg: { reason: DOCX_ALT, only: ['cli'] },
+    MKImageSvg: { reason: DOCX_ALT, only: ['cli'] },
+    MKGalleryA: { reason: DOCX_ALT, only: ['cli'] },
+    MKGalleryB: { reason: DOCX_ALT, only: ['cli'] },
+    MKQuoteImage: { reason: DOCX_ALT, only: ['cli'] },
+    MKAfterFenceImage: { reason: DOCX_ALT, only: ['cli'] },
     MKScriptResult42: { reason: 'inline <script> output is not captured' },
   },
   pdf: {

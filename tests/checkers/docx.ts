@@ -3,7 +3,7 @@
  * at relationships, relationships point at parts. Past bugs left media nobody
  * referenced and leaked `blob:` URLs and base64 into the document.
  */
-import { COURSE_DIR, Method } from '../fixtures/course'
+import { COURSE, COURSE_DIR, Method } from '../fixtures/course'
 import { checkRenderedMarkers, checkSectionTitles, findMarkers } from './markers'
 import { openPackage, resolveRef } from './package'
 import { CheckOptions, CheckResult, Problems } from './types'
@@ -126,14 +126,17 @@ export function checkDocx(source: string, options: CheckOptions = {}): CheckResu
     [attr(pr, 'descr'), attr(pr, 'title')].filter((v): v is string => !!v),
   )
 
+  const title = pkg.has('docProps/core.xml')
+    ? textOf(byName(parseXml(pkg.text('docProps/core.xml')).doc!, 'title')[0])
+    : null
+  if (title !== COURSE.title) problems.add('wrong dc:title', `"${title}"`)
+
   Object.assign(summary, {
     paragraphs: paragraphs.length,
     tables: byName(document, 'tbl').length,
     images: byName(document, 'docPr').length,
     media: media.length,
-    title: pkg.has('docProps/core.xml')
-      ? textOf(byName(parseXml(pkg.text('docProps/core.xml')).doc!, 'title')[0])
-      : null,
+    title,
   })
 
   checkSectionTitles(problems, paragraphs.join('\n'))

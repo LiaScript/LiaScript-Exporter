@@ -180,6 +180,9 @@ export function docx(markers = goodMarkers('docx')): Files {
   <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="media/image1.png"/>
 </Relationships>`,
     'word/media/image1.png': fs.readFileSync(path.join(COURSE_DIR, 'img/marker.png')),
+    'docProps/core.xml': `<?xml version="1.0"?>
+<cp:coreProperties xmlns:cp="http://schemas.openxmlformats.org/package/2006/metadata/core-properties"
+  xmlns:dc="http://purl.org/dc/elements/1.1/"><dc:title>${COURSE.title}</dc:title></cp:coreProperties>`,
   }
 }
 

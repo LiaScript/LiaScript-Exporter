@@ -67,7 +67,9 @@
     "test:types": "tsc -p tests/tsconfig.json",
     "test:cli": "playwright test --project=cli",
     "test:cli:deep": "DEEP=1 playwright test --project=cli",
-    "test:server": "playwright test --project=server"
+    "test:server": "playwright test --project=server",
+    "test:webapp": "playwright test --project=webapp",
+    "test:webapp:deep": "DEEP=1 playwright test --project=webapp"
   },
   "keywords": [
     "LiaScript",

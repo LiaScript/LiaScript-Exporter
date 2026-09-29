@@ -152,7 +152,8 @@ export function checkEpub(source: string, options: CheckOptions = {}): CheckResu
 
     for (const match of raw.matchAll(/\s(?:src|href|poster|xlink:href)\s*=\s*["']([^"']+)["']/gi)) {
       const ref = match[1]
-      if (/^file:/i.test(ref)) fileUrls.add(ref)
+      // file: from the CLI, blob: from the web app; both dead outside
+      if (/^(file|blob):/i.test(ref)) fileUrls.add(ref)
 
       const target = resolveRef(chapter, ref)
       if (target && !pkg.has(target)) brokenRefs.add(`${path.posix.basename(chapter)} → ${ref}`)
@@ -162,7 +163,7 @@ export function checkEpub(source: string, options: CheckOptions = {}): CheckResu
   }
 
   problems.many('empty chapters', empty)
-  problems.many('file: URLs in the book', [...fileUrls])
+  problems.many('file:/blob: URLs in the book', [...fileUrls])
   problems.many('local machine paths in the book', [...localPaths])
   problems.many('references to missing files', [...brokenRefs])
 

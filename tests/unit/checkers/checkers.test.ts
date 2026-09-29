@@ -176,14 +176,14 @@ describe('epub', () => {
     expect(problems).toContainEqual(expect.stringMatching(/^files not declared in the manifest: 1 × OEBPS\/extra.css/))
   })
 
-  it('reports file: URLs and broken references', async () => {
+  it('reports file: and blob: URLs and broken references', async () => {
     const files = build.epub()
     files['OEBPS/5.xhtml'] = String(files['OEBPS/5.xhtml']).replace(
       '<img src="images/photo.jpg"',
-      '<audio src="file:///home/someone/course/media/tone.wav"/><img src="images/missing.jpg"',
+      '<audio src="file:///home/someone/course/media/tone.wav"/><a href="blob:http://x/media/tone.wav">tone</a><img src="images/missing.jpg"',
     )
     const { problems } = await check(files)
-    expect(problems).toContainEqual(expect.stringMatching(/^file: URLs in the book: 1 × file:\/\/\/home/))
+    expect(problems).toContainEqual(expect.stringMatching(/^file:\/blob: URLs in the book: 2 × file:\/\/\/home.*, blob:http/))
     expect(problems).toContainEqual(expect.stringMatching(/^references to missing files: 1 × 5.xhtml → images\/missing.jpg/))
   })
 
@@ -281,6 +281,12 @@ describe('docx', () => {
     const files = build.docx()
     files['word/document.xml'] = String(files['word/document.xml']).replace(`>${COURSE.sections[4]}<`, '><')
     expectOnly((await check(files)).problems, /^missing section titles: 1 × Blockquotes/)
+  })
+
+  it('reports a document title other than the course title', async () => {
+    const files = build.docx()
+    files['docProps/core.xml'] = String(files['docProps/core.xml']).replace(COURSE.title, 'LiaScript Export')
+    expectOnly((await check(files)).problems, /^wrong dc:title: "LiaScript Export"/)
   })
 })
 

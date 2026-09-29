@@ -23,10 +23,10 @@ import * as path from 'node:path'
 import { APIRequestContext, expect, test } from '@playwright/test'
 import { zipSync } from 'fflate'
 import { checkOutput, Format } from '../checkers'
+import { COURSE_DIR, zipCourse } from '../fixtures/course'
 
 const ROOT = path.resolve(__dirname, '../..')
 const CLI = path.join(ROOT, 'dist/index.js')
-const COURSE_DIR = path.join(ROOT, 'tests/fixtures/course')
 const OUT_DIR = path.join(ROOT, 'test-results/server-exports')
 
 const NETWORK = !!process.env.NETWORK && process.env.NETWORK !== '0'
@@ -100,23 +100,6 @@ function freePort(): Promise<number> {
       probe.close(() => resolve(port))
     })
   })
-}
-
-/** The course directory as the zip a user would upload, `.hidden/` included. */
-function zipCourse(): Buffer {
-  const files: Record<string, Uint8Array> = {}
-
-  const walk = (dir: string) => {
-    for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
-      const full = path.join(dir, entry.name)
-      if (entry.isDirectory()) walk(full)
-      else files[`course/${path.relative(COURSE_DIR, full).split(path.sep).join('/')}`] =
-        new Uint8Array(fs.readFileSync(full))
-    }
-  }
-
-  walk(COURSE_DIR)
-  return Buffer.from(zipSync(files))
 }
 
 /**

@@ -81,9 +81,15 @@ export async function exporter(
   const course = await render(markdown, files, options, onProgress)
 
   let html: string
+  // The flag, else the course's own title, as in the CLI. Read first:
+  // `assemble` rewrites the headings.
+  const title =
+    options['docx-title'] ||
+    extract.courseTitle(course.document) ||
+    'LiaScript Export'
 
   try {
-    html = await assemble(course.document, course.window, options)
+    html = await assemble(course.document, course.window, { ...options, 'docx-title': title })
   } finally {
     // Only needed for the scrape; freed before the slow conversion rather than
     // holding a second copy of the course in memory.
@@ -97,7 +103,7 @@ export async function exporter(
     options['docx-header-html'] || null,
     {
       orientation: options['docx-orientation'] || DEFAULTS.orientation,
-      title: options['docx-title'] || 'LiaScript Export',
+      title,
       creator: options['docx-author'] || 'LiaScript Exporter',
       subject: options['docx-subject'],
       description: options['docx-description'],
@@ -186,6 +192,7 @@ async function assemble(
   replaceTerminals(body, terminals)
   replaceCode(body, code)
   labelUnreachable(body, reachable)
+  extract.unlinkLocal(body)
   captions(body)
 
   return document_(chapters(body), options)
@@ -323,6 +330,20 @@ function strip(body: HTMLElement): void {
     })
 }
 
+/** A `<figcaption>`'s content as a styled paragraph. */
+function captionFor(caption: Element): HTMLElement {
+  const p = caption.ownerDocument.createElement('p')
+
+  p.setAttribute(
+    'style',
+    'text-align: center; font-style: italic; color: #555; ' +
+      'font-size: 0.9em; margin-top: 0.3em; margin-bottom: 1em;',
+  )
+  p.innerHTML = caption.innerHTML
+
+  return p
+}
+
 /** Turns `<figcaption>` into a styled paragraph after its figure. */
 function captions(body: HTMLElement): void {
   body.querySelectorAll('figure > figcaption').forEach((caption) => {
@@ -330,16 +351,7 @@ function captions(body: HTMLElement): void {
 
     if (!figure) return
 
-    const p = figure.ownerDocument.createElement('p')
-
-    p.setAttribute(
-      'style',
-      'text-align: center; font-style: italic; color: #555; ' +
-        'font-size: 0.9em; margin-top: 0.3em; margin-bottom: 1em;',
-    )
-    p.innerHTML = caption.innerHTML
-
-    figure.parentNode?.insertBefore(p, figure.nextSibling)
+    figure.parentNode?.insertBefore(captionFor(caption), figure.nextSibling)
     caption.remove()
   })
 
@@ -546,7 +558,14 @@ function swap(
       'max-width: 100%; height: auto; display: block; margin: 0 auto;',
     )
 
-    el.replaceWith(framed(doc, img))
+    // A swapped figure (ASCII art) takes its caption with it otherwise;
+    // `captions` runs too late to rescue it.
+    const caption = el.querySelector(':scope > figcaption')
+
+    el.replaceWith(
+      framed(doc, img),
+      ...(caption ? [captionFor(caption)] : []),
+    )
   })
 }
 

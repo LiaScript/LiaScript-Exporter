@@ -9,6 +9,9 @@ import { defineConfig } from '@playwright/test'
  *
  * The `server` project starts `dist/index.js serve` and exports through its
  * HTTP API (NETWORK=1 adds the git import).
+ *
+ * The `webapp` project serves `dist/webapp/build` (run `npm run webapp:build`
+ * first) and exports through its UI (NETWORK=1 adds the GitHub import).
  */
 export default defineConfig({
   testDir: 'tests/e2e',
@@ -33,6 +36,10 @@ export default defineConfig({
     {
       name: 'server',
       testMatch: 'server.spec.ts',
+    },
+    {
+      name: 'webapp',
+      testMatch: 'webapp.spec.ts',
     },
   ],
 })
