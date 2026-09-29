@@ -60,7 +60,11 @@
     "electron:build:mac": "npm run build && electron-builder --mac --config electron-builder.json",
     "electron:build:linux": "npm run build && electron-builder --linux --config electron-builder.json",
     "electron:build:all": "npm run build && electron-builder --win --mac --linux --config electron-builder.json",
-    "electron:pack": "npm run build && electron-builder --dir --config electron-builder.json"
+    "electron:pack": "npm run build && electron-builder --dir --config electron-builder.json",
+    "test:unit": "vitest run",
+    "test:setup": "tsx tests/scripts/setup.ts",
+    "test:check": "tsx tests/scripts/check-output.ts",
+    "test:types": "tsc -p tests/tsconfig.json"
   },
   "keywords": [
     "LiaScript",
@@ -105,10 +109,12 @@
     "@parcel/transformer-elm": "^2.16.3",
     "@parcel/transformer-inline-string": "^2.16.3",
     "@parcel/transformer-yaml": "^2.16.3",
+    "@playwright/test": "^1.63.0",
     "@types/fs-extra": "^11.0.4",
     "@types/node": "^20.19.27",
     "@types/temp": "^0.9.1",
     "@types/unzipper": "^0.10.11",
+    "@xmldom/xmldom": "^0.9.12",
     "assert": "^2.1.0",
     "browserify-zlib": "^0.2.0",
     "constants-browserify": "^1.0.0",
@@ -120,10 +126,13 @@
     "os-browserify": "^0.3.0",
     "parcel": "^2.16.3",
     "path-browserify": "^1.0.1",
+    "pdfjs-dist": "^6.3.289",
     "stream-browserify": "^3.0.0",
     "stream-http": "^3.2.0",
+    "tsx": "^4.23.15",
     "url": "^0.11.4",
     "util": "^0.12.5",
+    "vitest": "^3.2.7",
     "vm-browserify": "^1.1.2"
   },
   "puppeteer": {

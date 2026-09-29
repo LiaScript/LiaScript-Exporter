@@ -288,16 +288,16 @@ MKSurveySingle How satisfied are you?
 
 MKSurveyMultiple Which topics interest you?
 
-    [[AI]]
-    [[Web]]
+- [[ai]]  Artificial intelligence
+- [[web]] Web development
 
 MKSurveyText Your reaction?
 
-    [[___]]
+[[___]]
 
 MKSurveyTextarea Describe your opinion:
 
-    [[___ ___ ___]]
+[[___ ___ ___]]
 
 ## Animations
 
