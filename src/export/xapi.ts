@@ -365,14 +365,9 @@ export async function exporter(argument: XapiExportArguments, json: any) {
   // Add JSON-LD
   const jsonLD = await RDF.script(argument, json)
 
-  try {
-    index = helper.inject(jsonLD, index)
-    index = helper.prettify(index)
-    await fs.writeFile(path.join(tmpPath, 'index.html'), index)
-  } catch (e) {
-    console.warn(e)
-    return
-  }
+  index = helper.inject(jsonLD, index)
+  index = helper.prettify(index)
+  await fs.writeFile(path.join(tmpPath, 'index.html'), index)
 
   // Find all resources in the package. Traversal stays sequential and
   // depth-first in readDir order, because that order is what determines the

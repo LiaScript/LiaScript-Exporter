@@ -97,13 +97,8 @@ export async function exporter(argument: Scorm2004ExportArguments, json: any) {
     )
   }
 
-  try {
-    index = helper.inject(jsonLD, index)
-    await fs.writeFile(path.join(tmpPath, 'index.html'), index)
-  } catch (e) {
-    console.warn(e)
-    return
-  }
+  index = helper.inject(jsonLD, index)
+  await fs.writeFile(path.join(tmpPath, 'index.html'), index)
 
   // copy user course files into content/ (subfolder mode) or root
   await fs.copy(argument.path, contentPath, {

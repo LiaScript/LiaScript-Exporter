@@ -163,7 +163,16 @@ export class Exporter {
             const data = await this.readInput(argument, template)
             app.ports.input.send([HelperCommand.TEMPLATE, param, data])
           } catch (err) {
-            console.warn(`could not load "${param}":`, err)
+            // Elm waits for every import and has no message for a failed local
+            // one, so without this the run never settles and exits 0 silently.
+            // A failed remote import is already an error in Elm.
+            this.fail?.(
+              new Error(
+                `could not load import "${param}": ${
+                  err instanceof Error ? err.message : String(err)
+                }`,
+              ),
+            )
           }
           break
         default:
@@ -397,6 +406,7 @@ export class Exporter {
     format: string,
   ): Promise<void> {
     const data = await this.readInput(argument, argument.input)
+    requireSection(argument.input, data)
     this.embed = data
     app.ports.input.send([format, data])
   }
@@ -412,8 +422,23 @@ export class Exporter {
     const resp = await helper.fetch(argument.input, {})
     const data = await resp.text()
 
-    if (data) {
-      app.ports.input.send([format, data])
-    }
+    requireSection(argument.input, data)
+    app.ports.input.send([format, data])
+  }
+}
+
+/**
+ * Rejects a course Elm would never answer for. Without a section, Elm's
+ * `load` has no code to parse and returns no command at all, so the run would
+ * never settle: the CLI exits 0 without output, the browser waits forever.
+ *
+ * Deliberately loose (any line starting with `#`), so it can never refuse a
+ * course Elm would export.
+ */
+function requireSection(input: string, markdown: string): void {
+  if (!/^[ \t﻿]*#/m.test(markdown)) {
+    throw new Error(
+      `"${input}" is not a LiaScript course: it has no "# heading" to start a section`,
+    )
   }
 }

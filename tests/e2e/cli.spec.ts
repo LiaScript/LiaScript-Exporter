@@ -92,10 +92,15 @@ interface CliRun {
  * Runs the CLI in its own process group, so a timeout also kills the Chrome
  * that puppeteer started; killing only `node` would leave Chrome orphaned.
  */
-function runCli(args: string[], timeout: number): Promise<CliRun> {
+function runCli(
+  args: string[],
+  timeout: number,
+  env: NodeJS.ProcessEnv = process.env,
+): Promise<CliRun> {
   const started = Date.now()
   const child = spawn(process.execPath, [CLI, ...args], {
     cwd: ROOT,
+    env,
     detached: true,
     stdio: ['ignore', 'pipe', 'pipe'],
   })
@@ -187,3 +192,79 @@ for (const c of CASES) {
     }
   })
 }
+
+/*
+ * A failed export must exit non-zero: the server trusts the exit code, and
+ * each of these used to exit 0 without writing anything.
+ */
+test.describe('failed exports exit non-zero', () => {
+  interface Failure {
+    name: string
+    /** Course files, written to the test's own directory. */
+    files: Record<string, string>
+    format: Format | 'android'
+    args?: string[]
+    /** Commands on PATH that fail at once, in place of the real ones. */
+    failing?: string[]
+    message: RegExp
+  }
+
+  const FAILURES: Failure[] = [
+    {
+      // Elm answers nothing without a section
+      name: 'course without a heading',
+      files: { 'README.md': '<!--\nauthor: x\n-->\n\njust text\n' },
+      format: 'json',
+      message: /has no "# heading"/,
+    },
+    {
+      // Elm waits for every import
+      name: 'missing local import',
+      files: { 'README.md': '<!--\nimport: ./missing.md\n-->\n\n# Title\n' },
+      format: 'json',
+      message: /could not load import "\.\/missing\.md"/,
+    },
+    {
+      // the build chain ran unawaited and logged its failures
+      name: 'android build that fails',
+      files: { 'README.md': '# Title\n' },
+      format: 'android',
+      args: ['--android-appId', 'io.test.app', '--android-sdk', '/nonexistent/sdk'],
+      failing: ['npm', 'npx'],
+      message: /Command failed: npm i/,
+    },
+  ]
+
+  for (const f of FAILURES) {
+    test(f.name, async ({}, testInfo) => {
+      const dir = testInfo.outputPath('course')
+      fs.mkdirSync(dir, { recursive: true })
+      for (const [name, body] of Object.entries(f.files)) {
+        fs.writeFileSync(path.join(dir, name), body)
+      }
+
+      let env = process.env
+      if (f.failing) {
+        const bin = testInfo.outputPath('bin')
+        fs.mkdirSync(bin, { recursive: true })
+        for (const cmd of f.failing) {
+          fs.writeFileSync(path.join(bin, cmd), '#!/bin/sh\nexit 1\n', { mode: 0o755 })
+        }
+        env = { ...process.env, PATH: `${bin}${path.delimiter}${process.env.PATH}` }
+      }
+
+      const output = testInfo.outputPath('out')
+      const run = await runCli(
+        ['-i', path.join(dir, 'README.md'), '-f', f.format, '-o', output, ...(f.args ?? [])],
+        QUICK_TIMEOUT,
+        env,
+      )
+      await testInfo.attach('cli.log', { body: run.log, contentType: 'text/plain' })
+
+      expect(run.timedOut, 'CLI still running').toBe(false)
+      expect(run.code, `CLI exit code; log:\n${run.log.slice(-2_000)}`).not.toBe(0)
+      expect(run.log).toMatch(f.message)
+      expect(fs.readdirSync(testInfo.outputPath()).filter((n) => n.startsWith('out'))).toEqual([])
+    })
+  }
+})

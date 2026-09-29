@@ -199,14 +199,9 @@ export async function exporter(argument: AndroidExportArguments, json: any) {
     '<body>',
   )
 
-  try {
-    await helper.writeFile(path.join(tmp, 'www/index.html'), index)
-  } catch (e) {
-    console.warn(e)
-    return
-  }
+  await helper.writeFile(path.join(tmp, 'www/index.html'), index)
 
-  execute(
+  await execute(
     [
       capacitorCachePath
         ? 'echo "Using cached Capacitor dependencies"'
@@ -216,76 +211,58 @@ export async function exporter(argument: AndroidExportArguments, json: any) {
       `npx @capacitor/assets generate --iconBackgroundColor '${argument['android-iconBackgroundColor'] || '#bbbbbb'}' --iconBackgroundColorDark '${argument['android-iconBackgroundColorDark'] || '#555555'}'`,
     ],
     tmp,
-    async function () {
-      await sdk(tmp, argument['android-sdk'])
-
-      if (argument['android-preview']) {
-        execute(
-          ['npx cap open android'],
-          tmp,
-
-          () => {
-            console.log('ready')
-          },
-        )
-      } else if (argument['android-bundle']) {
-        // Build signed AAB for Play Store
-        await configureSigning(tmp, argument)
-        execute(
-          ['./gradlew bundleRelease --stacktrace'],
-          path.join(tmp, 'android'),
-          function () {
-            const bundlePath = path.join(
-              tmp,
-              'android/app/build/outputs/bundle/release/app-release.aab',
-            )
-            
-            if (fs.existsSync(bundlePath)) {
-              console.warn('✅ AAB bundle created successfully')
-              fs.copySync(bundlePath, argument.output + '.aab')
-              console.log(`✅ Signed AAB: ${argument.output}.aab`)
-            } else {
-              console.error('❌ AAB file not found. Build may have failed.')
-              process.exit(1)
-            }
-          },
-        )
-      } else if (argument['android-release']) {
-        // Build signed release APK
-        await configureSigning(tmp, argument)
-        execute(
-          ['./gradlew assembleRelease --stacktrace'],
-          path.join(tmp, 'android'),
-          function () {
-            console.warn('✅ APK created successfully')
-            fs.copySync(
-              path.join(
-                tmp,
-                'android/app/build/outputs/apk/release/app-release.apk',
-              ),
-              argument.output + '.apk',
-            )
-          },
-        )
-      } else {
-        // Build debug APK
-        execute(
-          ['./gradlew assembleDebug --stacktrace'],
-          path.join(tmp, 'android'),
-          function () {
-            console.warn('✅ Debug APK created')
-            fs.copySync(
-              path.join(
-                tmp,
-                'android/app/build/outputs/apk/debug/app-debug.apk',
-              ),
-              argument.output + '.apk',
-            )
-          },
-        )
-      }
-    },
   )
+
+  await sdk(tmp, argument['android-sdk'])
+
+  if (argument['android-preview']) {
+    await execute(['npx cap open android'], tmp)
+    console.log('ready')
+  } else if (argument['android-bundle']) {
+    // Build signed AAB for Play Store
+    await configureSigning(tmp, argument)
+    await execute(
+      ['./gradlew bundleRelease --stacktrace'],
+      path.join(tmp, 'android'),
+    )
+    await deliver(
+      path.join(tmp, 'android/app/build/outputs/bundle/release/app-release.aab'),
+      argument.output + '.aab',
+    )
+    console.log(`✅ Signed AAB: ${argument.output}.aab`)
+  } else if (argument['android-release']) {
+    // Build signed release APK
+    await configureSigning(tmp, argument)
+    await execute(
+      ['./gradlew assembleRelease --stacktrace'],
+      path.join(tmp, 'android'),
+    )
+    await deliver(
+      path.join(tmp, 'android/app/build/outputs/apk/release/app-release.apk'),
+      argument.output + '.apk',
+    )
+    console.warn('✅ APK created successfully')
+  } else {
+    // Build debug APK
+    await execute(
+      ['./gradlew assembleDebug --stacktrace'],
+      path.join(tmp, 'android'),
+    )
+    await deliver(
+      path.join(tmp, 'android/app/build/outputs/apk/debug/app-debug.apk'),
+      argument.output + '.apk',
+    )
+    console.warn('✅ Debug APK created')
+  }
+}
+
+/** Copies a build artifact out, failing when the build did not produce it. */
+async function deliver(built: string, output: string) {
+  if (!fs.existsSync(built)) {
+    throw new Error(`${path.basename(built)} not found. Build may have failed.`)
+  }
+
+  await fs.copy(built, output)
 }
 
 async function sdk(tmpPath: string, uri?: string) {
@@ -389,34 +366,40 @@ ${signingConfig}`,
   console.log('Signing configuration added to build.gradle')
 }
 
-function execute(cmds: string[], cwd: string, callback: () => void) {
-  const cmd = cmds.shift()
-
-  if (cmd) {
+/**
+ * Runs the commands one after another, rejecting at the first that fails, so a
+ * broken build reaches the caller and the CLI exits non-zero.
+ */
+async function execute(cmds: string[], cwd: string): Promise<void> {
+  for (const cmd of cmds) {
     console.log('exec:', cmd)
-    
-    exec(
-      cmd,
-      { cwd: cwd },
-      async (error: Error | null, stdout: string, stderr: string) => {
-        if (error) {
-          console.error(`❌ Command failed: ${cmd}`)
-          console.error(`error: ${error.message}`)
-          if (stdout) console.error(`stdout: ${stdout}`)
-          if (stderr) console.error(`stderr: ${stderr}`)
-          return
-        }
-        if (stderr && !cmd.includes('gradlew')) {
-          console.warn(`stderr: ${stderr}`)
-        }
-        if (stdout && !cmd.includes('gradlew')) {
-          console.log(`stdout: ${stdout}`)
-        }
 
-        execute(cmds, cwd, callback)
-      },
-    )
-  } else {
-    callback()
+    const { stdout, stderr } = await new Promise<{
+      stdout: string
+      stderr: string
+    }>((resolve, reject) => {
+      exec(
+        cmd,
+        // exec's 1 MB default is not enough for npm and gradle's logs
+        { cwd: cwd, maxBuffer: 64 * 1024 * 1024 },
+        (error: Error | null, stdout: string, stderr: string) => {
+          if (error) {
+            if (stdout) console.error(`stdout: ${stdout}`)
+            if (stderr) console.error(`stderr: ${stderr}`)
+            // exec's message already reads "Command failed: <cmd>"
+            reject(error)
+          } else {
+            resolve({ stdout, stderr })
+          }
+        },
+      )
+    })
+
+    if (stderr && !cmd.includes('gradlew')) {
+      console.warn(`stderr: ${stderr}`)
+    }
+    if (stdout && !cmd.includes('gradlew')) {
+      console.log(`stdout: ${stdout}`)
+    }
   }
 }
