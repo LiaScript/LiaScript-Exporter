@@ -38,6 +38,7 @@ const FORMAT_PREFIXES: Record<string, string[]> = {
   epub: ['epub'],
   docx: ['docx'],
   json: ['json'],
+  fulljson: ['json'],
   rdf: ['rdf'],
   h5p: ['h5p'],
 }
@@ -97,7 +98,7 @@ const NAME_MAPPERS: Record<string, (key: string) => string> = {
 
 /** True when `key` is an option this format should receive. */
 function acceptedBy(format: string, key: string): boolean {
-  const prefixes = FORMAT_PREFIXES[format] ?? []
+  const prefixes = FORMAT_PREFIXES[format.toLowerCase()] ?? []
 
   if (prefixes.length === 0) {
     return true
@@ -127,6 +128,8 @@ export function toOptions(
 ): Record<string, any> {
   const merged: Record<string, any> = { ...presetOptions, ...userOptions }
   delete merged.format
+  // Consumed by resolveFormat: it picks the exporter, like `format`.
+  delete merged.jsonFull
 
   const mapper = NAME_MAPPERS[format] ?? kebab
   const out: Record<string, any> = {}
@@ -146,6 +149,19 @@ export function toOptions(
   }
 
   return out
+}
+
+/**
+ * The format to export, given the one picked and the user's options: the UI
+ * offers "Full JSON" as a checkbox of `json` rather than as its own format.
+ */
+export function resolveFormat(
+  format: string,
+  userOptions: Record<string, any> = {},
+): string {
+  const full = userOptions.jsonFull === true || userOptions.jsonFull === 'true'
+
+  return format === 'json' && full ? 'fulljson' : format
 }
 
 /** Renders {@link toOptions} as argv, for callers that spawn the CLI. */

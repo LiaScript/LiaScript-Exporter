@@ -374,6 +374,27 @@ test.describe('sources and options', () => {
     expect(line).not.toContain('--web-zip')
   })
 
+  test('"Full JSON" exports fullJson instead of json', async ({ request }, testInfo) => {
+    const result = await exportVia(
+      request,
+      'json-full-box',
+      { format: 'json', option_jsonFull: 'true' },
+      courseUpload(),
+      QUICK_TIMEOUT,
+    )
+    expect(result.job.status, result.job.error).toBe('completed')
+
+    const line = serverLog.split('\n').find((l) => l.includes(result.job.id) && l.includes('Starting export'))
+    expect(line).toContain('--format fulljson')
+
+    const check = await checkOutput('fullJson', result.file!)
+    await testInfo.attach('checker.json', {
+      body: JSON.stringify(check, null, 2),
+      contentType: 'application/json',
+    })
+    expect(check.problems).toEqual([])
+  })
+
   test('git import over multipart', async ({ request }) => {
     test.skip(!NETWORK, 'needs NETWORK=1')
     test.setTimeout(3 * 60_000)

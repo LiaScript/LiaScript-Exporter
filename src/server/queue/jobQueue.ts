@@ -6,7 +6,7 @@ import * as fs from 'fs-extra'
 import { tmpdir } from 'os'
 import * as YAML from 'yaml'
 import { removeDirectory } from '../utils/zipExtractor'
-import { toOptions, toCliArguments } from '../../export/options'
+import { resolveFormat, toOptions, toCliArguments } from '../../export/options'
 
 export interface ExportJob {
   id: string
@@ -221,7 +221,7 @@ export class JobQueue extends EventEmitter {
             format = 'scorm2004'
           }
         } else {
-          format = job.target.format || 'web'
+          format = resolveFormat(job.target.format || 'web', job.options)
         }
 
         // Create output directory

@@ -7,7 +7,7 @@ import * as fs from 'node:fs'
 import * as path from 'node:path'
 import { describe, expect, it } from 'vitest'
 import * as YAML from 'yaml'
-import { toCliArguments, toOptions } from '../../src/export/options'
+import { resolveFormat, toCliArguments, toOptions } from '../../src/export/options'
 
 const ROOT = path.resolve(__dirname, '../..')
 const read = (file: string) => fs.readFileSync(path.join(ROOT, file), 'utf8')
@@ -41,6 +41,7 @@ const SERVER_FORMATS = [
   'epub',
   'docx',
   'json',
+  'fulljson',
   'rdf',
 ]
 
@@ -48,9 +49,7 @@ const SERVER_FORMATS = [
  * Known bugs: the case is marked `it.fails` and turns red once fixed; then
  * delete the entry.
  */
-const BUGS: Record<string, string> = {
-  json: 'the "Full JSON" and "Pretty print" checkboxes (jsonFull, jsonPretty) reach no exporter',
-}
+const BUGS: Record<string, string> = {}
 
 describe('toOptions', () => {
   it('finds the form fields and CLI flags it is checked against', () => {
@@ -136,6 +135,26 @@ describe('toOptions', () => {
       })
     }
     expect(toOptions('web', {}, { liaSubfolder: 'true' })).toEqual({})
+  })
+})
+
+describe('resolveFormat', () => {
+  it('turns json into fulljson when "Full JSON" is ticked', () => {
+    expect(resolveFormat('json', { jsonFull: 'true' })).toBe('fulljson')
+    expect(resolveFormat('json', { jsonFull: true })).toBe('fulljson')
+  })
+
+  it('leaves the format alone otherwise', () => {
+    expect(resolveFormat('json', {})).toBe('json')
+    expect(resolveFormat('json', { jsonFull: 'false' })).toBe('json')
+    expect(resolveFormat('web', { jsonFull: 'true' })).toBe('web')
+  })
+
+  it('drops jsonFull from the options: it only selects the format', () => {
+    const form = { jsonFull: 'true', webZip: 'true' }
+    expect(toOptions('json', {}, form)).toEqual({})
+    expect(toOptions('fulljson', {}, form)).toEqual({})
+    expect(toOptions('fullJson', {}, form)).toEqual({})
   })
 })
 

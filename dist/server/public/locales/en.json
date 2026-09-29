@@ -190,8 +190,6 @@
   "settings.json.title": "JSON Settings",
   "settings.json.fullJSON": "Full JSON",
   "settings.json.fullJSONHint": "Exports all details",
-  "settings.json.prettyPrint": "Formatted (Pretty Print)",
-  "settings.json.prettyPrintHint": "Readable formatted JSON",
   "settings.rdf.title": "RDF Settings",
   "settings.rdf.outputFormat": "Output Format",
   "settings.rdf.outputFormatHint": "Format for RDF output (default: JSON-LD)",
