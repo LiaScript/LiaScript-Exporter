@@ -234,7 +234,7 @@ export class Exporter {
         await serverExporter('epub').exporter(argument, JSON.parse(json))
         break
       case SERVER_ONLY.DOCX:
-        await serverExporter('docx').exporter(argument)
+        await serverExporter('docx').exporter(argument, JSON.parse(json))
         break
       case SERVER_ONLY.ANDROID:
         await serverExporter('android').exporter(argument, JSON.parse(json))

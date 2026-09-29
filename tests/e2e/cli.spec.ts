@@ -27,9 +27,6 @@ const QUICK_TIMEOUT = 90_000
 // Formats that print the course with their own Chrome
 const CHROME_TIMEOUT = 150_000
 
-const SCORM_XSD =
-  'imsmanifest.xml fails its XSD: <metadata> is misplaced (written by simple-scorm-packager)'
-
 interface Case {
   name: string
   format: Format
@@ -53,22 +50,16 @@ const CASES: Case[] = [
     format: 'docx',
     output: 'docx.docx',
     timeout: CHROME_TIMEOUT,
-    // Also crashes in html-to-docx `createFont` on blockquotes once past the
-    // alert (the fix exists in src/webapp/formats/docx.ts, not in the CLI).
-    bug: 'hangs forever on the course alert(): src/export/docx.ts has no page.on("dialog")',
   },
   {
     name: 'epub',
     format: 'epub',
     output: 'epub.epub',
     timeout: CHROME_TIMEOUT,
-    // Past that, deep mode also finds epubcheck errors (svg `--` fatal),
-    // file:// URLs with local paths and an undeclared spine idref.
-    bug: 'exits 1 with ENOENT: src/export/epub.ts resolves a relative `logo:` against cwd, not the course',
   },
   { name: 'pdf', format: 'pdf', output: 'pdf.pdf', timeout: CHROME_TIMEOUT },
-  { name: 'scorm1.2', format: 'scorm1.2', output: 'scorm1.2.zip', timeout: QUICK_TIMEOUT, deepBug: SCORM_XSD },
-  { name: 'scorm2004', format: 'scorm2004', output: 'scorm2004.zip', timeout: QUICK_TIMEOUT, deepBug: SCORM_XSD },
+  { name: 'scorm1.2', format: 'scorm1.2', output: 'scorm1.2.zip', timeout: QUICK_TIMEOUT },
+  { name: 'scorm2004', format: 'scorm2004', output: 'scorm2004.zip', timeout: QUICK_TIMEOUT },
   { name: 'ims', format: 'ims', output: 'ims.zip', timeout: QUICK_TIMEOUT },
   { name: 'web', format: 'web', output: 'web', timeout: QUICK_TIMEOUT, render: true },
   {
@@ -77,7 +68,6 @@ const CASES: Case[] = [
     args: ['--web-zip'],
     output: 'web-zip.zip',
     timeout: QUICK_TIMEOUT,
-    bug: '--web-zip ships .hidden/secret.txt; the unzipped web export leaves it out',
   },
   {
     name: 'xapi',
@@ -85,11 +75,9 @@ const CASES: Case[] = [
     output: 'xapi',
     timeout: QUICK_TIMEOUT,
     render: true,
-    bug: 'tincan.xml lists .hidden/secret.txt, which the package (correctly) does not contain',
   },
   { name: 'json', format: 'json', output: 'json.json', timeout: QUICK_TIMEOUT },
   { name: 'fullJson', format: 'fullJson', output: 'fullJson.json', timeout: QUICK_TIMEOUT },
-  // The CLI help calls this format `linkedData`, but only `rdf` works.
   { name: 'rdf', format: 'rdf', output: 'rdf.jsonld', timeout: QUICK_TIMEOUT },
 ]
 

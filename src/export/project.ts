@@ -791,22 +791,21 @@ function buildCourseSearchEntry(course: any): any | null {
 }
 
 function meta(json: any) {
-  const title = (
+  const rawTitle = (
     json.meta?.title ||
     cleanHTML(json.title) ||
     'LiaScript Course Index'
   ).trim()
+  const title = helper.escapeHtml(rawTitle)
 
   let metaData = `<meta property="og:type" content="website">
 <meta property="og:title" content="${title}">
 <meta name="twitter:title" content="${title}">
 `
 
-  const description = (
-    json.meta?.description ||
-    cleanHTML(json.comment) ||
-    ''
-  ).trim()
+  const description = helper.escapeHtml(
+    (json.meta?.description || cleanHTML(json.comment) || '').trim(),
+  )
 
   if (description) {
     metaData += `<meta name="description" content="${description}">
@@ -815,7 +814,7 @@ function meta(json: any) {
 `
   }
 
-  const image = (json.meta?.image || json.logo || '').trim()
+  const image = helper.escapeHtml((json.meta?.image || json.logo || '').trim())
 
   if (image) {
     metaData += `<meta property="og:image" content="${image}">
@@ -976,7 +975,7 @@ async function toCard(
       console.log('generate docx of', argument.input, ' -> ', file)
 
       fs.ensureDirSync('assets/docx')
-      await DOCX.exporter(argument)
+      await DOCX.exporter(argument, course.data)
     }
   }
 

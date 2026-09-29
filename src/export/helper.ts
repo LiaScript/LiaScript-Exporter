@@ -74,6 +74,18 @@ export function dirname(): string {
 }
 
 /**
+ * Escapes text for HTML element content or a double-quoted attribute value,
+ * e.g. a course comment that contains quotes.
+ */
+export function escapeHtml(text: string): string {
+  return String(text)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+}
+
+/**
  * Delays execution for a specified number of milliseconds.
  * @param ms - Number of milliseconds to sleep
  * @returns Promise that resolves after the specified delay

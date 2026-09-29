@@ -77,7 +77,7 @@ export function displayHelp(): void {
   COLOR.command(
     '-f',
     '--format',
-    'scorm1.2, scorm2004, json, fullJson, web, ims, pdf, epub, docx, android, linkedData, presets (default is json)',
+    'scorm1.2, scorm2004, json, fullJson, web, ims, pdf, epub, docx, android, rdf, presets (default is json)',
   )
   COLOR.command('-v', '--version', 'output the current version')
   COLOR.command('\n-k', '--key', 'responsive voice key ')

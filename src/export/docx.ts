@@ -70,7 +70,10 @@ export interface DocxExportArguments {
 export const format = 'docx'
 
 /** Exports a LiaScript course to DOCX format. */
-export async function exporter(argument: DocxExportArguments) {
+export async function exporter(argument: DocxExportArguments, json?: any) {
+  // The course title, unless the caller names the document itself
+  argument['docx-title'] = argument['docx-title'] || json?.lia?.str_title
+
   const dirname = helper.dirname()
 
   let url = `file://${dirname}/assets/pdf/index.html?`
@@ -119,6 +122,12 @@ export async function exporter(argument: DocxExportArguments) {
       if (msg.text().startsWith('__RENDER_DONE__')) {
         renderDoneResolve()
       }
+    })
+
+    // An unanswered alert() in the course blocks the page forever
+    page.on('dialog', async (dialog) => {
+      console.log(`[Dialog ${dialog.type()}]: ${dialog.message()}`)
+      await dialog.dismiss()
     })
 
     await page.setExtraHTTPHeaders({
@@ -333,6 +342,41 @@ async function toDOCX(
 
       const bodyClone = document.body.cloneNode(true) as HTMLElement
 
+      // The converter writes an image it reaches outside a paragraph twice
+      // (two media files, two relationships, one drawn), so images get a
+      // paragraph of their own. It must replace a wrapper, not sit inside
+      // it: `<figure><p><img></p></figure>` is dropped entirely.
+      const framed = (child?: Element) => {
+        const p = document.createElement('p')
+        p.setAttribute('style',
+          'margin-top: 12pt; margin-bottom: 12pt; text-align: center; page-break-inside: avoid;')
+        if (child) p.appendChild(child)
+        return p
+      }
+
+      const isRemote = (url: string) => /^(https?:|\/\/|mailto:)/i.test(url)
+
+      // A remote medium becomes a link. A local one cannot be linked to once
+      // the document leaves this machine, so it is named instead: its
+      // description, or its file name.
+      const mediaLink = (url: string, prefix: string, label: string) => {
+        const p = document.createElement('p')
+        p.setAttribute('style', 'text-align: center; font-size: 0.9em; margin: 0.5em 0;')
+
+        if (isRemote(url)) {
+          const a = document.createElement('a')
+          a.href = url
+          a.textContent = prefix + url
+          a.setAttribute('style', 'color: #1a73e8; text-decoration: underline;')
+          p.appendChild(a)
+        } else {
+          p.textContent =
+            prefix + (label || url.split(/[?#]/)[0].split('/').pop() || 'Media')
+        }
+
+        return p
+      }
+
       // Remove UI elements not relevant in a document
       bodyClone
         .querySelectorAll(
@@ -356,6 +400,16 @@ async function toDOCX(
         img.removeAttribute('onerror')
         img.removeAttribute('onclick')
         img.removeAttribute('loading')
+      })
+
+      // html-to-docx 1.20.1 recurses into a <blockquote> without its document
+      // argument, so anything but plain text inside one (images, fonts, media)
+      // throws and aborts the export. Unwrap them all; italics survives.
+      bodyClone.querySelectorAll('blockquote').forEach((quote: Element) => {
+        const div = document.createElement('div')
+        div.setAttribute('style', 'font-style: italic;')
+        while (quote.firstChild) div.appendChild(quote.firstChild)
+        quote.replaceWith(div)
       })
 
       // Unwrap images from lia-figure__media divs (html-to-docx needs <img> as direct child of <figure>)
@@ -395,6 +449,10 @@ async function toDOCX(
             figure.querySelector('video')?.getAttribute('src') ||
             figure.querySelector('video source')?.getAttribute('src') || ''
           const mediaUrl = linkUrl || iframeSrc || videoSrc
+          const label =
+            printLink?.textContent?.trim() ||
+            figure.querySelector('figcaption')?.textContent?.trim() ||
+            ''
 
           const wrapper = document.createElement('div')
           wrapper.setAttribute('style', 'margin: 1em 0; text-align: center; page-break-inside: avoid;')
@@ -402,29 +460,22 @@ async function toDOCX(
           if (entry && entry[1]) {
             const img = document.createElement('img')
             img.src = entry[1]
-            img.alt = printLink?.textContent?.trim() || 'Video thumbnail'
+            img.alt = label || 'Video thumbnail'
             img.setAttribute('style', 'max-width: 100%; height: auto; display: block; margin: 0 auto;')
-            wrapper.appendChild(img)
+            wrapper.appendChild(framed(img))
           } else if (mediaUrl) {
             const ytMatch = mediaUrl.match(/(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([\w-]{11})/)
             if (ytMatch) {
               const img = document.createElement('img')
               img.src = `https://img.youtube.com/vi/${ytMatch[1]}/hqdefault.jpg`
-              img.alt = printLink?.textContent?.trim() || 'YouTube video'
+              img.alt = label || 'YouTube video'
               img.setAttribute('style', 'max-width: 100%; height: auto; display: block; margin: 0 auto;')
-              wrapper.appendChild(img)
+              wrapper.appendChild(framed(img))
             }
           }
 
           if (mediaUrl) {
-            const p = document.createElement('p')
-            p.setAttribute('style', 'text-align: center; font-size: 0.9em; margin-top: 0.5em;')
-            const a = document.createElement('a')
-            a.href = mediaUrl
-            a.textContent = '▶ Watch video: ' + mediaUrl
-            a.setAttribute('style', 'color: #1a73e8; text-decoration: underline;')
-            p.appendChild(a)
-            wrapper.appendChild(p)
+            wrapper.appendChild(mediaLink(mediaUrl, '▶ Watch video: ', label))
           } else if (!entry || !entry[1]) {
             const p = document.createElement('p')
             p.setAttribute('style', 'text-align: center; color: #888;')
@@ -441,14 +492,7 @@ async function toDOCX(
           const src = el.getAttribute('src') ||
             el.querySelector('source')?.getAttribute('src') || ''
           if (src) {
-            const p = document.createElement('p')
-            p.setAttribute('style', 'text-align: center; font-size: 0.9em; margin: 0.5em 0;')
-            const a = document.createElement('a')
-            a.href = src
-            a.textContent = prefix + src
-            a.setAttribute('style', 'color: #1a73e8; text-decoration: underline;')
-            p.appendChild(a)
-            el.replaceWith(p)
+            el.replaceWith(mediaLink(src, prefix, el.getAttribute('title') || ''))
           } else {
             el.remove()
           }
@@ -605,6 +649,21 @@ async function toDOCX(
         } catch (e) {
           console.error('Error injecting highlighted code block:', e)
         }
+      })
+
+      // Links to local files (gallery audio/video, course-relative hrefs) would
+      // point into this machine's file system; keep only what they show.
+      bodyClone.querySelectorAll('a[href]').forEach((a: Element) => {
+        const href = a.getAttribute('href') || ''
+        if (isRemote(href) || href.startsWith('#')) return
+        a.replaceWith(...Array.from(a.childNodes))
+      })
+
+      // Every figure becomes a paragraph, see `framed`
+      bodyClone.querySelectorAll('figure').forEach((figure: Element) => {
+        const p = framed()
+        while (figure.firstChild) p.appendChild(figure.firstChild)
+        figure.replaceWith(p)
       })
 
       // Build combined HTML from all <main> sections
