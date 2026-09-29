@@ -145,11 +145,9 @@ export const KNOWN_GAPS: Record<RenderedFormat, Record<string, KnownGap>> = {
   epub: {
     MKAudio: { reason: MEDIA_LABEL },
     MKVideo: { reason: MEDIA_LABEL },
-    MKQrCode: { reason: 'the QR code is an image, its title is not kept' },
     MKQuizHint: { reason: HIDDEN_UNTIL_CLICKED },
     MKQuizExplanation: { reason: HIDDEN_UNTIL_CLICKED },
     MKSvgText: { reason: 'inline SVG is captured as an image' },
-    MKAsciiCaption: { reason: 'the ASCII figure caption is dropped (epub only)' },
   },
   docx: {
     MKAudio: { reason: MEDIA_LABEL },

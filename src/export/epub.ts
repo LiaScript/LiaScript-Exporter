@@ -492,8 +492,9 @@ async function toEPUB(
             img.setAttribute('style', style)
 
             if (options.reuseAsContainer) {
-              el.innerHTML = ''
-              el.appendChild(img)
+              // The figure's own caption (ASCII art's title) stays.
+              const caption = el.querySelector(':scope > figcaption')
+              el.replaceChildren(img, ...(caption ? [caption] : []))
               if (options.figureStyle)
                 el.setAttribute('style', options.figureStyle)
             } else if (options.wrapInFigure) {
