@@ -69,7 +69,10 @@
     "test:cli:deep": "DEEP=1 playwright test --project=cli",
     "test:server": "playwright test --project=server",
     "test:webapp": "playwright test --project=webapp",
-    "test:webapp:deep": "DEEP=1 playwright test --project=webapp"
+    "test:webapp:deep": "DEEP=1 playwright test --project=webapp",
+    "test:build": "npm run build && npm run webapp:build",
+    "test:all": "npm run test:build && npm run test:types && npm run test:unit && playwright test",
+    "test:all:deep": "npm run test:setup && npm run test:build && npm run test:types && npm run test:unit && DEEP=1 playwright test"
   },
   "keywords": [
     "LiaScript",

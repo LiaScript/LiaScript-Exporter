@@ -12,6 +12,9 @@ import { defineConfig } from '@playwright/test'
  *
  * The `webapp` project serves `dist/webapp/build` (run `npm run webapp:build`
  * first) and exports through its UI (NETWORK=1 adds the GitHub import).
+ *
+ *   npm run test:all             both builds, types, unit tests, every project
+ *   npm run test:all:deep        the same with DEEP=1 (+ epubcheck download)
  */
 export default defineConfig({
   testDir: 'tests/e2e',
