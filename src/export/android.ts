@@ -113,6 +113,8 @@ export const format = 'android'
 export async function exporter(argument: AndroidExportArguments, json: any) {
   // make temp folder
   let tmp = await helper.tmpDir()
+  // Preview opens this project in Android Studio, which outlives the CLI.
+  if (!argument['android-preview']) helper.removeOnExit(tmp)
   const dirname = helper.dirname()
 
   // copy assets to temp/dist

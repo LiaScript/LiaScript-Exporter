@@ -4,6 +4,7 @@ import * as fs from 'fs-extra'
 import * as path from 'path'
 import * as temp from 'temp'
 import { ExportFS, CopyOptions } from './types'
+import { removeOnExit } from '../export/helper'
 
 const archiver = require('archiver')
 
@@ -103,11 +104,15 @@ export class NodeFS implements ExportFS {
     return this.root
   }
 
+  /** A fresh temp dir, removed when the process exits. */
   tmpDir(): Promise<string> {
     return new Promise((resolve, reject) => {
       temp.mkdir(TEMP_DIR_PREFIX, (err: Error | null, tmpPath: string) => {
         if (err) reject(err)
-        else resolve(tmpPath)
+        else {
+          removeOnExit(tmpPath)
+          resolve(tmpPath)
+        }
       })
     })
   }

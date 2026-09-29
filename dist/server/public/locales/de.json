@@ -252,6 +252,7 @@
   "status.downloadButton": "Datei herunterladen",
   "status.printButton": "Druckdialog öffnen",
   "status.printHint": "Der Kurs wird in einem neuen Tab geöffnet und der Druckdialog erscheint — wählen Sie dort „Als PDF speichern“ als Ziel.",
+  "status.expired": "Dieser Export ist abgelaufen, seine Datei wurde gelöscht. Bitte exportieren Sie erneut.",
   "status.printBlocked": "Der Druck-Tab wurde blockiert. Bitte erlauben Sie Pop-ups für diese Seite und versuchen Sie es erneut.",
   "status.resultGone": "Dieser Export ist nicht mehr verfügbar — die Datei wird nur gespeichert, solange die Seite geöffnet bleibt. Bitte erneut exportieren.",
   "status.processing": "Ihr Export wird verarbeitet...",

@@ -146,27 +146,30 @@ export const exportRouter: FastifyPluginAsync = async (fastify) => {
 
   // POST /api/export - Create new export job
   fastify.post('/export', async (request, reply) => {
+    let jobData: any = {
+      source: {},
+      target: {},
+      options: {},
+    }
+    // Made before the parts are read, so before anyone knows a job will use it
+    let uploadDir: string | undefined
+    let queued = false
+
     try {
       const data = await request.body
-
-      let jobData: any = {
-        source: {},
-        target: {},
-        options: {},
-      }
 
       // Check if it's multipart (file upload)
       if (request.isMultipart()) {
         const parts = request.parts()
         const files: any[] = []
         const uploadId = randomUUID()
-        const uploadDir = join(tmpdir(), 'liaex-uploads', uploadId)
+        uploadDir = join(tmpdir(), 'liaex-uploads', uploadId)
         await mkdir(uploadDir, { recursive: true })
 
         for await (const part of parts) {
           if (part.type === 'file') {
             // Save file temporarily
-            const filepath = join(uploadDir, part.filename)
+            const filepath = join(uploadDir!, part.filename)
             const buffer = await part.toBuffer()
             await writeFile(filepath, new Uint8Array(buffer))
 
@@ -264,6 +267,7 @@ export const exportRouter: FastifyPluginAsync = async (fastify) => {
 
       // Add job to queue
       const result = jobQueue.addJob(jobData)
+      queued = true
 
       return reply.send(result)
     } catch (error: any) {
@@ -272,6 +276,12 @@ export const exportRouter: FastifyPluginAsync = async (fastify) => {
         error: 'Failed to create export job',
         message: error.message,
       })
+    } finally {
+      // The job removes its own upload once it ends; one no job took over
+      // (a rejected request, or a git import over multipart) goes now.
+      if (uploadDir && !(queued && jobData.source.uploadDir === uploadDir)) {
+        await removeDirectory(uploadDir)
+      }
     }
   })
 
@@ -308,6 +318,12 @@ export const exportRouter: FastifyPluginAsync = async (fastify) => {
 
     if (job.status !== 'completed') {
       return reply.code(400).send({ error: 'Job not completed yet' })
+    }
+
+    if (job.expired) {
+      return reply
+        .code(410)
+        .send({ error: 'Export expired, please export again' })
     }
 
     if (!job.result || !job.result.outputPath) {

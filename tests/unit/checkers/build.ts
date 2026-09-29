@@ -6,6 +6,7 @@ import * as fs from 'node:fs'
 import * as os from 'node:os'
 import * as path from 'node:path'
 import { zipSync, Zippable } from 'fflate'
+import { afterAll } from 'vitest'
 import {
   COURSE,
   COURSE_DIR,
@@ -20,6 +21,8 @@ import {
 export type Files = Record<string, string | Uint8Array>
 
 const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'lia-checker-test-'))
+// Registered with each test file that imports this (Vitest isolates modules per file).
+afterAll(() => fs.rmSync(tmp, { recursive: true, force: true }))
 let counter = 0
 
 /** Writes files as a zip; `stored` entries go first and uncompressed. */

@@ -302,7 +302,13 @@
           }
 
           ${
-            job.status === 'completed'
+            job.status === 'completed' && job.expired
+              ? `
+            <p id="expiredNote" style="margin-top: 1.5rem; color: var(--text-muted);">
+              ${t('status.expired', 'This export has expired and its file was deleted. Please export again.')}
+            </p>
+          `
+              : job.status === 'completed'
               ? job.print
                 ? `
             <div style="margin-top: 1.5rem;">

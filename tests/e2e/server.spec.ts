@@ -13,7 +13,8 @@
  * extracted to a temp dir and exported from another cwd breaks differently
  * from `-i tests/fixtures/course/README.md`.
  *
- * The server runs one job at a time, so the whole file shares one server.
+ * The server runs one job at a time, so the whole file shares one server;
+ * only the expiry test starts its own, with a TTL of seconds.
  */
 import { ChildProcess, spawn } from 'node:child_process'
 import * as fs from 'node:fs'
@@ -85,8 +86,15 @@ const CASES: Case[] = [
   { name: 'rdf', format: 'rdf', ext: 'jsonld', timeout: QUICK_TIMEOUT },
 ]
 
-let server: ChildProcess | undefined
-let serverLog = ''
+interface Server {
+  proc: ChildProcess
+  url: string
+  log: string
+  /** Its TMPDIR, so everything it and its CLI runs leave behind is here. */
+  tmp: string
+}
+
+let main: Server | undefined
 let baseURL = ''
 let courseZip: Buffer
 
@@ -103,43 +111,70 @@ function freePort(): Promise<number> {
 }
 
 /**
- * Starts the server in its own process group: every job spawns the CLI, and
+ * Starts a server in its own process group: every job spawns the CLI, and
  * the CLI may start Chrome; all of it must go when the suite ends.
  */
-async function startServer(): Promise<void> {
+async function launchServer(env: NodeJS.ProcessEnv = {}): Promise<Server> {
   const port = await freePort()
-  server = spawn(process.execPath, [CLI, 'serve', '--port', String(port), '--no-browser'], {
+  // Right in the system's temp dir: Chrome puts a socket in TMPDIR, and
+  // socket paths may not exceed 108 characters, which a folder in
+  // test-results already does (Chrome then dies with "Target closed").
+  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'liat-'))
+
+  const proc = spawn(process.execPath, [CLI, 'serve', '--port', String(port), '--no-browser'], {
     cwd: ROOT,
+    env: { ...process.env, TMPDIR: tmp, ...env },
     detached: true,
     stdio: ['ignore', 'pipe', 'pipe'],
   })
-  server.stdout!.on('data', (chunk) => (serverLog += chunk))
-  server.stderr!.on('data', (chunk) => (serverLog += chunk))
+  const server: Server = { proc, url: `http://127.0.0.1:${port}`, log: '', tmp }
+  proc.stdout!.on('data', (chunk) => (server.log += chunk))
+  proc.stderr!.on('data', (chunk) => (server.log += chunk))
 
-  baseURL = `http://127.0.0.1:${port}`
   const deadline = Date.now() + 30_000
 
   while (Date.now() < deadline) {
-    if (server.exitCode !== null) break
+    if (proc.exitCode !== null) break
     try {
-      if ((await fetch(`${baseURL}/api/queue`)).ok) return
+      if ((await fetch(`${server.url}/api/queue`)).ok) return server
     } catch {
       // not listening yet
     }
     await new Promise((r) => setTimeout(r, 250))
   }
 
-  throw new Error(`server did not start; log:\n${serverLog.slice(-2_000)}`)
+  stopServer(server)
+  throw new Error(`server did not start; log:\n${server.log.slice(-2_000)}`)
 }
 
-function stopServer(): void {
-  if (!server?.pid) return
+function stopServer(server: Server | undefined): void {
+  if (!server?.proc.pid) return
   try {
-    process.kill(-server.pid, 'SIGKILL')
+    process.kill(-server.proc.pid, 'SIGKILL')
   } catch {
     // the group is already gone
   }
-  server = undefined
+  fs.rmSync(server.tmp, { recursive: true, force: true })
+}
+
+/**
+ * What a server left in its TMPDIR, besides downloads it still serves (kept
+ * until they expire): its own upload/clone/export folders, and any temp folder
+ * an export made.
+ */
+function leftovers(server: Server, keepExports: boolean): string[] {
+  const found: string[] = []
+
+  for (const entry of fs.readdirSync(server.tmp)) {
+    if (['liaex-uploads', 'liaex-git', 'liaex-exports'].includes(entry)) {
+      if (entry === 'liaex-exports' && keepExports) continue
+      for (const inner of fs.readdirSync(path.join(server.tmp, entry))) found.push(`${entry}/${inner}`)
+    } else {
+      found.push(entry)
+    }
+  }
+
+  return found
 }
 
 interface Job {
@@ -153,12 +188,13 @@ async function submit(
   request: APIRequestContext,
   fields: Record<string, string>,
   upload?: { name: string; mimeType: string; buffer: Buffer },
+  base = baseURL,
 ): Promise<{ status: number; body: any }> {
   const form = new FormData()
   for (const [key, value] of Object.entries(fields)) form.append(key, value)
   if (upload) form.append('file', new Blob([new Uint8Array(upload.buffer)], { type: upload.mimeType }), upload.name)
 
-  const response = await request.post(`${baseURL}/api/export`, { multipart: form })
+  const response = await request.post(`${base}/api/export`, { multipart: form })
   return { status: response.status(), body: await response.json() }
 }
 
@@ -167,12 +203,13 @@ async function waitForJob(
   request: APIRequestContext,
   jobId: string,
   timeout: number,
+  base = baseURL,
 ): Promise<Job> {
   const deadline = Date.now() + timeout
   let job: Job | undefined
 
   while (Date.now() < deadline) {
-    const response = await request.get(`${baseURL}/api/job/${jobId}`)
+    const response = await request.get(`${base}/api/job/${jobId}`)
     expect(response.ok(), `GET /api/job/${jobId}`).toBe(true)
     job = (await response.json()).job as Job
     if (job.status === 'completed' || job.status === 'failed') return job
@@ -234,12 +271,13 @@ test.beforeAll(async () => {
   fs.mkdirSync(OUT_DIR, { recursive: true })
   courseZip = zipCourse()
 
-  await startServer()
+  main = await launchServer()
+  baseURL = main.url
 })
 
 test.afterAll(async ({}, testInfo) => {
-  stopServer()
-  await testInfo.attach('server.log', { body: serverLog, contentType: 'text/plain' })
+  stopServer(main)
+  await testInfo.attach('server.log', { body: main?.log ?? '', contentType: 'text/plain' })
 })
 
 test.describe('API', () => {
@@ -330,7 +368,7 @@ test.describe('sources and options', () => {
     expect(path.extname(result.file!)).toBe('.zip')
 
     // moodle4 sets scormEmbed: the server must have passed --scorm-embed on.
-    expect(serverLog).toMatch(/--format scorm1\.2 .*--scorm-embed/)
+    expect(main!.log).toMatch(/--format scorm1\.2 .*--scorm-embed/)
 
     const check = await checkOutput('scorm1.2', result.file!, { method: 'cli' })
     await testInfo.attach('checker.json', {
@@ -351,7 +389,7 @@ test.describe('sources and options', () => {
     )
     expect(result.job.status, result.job.error).toBe('completed')
 
-    const line = serverLog.split('\n').find((l) => l.includes(result.job.id) && l.includes('Starting export'))
+    const line = main!.log.split('\n').find((l) => l.includes(result.job.id) && l.includes('Starting export'))
     expect(line).toContain('--scorm-masteryScore 75')
     expect(line).not.toContain('--pdf-format')
     expect(line).not.toContain('--web-zip')
@@ -367,7 +405,7 @@ test.describe('sources and options', () => {
     )
     expect(result.job.status, result.job.error).toBe('completed')
 
-    const line = serverLog.split('\n').find((l) => l.includes(result.job.id) && l.includes('Starting export'))
+    const line = main!.log.split('\n').find((l) => l.includes(result.job.id) && l.includes('Starting export'))
     expect(line).toContain('--format fulljson')
 
     const check = await checkOutput('fullJson', result.file!)
@@ -392,7 +430,7 @@ test.describe('sources and options', () => {
   test('a failed clone answers 400 and leaves no clone behind', async ({ request }) => {
     test.skip(!NETWORK, 'needs NETWORK=1')
 
-    const clones = path.join(os.tmpdir(), 'liaex-git')
+    const clones = path.join(main!.tmp, 'liaex-git')
     const before = fs.existsSync(clones) ? fs.readdirSync(clones) : []
 
     for (const multipart of [true, false]) {
@@ -422,5 +460,64 @@ test.describe('sources and options', () => {
 
     const job = await waitForJob(request, (await response.json()).jobId, 2 * 60_000)
     await expectGitCourse(request, job, 'git-json')
+  })
+})
+
+// Last in the file: the file runs in one worker, in order, so every export
+// above has used this server by now.
+test.describe('cleanup', () => {
+  test('exports leave no temp folders, and a failed one leaves nothing', async ({ request }) => {
+    const { status, body } = await submit(
+      request,
+      { format: 'json' },
+      { name: 'README.md', mimeType: 'text/markdown', buffer: Buffer.from('no heading here\n') },
+    )
+    expect(status, JSON.stringify(body)).toBe(200)
+
+    const job = await waitForJob(request, body.jobId, QUICK_TIMEOUT)
+    expect(job.status).toBe('failed')
+    expect(job.error).toMatch(/no "# heading"/)
+
+    expect(fs.existsSync(path.join(main!.tmp, 'liaex-exports', job.id)), 'output folder of the failed job').toBe(false)
+    expect(leftovers(main!, true)).toEqual([])
+  })
+
+  test('a finished export expires, and so do orphans from before a restart', async ({ request, page }) => {
+    // 3 s, swept every 3 s
+    const server = await launchServer({ EXPORT_TTL_MINUTES: '0.05' })
+
+    try {
+      const exports = path.join(server.tmp, 'liaex-exports')
+      const orphan = path.join(exports, 'from-an-earlier-run')
+      fs.mkdirSync(orphan, { recursive: true })
+      const hourAgo = new Date(Date.now() - 3_600_000)
+      fs.utimesSync(orphan, hourAgo, hourAgo)
+
+      const { body } = await submit(
+        request,
+        { format: 'json' },
+        { name: 'README.md', mimeType: 'text/markdown', buffer: Buffer.from('# Title\n') },
+        server.url,
+      )
+      const job = await waitForJob(request, body.jobId, QUICK_TIMEOUT, server.url)
+      expect(job.status, job.error).toBe('completed')
+      expect((await request.get(`${server.url}/api/download/${job.id}`)).ok()).toBe(true)
+
+      await expect
+        .poll(async () => {
+          const { job: now } = await (await request.get(`${server.url}/api/job/${job.id}`)).json()
+          return { expired: !!now.expired, folders: fs.readdirSync(exports) }
+        }, { timeout: 20_000 })
+        .toEqual({ expired: true, folders: [] })
+
+      const gone = await request.get(`${server.url}/api/download/${job.id}`)
+      expect(gone.status()).toBe(410)
+      expect((await gone.json()).error).toMatch(/expired/)
+
+      await page.goto(`${server.url}/status.html?jobId=${job.id}`)
+      await expect(page.locator('#expiredNote')).toContainText('expired')
+    } finally {
+      stopServer(server)
+    }
   })
 })

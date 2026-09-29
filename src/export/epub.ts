@@ -835,6 +835,8 @@ async function toEPUB(
 
     // Sanitize chapter HTML for XHTML/XML compatibility
     const svgDir = fs.mkdtempSync(path.join(tmpdir(), 'liaex-epub-svg-'))
+    // read back when the book is written, so it stays until exit
+    helper.removeOnExit(svgDir)
     for (const chapter of chapters) {
       // Strip HTML comments — XML forbids "--" inside comment bodies
       chapter.data = chapter.data.replace(/<!--[\s\S]*?-->/g, '')
@@ -945,7 +947,12 @@ async function toEPUB(
       version: (argument['epub-version'] || DEFAULT_EPUB_VERSION) as 2 | 3,
       content: chapters,
       verbose: false,
-      tempDir: path.join(tmpdir(), 'liaex-epub-temp'),
+      // Per run: the library removes only its own subfolder, and only on
+      // success; the patched OPF template lands here too.
+      tempDir: await helper.tmpDir().then((dir) => {
+        helper.removeOnExit(dir)
+        return dir
+      }),
     }
 
     if (argument['epub-publisher'])

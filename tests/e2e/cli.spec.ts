@@ -12,6 +12,7 @@
  */
 import { spawn } from 'node:child_process'
 import * as fs from 'node:fs'
+import * as os from 'node:os'
 import * as path from 'node:path'
 import { expect, test, TestInfo } from '@playwright/test'
 import { strFromU8, unzipSync } from 'fflate'
@@ -139,6 +140,15 @@ function runCli(
   })
 }
 
+/**
+ * A TMPDIR of its own, right in the system's: Chrome puts a socket in it, and
+ * socket paths may not exceed 108 characters, which a folder in test-results
+ * already does (Chrome then dies at launch with "Target closed").
+ */
+function shortTmp(): string {
+  return fs.mkdtempSync(path.join(os.tmpdir(), 'liat-'))
+}
+
 test.describe.configure({ mode: 'parallel' })
 
 for (const c of CASES) {
@@ -147,17 +157,25 @@ for (const c of CASES) {
     test.describe.configure({ mode: 'serial' })
 
     const output = path.join(OUT_DIR, c.output)
+    // Its own TMPDIR, so whatever the export leaves behind can be seen.
+    let tmp: string
     let run: CliRun
+
+    test.afterAll(() => {
+      if (tmp) fs.rmSync(tmp, { recursive: true, force: true })
+    })
 
     test.beforeAll(async () => {
       if (!fs.existsSync(CLI)) throw new Error(`${CLI} is missing; run npm run build first`)
 
       fs.rmSync(output, { recursive: true, force: true })
       fs.mkdirSync(OUT_DIR, { recursive: true })
+      tmp = shortTmp()
 
       run = await runCli(
         ['-i', COURSE, '-f', c.format, '-o', path.join(OUT_DIR, c.name), ...(c.args ?? [])],
         c.timeout,
+        { ...process.env, TMPDIR: tmp },
       )
     })
 
@@ -170,6 +188,7 @@ for (const c of CASES) {
       expect(run.timedOut, `CLI still running after ${c.timeout / 1000} s`).toBe(false)
       expect(run.code, `CLI exit code; log:\n${run.log.slice(-2_000)}`).toBe(0)
       expect(fs.existsSync(output), `${c.output} was not written`).toBe(true)
+      expect(fs.readdirSync(tmp), 'temp folders left behind').toEqual([])
 
       const result = await checkOutput(c.format, output, { method: 'cli', deep: DEEP })
       await testInfo.attach('checker.json', {
