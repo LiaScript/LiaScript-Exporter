@@ -64,7 +64,9 @@
     "test:unit": "vitest run",
     "test:setup": "tsx tests/scripts/setup.ts",
     "test:check": "tsx tests/scripts/check-output.ts",
-    "test:types": "tsc -p tests/tsconfig.json"
+    "test:types": "tsc -p tests/tsconfig.json",
+    "test:cli": "playwright test --project=cli",
+    "test:cli:deep": "DEEP=1 playwright test --project=cli"
   },
   "keywords": [
     "LiaScript",
