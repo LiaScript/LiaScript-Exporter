@@ -3,7 +3,7 @@
  * format through the HTTP API, waits for the job and downloads the result.
  *
  *   npm run build && npm run test:server
- *   NETWORK=1 npm run test:server     + git import of this repo's fixture on GitHub
+ *   NETWORK=1 npm run test:server     + git import from GitHub
  *
  * The server spawns the same CLI for every job, so the CLI matrix already
  * covers the exporters in depth. What is the server's own is the path in
@@ -18,6 +18,7 @@
 import { ChildProcess, spawn } from 'node:child_process'
 import * as fs from 'node:fs'
 import * as net from 'node:net'
+import * as os from 'node:os'
 import * as path from 'node:path'
 import { APIRequestContext, expect, test } from '@playwright/test'
 import { zipSync } from 'fflate'
@@ -29,16 +30,21 @@ const COURSE_DIR = path.join(ROOT, 'tests/fixtures/course')
 const OUT_DIR = path.join(ROOT, 'test-results/server-exports')
 
 const NETWORK = !!process.env.NETWORK && process.env.NETWORK !== '0'
+/**
+ * The git import clones a tiny, long-untouched course (a README with quizzes,
+ * ~4 KB). GIT_URL / GIT_BRANCH / GIT_SUBDIR override it; the content check
+ * then only asks for valid JSON.
+ */
 const GIT_SOURCE: Record<string, string> = process.env.GIT_URL
   ? {
       gitUrl: process.env.GIT_URL,
       ...(process.env.GIT_BRANCH && { gitBranch: process.env.GIT_BRANCH }),
       ...(process.env.GIT_SUBDIR && { gitSubdir: process.env.GIT_SUBDIR }),
     }
-  : {
-      gitUrl: 'https://github.com/LiaScript/LiaScript-Exporter',
-      gitSubdir: 'tests/fixtures/course',
-    }
+  : { gitUrl: 'https://github.com/LiaPlayground/Quiz-Demo' }
+
+/** Text of the default git course that its JSON export must contain. */
+const GIT_COURSE_TEXT = process.env.GIT_URL ? [] : ['Quizze', 'Hier muss das Kreuz hin']
 
 const QUICK_TIMEOUT = 90_000
 const CHROME_TIMEOUT = 150_000
@@ -222,6 +228,19 @@ async function exportVia(
   }
 }
 
+/** A git job completed and its download is the cloned course as JSON. */
+async function expectGitCourse(request: APIRequestContext, job: Job, name: string) {
+  expect(job.status, job.error).toBe('completed')
+
+  const response = await request.get(`${baseURL}/api/download/${job.id}`)
+  expect(response.ok()).toBe(true)
+
+  const text = (await response.body()).toString('utf8')
+  fs.writeFileSync(path.join(OUT_DIR, `${name}.json`), text)
+  expect(() => JSON.parse(text)).not.toThrow()
+  for (const expected of GIT_COURSE_TEXT) expect(text).toContain(expected)
+}
+
 const courseUpload = () => ({ name: 'course.zip', mimeType: 'application/zip', buffer: courseZip })
 
 // Not serial: a failing test restarts the worker, which starts a fresh server,
@@ -363,20 +382,33 @@ test.describe('sources and options', () => {
     expect(status, JSON.stringify(body)).toBe(200)
 
     const job = await waitForJob(request, body.jobId, 2 * 60_000)
-    expect(job.status, job.error).toBe('completed')
+    await expectGitCourse(request, job, 'git-multipart')
+  })
 
-    // Default source is our fixture, so the checker applies.
-    if (!process.env.GIT_URL) {
-      const response = await request.get(`${baseURL}/api/download/${job.id}`)
-      const file = path.join(OUT_DIR, 'git.json')
-      fs.writeFileSync(file, await response.body())
-      expect((await checkOutput('json', file)).problems).toEqual([])
+  test('a failed clone answers 400 and leaves no clone behind', async ({ request }) => {
+    test.skip(!NETWORK, 'needs NETWORK=1')
+
+    const clones = path.join(os.tmpdir(), 'liaex-git')
+    const before = fs.existsSync(clones) ? fs.readdirSync(clones) : []
+
+    for (const multipart of [true, false]) {
+      const gitUrl = 'https://github.com/LiaScript/this-repo-does-not-exist'
+      const response = multipart
+        ? await submit(request, { format: 'json', gitUrl })
+        : await request
+            .post(`${baseURL}/api/export`, { data: { gitUrl, target: { format: 'json' } } })
+            .then(async (r) => ({ status: r.status(), body: await r.json() }))
+
+      expect(response.status, JSON.stringify(response.body)).toBe(400)
+      expect(response.body.error).toMatch(/failed to clone/i)
     }
+
+    const after = fs.existsSync(clones) ? fs.readdirSync(clones) : []
+    expect(after.filter((dir) => !before.includes(dir))).toEqual([])
   })
 
   test('git import over JSON', async ({ request }) => {
     test.skip(!NETWORK, 'needs NETWORK=1')
-    test.fail(true, 'the JSON branch of POST /api/export never clones, so the job fails with "No main file found"')
     test.setTimeout(3 * 60_000)
 
     const response = await request.post(`${baseURL}/api/export`, {
@@ -385,6 +417,6 @@ test.describe('sources and options', () => {
     expect(response.status()).toBe(200)
 
     const job = await waitForJob(request, (await response.json()).jobId, 2 * 60_000)
-    expect(job.status, job.error).toBe('completed')
+    await expectGitCourse(request, job, 'git-json')
   })
 })
