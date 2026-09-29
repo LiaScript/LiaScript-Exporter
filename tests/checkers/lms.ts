@@ -157,10 +157,12 @@ function checkScorm(
   else if (!pkg.has(launch)) problems.add('SCO launch file missing', launch)
 
   const item = byName(doc, 'item').find((i) => attr(i, 'identifierref'))
-  const course = item && attr(item, 'parameters')?.replace(/^[?#]/, '')
+  const course =
+    (item && attr(item, 'parameters')?.replace(/^[?#]/, '')) ||
+    (launch && pkg.has(launch) ? unparameterizedCourse(pkg, launch, problems) : null)
 
-  if (!course) problems.add('no course parameter', 'the item names no course file')
-  else if (!pkg.has(course)) problems.add('course parameter missing', course)
+  if (course === undefined) problems.add('no course parameter', 'the item names no course file')
+  else if (course && !pkg.has(course)) problems.add('course parameter missing', course)
 
   const listed = byName(doc, 'file').map((f) => attr(f, 'href') ?? '')
   problems.many(
@@ -180,6 +182,34 @@ function checkScorm(
     launch,
     listedFiles: listed.length,
   }
+}
+
+/**
+ * Where the course comes from when the manifest passes no parameter:
+ *   --scorm-iframe  start.html opens index.html?<path to README> in an iframe
+ *   --scorm-embed   index.html loads course.js, which holds the markdown itself
+ * Returns the course file to look for, null when the course is embedded (and
+ * checked here), or undefined when the launch file delivers no course at all.
+ */
+function unparameterizedCourse(
+  pkg: Package,
+  launch: string,
+  problems: Problems,
+): string | null | undefined {
+  const html = pkg.text(launch)
+
+  const framed = html.match(/\+\s*path\s*\+\s*"([^"]+)"/)
+  if (framed) return resolveRef(launch, framed[1]) ?? undefined
+
+  if (!/<script[^>]+src="course\.js"/.test(html)) return undefined
+
+  const script = resolveRef(launch, 'course.js')!
+  if (!pkg.has(script)) {
+    problems.add('embedded course missing', script)
+  } else if (!pkg.text(script).includes(COURSE.title)) {
+    problems.add('embedded course is not the course', `${script} lacks "${COURSE.title}"`)
+  }
+  return null
 }
 
 /**

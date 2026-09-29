@@ -29,6 +29,52 @@ describe('scorm1.2', () => {
     expect(problems).toContainEqual(expect.stringMatching(/^course parameter missing: README.md/))
   })
 
+  /** --scorm-embed: no parameter, the markdown travels in course.js. */
+  const embedded = () => {
+    const files = build.scorm12()
+    files['imsmanifest.xml'] = String(files['imsmanifest.xml']).replace(' parameters="README.md"', '')
+    files['index.html'] = `${files['index.html']}<script src="course.js"></script>`
+    files['course.js'] = `window["liascript_course"] = ${JSON.stringify(`# ${COURSE.title}`)}`
+    return files
+  }
+
+  it('passes an embedded course', async () => {
+    expect((await check(embedded())).problems).toEqual([])
+  })
+
+  it('reports an embedded course that is missing or foreign', async () => {
+    const missing = embedded()
+    delete missing['course.js']
+    expect((await check(missing)).problems).toEqual([
+      'index.html references missing files: 1 × course.js',
+      'embedded course missing: course.js',
+    ])
+
+    const foreign = embedded()
+    foreign['course.js'] = 'window["liascript_course"] = "# Other"'
+    expectOnly((await check(foreign)).problems, /^embedded course is not the course/)
+  })
+
+  it('passes a course opened by start.html (--scorm-iframe)', async () => {
+    const files = build.scorm12()
+    files['imsmanifest.xml'] = String(files['imsmanifest.xml'])
+      .replace(' parameters="README.md"', '')
+      .replace('href="index.html"', 'href="start.html"')
+      .replace('<file href=', '<file href="start.html"/><file href=')
+    files['start.html'] =
+      '<script>const src = path + "index.html?" + path + "README.md"</script>'
+    expect((await check(files)).problems).toEqual([])
+
+    files['start.html'] = String(files['start.html']).replace('README.md', 'GONE.md')
+    expectOnly((await check(files)).problems, /^course parameter missing: GONE.md/)
+  })
+
+  it('reports a launch file that delivers no course', async () => {
+    const files = build.scorm12()
+    files['imsmanifest.xml'] = String(files['imsmanifest.xml']).replace(' parameters="README.md"', '')
+    expectOnly((await check(files)).problems, /^no course parameter/)
+  })
+
   it('reports a changed course', async () => {
     const files = build.scorm12()
     files['README.md'] = '# Something else'

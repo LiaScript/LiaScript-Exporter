@@ -66,7 +66,8 @@
     "test:check": "tsx tests/scripts/check-output.ts",
     "test:types": "tsc -p tests/tsconfig.json",
     "test:cli": "playwright test --project=cli",
-    "test:cli:deep": "DEEP=1 playwright test --project=cli"
+    "test:cli:deep": "DEEP=1 playwright test --project=cli",
+    "test:server": "playwright test --project=server"
   },
   "keywords": [
     "LiaScript",

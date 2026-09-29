@@ -6,6 +6,9 @@ import { defineConfig } from '@playwright/test'
  *
  *   npm run test:cli             PR tier
  *   DEEP=1 npm run test:cli      nightly tier: + xmllint and epubcheck
+ *
+ * The `server` project starts `dist/index.js serve` and exports through its
+ * HTTP API (NETWORK=1 adds the git import).
  */
 export default defineConfig({
   testDir: 'tests/e2e',
@@ -26,6 +29,10 @@ export default defineConfig({
     {
       name: 'cli',
       testMatch: 'cli.spec.ts',
+    },
+    {
+      name: 'server',
+      testMatch: 'server.spec.ts',
     },
   ],
 })
