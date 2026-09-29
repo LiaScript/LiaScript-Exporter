@@ -194,6 +194,7 @@ async function assemble(
   labelUnreachable(body, reachable)
   extract.unlinkLocal(body)
   captions(body)
+  unlinkBlocks(body)
 
   return document_(chapters(body), options)
 }
@@ -303,6 +304,14 @@ function strip(body: HTMLElement): void {
     img.removeAttribute('loading')
   })
 
+  // The converter drops unknown inline elements with their text, such as a
+  // script's <output>.
+  body.querySelectorAll('output').forEach((output) => {
+    const span = output.ownerDocument.createElement('span')
+    span.textContent = output.textContent
+    output.replaceWith(span)
+  })
+
   extract.stripHandlers(body)
 
   // The converter wants `<img>` as a direct child of `<figure>`; the figure
@@ -363,6 +372,18 @@ function captions(body: HTMLElement): void {
     while (figure.firstChild) p.appendChild(figure.firstChild)
 
     figure.replaceWith(p)
+  })
+}
+
+/**
+ * Unwraps links around block content, keeping the content.
+ *
+ * LiaScript wraps a linked figure, such as a QR code, in one; the converter
+ * turns it into an empty hyperlink, dropping the image and its caption.
+ */
+function unlinkBlocks(body: HTMLElement): void {
+  body.querySelectorAll('a').forEach((a) => {
+    if (a.querySelector('p, div, figure, table')) a.replaceWith(...Array.from(a.childNodes))
   })
 }
 
@@ -429,16 +450,22 @@ function replaceMedia(body: HTMLElement): void {
         el.querySelector('source')?.getAttribute('src') ||
         ''
 
+      // The whole figure, as in epub: the label is a `<p>`, which the
+      // converter drops inside the figure's own `<span>` wrappers.
+      const target = el.closest('figure.lia-figure') ?? el
+
       if (url) {
-        el.replaceWith(media(doc, el, url, prefix))
+        target.replaceWith(media(doc, el, url, prefix))
       } else {
-        el.remove()
+        target.remove()
       }
     })
   }
 
   bare('iframe', '🔗 ')
   bare('video', '▶ ')
+  // the converter drops <audio> without a trace
+  bare('audio', '🔊 ')
 
   // Embeds are a rich preview of a remote page; the link is the content.
   body.querySelectorAll('lia-embed').forEach((embed) => {

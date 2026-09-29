@@ -4,6 +4,7 @@ import {
   Method,
   NEVER_RENDERED,
   RenderedFormat,
+  gapFallbacks,
   knownGaps,
   renderedMarkers,
   sourceMarkers,
@@ -21,7 +22,8 @@ export function findMarkers(text: string): string[] {
  * removed from the list, and the never-rendered ones must stay out.
  *
  * `raw` is the unfiltered output (markup, comments, attributes); leaks are
- * searched there, because extracting visible text would hide them.
+ * searched there, because extracting visible text would hide them. `text` is
+ * what a reader sees, where a gap's fallback must appear.
  */
 export function checkRenderedMarkers(
   problems: Problems,
@@ -29,6 +31,7 @@ export function checkRenderedMarkers(
   method: Method,
   found: string[],
   raw: string,
+  text: string,
 ): void {
   const have = new Set(found)
   const gaps = knownGaps(format, method)
@@ -42,6 +45,14 @@ export function checkRenderedMarkers(
   problems.many(
     'known gap now renders, remove it from KNOWN_GAPS',
     Object.keys(gaps).filter((marker) => have.has(marker)),
+  )
+
+  const flat = text.replace(/\s+/g, ' ')
+  problems.many(
+    'known gap without its fallback text',
+    Object.entries(gapFallbacks(format, method))
+      .filter(([marker, fallback]) => !have.has(marker) && !flat.includes(fallback))
+      .map(([marker, fallback]) => `${marker} (${fallback})`),
   )
 
   problems.many(

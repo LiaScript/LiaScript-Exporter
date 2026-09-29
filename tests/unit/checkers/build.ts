@@ -11,6 +11,7 @@ import {
   COURSE_DIR,
   COURSE_README,
   courseAssets,
+  gapFallbacks,
   knownGaps,
   renderedMarkers,
   RenderedFormat,
@@ -54,7 +55,10 @@ export function writeFile(name: string, data: string | Uint8Array): string {
 /** The markers a correct export of `format` contains: all but known gaps. */
 export function goodMarkers(format: RenderedFormat): string[] {
   const gaps = knownGaps(format, 'cli')
-  return renderedMarkers().filter((marker) => !(marker in gaps))
+  return [
+    ...renderedMarkers().filter((marker) => !(marker in gaps)),
+    ...Object.values(gapFallbacks(format, 'cli')),
+  ]
 }
 
 /** The player's shell plus the course, as every packaged format ships it. */

@@ -170,7 +170,7 @@ export async function checkRendered(
     Object.assign(summary, { dialogs })
 
     const markers = findMarkers(texts.join('\n'))
-    checkRenderedMarkers(problems, 'web', method, markers, raws.join('\n'))
+    checkRenderedMarkers(problems, 'web', method, markers, raws.join('\n'), texts.join('\n'))
 
     return { format: 'web', problems: problems.list, markers, summary }
   } finally {

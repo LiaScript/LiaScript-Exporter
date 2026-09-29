@@ -26,6 +26,11 @@ export interface KnownGap {
   reason: string
   /** Limits the gap to these methods; all methods when omitted. */
   only?: Method[]
+  /**
+   * Text that must stand in for the marker, so that a gap cannot hide the
+   * element vanishing altogether.
+   */
+  fallback?: string
 }
 
 export const COURSE = {
@@ -132,7 +137,8 @@ export function renderedMarkers(): string[] {
 
 const MEDIA_LABEL =
   'audio/video labels become a link or player, the label text is not kept'
-const DOCX_ALT = 'image alt text is not written to the docx (the web app keeps it)'
+const PRINT_MEDIA_LABEL =
+  'the print render (LiaScript feat/fullPage) drops the audio/video label; the file name stands in'
 const HIDDEN_UNTIL_CLICKED =
   'quiz hints and explanations stay hidden until the reader asks for them'
 
@@ -143,31 +149,22 @@ const HIDDEN_UNTIL_CLICKED =
  */
 export const KNOWN_GAPS: Record<RenderedFormat, Record<string, KnownGap>> = {
   epub: {
-    MKAudio: { reason: MEDIA_LABEL },
-    MKVideo: { reason: MEDIA_LABEL },
+    MKAudio: { reason: PRINT_MEDIA_LABEL, fallback: 'tone.wav' },
+    MKVideo: { reason: PRINT_MEDIA_LABEL, fallback: 'clip.webm' },
     MKQuizHint: { reason: HIDDEN_UNTIL_CLICKED },
     MKQuizExplanation: { reason: HIDDEN_UNTIL_CLICKED },
     MKSvgText: { reason: 'inline SVG is captured as an image' },
   },
   docx: {
-    MKAudio: { reason: MEDIA_LABEL },
-    MKVideo: { reason: MEDIA_LABEL },
-    MKQrCode: { reason: 'the QR code is an image, its title is not kept' },
+    MKAudio: { reason: PRINT_MEDIA_LABEL, fallback: 'tone.wav' },
+    MKVideo: { reason: PRINT_MEDIA_LABEL, fallback: 'clip.webm' },
     MKQuizHint: { reason: HIDDEN_UNTIL_CLICKED },
     MKQuizExplanation: { reason: HIDDEN_UNTIL_CLICKED },
     MKSvgText: { reason: 'inline SVG is captured as an image' },
-    MKImagePng: { reason: DOCX_ALT, only: ['cli'] },
-    MKImageJpg: { reason: DOCX_ALT, only: ['cli'] },
-    MKImageSvg: { reason: DOCX_ALT, only: ['cli'] },
-    MKGalleryA: { reason: DOCX_ALT, only: ['cli'] },
-    MKGalleryB: { reason: DOCX_ALT, only: ['cli'] },
-    MKQuoteImage: { reason: DOCX_ALT, only: ['cli'] },
-    MKAfterFenceImage: { reason: DOCX_ALT, only: ['cli'] },
-    MKScriptResult42: { reason: 'inline <script> output is not captured' },
   },
   pdf: {
-    MKAudio: { reason: MEDIA_LABEL },
-    MKVideo: { reason: MEDIA_LABEL },
+    MKAudio: { reason: PRINT_MEDIA_LABEL, fallback: 'tone.wav' },
+    MKVideo: { reason: PRINT_MEDIA_LABEL, fallback: 'clip.webm' },
     MKQuizHint: { reason: HIDDEN_UNTIL_CLICKED },
     MKQuizExplanation: { reason: HIDDEN_UNTIL_CLICKED },
     MKDetailsBody: { reason: '<details> is printed collapsed' },
@@ -186,6 +183,20 @@ export const KNOWN_GAPS: Record<RenderedFormat, Record<string, KnownGap>> = {
     MKQuizExplanation: { reason: HIDDEN_UNTIL_CLICKED },
     MKDetailsBody: { reason: '<details> starts collapsed' },
   },
+}
+
+/** The fallback text of each known gap that has one. */
+export function gapFallbacks(
+  format: RenderedFormat,
+  method: Method,
+): Record<string, string> {
+  const out: Record<string, string> = {}
+
+  for (const [marker, gap] of Object.entries(KNOWN_GAPS[format])) {
+    if (gap.fallback && (!gap.only || gap.only.includes(method))) out[marker] = gap.fallback
+  }
+
+  return out
 }
 
 export function knownGaps(

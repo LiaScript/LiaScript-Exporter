@@ -61,6 +61,20 @@
         return
       }
 
+      // Paper cannot play media, which would otherwise leave no trace; name
+      // the file. Same as the CLI.
+      document.querySelectorAll('audio, video').forEach(function (media) {
+        var source = media.querySelector('source')
+        var src =
+          media.getAttribute('src') || (source && source.getAttribute('src')) || ''
+        var name = decodeURIComponent(src.split(/[?#]/)[0].split('/').pop() || '')
+        if (!name || src.indexOf('data:') === 0) return
+
+        var label = document.createElement('p')
+        label.textContent = (media.tagName === 'AUDIO' ? '♪ ' : '▶ ') + name
+        media.parentNode.insertBefore(label, media.nextSibling)
+      })
+
       // Two frames: the injected rules must be laid out before printing.
       requestAnimationFrame(function () {
         requestAnimationFrame(function () {

@@ -194,7 +194,7 @@ export function checkEpub(source: string, options: CheckOptions = {}): CheckResu
   checkSectionTitles(problems, texts.join('\n'))
 
   const markers = findMarkers(texts.join('\n'))
-  checkRenderedMarkers(problems, 'epub', method, markers, raws.join('\n'))
+  checkRenderedMarkers(problems, 'epub', method, markers, raws.join('\n'), texts.join('\n'))
 
   return result(markers)
 }

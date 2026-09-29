@@ -142,7 +142,7 @@ export function checkDocx(source: string, options: CheckOptions = {}): CheckResu
   checkSectionTitles(problems, paragraphs.join('\n'))
 
   const markers = findMarkers([...paragraphs, ...altTexts].join('\n'))
-  checkRenderedMarkers(problems, 'docx', method, markers, rawDocument)
+  checkRenderedMarkers(problems, 'docx', method, markers, rawDocument, paragraphs.join('\n'))
 
   return result(markers)
 }

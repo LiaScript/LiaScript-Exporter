@@ -3,6 +3,7 @@ import * as COLOR from '../colorize'
 import * as path from 'path'
 import puppeteer, { Browser, Page } from 'puppeteer'
 import * as fs from 'fs'
+import { fileURLToPath } from 'url'
 import HTMLtoDOCX from '@turbodocx/html-to-docx'
 
 // Default DOCX generation settings
@@ -500,6 +501,8 @@ async function toDOCX(
       }
       replaceMediaWithLink('iframe', '🔗 ')
       replaceMediaWithLink('video', '▶ ')
+      // the converter drops <audio> without a trace
+      replaceMediaWithLink('audio', '♪ ')
 
       // Helper: replace tagged elements with their pre-captured images
       const replaceWithImage = (
@@ -659,6 +662,21 @@ async function toDOCX(
         a.replaceWith(...Array.from(a.childNodes))
       })
 
+      // A link around block content (LiaScript wraps a linked figure, such as
+      // a QR code, in one) becomes an empty hyperlink: image and caption are
+      // dropped. Keep the content, lose the link.
+      bodyClone.querySelectorAll('a').forEach((a: Element) => {
+        if (a.querySelector('p, div, figure, table')) a.replaceWith(...Array.from(a.childNodes))
+      })
+
+      // The converter drops unknown inline elements with their text, such as
+      // a script's <output>
+      bodyClone.querySelectorAll('output').forEach((output: Element) => {
+        const span = document.createElement('span')
+        span.textContent = output.textContent
+        output.replaceWith(span)
+      })
+
       // Every figure becomes a paragraph, see `framed`
       bodyClone.querySelectorAll('figure').forEach((figure: Element) => {
         const p = framed()
@@ -733,7 +751,7 @@ async function toDOCX(
   <title>${argument['docx-title'] || 'LiaScript Export'}</title>
 </head>
 <body>
-${processedHTML}
+${inlineLocalImages(processedHTML)}
 </body>
 </html>`
 
@@ -1027,6 +1045,38 @@ async function screenshotTaggedElements(
   }
 
   return images
+}
+
+const IMAGE_TYPES: Record<string, string> = {
+  '.png': 'image/png',
+  '.jpg': 'image/jpeg',
+  '.jpeg': 'image/jpeg',
+  '.gif': 'image/gif',
+  '.svg': 'image/svg+xml',
+  '.webp': 'image/webp',
+  '.bmp': 'image/bmp',
+}
+
+/**
+ * Inlines the course's own images. The page cannot fetch file: URLs and the
+ * converter drops an image it cannot load, alt text and all.
+ */
+function inlineLocalImages(html: string): string {
+  return html.replace(
+    /(<img\b[^>]*?\ssrc=")(file:\/\/[^"]+)"/g,
+    (match, head: string, url: string) => {
+      try {
+        const file = fileURLToPath(url.replace(/&amp;/g, '&'))
+        const type = IMAGE_TYPES[path.extname(file).toLowerCase()]
+        if (!type) return match
+
+        return `${head}data:${type};base64,${fs.readFileSync(file).toString('base64')}"`
+      } catch (e) {
+        console.warn('Failed to inline local image:', url, e)
+        return match
+      }
+    },
+  )
 }
 
 /** Extracts terminal output blocks from the live page. */

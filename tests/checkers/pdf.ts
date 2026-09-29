@@ -80,7 +80,7 @@ export async function checkPdf(
     checkSectionTitles(problems, text)
 
     const markers = findMarkers(text)
-    checkRenderedMarkers(problems, 'pdf', method, markers, text)
+    checkRenderedMarkers(problems, 'pdf', method, markers, text, text)
     return result(markers)
   } finally {
     await task.destroy()

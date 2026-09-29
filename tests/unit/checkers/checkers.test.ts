@@ -222,6 +222,11 @@ describe('markers (via epub)', () => {
     expectOnly((await check(markers)).problems, /^known gap now renders, remove it from KNOWN_GAPS: 1 × MKQuizHint/)
   })
 
+  it('reports a known gap whose fallback text is missing too', async () => {
+    const markers = build.goodMarkers('epub').filter((m) => m !== 'tone.wav')
+    expectOnly((await check(markers)).problems, /^known gap without its fallback text: 1 × MKAudio \(tone.wav\)/)
+  })
+
   it('reports never-rendered markers, even inside comments', async () => {
     const { problems } = await check(build.goodMarkers('epub'), '<!-- MKCommentLeak -->')
     expectOnly(problems, /^must never render: 1 × MKCommentLeak/)
