@@ -3,7 +3,7 @@
  * is read with pdf.js, so no system poppler is needed.
  */
 import * as fs from 'node:fs'
-import { COURSE, Method } from '../fixtures/course'
+import { LOCAL_FIXTURE, Method } from '../fixtures/course'
 import { checkRenderedMarkers, checkSectionTitles, findMarkers } from './markers'
 import { CheckOptions, CheckResult, Problems } from './types'
 
@@ -12,6 +12,7 @@ export async function checkPdf(
   options: CheckOptions = {},
 ): Promise<CheckResult> {
   const method: Method = options.method ?? 'cli'
+  const fixture = options.fixture ?? LOCAL_FIXTURE
   const problems = new Problems()
   const summary: Record<string, unknown> = {}
   const result = (markers: string[] = []): CheckResult => ({
@@ -62,7 +63,7 @@ export async function checkPdf(
     Object.assign(summary, { pages: doc.numPages, title })
 
     if (doc.numPages === 0) problems.add('no pages', 'the PDF has 0 pages')
-    if (!title.includes(COURSE.title)) problems.add('title', `"${title}" lacks the course title`)
+    if (!title.includes(fixture.course.title)) problems.add('title', `"${title}" lacks the course title`)
 
     const blank = pages
       .map((text, i) => (text.trim() ? null : i + 1))
@@ -77,10 +78,10 @@ export async function checkPdf(
     problems.many('data: URI printed on pages', leaks.map(String))
 
     const text = pages.join('\n')
-    checkSectionTitles(problems, text)
+    checkSectionTitles(problems, text, fixture)
 
     const markers = findMarkers(text)
-    checkRenderedMarkers(problems, 'pdf', method, markers, text, text)
+    checkRenderedMarkers(problems, 'pdf', method, markers, text, text, fixture)
     return result(markers)
   } finally {
     await task.destroy()

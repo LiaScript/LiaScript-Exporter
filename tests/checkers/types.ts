@@ -1,4 +1,4 @@
-import type { Method } from '../fixtures/course'
+import type { Fixture, Method } from '../fixtures/course'
 
 export type Format =
   | 'json'
@@ -16,6 +16,8 @@ export type Format =
 export interface CheckOptions {
   /** How the output was produced, which selects the known gaps. */
   method?: Method
+  /** The course the output was exported from; the local test course by default. */
+  fixture?: Fixture
   /**
    * Also run the external validators: xmllint against the SCORM schemas and
    * epubcheck. A requested validator that is not installed is a problem, never

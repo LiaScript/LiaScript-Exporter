@@ -3,7 +3,7 @@
  * at relationships, relationships point at parts. Past bugs left media nobody
  * referenced and leaked `blob:` URLs and base64 into the document.
  */
-import { COURSE, COURSE_DIR, Method } from '../fixtures/course'
+import { LOCAL_FIXTURE, Method } from '../fixtures/course'
 import { checkRenderedMarkers, checkSectionTitles, findMarkers } from './markers'
 import { openPackage, resolveRef } from './package'
 import { CheckOptions, CheckResult, Problems } from './types'
@@ -14,6 +14,7 @@ const RELS = 'word/_rels/document.xml.rels'
 
 export function checkDocx(source: string, options: CheckOptions = {}): CheckResult {
   const method: Method = options.method ?? 'cli'
+  const fixture = options.fixture ?? LOCAL_FIXTURE
   const pkg = openPackage(source)
   const problems = new Problems()
   const summary: Record<string, unknown> = {}
@@ -106,7 +107,7 @@ export function checkDocx(source: string, options: CheckOptions = {}): CheckResu
     ['blob: URL', /blob:/],
     ['data: URI', /data:[a-z]+\/[a-z0-9.+-]+;base64,/i],
     ['file: URL', /file:\/\//],
-    ['local machine path', new RegExp(escapeRegExp(COURSE_DIR))],
+    ['local machine path', new RegExp(escapeRegExp(fixture.dir))],
   ] as const
 
   for (const part of [DOCUMENT, RELS]) {
@@ -129,7 +130,7 @@ export function checkDocx(source: string, options: CheckOptions = {}): CheckResu
   const title = pkg.has('docProps/core.xml')
     ? textOf(byName(parseXml(pkg.text('docProps/core.xml')).doc!, 'title')[0])
     : null
-  if (title !== COURSE.title) problems.add('wrong dc:title', `"${title}"`)
+  if (title !== fixture.course.title) problems.add('wrong dc:title', `"${title}"`)
 
   Object.assign(summary, {
     paragraphs: paragraphs.length,
@@ -139,10 +140,10 @@ export function checkDocx(source: string, options: CheckOptions = {}): CheckResu
     title,
   })
 
-  checkSectionTitles(problems, paragraphs.join('\n'))
+  checkSectionTitles(problems, paragraphs.join('\n'), fixture)
 
   const markers = findMarkers([...paragraphs, ...altTexts].join('\n'))
-  checkRenderedMarkers(problems, 'docx', method, markers, rawDocument, paragraphs.join('\n'))
+  checkRenderedMarkers(problems, 'docx', method, markers, rawDocument, paragraphs.join('\n'), fixture)
 
   return result(markers)
 }

@@ -4,7 +4,7 @@
  * file paths baked into the book); `deep` adds epubcheck for everything else.
  */
 import * as path from 'node:path'
-import { COURSE, COURSE_DIR, Method } from '../fixtures/course'
+import { LOCAL_FIXTURE, Method } from '../fixtures/course'
 import { checkRenderedMarkers, checkSectionTitles, findMarkers } from './markers'
 import { firstZipEntry, openPackage, resolveRef } from './package'
 import { epubcheck, epubcheckJar } from './tools'
@@ -15,6 +15,8 @@ const MIMETYPE = 'application/epub+zip'
 
 export function checkEpub(source: string, options: CheckOptions = {}): CheckResult {
   const method: Method = options.method ?? 'cli'
+  const fixture = options.fixture ?? LOCAL_FIXTURE
+  const { course } = fixture
   const problems = new Problems()
   const summary: Record<string, unknown> = {}
   const result = (markers: string[] = []): CheckResult => ({
@@ -62,9 +64,9 @@ export function checkEpub(source: string, options: CheckOptions = {}): CheckResu
   const title = textOf(byName(opf, 'title')[0])
   const language = textOf(byName(opf, 'language')[0])
   const creator = textOf(byName(opf, 'creator')[0])
-  if (title !== COURSE.title) problems.add('wrong dc:title', `"${title}"`)
-  if (language !== COURSE.language) problems.add('wrong dc:language', `"${language}"`)
-  if (creator !== COURSE.author) problems.add('wrong dc:creator', `"${creator}"`)
+  if (title !== course.title) problems.add('wrong dc:title', `"${title}"`)
+  if (language !== course.language) problems.add('wrong dc:language', `"${language}"`)
+  if (creator !== course.author) problems.add('wrong dc:creator', `"${creator}"`)
   Object.assign(summary, { title, language, creator })
 
   // manifest: unique ids, every href exists, every file declared
@@ -117,10 +119,10 @@ export function checkEpub(source: string, options: CheckOptions = {}): CheckResu
     .filter((href) => pkg.has(href))
 
   summary.chapters = chapters.length
-  if (chapters.length !== COURSE.sections.length) {
+  if (chapters.length !== course.sections.length) {
     problems.add(
       'chapter count',
-      `${chapters.length} chapters for ${COURSE.sections.length} sections`,
+      `${chapters.length} chapters for ${course.sections.length} sections`,
     )
   }
 
@@ -163,7 +165,7 @@ export function checkEpub(source: string, options: CheckOptions = {}): CheckResu
     // an image link shown in a code block, inlined as base64 and printed
     if (/data:[a-z]+\/[a-z0-9.+-]+;base64,/i.test(text)) dataText.add(chapter)
 
-    if (raw.includes(COURSE_DIR)) localPaths.add(chapter)
+    if (raw.includes(fixture.dir)) localPaths.add(chapter)
   }
 
   problems.many('empty chapters', empty)
@@ -191,10 +193,10 @@ export function checkEpub(source: string, options: CheckOptions = {}): CheckResu
     }
   }
 
-  checkSectionTitles(problems, texts.join('\n'))
+  checkSectionTitles(problems, texts.join('\n'), fixture)
 
   const markers = findMarkers(texts.join('\n'))
-  checkRenderedMarkers(problems, 'epub', method, markers, raws.join('\n'), texts.join('\n'))
+  checkRenderedMarkers(problems, 'epub', method, markers, raws.join('\n'), texts.join('\n'), fixture)
 
   return result(markers)
 }

@@ -3,10 +3,12 @@
  *
  *   npm run test:check -- epub path/to/course.epub [--deep] [--method webapp]
  *   npm run test:check -- web path/to/web-dir --render
+ *   npm run test:check -- pdf path/to/network.pdf --network   (the network course)
  */
 import { chromium } from '@playwright/test'
 import { checkOutput, FORMATS, Format } from '../checkers'
 import { checkRendered } from '../checkers/render'
+import { NETWORK_FIXTURE } from '../fixtures/network'
 
 async function main() {
   const args = process.argv.slice(2)
@@ -18,11 +20,15 @@ async function main() {
   )
 
   if (!FORMATS.includes(format as Format) || !source) {
-    console.error(`usage: check-output <${FORMATS.join('|')}> <file or dir> [--deep] [--render] [--method cli|webapp]`)
+    console.error(`usage: check-output <${FORMATS.join('|')}> <file or dir> [--deep] [--render] [--network] [--method cli|webapp]`)
     process.exit(2)
   }
 
-  const options = { deep, method: method as 'cli' | 'webapp' }
+  const options = {
+    deep,
+    method: method as 'cli' | 'webapp',
+    fixture: args.includes('--network') ? NETWORK_FIXTURE : undefined,
+  }
   const results = [await checkOutput(format as Format, source, options)]
 
   if (args.includes('--render')) {

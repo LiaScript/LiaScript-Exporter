@@ -37,11 +37,11 @@ export async function checkOutput(
 ): Promise<CheckResult> {
   switch (format) {
     case 'json':
-      return checkJson(source)
+      return checkJson(source, false, options.fixture)
     case 'fullJson':
-      return checkJson(source, true)
+      return checkJson(source, true, options.fixture)
     case 'rdf':
-      return checkRdf(source)
+      return checkRdf(source, options.fixture)
     case 'scorm1.2':
     case 'scorm2004':
     case 'ims':

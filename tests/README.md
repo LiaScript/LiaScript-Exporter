@@ -38,7 +38,7 @@ single words.
 | Variable | Effect |
 |---|---|
 | `DEEP=1` | deep checks: epubcheck and XSD validation (CLI and web app) |
-| `NETWORK=1` | adds the tests that import a course from GitHub |
+| `NETWORK=1` | adds the network course and the tests that import a course from GitHub |
 | `GIT_URL`, `GIT_BRANCH`, `GIT_SUBDIR` | a different repository for those tests (default: `LiaPlayground/Quiz-Demo`) |
 | `EPUBCHECK_JAR` | use this epubcheck jar instead of the one in `tests/.cache` |
 
@@ -49,7 +49,8 @@ tests/
 ├── fixtures/
 │   ├── course/        the test course (README.md + local images, media, a hidden file)
 │   ├── course.ts      what each format must keep of it: markers, counts, known gaps
-│   └── network/       a course with remote content (not used by any suite yet)
+│   ├── network/       a second course with remote content
+│   └── network.ts     its expected sections and known gaps
 ├── checkers/          one checker per format, shared by every suite
 ├── e2e/               Playwright: cli.spec.ts, server.spec.ts, webapp.spec.ts
 ├── unit/              Vitest
@@ -71,6 +72,13 @@ The course also contains the cases behind earlier bugs: formulas, charts, ASCII
 figures, an SVG with `--` in a comment, quotes, local audio/video, and a
 `.hidden/secret.txt` that must never be shipped.
 
+### The network course
+
+`fixtures/network/README.md` holds content that needs the internet: remote
+images, a YouTube video, an embedded page, an imported template and a Chartist
+chart. The CLI and web app suites export it as epub, docx, pdf, web and json, only
+with `NETWORK=1`. Its markers start with `MKNet`.
+
 ### Checkers
 
 `checkOutput(format, path, { method, deep })` in `checkers/index.ts` returns the
@@ -91,12 +99,13 @@ To check a file by hand, for example a download from the web app:
 ```sh
 npm run test:check -- epub path/to/course.epub --deep --method webapp
 npm run test:check -- web path/to/web-dir --render
+npm run test:check -- pdf path/to/course.pdf --network   # against the network course
 ```
 
 ## When a test fails
 
 - **A marker is missing in one format:** fix the exporter if you can. If the format really cannot keep it, add a `KNOWN_GAPS` entry with a reason and a `fallback`. The list only shrinks by fixing exporters. Never add a gap to get a test to pass.
-- **A known exporter bug you can't fix yet:** give the case in `cli.spec.ts` a `bug` (or `deepBug` for the deep tier only). The test is then expected to fail. When the fix lands it turns red ("expected to fail, but passed"); delete the `bug` then.
+- **A known exporter bug you can't fix yet:** give the case in `cli.spec.ts` or `webapp.spec.ts` a `bug` (or `deepBug` for the deep tier only). The test is then expected to fail. When the fix lands it turns red ("expected to fail, but passed"); delete the `bug` then.
 - **Leftover temp folders:** each CLI export runs with its own `TMPDIR` and fails if anything is left in it. The server suite starts its servers with their own `TMPDIR`, and its `cleanup` tests check for leftovers there.
 
 ## Gotchas

@@ -4,7 +4,8 @@
  *
  *   npm run build && npm run test:cli
  *   DEEP=1 npm run test:cli          + xmllint and epubcheck (nightly)
- *   NETWORK=1 npm run test:cli       + export straight from a git repository
+ *   NETWORK=1 npm run test:cli       + the network course, and export straight
+ *                                      from a git repository
  *
  * A case with a `bug` fails today because of a known exporter bug and is
  * marked `test.fail()`, so the suite stays green and turns red ("expected to
@@ -18,10 +19,13 @@ import { expect, test, TestInfo } from '@playwright/test'
 import { strFromU8, unzipSync } from 'fflate'
 import { checkOutput, Format } from '../checkers'
 import { checkRendered } from '../checkers/render'
+import type { Fixture } from '../fixtures/course'
+import { NETWORK_FIXTURE } from '../fixtures/network'
 
 const ROOT = path.resolve(__dirname, '../..')
 const CLI = path.join(ROOT, 'dist/index.js')
 const COURSE = 'tests/fixtures/course/README.md'
+const NETWORK_COURSE = 'tests/fixtures/network/README.md'
 const OUT_DIR = path.join(ROOT, 'test-results/cli-exports')
 
 const DEEP = !!process.env.DEEP && process.env.DEEP !== '0'
@@ -83,6 +87,35 @@ const CASES: Case[] = [
   { name: 'json', format: 'json', output: 'json.json', timeout: QUICK_TIMEOUT },
   { name: 'fullJson', format: 'fullJson', output: 'fullJson.json', timeout: QUICK_TIMEOUT },
   { name: 'rdf', format: 'rdf', output: 'rdf.jsonld', timeout: QUICK_TIMEOUT },
+]
+
+// The formats that fetch, capture or keep remote content themselves; the
+// packaged ones only copy the README. json shows the remote import resolved.
+const NETWORK_CASES: Case[] = [
+  {
+    name: 'docx',
+    format: 'docx',
+    output: 'docx.docx',
+    timeout: CHROME_TIMEOUT,
+    bug: 'the Chartist chart is lost: html-to-docx rejects its SVG ("Invalid SVG") and leaves it as orphaned media',
+  },
+  {
+    name: 'epub',
+    format: 'epub',
+    output: 'epub.epub',
+    timeout: CHROME_TIMEOUT,
+    deepBug: 'epubcheck: the YouTube iframe stays remote and inside an <a>, the embed has a misplaced figcaption, the Chartist svg sits where no svg is allowed',
+  },
+  { name: 'pdf', format: 'pdf', output: 'pdf.pdf', timeout: CHROME_TIMEOUT },
+  {
+    name: 'web-zip',
+    format: 'web',
+    args: ['--web-zip'],
+    output: 'web-zip.zip',
+    timeout: QUICK_TIMEOUT,
+    render: true,
+  },
+  { name: 'json', format: 'json', output: 'json.json', timeout: QUICK_TIMEOUT },
 ]
 
 interface CliRun {
@@ -151,68 +184,102 @@ function shortTmp(): string {
 
 test.describe.configure({ mode: 'parallel' })
 
-for (const c of CASES) {
-  test.describe(c.name, () => {
-    // One export per format, shared by its tests; serial keeps them in one worker.
-    test.describe.configure({ mode: 'serial' })
+exportMatrix(CASES, { course: COURSE, outDir: OUT_DIR })
 
-    const output = path.join(OUT_DIR, c.output)
-    // Its own TMPDIR, so whatever the export leaves behind can be seen.
-    let tmp: string
-    let run: CliRun
+/*
+ * The network course: remote images, embeds, a remote import and a remote
+ * script. Every host it needs can be slow or down, hence NETWORK=1 only.
+ */
+exportMatrix(NETWORK_CASES, {
+  course: NETWORK_COURSE,
+  outDir: path.join(OUT_DIR, 'network'),
+  fixture: NETWORK_FIXTURE,
+  title: 'network',
+  network: true,
+})
 
-    test.afterAll(() => {
-      if (tmp) fs.rmSync(tmp, { recursive: true, force: true })
-    })
+interface Matrix {
+  /** The README to export, relative to the repository. */
+  course: string
+  outDir: string
+  /** What the checkers compare with; the local course by default. */
+  fixture?: Fixture
+  /** Prefix of each describe title. */
+  title?: string
+  /** Skip unless NETWORK=1. */
+  network?: boolean
+}
 
-    test.beforeAll(async () => {
-      if (!fs.existsSync(CLI)) throw new Error(`${CLI} is missing; run npm run build first`)
+function exportMatrix(cases: Case[], matrix: Matrix): void {
+  for (const c of cases) {
+    test.describe(matrix.title ? `${matrix.title} ${c.name}` : c.name, () => {
+      // One export per format, shared by its tests; serial keeps them in one worker.
+      test.describe.configure({ mode: 'serial' })
+      // With every test skipped, beforeAll does not export either.
+      if (matrix.network) test.skip(!NETWORK, 'needs NETWORK=1')
 
-      fs.rmSync(output, { recursive: true, force: true })
-      fs.mkdirSync(OUT_DIR, { recursive: true })
-      tmp = shortTmp()
+      const output = path.join(matrix.outDir, c.output)
+      // Its own TMPDIR, so whatever the export leaves behind can be seen.
+      let tmp: string
+      let run: CliRun
 
-      run = await runCli(
-        ['-i', COURSE, '-f', c.format, '-o', path.join(OUT_DIR, c.name), ...(c.args ?? [])],
-        c.timeout,
-        { ...process.env, TMPDIR: tmp },
-      )
-    })
-
-    test('exports and passes its checker', async ({}, testInfo) => {
-      const bug = c.bug ?? (DEEP ? c.deepBug : undefined)
-      test.fail(!!bug, bug)
-
-      await testInfo.attach('cli.log', { body: run.log, contentType: 'text/plain' })
-
-      expect(run.timedOut, `CLI still running after ${c.timeout / 1000} s`).toBe(false)
-      expect(run.code, `CLI exit code; log:\n${run.log.slice(-2_000)}`).toBe(0)
-      expect(fs.existsSync(output), `${c.output} was not written`).toBe(true)
-      expect(fs.readdirSync(tmp), 'temp folders left behind').toEqual([])
-
-      const result = await checkOutput(c.format, output, { method: 'cli', deep: DEEP })
-      await testInfo.attach('checker.json', {
-        body: JSON.stringify(result, null, 2),
-        contentType: 'application/json',
+      test.afterAll(() => {
+        if (tmp) fs.rmSync(tmp, { recursive: true, force: true })
       })
 
-      expect(result.problems).toEqual([])
-    })
+      test.beforeAll(async () => {
+        if (!fs.existsSync(CLI)) throw new Error(`${CLI} is missing; run npm run build first`)
 
-    if (c.render) {
-      test('renders every slide in a browser', async ({ page }, testInfo) => {
+        fs.rmSync(output, { recursive: true, force: true })
+        fs.mkdirSync(matrix.outDir, { recursive: true })
+        tmp = shortTmp()
+
+        run = await runCli(
+          ['-i', matrix.course, '-f', c.format, '-o', path.join(matrix.outDir, c.name), ...(c.args ?? [])],
+          c.timeout,
+          { ...process.env, TMPDIR: tmp },
+        )
+      })
+
+      test('exports and passes its checker', async ({}, testInfo) => {
+        const bug = c.bug ?? (DEEP ? c.deepBug : undefined)
+        test.fail(!!bug, bug)
+
+        await testInfo.attach('cli.log', { body: run.log, contentType: 'text/plain' })
+
+        expect(run.timedOut, `CLI still running after ${c.timeout / 1000} s`).toBe(false)
+        expect(run.code, `CLI exit code; log:\n${run.log.slice(-2_000)}`).toBe(0)
         expect(fs.existsSync(output), `${c.output} was not written`).toBe(true)
+        expect(fs.readdirSync(tmp), 'temp folders left behind').toEqual([])
 
-        const result = await checkRendered(page, output, { method: 'cli' })
-        await testInfo.attach('rendered.json', {
+        const result = await checkOutput(c.format, output, {
+          method: 'cli',
+          deep: DEEP,
+          fixture: matrix.fixture,
+        })
+        await testInfo.attach('checker.json', {
           body: JSON.stringify(result, null, 2),
           contentType: 'application/json',
         })
 
         expect(result.problems).toEqual([])
       })
-    }
-  })
+
+      if (c.render) {
+        test('renders every slide in a browser', async ({ page }, testInfo) => {
+          expect(fs.existsSync(output), `${c.output} was not written`).toBe(true)
+
+          const result = await checkRendered(page, output, { method: 'cli', fixture: matrix.fixture })
+          await testInfo.attach('rendered.json', {
+            body: JSON.stringify(result, null, 2),
+            contentType: 'application/json',
+          })
+
+          expect(result.problems).toEqual([])
+        })
+      }
+    })
+  }
 }
 
 /*

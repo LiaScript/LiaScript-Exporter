@@ -9,7 +9,7 @@ import * as http from 'node:http'
 import type { AddressInfo } from 'node:net'
 import * as path from 'node:path'
 import type { Page } from '@playwright/test'
-import { COURSE, Method } from '../fixtures/course'
+import { Fixture, LOCAL_FIXTURE, Method } from '../fixtures/course'
 import { checkRenderedMarkers, findMarkers } from './markers'
 import { openPackage, Package } from './package'
 import { CheckResult, Problems } from './types'
@@ -74,6 +74,8 @@ export async function servePackage(
 
 export interface RenderOptions {
   method?: Method
+  /** The course the package was exported from; the local test course by default. */
+  fixture?: Fixture
   /** A slide counts as rendered once it is unchanged for this long. */
   settleMs?: number
   /** Upper bound per slide, for players that never stop animating. */
@@ -86,6 +88,7 @@ export async function checkRendered(
   options: RenderOptions = {},
 ): Promise<CheckResult> {
   const method: Method = options.method ?? 'cli'
+  const fixture = options.fixture ?? LOCAL_FIXTURE
   const settleMs = options.settleMs ?? 2_000
   const maxSettleMs = options.maxSettleMs ?? 10_000
   const problems = new Problems()
@@ -118,7 +121,7 @@ export async function checkRendered(
     const entries = (await toc.allInnerTexts()).map((t) => t.trim())
     summary.toc = entries.length
 
-    if (JSON.stringify(entries) !== JSON.stringify(COURSE.sections)) {
+    if (JSON.stringify(entries) !== JSON.stringify(fixture.course.sections)) {
       problems.add('table of contents', `${JSON.stringify(entries)}`)
     }
 
@@ -133,7 +136,14 @@ export async function checkRendered(
         const attrs = [...main.querySelectorAll('[alt],[title],[aria-label]')]
           .map((el) => ['alt', 'title', 'aria-label'].map((a) => el.getAttribute(a) ?? '').join(' '))
           .join(' ')
-        return { text: `${(main as HTMLElement).innerText}\n${attrs}`, html: main.outerHTML }
+        // web components (ABC notation, previews) render into a shadow root,
+        // which innerText skips; its <style> text is not content
+        const shadows = [...main.querySelectorAll('*')]
+          .flatMap((el) => (el.shadowRoot ? [...el.shadowRoot.children] : []))
+          .filter((child) => child.tagName !== 'STYLE')
+          .map((child) => (child instanceof HTMLElement ? child.innerText : child.textContent))
+          .join('\n')
+        return { text: `${(main as HTMLElement).innerText}\n${attrs}\n${shadows}`, html: main.outerHTML }
       })
 
     for (let i = 0; i < entries.length; i++) {
@@ -170,7 +180,7 @@ export async function checkRendered(
     Object.assign(summary, { dialogs })
 
     const markers = findMarkers(texts.join('\n'))
-    checkRenderedMarkers(problems, 'web', method, markers, raws.join('\n'), texts.join('\n'))
+    checkRenderedMarkers(problems, 'web', method, markers, raws.join('\n'), texts.join('\n'), fixture)
 
     return { format: 'web', problems: problems.list, markers, summary }
   } finally {

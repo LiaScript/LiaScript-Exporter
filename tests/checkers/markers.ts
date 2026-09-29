@@ -1,8 +1,7 @@
 import {
-  COURSE,
+  Fixture,
   MARKER_PATTERN,
   Method,
-  NEVER_RENDERED,
   RenderedFormat,
   gapFallbacks,
   knownGaps,
@@ -32,10 +31,11 @@ export function checkRenderedMarkers(
   found: string[],
   raw: string,
   text: string,
+  fixture: Fixture,
 ): void {
   const have = new Set(found)
-  const gaps = knownGaps(format, method)
-  const expected = renderedMarkers()
+  const gaps = knownGaps(format, method, fixture)
+  const expected = renderedMarkers(fixture)
 
   problems.many(
     'missing markers',
@@ -50,19 +50,19 @@ export function checkRenderedMarkers(
   const flat = text.replace(/\s+/g, ' ')
   problems.many(
     'known gap without its fallback text',
-    Object.entries(gapFallbacks(format, method))
+    Object.entries(gapFallbacks(format, method, fixture))
       .filter(([marker, fallback]) => !have.has(marker) && !flat.includes(fallback))
       .map(([marker, fallback]) => `${marker} (${fallback})`),
   )
 
   problems.many(
     'must never render',
-    Object.keys(NEVER_RENDERED).filter((marker) => raw.includes(marker)),
+    Object.keys(fixture.neverRendered).filter((marker) => raw.includes(marker)),
   )
 
   // A word the course never wrote means markers were glued or mangled,
   // e.g. "MKTableCellA" + "MKTableCellB" → "MKTableCellAMKTableCellB".
-  const known = new Set([...expected, ...sourceMarkers()])
+  const known = new Set([...expected, ...sourceMarkers(fixture)])
   problems.many(
     'unexpected marker-like words',
     found.filter((marker) => !known.has(marker)),
@@ -70,19 +70,19 @@ export function checkRenderedMarkers(
 }
 
 /** Every section heading must appear in the text, whitespace-insensitively. */
-export function checkSectionTitles(problems: Problems, text: string): void {
+export function checkSectionTitles(problems: Problems, text: string, fixture: Fixture): void {
   const flat = text.replace(/\s+/g, ' ')
   problems.many(
     'missing section titles',
-    COURSE.sections.filter((title) => !flat.includes(title)),
+    fixture.course.sections.filter((title) => !flat.includes(title)),
   )
 }
 
 /** The Markdown-carrying formats must keep every marker verbatim. */
-export function checkSourceMarkers(problems: Problems, found: string[]): void {
+export function checkSourceMarkers(problems: Problems, found: string[], fixture: Fixture): void {
   const have = new Set(found)
   problems.many(
     'missing markers',
-    sourceMarkers().filter((marker) => !have.has(marker)),
+    sourceMarkers(fixture).filter((marker) => !have.has(marker)),
   )
 }

@@ -4,11 +4,16 @@
  * fullJson adds the quiz, survey and task state per section.
  */
 import * as fs from 'node:fs'
-import { COURSE } from '../fixtures/course'
+import { Fixture, LOCAL_FIXTURE } from '../fixtures/course'
 import { checkSourceMarkers, findMarkers } from './markers'
 import { CheckResult, Problems } from './types'
 
-export function checkJson(source: string, full = false): CheckResult {
+export function checkJson(
+  source: string,
+  full = false,
+  fixture: Fixture = LOCAL_FIXTURE,
+): CheckResult {
+  const { course } = fixture
   const format = full ? 'fullJson' : 'json'
   const problems = new Problems()
   const summary: Record<string, unknown> = {}
@@ -35,31 +40,38 @@ export function checkJson(source: string, full = false): CheckResult {
     return result()
   }
 
-  if (lia.str_title !== COURSE.title) problems.add('wrong title', `"${lia.str_title}"`)
+  if (lia.str_title !== course.title) problems.add('wrong title', `"${lia.str_title}"`)
 
   const definition = lia.definition ?? {}
   for (const [key, expected] of [
-    ['author', COURSE.author],
-    ['email', COURSE.email],
-    ['language', COURSE.language],
-    ['version', COURSE.version],
+    ['author', course.author],
+    ['email', course.email],
+    ['language', course.language],
+    ['version', course.version],
   ]) {
     if (definition[key] !== expected) {
       problems.add(`wrong definition.${key}`, `"${definition[key]}"`)
     }
   }
 
+  // an import that failed to load leaves its macros undefined
+  const macros = definition.macro ?? {}
+  problems.many(
+    'macros of the imports missing',
+    (course.macros ?? []).filter((name) => !(name in macros)),
+  )
+
   const sections: any[] = Array.isArray(lia.sections) ? lia.sections : []
   const titles = sections.map((s) => inlineText(s.title))
   summary.sections = sections.length
 
-  if (sections.length !== COURSE.sections.length) {
-    problems.add('section count', `${sections.length}, expected ${COURSE.sections.length}`)
+  if (sections.length !== course.sections.length) {
+    problems.add('section count', `${sections.length}, expected ${course.sections.length}`)
   }
 
   problems.many(
     'wrong section titles',
-    COURSE.sections
+    course.sections
       .map((title, i) => (titles[i] === title ? null : `#${i} "${titles[i]}" ≠ "${title}"`))
       .filter((line): line is string => line !== null),
   )
@@ -67,7 +79,7 @@ export function checkJson(source: string, full = false): CheckResult {
   if (full) {
     for (const key of ['quiz', 'survey', 'task'] as const) {
       const perSection: any[] = Array.isArray(data[key]) ? data[key] : []
-      const expected = { quiz: COURSE.quizzes, survey: COURSE.surveys, task: COURSE.tasks }[key]
+      const expected = { quiz: course.quizzes, survey: course.surveys, task: course.tasks }[key]
 
       if (perSection.length !== sections.length) {
         problems.add(`${key} vector`, `${perSection.length} entries for ${sections.length} sections`)
@@ -87,7 +99,7 @@ export function checkJson(source: string, full = false): CheckResult {
 
   // the whole file: header macros such as @greet live in `definition`
   const markers = findMarkers(text)
-  checkSourceMarkers(problems, markers)
+  checkSourceMarkers(problems, markers, fixture)
   return result(markers)
 }
 
@@ -108,7 +120,8 @@ function inlineText(inlines: unknown): string {
  * JSON-LD (default) or n-quads: the schema.org Course description built from
  * the course header.
  */
-export function checkRdf(source: string): CheckResult {
+export function checkRdf(source: string, fixture: Fixture = LOCAL_FIXTURE): CheckResult {
+  const { course } = fixture
   const problems = new Problems()
   const summary: Record<string, unknown> = {}
   const text = fs.readFileSync(source, 'utf8')
@@ -117,7 +130,7 @@ export function checkRdf(source: string): CheckResult {
     const quads = text.split('\n').filter((line) => line.trim())
     const bad = quads.filter((line) => !/^\S+ \S+ .+ \.$/.test(line.trim()))
     problems.many('malformed n-quads lines', bad, 3)
-    if (!text.includes(COURSE.title)) problems.add('course name', 'not in the quads')
+    if (!text.includes(course.title)) problems.add('course name', 'not in the quads')
     summary.quads = quads.length
     return { format: 'rdf', problems: problems.list, markers: [], summary }
   }
@@ -136,11 +149,11 @@ export function checkRdf(source: string): CheckResult {
 
   expect('@context', data['@context'], 'http://schema.org/')
   expect('@type', data['@type'], 'Course')
-  expect('name', data.name, COURSE.title)
-  expect('inLanguage', data.inLanguage, COURSE.language)
-  expect('version', data.version, COURSE.version)
-  expect('author.name', data.author?.name, COURSE.author)
-  expect('author.email', data.author?.email, COURSE.email)
+  expect('name', data.name, course.title)
+  expect('inLanguage', data.inLanguage, course.language)
+  expect('version', data.version, course.version)
+  expect('author.name', data.author?.name, course.author)
+  expect('author.email', data.author?.email, course.email)
 
   Object.assign(summary, { type: data['@type'], name: data.name })
   return { format: 'rdf', problems: problems.list, markers: findMarkers(text), summary }

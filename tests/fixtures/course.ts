@@ -33,7 +33,42 @@ export interface KnownGap {
   fallback?: string
 }
 
-export const COURSE = {
+/** The facts about a course that the checkers compare an export with. */
+export interface CourseInfo {
+  title: string
+  author: string
+  email: string
+  language: string
+  version: string
+  /** One entry per `#`/`##` heading, in order. */
+  sections: string[]
+  /** Section index → number of quizzes / surveys / task lists in it. */
+  quizzes: Record<number, number>
+  surveys: Record<number, number>
+  tasks: Record<number, number>
+  /** Files next to the README that must never ship. */
+  hidden: string[]
+  /** Macros the course's `import:`s define; json must carry each one. */
+  macros?: string[]
+}
+
+/**
+ * A course plus what each format is expected to keep of it. The checkers take
+ * one through `CheckOptions.fixture`; the local course is the default.
+ */
+export interface Fixture {
+  /** The course folder; its README.md is the course. */
+  dir: string
+  course: CourseInfo
+  /** Markers that exist only in the source and must never reach rendered output. */
+  neverRendered: Record<string, string>
+  /** Markers whose rendered text differs from the source. */
+  renderedAs: Record<string, string>
+  /** Markers each rendered format is known to lose; a gap that renders is reported. */
+  knownGaps: Record<RenderedFormat, Record<string, KnownGap>>
+}
+
+export const COURSE: CourseInfo = {
   title: 'Exporter Test Course',
   author: 'LiaScript Exporter Tests',
   email: 'LiaScript@web.de',
@@ -64,16 +99,17 @@ export const COURSE = {
   ],
 
   /** Section index → number of quizzes / surveys / task lists in it. */
-  quizzes: { 13: 7 } as Record<number, number>,
-  surveys: { 14: 4 } as Record<number, number>,
-  tasks: { 2: 1 } as Record<number, number>,
+  quizzes: { 13: 7 },
+  surveys: { 14: 4 },
+  tasks: { 2: 1 },
 
   /** Files next to the README that must never ship. */
   hidden: ['.hidden/secret.txt'],
 }
 
 /** Every file of the course except the README and hidden ones, posix paths. */
-export function courseAssets(): string[] {
+export function courseAssets(fixture: Fixture = LOCAL_FIXTURE): string[] {
+  const root = fixture.dir
   const out: string[] = []
 
   const walk = (dir: string) => {
@@ -82,11 +118,11 @@ export function courseAssets(): string[] {
 
       const full = path.join(dir, entry.name)
       if (entry.isDirectory()) walk(full)
-      else out.push(path.relative(COURSE_DIR, full).split(path.sep).join('/'))
+      else out.push(path.relative(root, full).split(path.sep).join('/'))
     }
   }
 
-  walk(COURSE_DIR)
+  walk(root)
   return out.filter((file) => file !== 'README.md').sort()
 }
 
@@ -94,25 +130,26 @@ export function courseAssets(): string[] {
  * The course directory as the zip a user would upload, `.hidden/` included,
  * under a top-level `course/` folder.
  */
-export function zipCourse(): Buffer {
+export function zipCourse(fixture: Fixture = LOCAL_FIXTURE): Buffer {
+  const root = fixture.dir
   const files: Record<string, Uint8Array> = {}
 
   const walk = (dir: string) => {
     for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
       const full = path.join(dir, entry.name)
       if (entry.isDirectory()) walk(full)
-      else files[`course/${path.relative(COURSE_DIR, full).split(path.sep).join('/')}`] =
+      else files[`course/${path.relative(root, full).split(path.sep).join('/')}`] =
         new Uint8Array(fs.readFileSync(full))
     }
   }
 
-  walk(COURSE_DIR)
+  walk(root)
   return Buffer.from(zipSync(files))
 }
 
 /** Every marker written in the course source. */
-export function sourceMarkers(): string[] {
-  const source = fs.readFileSync(COURSE_README, 'utf8')
+export function sourceMarkers(fixture: Fixture = LOCAL_FIXTURE): string[] {
+  const source = fs.readFileSync(readmeOf(fixture), 'utf8')
   return [...new Set(source.match(MARKER_PATTERN) ?? [])].sort()
 }
 
@@ -128,10 +165,10 @@ export const RENDERED_AS: Record<string, string> = {
 }
 
 /** The markers a rendered format should contain, before known gaps. */
-export function renderedMarkers(): string[] {
-  return sourceMarkers()
-    .filter((marker) => !(marker in NEVER_RENDERED))
-    .map((marker) => RENDERED_AS[marker] ?? marker)
+export function renderedMarkers(fixture: Fixture = LOCAL_FIXTURE): string[] {
+  return sourceMarkers(fixture)
+    .filter((marker) => !(marker in fixture.neverRendered))
+    .map((marker) => fixture.renderedAs[marker] ?? marker)
     .sort()
 }
 
@@ -185,14 +222,27 @@ export const KNOWN_GAPS: Record<RenderedFormat, Record<string, KnownGap>> = {
   },
 }
 
+export const LOCAL_FIXTURE: Fixture = {
+  dir: COURSE_DIR,
+  course: COURSE,
+  neverRendered: NEVER_RENDERED,
+  renderedAs: RENDERED_AS,
+  knownGaps: KNOWN_GAPS,
+}
+
+export function readmeOf(fixture: Fixture): string {
+  return path.join(fixture.dir, 'README.md')
+}
+
 /** The fallback text of each known gap that has one. */
 export function gapFallbacks(
   format: RenderedFormat,
   method: Method,
+  fixture: Fixture = LOCAL_FIXTURE,
 ): Record<string, string> {
   const out: Record<string, string> = {}
 
-  for (const [marker, gap] of Object.entries(KNOWN_GAPS[format])) {
+  for (const [marker, gap] of Object.entries(fixture.knownGaps[format])) {
     if (gap.fallback && (!gap.only || gap.only.includes(method))) out[marker] = gap.fallback
   }
 
@@ -202,10 +252,11 @@ export function gapFallbacks(
 export function knownGaps(
   format: RenderedFormat,
   method: Method,
+  fixture: Fixture = LOCAL_FIXTURE,
 ): Record<string, string> {
   const out: Record<string, string> = {}
 
-  for (const [marker, gap] of Object.entries(KNOWN_GAPS[format])) {
+  for (const [marker, gap] of Object.entries(fixture.knownGaps[format])) {
     if (!gap.only || gap.only.includes(method)) out[marker] = gap.reason
   }
 

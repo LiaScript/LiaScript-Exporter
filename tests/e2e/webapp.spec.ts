@@ -5,7 +5,7 @@
  *
  *   npm run webapp:build && npm run test:webapp
  *   DEEP=1 npm run test:webapp        + xmllint and epubcheck
- *   NETWORK=1 npm run test:webapp     + GitHub import
+ *   NETWORK=1 npm run test:webapp     + the network course and GitHub import
  *
  * The web app re-implements every exporter in the browser, so unlike the
  * server it gets the same deep checks as the CLI. `fullJson` is reached
@@ -24,7 +24,8 @@ import { Browser, BrowserContext, expect, Page, test } from '@playwright/test'
 import { checkOutput, Format } from '../checkers'
 import { openPackage } from '../checkers/package'
 import { checkRendered, servePackage } from '../checkers/render'
-import { COURSE_DIR, zipCourse } from '../fixtures/course'
+import { COURSE_DIR, Fixture, LOCAL_FIXTURE, zipCourse } from '../fixtures/course'
+import { NETWORK_FIXTURE } from '../fixtures/network'
 
 const ROOT = path.resolve(__dirname, '../..')
 const BUILD = path.join(ROOT, 'dist/webapp/build')
@@ -67,6 +68,34 @@ const CASES: Case[] = [
   { name: 'json', format: 'json', tile: 'json', timeout: QUICK_TIMEOUT },
   { name: 'fullJson', format: 'fullJson', tile: 'json', tick: ['jsonFull'], timeout: QUICK_TIMEOUT },
   { name: 'rdf', format: 'rdf', tile: 'rdf', timeout: QUICK_TIMEOUT },
+]
+
+// The formats that fetch, capture or keep remote content themselves; the
+// packaged ones only copy the README. json shows the remote import resolved.
+const NETWORK_CASES: Case[] = [
+  {
+    name: 'docx',
+    format: 'docx',
+    tile: 'docx',
+    timeout: RENDER_TIMEOUT,
+    bug: 'the Chartist chart is lost: html-to-docx rejects its SVG ("Invalid SVG") and leaves it as orphaned media',
+  },
+  {
+    name: 'epub',
+    format: 'epub',
+    tile: 'epub',
+    timeout: RENDER_TIMEOUT,
+    deepBug: 'epubcheck: the CORS-blocked image stays remote, the embed figure is wrapped in an <a>, the Chartist chart sits in a <p>, the OPF declares an svg property',
+  },
+  {
+    name: 'pdf',
+    format: 'pdf',
+    tile: 'pdf',
+    timeout: RENDER_TIMEOUT,
+    bug: 'the last page is blank',
+  },
+  { name: 'web', format: 'web', tile: 'web', timeout: QUICK_TIMEOUT, render: true },
+  { name: 'json', format: 'json', tile: 'json', timeout: QUICK_TIMEOUT },
 ]
 
 let appURL = ''
@@ -162,7 +191,9 @@ async function upload(page: Page, files: { name: string; mimeType: string; buffe
   await expect(page.locator('#fileList .file-item')).toHaveCount(files.length)
 }
 
-const courseUpload = () => [{ name: 'course.zip', mimeType: 'application/zip', buffer: zipCourse() }]
+const courseUpload = (fixture: Fixture = LOCAL_FIXTURE) => [
+  { name: 'course.zip', mimeType: 'application/zip', buffer: zipCourse(fixture) },
+]
 
 interface Result {
   status: 'completed' | 'failed' | 'refused'
@@ -231,59 +262,90 @@ async function attachLog(session: Session, testInfo: import('@playwright/test').
   })
 }
 
-for (const c of CASES) {
-  test.describe(c.name, () => {
-    // One export per format, shared by its tests; serial keeps them in one worker.
-    test.describe.configure({ mode: 'serial' })
+exportMatrix(CASES, {})
 
-    let result: Result
-    let session: Session
+/*
+ * The network course: remote images, embeds, a remote import and a remote
+ * script, fetched by the browser itself (CORS applies, unlike in the CLI).
+ * Every host it needs can be slow or down, hence NETWORK=1 only.
+ */
+exportMatrix(NETWORK_CASES, { fixture: NETWORK_FIXTURE, title: 'network', network: true })
 
-    test.beforeAll(async ({ browser }) => {
-      test.setTimeout(c.timeout + 60_000)
+interface Matrix {
+  /** The course to upload and check against; the local course by default. */
+  fixture?: Fixture
+  /** Prefix of each describe title and output file. */
+  title?: string
+  /** Skip unless NETWORK=1. */
+  network?: boolean
+}
 
-      session = await openApp(browser)
-      await choose(session.page, { format: c.tile }, c.tick)
-      await upload(session.page, courseUpload())
-      result = await submitAndCollect(session, c.name, c.timeout)
-    })
+function exportMatrix(cases: Case[], matrix: Matrix): void {
+  for (const c of cases) {
+    const name = matrix.title ? `${matrix.title} ${c.name}` : c.name
 
-    test.afterAll(async () => {
-      await session?.context.close()
-    })
+    test.describe(name, () => {
+      // One export per format, shared by its tests; serial keeps them in one worker.
+      test.describe.configure({ mode: 'serial' })
+      // With every test skipped, beforeAll does not export either.
+      if (matrix.network) test.skip(!NETWORK, 'needs NETWORK=1')
 
-    test('exports and passes its checker', async ({}, testInfo) => {
-      const bug = c.bug ?? (DEEP ? c.deepBug : undefined)
-      test.fail(!!bug, bug)
+      let result: Result
+      let session: Session
 
-      await attachLog(session, testInfo)
+      test.beforeAll(async ({ browser }) => {
+        test.setTimeout(c.timeout + 60_000)
 
-      expect(result.status, result.error).toBe('completed')
-      expect(session.dialogs, 'the app raised a dialog').toEqual([])
-
-      const check = await checkOutput(c.format, result.file!, { method: 'webapp', deep: DEEP })
-      await testInfo.attach('checker.json', {
-        body: JSON.stringify(check, null, 2),
-        contentType: 'application/json',
+        session = await openApp(browser)
+        await choose(session.page, { format: c.tile }, c.tick)
+        await upload(session.page, courseUpload(matrix.fixture))
+        result = await submitAndCollect(session, name.replace(' ', '-'), c.timeout)
       })
 
-      expect(check.problems).toEqual([])
-    })
+      test.afterAll(async () => {
+        await session?.context.close()
+      })
 
-    if (c.render) {
-      test('renders every slide in a browser', async ({ page }, testInfo) => {
-        expect(result.file, 'nothing was downloaded').toBeTruthy()
+      test('exports and passes its checker', async ({}, testInfo) => {
+        const bug = c.bug ?? (DEEP ? c.deepBug : undefined)
+        test.fail(!!bug, bug)
 
-        const rendered = await checkRendered(page, result.file!, { method: 'webapp' })
-        await testInfo.attach('rendered.json', {
-          body: JSON.stringify(rendered, null, 2),
+        await attachLog(session, testInfo)
+
+        expect(result.status, result.error).toBe('completed')
+        expect(session.dialogs, 'the app raised a dialog').toEqual([])
+
+        const check = await checkOutput(c.format, result.file!, {
+          method: 'webapp',
+          deep: DEEP,
+          fixture: matrix.fixture,
+        })
+        await testInfo.attach('checker.json', {
+          body: JSON.stringify(check, null, 2),
           contentType: 'application/json',
         })
 
-        expect(rendered.problems).toEqual([])
+        expect(check.problems).toEqual([])
       })
-    }
-  })
+
+      if (c.render) {
+        test('renders every slide in a browser', async ({ page }, testInfo) => {
+          expect(result.file, 'nothing was downloaded').toBeTruthy()
+
+          const rendered = await checkRendered(page, result.file!, {
+            method: 'webapp',
+            fixture: matrix.fixture,
+          })
+          await testInfo.attach('rendered.json', {
+            body: JSON.stringify(rendered, null, 2),
+            contentType: 'application/json',
+          })
+
+          expect(rendered.problems).toEqual([])
+        })
+      }
+    })
+  }
 }
 
 test.describe('sources and targets', () => {

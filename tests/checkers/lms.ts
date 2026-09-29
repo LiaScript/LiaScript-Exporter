@@ -10,10 +10,11 @@ import * as fs from 'node:fs'
 import * as os from 'node:os'
 import * as path from 'node:path'
 import {
-  COURSE,
-  COURSE_DIR,
-  COURSE_README,
+  CourseInfo,
   courseAssets,
+  Fixture,
+  LOCAL_FIXTURE,
+  readmeOf,
 } from '../fixtures/course'
 import { hiddenFiles, openPackage, Package, resolveRef } from './package'
 import { hasXmllint, xmllint } from './tools'
@@ -27,11 +28,13 @@ export function checkLms(
   source: string,
   options: CheckOptions = {},
 ): CheckResult {
+  const fixture = options.fixture ?? LOCAL_FIXTURE
+  const { course } = fixture
   const pkg = openPackage(source)
   const problems = new Problems()
   const summary: Record<string, unknown> = { files: pkg.files.length }
 
-  checkCourseFiles(pkg, problems)
+  checkCourseFiles(pkg, problems, fixture)
   checkEntryPage(pkg, 'index.html', problems)
 
   problems.many('hidden files shipped', hiddenFiles(pkg))
@@ -39,13 +42,13 @@ export function checkLms(
   switch (format) {
     case 'scorm1.2':
     case 'scorm2004':
-      Object.assign(summary, checkScorm(format, pkg, problems, options))
+      Object.assign(summary, checkScorm(format, pkg, problems, options, course))
       break
     case 'ims':
-      Object.assign(summary, checkIms(pkg, problems))
+      Object.assign(summary, checkIms(pkg, problems, course))
       break
     case 'xapi':
-      Object.assign(summary, checkTincan(pkg, problems))
+      Object.assign(summary, checkTincan(pkg, problems, course))
       break
   }
 
@@ -53,19 +56,19 @@ export function checkLms(
 }
 
 /** The README and every course file must be in the package, byte for byte. */
-function checkCourseFiles(pkg: Package, problems: Problems): void {
+function checkCourseFiles(pkg: Package, problems: Problems, fixture: Fixture): void {
   if (!pkg.has('README.md')) {
     problems.add('course missing', 'README.md is not in the package')
-  } else if (!pkg.read('README.md').equals(fs.readFileSync(COURSE_README))) {
+  } else if (!pkg.read('README.md').equals(fs.readFileSync(readmeOf(fixture)))) {
     problems.add('course changed', 'README.md differs from the fixture')
   }
 
   const missing: string[] = []
   const changed: string[] = []
 
-  for (const asset of courseAssets()) {
+  for (const asset of courseAssets(fixture)) {
     if (!pkg.has(asset)) missing.push(asset)
-    else if (!pkg.read(asset).equals(fs.readFileSync(path.join(COURSE_DIR, asset))))
+    else if (!pkg.read(asset).equals(fs.readFileSync(path.join(fixture.dir, asset))))
       changed.push(asset)
   }
 
@@ -132,6 +135,7 @@ function checkScorm(
   pkg: Package,
   problems: Problems,
   options: CheckOptions,
+  info: CourseInfo,
 ): Record<string, unknown> {
   const doc = readXml(pkg, 'imsmanifest.xml', problems)
   if (!doc) return {}
@@ -143,7 +147,7 @@ function checkScorm(
 
   const organization = byName(doc, 'organization')[0]
   const title = textOf(organization && byName(organization, 'title')[0])
-  if (title !== COURSE.title) {
+  if (title !== info.title) {
     problems.add('wrong organization title', `"${title}"`)
   }
 
@@ -159,7 +163,7 @@ function checkScorm(
   const item = byName(doc, 'item').find((i) => attr(i, 'identifierref'))
   const course =
     (item && attr(item, 'parameters')?.replace(/^[?#]/, '')) ||
-    (launch && pkg.has(launch) ? unparameterizedCourse(pkg, launch, problems) : null)
+    (launch && pkg.has(launch) ? unparameterizedCourse(pkg, launch, problems, info.title) : null)
 
   if (course === undefined) problems.add('no course parameter', 'the item names no course file')
   else if (course && !pkg.has(course)) problems.add('course parameter missing', course)
@@ -195,6 +199,7 @@ function unparameterizedCourse(
   pkg: Package,
   launch: string,
   problems: Problems,
+  title: string,
 ): string | null | undefined {
   const html = pkg.text(launch)
 
@@ -206,8 +211,8 @@ function unparameterizedCourse(
   const script = resolveRef(launch, 'course.js')!
   if (!pkg.has(script)) {
     problems.add('embedded course missing', script)
-  } else if (!pkg.text(script).includes(COURSE.title)) {
-    problems.add('embedded course is not the course', `${script} lacks "${COURSE.title}"`)
+  } else if (!pkg.text(script).includes(title)) {
+    problems.add('embedded course is not the course', `${script} lacks "${title}"`)
   }
   return null
 }
@@ -254,12 +259,12 @@ function validateSchema(
   }
 }
 
-function checkIms(pkg: Package, problems: Problems): Record<string, unknown> {
+function checkIms(pkg: Package, problems: Problems, course: CourseInfo): Record<string, unknown> {
   const doc = readXml(pkg, 'imsmanifest.xml', problems)
   if (!doc) return {}
 
   const title = textOf(byName(byName(doc, 'title')[0] ?? doc, 'langstring')[0])
-  if (title !== COURSE.title) problems.add('wrong manifest title', `"${title}"`)
+  if (title !== course.title) problems.add('wrong manifest title', `"${title}"`)
 
   const launch = attr(byName(doc, 'resource')[0] ?? doc.createElement('x'), 'href')
 
@@ -279,13 +284,13 @@ function checkIms(pkg: Package, problems: Problems): Record<string, unknown> {
   return { title, launch }
 }
 
-function checkTincan(pkg: Package, problems: Problems): Record<string, unknown> {
+function checkTincan(pkg: Package, problems: Problems, course: CourseInfo): Record<string, unknown> {
   const doc = readXml(pkg, 'tincan.xml', problems)
   if (!doc) return {}
 
   const activity = byName(doc, 'activity')[0]
   const name = textOf(activity && byName(activity, 'name')[0])
-  if (name !== COURSE.title) problems.add('wrong activity name', `"${name}"`)
+  if (name !== course.title) problems.add('wrong activity name', `"${name}"`)
 
   const launch = textOf(byName(doc, 'launch')[0])
   if (!launch) problems.add('no launch', 'tincan.xml has no <launch>')
