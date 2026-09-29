@@ -187,6 +187,15 @@ describe('epub', () => {
     expect(problems).toContainEqual(expect.stringMatching(/^references to missing files: 1 × 5.xhtml → images\/missing.jpg/))
   })
 
+  it('reports a data: URI printed as text, but not one in an attribute', async () => {
+    const files = build.epub()
+    files['OEBPS/7.xhtml'] = String(files['OEBPS/7.xhtml']).replace(
+      '</body>',
+      '<pre><code>![x](data:image/png;base64,iVBORw0KGgo)</code></pre><img src="data:image/png;base64,iVBORw0KGgo" alt="ok"/></body>',
+    )
+    expectOnly((await check(files)).problems, /^data: URI printed in chapters: 1 × OEBPS\/7.xhtml/)
+  })
+
   it('reports a chapter that is not well-formed XML', async () => {
     const files = build.epub()
     files['OEBPS/7.xhtml'] = String(files['OEBPS/7.xhtml']).replace('</p>', '')
@@ -312,6 +321,11 @@ describe('pdf', () => {
     const { problems } = await check(build.pdf(lines, 'Untitled'))
     expect(problems).toContainEqual(expect.stringMatching(/^title: "Untitled"/))
     expect(problems).toContainEqual(expect.stringMatching(/^missing section titles: 1 × Tables/))
+  })
+
+  it('reports a data: URI printed on a page, even wrapped over lines', async () => {
+    const lines = [...build.pdfLines(), '![x](data:image/pn', 'g;base64,iVBORw0KGgo)']
+    expectOnly((await check(build.pdf(lines))).problems, /^data: URI printed on pages: 1 × 1/)
   })
 })
 

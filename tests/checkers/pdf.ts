@@ -69,6 +69,13 @@ export async function checkPdf(
       .filter((n): n is number => n !== null)
     problems.many('blank pages', blank.map(String))
 
+    // an image link shown in a code block, inlined as base64 and printed;
+    // whitespace is dropped because a long run wraps over lines
+    const leaks = pages
+      .map((text, i) => (/data:[a-z]+\/[a-z0-9.+-]+;base64,/i.test(text.replace(/\s+/g, '')) ? i + 1 : null))
+      .filter((n): n is number => n !== null)
+    problems.many('data: URI printed on pages', leaks.map(String))
+
     const text = pages.join('\n')
     checkSectionTitles(problems, text)
 

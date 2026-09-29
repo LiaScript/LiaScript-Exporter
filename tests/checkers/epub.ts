@@ -131,6 +131,7 @@ export function checkEpub(source: string, options: CheckOptions = {}): CheckResu
   const brokenRefs = new Set<string>()
   const fileUrls = new Set<string>()
   const localPaths = new Set<string>()
+  const dataText = new Set<string>()
 
   for (const chapter of chapters) {
     const raw = pkg.text(chapter)
@@ -159,12 +160,16 @@ export function checkEpub(source: string, options: CheckOptions = {}): CheckResu
       if (target && !pkg.has(target)) brokenRefs.add(`${path.posix.basename(chapter)} → ${ref}`)
     }
 
+    // an image link shown in a code block, inlined as base64 and printed
+    if (/data:[a-z]+\/[a-z0-9.+-]+;base64,/i.test(text)) dataText.add(chapter)
+
     if (raw.includes(COURSE_DIR)) localPaths.add(chapter)
   }
 
   problems.many('empty chapters', empty)
   problems.many('file:/blob: URLs in the book', [...fileUrls])
   problems.many('local machine paths in the book', [...localPaths])
+  problems.many('data: URI printed in chapters', [...dataText])
   problems.many('references to missing files', [...brokenRefs])
 
   if (options.deep) {
