@@ -6,7 +6,7 @@ import * as fs from 'fs-extra'
 import { tmpdir } from 'os'
 import * as YAML from 'yaml'
 import { removeDirectory } from '../utils/zipExtractor'
-import { toOptions, toCliArguments } from '../../export/options'
+import { resolveFormat, toOptions, toCliArguments } from '../../export/options'
 
 export interface ExportJob {
   id: string
@@ -28,7 +28,23 @@ export interface ExportJob {
   completedAt?: Date
   error?: string
   result?: any
+  /** Its download was deleted after {@link EXPORT_TTL_MS}. */
+  expired?: boolean
 }
+
+/** Where every job's output goes, one folder per job id. */
+const EXPORTS_DIR = path.join(tmpdir(), 'liaex-exports')
+
+/**
+ * How long a finished export stays downloadable. People download right after
+ * the status page says done; an hour also covers a retry or a second device.
+ * EXPORT_TTL_MINUTES overrides it (fractions allowed, for tests).
+ */
+const EXPORT_TTL_MS =
+  (Number(process.env.EXPORT_TTL_MINUTES) || 60) * 60_000
+
+/** How often expired exports are looked for. */
+const SWEEP_INTERVAL_MS = Math.min(10 * 60_000, EXPORT_TTL_MS)
 
 export class JobQueue extends EventEmitter {
   private queue: ExportJob[] = []
@@ -37,6 +53,61 @@ export class JobQueue extends EventEmitter {
   private isProcessing = false
   private maxCompletedJobs = 100 // Keep last 100 completed jobs
   private presetsConfig: any = null
+
+  private sweeping: NodeJS.Timeout | null = null
+
+  /**
+   * Starts deleting expired exports, now and every {@link SWEEP_INTERVAL_MS}.
+   * Called by the server only: the CLI imports this module too.
+   *
+   * The first sweep also catches folders from before a restart: jobs live
+   * only in memory, so nobody can download those any more. Unref'd so it never
+   * keeps a process alive that is otherwise done.
+   */
+  startSweeping(): void {
+    if (this.sweeping) return
+
+    this.sweeping = setInterval(() => this.sweep(), SWEEP_INTERVAL_MS)
+    this.sweeping.unref()
+    void this.sweep()
+  }
+
+  /**
+   * Deletes exports older than {@link EXPORT_TTL_MS}. Goes by folder age, not
+   * by our own job list, so orphans go too; a folder is only ever written by
+   * one job, so another server sharing the machine loses nothing it could
+   * still serve.
+   */
+  private async sweep(): Promise<void> {
+    const cutoff = Date.now() - EXPORT_TTL_MS
+
+    for (const job of this.completedJobs.values()) {
+      if (!job.expired && job.status === 'completed' && job.completedAt!.getTime() < cutoff) {
+        job.expired = true
+        job.result = undefined
+      }
+    }
+
+    let folders: string[]
+    try {
+      folders = await fs.readdir(EXPORTS_DIR)
+    } catch {
+      return // nothing exported yet
+    }
+
+    for (const id of folders) {
+      if (id === this.currentJob?.id) continue
+
+      const folder = path.join(EXPORTS_DIR, id)
+      try {
+        if ((await fs.stat(folder)).mtimeMs < cutoff) {
+          await fs.remove(folder)
+        }
+      } catch (error) {
+        console.warn(`Could not remove expired export ${folder}:`, error)
+      }
+    }
+  }
 
   addJob(jobData: Omit<ExportJob, 'id' | 'status' | 'createdAt'>): {
     jobId: string
@@ -108,16 +179,26 @@ export class JobQueue extends EventEmitter {
       this.currentJob.error = error.message
       this.currentJob.completedAt = new Date()
       this.emit('job-failed', this.currentJob)
+
+      // Whatever a failed export left there can never be downloaded.
+      await removeDirectory(path.join(EXPORTS_DIR, this.currentJob.id))
     } finally {
       // Store completed job
       if (this.currentJob) {
+        // The input is no longer needed, however the export ended.
+        const source = this.currentJob.source as any
+        if (source.type === 'git' && source.cloneDir) await removeDirectory(source.cloneDir)
+        if (source.type === 'upload' && source.uploadDir) await removeDirectory(source.uploadDir)
+
         this.completedJobs.set(this.currentJob.id, this.currentJob)
 
-        // Cleanup old completed jobs if limit exceeded
+        // Cleanup old completed jobs if limit exceeded; their download goes
+        // with them, since nothing could reach it any more.
         if (this.completedJobs.size > this.maxCompletedJobs) {
           const firstKey = this.completedJobs.keys().next().value
           if (firstKey) {
             this.completedJobs.delete(firstKey)
+            await removeDirectory(path.join(EXPORTS_DIR, firstKey))
           }
         }
       }
@@ -221,11 +302,11 @@ export class JobQueue extends EventEmitter {
             format = 'scorm2004'
           }
         } else {
-          format = job.target.format || 'web'
+          format = resolveFormat(job.target.format || 'web', job.options)
         }
 
         // Create output directory
-        const outputDir = path.join(tmpdir(), 'liaex-exports', job.id)
+        const outputDir = path.join(EXPORTS_DIR, job.id)
         await fs.ensureDir(outputDir)
 
         const outputFile = path.join(outputDir, 'export')
@@ -372,31 +453,6 @@ export class JobQueue extends EventEmitter {
 
             console.log(`Export completed: ${job.id} -> ${outputPath}`)
 
-            // Cleanup temporary directories
-            try {
-              // Clean up git clone directory if it exists
-              if (job.source.type === 'git' && (job.source as any).cloneDir) {
-                console.log(
-                  `Cleaning up git clone: ${(job.source as any).cloneDir}`,
-                )
-                await removeDirectory((job.source as any).cloneDir)
-              }
-
-              // Clean up upload directory if it exists
-              if (
-                job.source.type === 'upload' &&
-                (job.source as any).uploadDir
-              ) {
-                console.log(
-                  `Cleaning up upload directory: ${(job.source as any).uploadDir}`,
-                )
-                await removeDirectory((job.source as any).uploadDir)
-              }
-            } catch (cleanupError) {
-              console.warn(`Cleanup warning for job ${job.id}:`, cleanupError)
-              // Don't fail the job if cleanup fails
-            }
-
             resolve()
           } catch (error) {
             reject(error)
@@ -404,22 +460,6 @@ export class JobQueue extends EventEmitter {
         })
       } catch (error) {
         console.error(`Export failed for job ${job.id}:`, error)
-
-        // Cleanup on error as well
-        try {
-          if (job.source.type === 'git' && (job.source as any).cloneDir) {
-            await removeDirectory((job.source as any).cloneDir)
-          }
-          if (job.source.type === 'upload' && (job.source as any).uploadDir) {
-            await removeDirectory((job.source as any).uploadDir)
-          }
-        } catch (cleanupError) {
-          console.warn(
-            `Cleanup error after failed job ${job.id}:`,
-            cleanupError,
-          )
-        }
-
         reject(error)
       }
     })

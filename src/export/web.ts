@@ -78,8 +78,11 @@ export async function exporter(
     // Copy assets to temp
     await copyAssets(fs, tempPath, argument['web-indexeddb'])
 
-    // Copy base path or readme-directory into temp
-    await fs.copy(argument.path, tempPath)
+    // Copy base path or readme-directory into temp, without hidden files:
+    // the zip is written from this tree unfiltered
+    await fs.copy(argument.path, tempPath, {
+      filter: helper.filterHidden(argument.path),
+    })
 
     // Rename the readme if necessary and update argument
     const readmePath = await handleReadmeRename(
@@ -212,11 +215,11 @@ function updateMetadata(
 
   // Update title
   try {
-    const title = json.lia?.str_title
+    const title = json.lia?.str_title && helper.escapeHtml(json.lia.str_title)
     if (title) {
       updatedContent = updatedContent.replace(
         DEFAULT_TITLE_TAG,
-        `<title>${title}</title><meta property="og:title" content="${title}"> <meta name="twitter:title" content="${title}">`,
+        () => `<title>${title}</title><meta property="og:title" content="${title}"> <meta name="twitter:title" content="${title}">`,
       )
       console.log('updating title ...')
     }
@@ -226,11 +229,12 @@ function updateMetadata(
 
   // Update description
   try {
-    const description = json.lia?.definition?.macro?.comment
+    const comment = json.lia?.definition?.macro?.comment
+    const description = comment && helper.escapeHtml(comment)
     if (description) {
       updatedContent = updatedContent.replace(
         DEFAULT_DESCRIPTION_META,
-        `<meta name="description" content="${description}"><meta property="og:description" content="${description}"><meta name="twitter:description" content="${description}">`,
+        () => `<meta name="description" content="${description}"><meta property="og:description" content="${description}"><meta name="twitter:description" content="${description}">`,
       )
       console.log('updating description ...')
     }
@@ -240,7 +244,7 @@ function updateMetadata(
 
   // Update logo
   try {
-    const logo = json.lia?.definition?.logo
+    const logo = json.lia?.definition?.logo && helper.escapeHtml(json.lia.definition.logo)
     if (logo) {
       updatedContent = helper.inject(
         `<meta property="og:image" content="${logo}"><meta name="twitter:image" content="${logo}">`,

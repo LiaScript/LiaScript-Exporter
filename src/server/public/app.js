@@ -90,6 +90,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   initializeExportSelection()
   initializeFormatDescription()
   initializeFormatNotices()
+  initializeSubmitInfo()
   initializePresetDescription()
   checkForUpdates()
 })
@@ -888,6 +889,24 @@ const FORMAT_NOTICES = {
   },
 }
 
+/**
+ * The hint under the submit button describes the service's queue. The
+ * standalone build has none: it refuses a second export until the first is
+ * done, and runs an export only while its status page is open. The key is
+ * swapped, not just the text, so a language change keeps it.
+ */
+function initializeSubmitInfo() {
+  const info = document.getElementById('submitInfo')
+
+  if (!hasLocalExporter() || !info) return
+
+  const key = 'submit.infoLocal'
+  info.setAttribute('data-i18n-html', key)
+  info.innerHTML = window.i18n
+    ? window.i18n.t(key)
+    : 'Exports run in your browser, one at a time.<br />After you start one, keep its status page open until it finishes.'
+}
+
 function initializeFormatNotices() {
   if (!hasLocalExporter() || !window.LiaExporter.formatNotice) return
 
@@ -940,6 +959,36 @@ function initializeFormatNotices() {
       callout.hidden = false
     })
   })
+
+  /*
+   * A format that cannot run here disables the submit button.
+   */
+  const form = document.getElementById('exportForm')
+  const submitBtn = document.getElementById('submitBtn')
+
+  const syncSubmit = () => {
+    const format = form.querySelector('input[name="format"]:checked')
+    const unavailable =
+      !!format && window.LiaExporter.formatNotice(format.value) === 'unavailable'
+
+    if (unavailable) {
+      submitBtn.disabled = true
+      submitBtn.dataset.unavailable = 'true'
+      submitBtn.title = t(
+        'formats.notice.unavailable.text',
+        FORMAT_NOTICES.unavailable.fallback.text,
+      )
+    } else if (submitBtn.dataset.unavailable) {
+      submitBtn.disabled = false
+      delete submitBtn.dataset.unavailable
+      submitBtn.removeAttribute('title')
+    }
+  }
+
+  // `change` bubbles from format and preset tiles alike, including presets
+  // loaded later; `reset` fires before the fields are reset.
+  form.addEventListener('change', syncSubmit)
+  form.addEventListener('reset', () => setTimeout(syncSubmit))
 }
 
 // Pick the right language from a preset description object {de: '...', en: '...'}

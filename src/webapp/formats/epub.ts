@@ -40,9 +40,15 @@ export async function exporter(
 
   let chapters: Chapter[]
   let title: string
+  let author: string | undefined
 
   try {
-    title = courseTitle(course.document, options)
+    // The flags win, else the course's own heading and `author:`, as in the CLI.
+    title =
+      options['epub-title'] ||
+      extract.courseTitle(course.document) ||
+      'LiaScript Course'
+    author = options['epub-author'] || extract.courseAuthor(course.document)
     chapters = assemble(course.document, course.window)
   } finally {
     // Only needed for the scrape; freed before packaging rather than holding a
@@ -91,7 +97,7 @@ export async function exporter(
 
   const book: Book = {
     title,
-    author: authors(options),
+    author: authors(author),
     lang: options['epub-language'] || DEFAULTS.language,
     publisher: options['epub-publisher'],
     description: options['epub-description'],
@@ -113,20 +119,8 @@ export async function exporter(
   return build(book)
 }
 
-/** The book's title: the flag, else the course's own heading. */
-function courseTitle(doc: Document, options: Record<string, any>): string {
-  if (options['epub-title']) return options['epub-title']
-
-  const heading = doc.querySelector('main header .h1, main header .h2')
-  const text = heading?.textContent?.trim()
-
-  return text || doc.title || 'LiaScript Course'
-}
-
 /** Authors, semicolon-separated as the CLI documents. */
-function authors(options: Record<string, any>): string[] {
-  const author = options['epub-author']
-
+function authors(author: string | undefined): string[] {
   if (!author) return ['Unknown']
 
   return String(author)
@@ -241,6 +235,7 @@ function assemble(doc: Document, view: Window): Chapter[] {
   replaceFormulas(body, formulas)
   replaceTerminals(body, terminals)
   replaceCode(body, code)
+  extract.unlinkLocal(body)
 
   return chapters(body)
 }
@@ -323,10 +318,20 @@ function strand(body: HTMLElement): void {
     )
     .forEach((el) => el.remove())
 
-  // The option itself is worth keeping; the control in front of it is not.
-  body
-    .querySelectorAll('input, select, textarea')
-    .forEach((el) => el.remove())
+  body.querySelectorAll('select, textarea').forEach((el) => el.remove())
+
+  // Choices and tasks keep a printed box that shows their state, as in the
+  // CLI; any other input goes.
+  body.querySelectorAll('input').forEach((input) => {
+    const kind = `${input.type} ${input.getAttribute('role') || ''} ${input.className}`
+    const mark = /radio/.test(kind)
+      ? input.checked ? '◉ ' : '○ '
+      : /checkbox/.test(kind)
+        ? input.checked ? '☑ ' : '☐ '
+        : ''
+
+    input.replaceWith(input.ownerDocument.createTextNode(mark))
+  })
 
   // Whatever is left carries ARIA for a widget that no longer exists.
   body.querySelectorAll('[role]').forEach((el) => {
@@ -339,7 +344,82 @@ function strand(body: HTMLElement): void {
     })
   })
 
+  // A label takes inline content only, and LiaScript puts block content in
+  // them: each quiz option's `<div>`, a code tab's `<h3>`.
+  body.querySelectorAll('label').forEach((label) => {
+    const div = label.ownerDocument.createElement('div')
+
+    Array.from(label.attributes).forEach((a) => div.setAttribute(a.name, a.value))
+    while (label.firstChild) div.appendChild(label.firstChild)
+
+    label.replaceWith(div)
+  })
+
+  dropdowns(body)
+  tables(body)
   extract.stripHandlers(body)
+}
+
+/**
+ * Prints a selection quiz's options in place: `[blue | red | green]`.
+ *
+ * The dropdown sits inside the sentence's `<p>` and holds its options as
+ * `<div>`s, which a paragraph cannot contain; a book cannot open it anyway.
+ */
+function dropdowns(body: HTMLElement): void {
+  body.querySelectorAll('.lia-dropdown').forEach((dropdown) => {
+    const options = Array.from(
+      dropdown.querySelectorAll('.lia-dropdown__option'),
+      (option) => option.textContent?.trim() ?? '',
+    ).filter(Boolean)
+
+    const span = dropdown.ownerDocument.createElement('span')
+    span.textContent = `[${options.join(' | ')}]`
+
+    dropdown.replaceWith(span)
+  })
+}
+
+/**
+ * Repairs table markup that XHTML rejects: header cells straight inside a
+ * `<thead>` (the survey matrix) get their row, and the footnote table's
+ * `align`/`valign` attributes become CSS.
+ */
+function tables(body: HTMLElement): void {
+  body.querySelectorAll('thead, tbody, tfoot').forEach((section) => {
+    let row: HTMLTableRowElement | null = null
+
+    Array.from(section.childNodes).forEach((node) => {
+      if (node.nodeName === 'TH' || node.nodeName === 'TD') {
+        if (!row) {
+          row = section.ownerDocument.createElement('tr')
+          section.insertBefore(row, node)
+        }
+        row.appendChild(node)
+      } else if (node.nodeType === Node.ELEMENT_NODE) {
+        row = null
+      }
+    })
+  })
+
+  body.querySelectorAll('[align], [valign]').forEach((el) => {
+    const align = el.getAttribute('align')
+    const valign = el.getAttribute('valign')
+    const style = el.getAttribute('style') || ''
+
+    el.removeAttribute('align')
+    el.removeAttribute('valign')
+
+    // On a table, `align` floats it — nothing a reflowing book should copy.
+    const rules = [
+      align && el.tagName !== 'TABLE' ? `text-align: ${align};` : '',
+      valign ? `vertical-align: ${valign};` : '',
+    ].join(' ').trim()
+
+    if (rules) {
+      el.setAttribute('style', style ? `${style.replace(/;?\s*$/, ';')} ${rules}` : rules)
+    }
+  })
 }
 
 /**
@@ -405,10 +485,14 @@ function replaceMedia(body: HTMLElement): void {
         el.querySelector('source')?.getAttribute('src') ||
         ''
 
+      // The whole figure, as in the CLI: the label is a `<p>`, and the
+      // figure's own wrappers are `<span>`s it cannot sit in.
+      const target = el.closest('figure.lia-figure') ?? el
+
       if (url) {
-        el.replaceWith(media(doc, el, url, prefix))
+        target.replaceWith(media(doc, el, url, prefix))
       } else {
-        el.remove()
+        target.remove()
       }
     })
   }
@@ -525,8 +609,9 @@ function swap(
     )
 
     if (options.reuse) {
-      el.innerHTML = ''
-      el.appendChild(img)
+      // The figure's own caption (ASCII art's title) stays.
+      const caption = el.querySelector(':scope > figcaption')
+      el.replaceChildren(img, ...(caption ? [caption] : []))
 
       if (options.figureStyle) el.setAttribute('style', options.figureStyle)
     } else if (options.figure) {
@@ -824,9 +909,22 @@ function externalize(
  */
 function repairSvg(bytes: Uint8Array): Uint8Array {
   const source = new TextDecoder().decode(bytes)
-  const svg = source.replace(/<!--[\s\S]*?-->/g, '')
+  // A formula in ASCII art carries its MathML along, see `extract.figures`.
+  const svg = mathSpaces(source.replace(/<!--[\s\S]*?-->/g, ''))
 
   return svg === source ? bytes : new TextEncoder().encode(svg)
+}
+
+/**
+ * MathML allows no text between its elements, and KaTeX writes a thin space
+ * there; it becomes the equivalent `<mspace>`, as in the CLI.
+ */
+function mathSpaces(html: string): string {
+  return html.replace(/<math\b[\s\S]*?<\/math>/g, (math) =>
+    math.replace(/(<\/m[a-z]+>)([^<]+)(?=<m)/g, (_match, close: string, text: string) =>
+      /^[ \t\r\n]*$/.test(text) ? close : `${close}<mspace width="0.1667em"></mspace>`,
+    ),
+  )
 }
 
 /** Decodes base64 to bytes. */
@@ -896,6 +994,7 @@ function mediaTypeFor(source: string): string {
  *   that does not use it stays untouched.
  * - Chartist binds the reserved xmlns namespace on the label spans inside a
  *   chart's `<foreignObject>`. That is fatal in XML and means nothing on a span.
+ * - Text between MathML elements, see `mathSpaces`.
  */
 function sanitize(html: string): string {
   const VOID =
@@ -903,7 +1002,7 @@ function sanitize(html: string): string {
 
   const XLINK = 'http://www.w3.org/1999/xlink'
 
-  return (
+  return mathSpaces(
     html
       .replace(/<!--[\s\S]*?-->/g, '')
       .replace(/&nbsp;/g, '&#160;')

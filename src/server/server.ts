@@ -132,6 +132,7 @@ export async function startServer(
 
   try {
     await fastify.listen({ port, host: '0.0.0.0' })
+    jobQueue.startSweeping()
 
     // Get the actual port (important when port is 0 for auto-assignment)
     const actualPort = (fastify.server.address() as any).port

@@ -325,9 +325,15 @@ function packageDocument(book: Book, id: string): string {
   })
 
   book.images.forEach((image, index) => {
+    // The same rule for an SVG image: a formula in ASCII art carries MathML.
+    const mathml =
+      image.mediaType === 'image/svg+xml' &&
+      new TextDecoder().decode(image.bytes).includes('<math')
+
     manifest.push(
       `<item id="image_${index}" href="images/${xml(image.name)}" ` +
-        `media-type="${xml(image.mediaType)}" />`,
+        `media-type="${xml(image.mediaType)}"` +
+        `${mathml ? ' properties="mathml"' : ''} />`,
     )
   })
 

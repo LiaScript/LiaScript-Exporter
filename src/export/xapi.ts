@@ -139,8 +139,11 @@ export async function exporter(argument: XapiExportArguments, json: any) {
   await fs.copy(path.join(dirname, './assets/xapi'), tmpPath)
   await fs.copy(path.join(dirname, './assets/common'), tmpPath)
 
-  // copy user course files into content/ (subfolder mode) or root
-  await fs.copy(argument.path, contentPath)
+  // copy user course files into content/ (subfolder mode) or root; hidden
+  // files are left out here, or tincan.xml and the zip would list them
+  await fs.copy(argument.path, contentPath, {
+    filter: helper.filterHidden(argument.path),
+  })
 
   // Read and modify index.html
   let index = await fs.readFile(path.join(tmpPath, 'index.html'))
@@ -325,9 +328,10 @@ export async function exporter(argument: XapiExportArguments, json: any) {
 
   // Update title
   try {
+    const title = helper.escapeHtml(json.lia.str_title)
     index = index.replace(
       '<title>Lia</title>',
-      `<title>${json.lia.str_title}</title><meta property="og:title" content="${json.lia.str_title}"> <meta name="twitter:title" content="${json.lia.str_title}">`,
+      () => `<title>${title}</title><meta property="og:title" content="${title}"> <meta name="twitter:title" content="${title}">`,
     )
     console.log('updating title ...')
   } catch (e) {
@@ -336,10 +340,10 @@ export async function exporter(argument: XapiExportArguments, json: any) {
 
   // Add description
   try {
-    let description = json.lia.definition.macro.comment
+    let description = helper.escapeHtml(json.lia.definition.macro.comment)
     index = index.replace(
       '<meta name="description" content="LiaScript is a service for running free and interactive online courses, build with its own Markup-language. So check out the following course ;-)">',
-      `<meta name="description" content="${description}"><meta property="og:description" content="${description}"><meta name="twitter:description" content="${description}">`,
+      () => `<meta name="description" content="${description}"><meta property="og:description" content="${description}"><meta name="twitter:description" content="${description}">`,
     )
     console.log('updating description ...')
   } catch (e) {
@@ -348,7 +352,7 @@ export async function exporter(argument: XapiExportArguments, json: any) {
 
   // Add logo
   try {
-    let logo = json.lia.definition.logo
+    let logo = helper.escapeHtml(json.lia.definition.logo)
     index = helper.inject(
       `<meta property="og:image" content="${logo}"><meta name="twitter:image" content="${logo}">`,
       index,
@@ -361,14 +365,9 @@ export async function exporter(argument: XapiExportArguments, json: any) {
   // Add JSON-LD
   const jsonLD = await RDF.script(argument, json)
 
-  try {
-    index = helper.inject(jsonLD, index)
-    index = helper.prettify(index)
-    await fs.writeFile(path.join(tmpPath, 'index.html'), index)
-  } catch (e) {
-    console.warn(e)
-    return
-  }
+  index = helper.inject(jsonLD, index)
+  index = helper.prettify(index)
+  await fs.writeFile(path.join(tmpPath, 'index.html'), index)
 
   // Find all resources in the package. Traversal stays sequential and
   // depth-first in readDir order, because that order is what determines the

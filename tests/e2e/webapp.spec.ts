@@ -1,0 +1,540 @@
+/*
+ * Web app matrix: drives the static browser build the way a user does —
+ * upload the course zip, pick a format, submit, open the status page, press
+ * download — and judges the file with the shared checkers.
+ *
+ *   npm run webapp:build && npm run test:webapp
+ *   DEEP=1 npm run test:webapp        + xmllint and epubcheck
+ *   NETWORK=1 npm run test:webapp     + the network course and GitHub import
+ *
+ * The web app re-implements every exporter in the browser, so unlike the
+ * server it gets the same deep checks as the CLI. `fullJson` is reached
+ * through the "Full JSON" box, as in the UI; android is server-only.
+ *
+ * pdf has no file to download: the app opens LiaScript's print view in a new
+ * tab, which calls `window.print()`. The test stubs `print`, waits for that
+ * call and prints the tab with `page.pdf()` — the same Chrome print engine
+ * "Save as PDF" uses, honouring the injected `@page` rule. Firefox and WebKit
+ * have no `page.pdf()` (their PDF is the user's print dialog), so there the
+ * print view's text in print media gets the pdf checks instead.
+ *
+ * The `webapp-firefox` and `webapp-webkit` projects run this file in those
+ * browsers: npm run test:webapp:browsers
+ *
+ * A case with a `bug` is marked `test.fail()`; delete the `bug` once fixed.
+ */
+import * as fs from 'node:fs'
+import * as path from 'node:path'
+import { Browser, BrowserContext, expect, Page, test } from '@playwright/test'
+import { checkOutput, Format } from '../checkers'
+import { openPackage } from '../checkers/package'
+import { checkPrint } from '../checkers/pdf'
+import { checkRendered, servePackage } from '../checkers/render'
+import { COURSE_DIR, Fixture, LOCAL_FIXTURE, zipCourse } from '../fixtures/course'
+import { NETWORK_FIXTURE } from '../fixtures/network'
+
+const ROOT = path.resolve(__dirname, '../..')
+const BUILD = path.join(ROOT, 'dist/webapp/build')
+const OUT_DIR = path.join(ROOT, 'test-results/webapp-exports')
+
+const DEEP = !!process.env.DEEP && process.env.DEEP !== '0'
+const NETWORK = !!process.env.NETWORK && process.env.NETWORK !== '0'
+
+const QUICK_TIMEOUT = 90_000
+// Formats that render the whole course in the tab first
+const RENDER_TIMEOUT = 150_000
+
+interface Case {
+  name: string
+  format: Format
+  /** The tile to pick; `fullJson` is the json tile plus its option. */
+  tile: string
+  /** Checkboxes (by id) to tick in the advanced settings. */
+  tick?: string[]
+  timeout: number
+  /** Also walk every slide of the downloaded player. */
+  render?: boolean
+  /** Known bug that fails this case in every tier. */
+  bug?: string
+  /** Known bug that fails this case only with DEEP=1. */
+  deepBug?: string
+}
+
+// Slowest first, so the two workers finish at about the same time.
+const CASES: Case[] = [
+  { name: 'docx', format: 'docx', tile: 'docx', timeout: RENDER_TIMEOUT },
+  { name: 'epub', format: 'epub', tile: 'epub', timeout: RENDER_TIMEOUT },
+  { name: 'pdf', format: 'pdf', tile: 'pdf', timeout: RENDER_TIMEOUT },
+  { name: 'scorm1.2', format: 'scorm1.2', tile: 'scorm1.2', timeout: QUICK_TIMEOUT },
+  { name: 'scorm2004', format: 'scorm2004', tile: 'scorm2004', timeout: QUICK_TIMEOUT },
+  { name: 'ims', format: 'ims', tile: 'ims', timeout: QUICK_TIMEOUT },
+  // "Package as ZIP" is ticked by default for web and xapi.
+  { name: 'web', format: 'web', tile: 'web', timeout: QUICK_TIMEOUT, render: true },
+  { name: 'xapi', format: 'xapi', tile: 'xapi', timeout: QUICK_TIMEOUT, render: true },
+  { name: 'json', format: 'json', tile: 'json', timeout: QUICK_TIMEOUT },
+  { name: 'fullJson', format: 'fullJson', tile: 'json', tick: ['jsonFull'], timeout: QUICK_TIMEOUT },
+  { name: 'rdf', format: 'rdf', tile: 'rdf', timeout: QUICK_TIMEOUT },
+]
+
+// The formats that fetch, capture or keep remote content themselves; the
+// packaged ones only copy the README. json shows the remote import resolved.
+const NETWORK_CASES: Case[] = [
+  {
+    name: 'docx',
+    format: 'docx',
+    tile: 'docx',
+    timeout: RENDER_TIMEOUT,
+    bug: 'the Chartist chart is lost: html-to-docx rejects its SVG ("Invalid SVG") and leaves it as orphaned media',
+  },
+  {
+    name: 'epub',
+    format: 'epub',
+    tile: 'epub',
+    timeout: RENDER_TIMEOUT,
+    deepBug: 'epubcheck: the CORS-blocked image stays remote, the embed figure is wrapped in an <a>, the Chartist chart sits in a <p>, the OPF declares an svg property',
+  },
+  {
+    name: 'pdf',
+    format: 'pdf',
+    tile: 'pdf',
+    timeout: RENDER_TIMEOUT,
+    bug: 'the last page is blank',
+  },
+  { name: 'web', format: 'web', tile: 'web', timeout: QUICK_TIMEOUT, render: true },
+  { name: 'json', format: 'json', tile: 'json', timeout: QUICK_TIMEOUT },
+]
+
+let appURL = ''
+let closeApp: (() => Promise<void>) | undefined
+
+test.describe.configure({ mode: 'parallel' })
+
+// Each worker serves its own copy of the build.
+test.beforeAll(async () => {
+  if (!fs.existsSync(path.join(BUILD, 'index.html'))) {
+    throw new Error(`${BUILD} is missing; run npm run webapp:build first`)
+  }
+  fs.mkdirSync(OUT_DIR, { recursive: true })
+
+  const app = await servePackage(openPackage(BUILD))
+  appURL = app.url
+  closeApp = app.close
+})
+
+test.afterAll(async () => {
+  await closeApp?.()
+})
+
+interface Session {
+  context: BrowserContext
+  page: Page
+  /** Messages of every alert/confirm the app raised; they signal errors. */
+  dialogs: string[]
+  /** Page errors and console errors, for the report. */
+  log: string[]
+}
+
+/**
+ * A fresh context per export: the app keeps its jobs in IndexedDB and runs one
+ * at a time, so a shared context would block the next test on the last one.
+ */
+async function openApp(browser: Browser): Promise<Session> {
+  const context = await browser.newContext({ acceptDownloads: true })
+
+  // The pdf print tab calls window.print(); record it instead of opening the
+  // (headless: no-op) dialog, so the test knows when the render is ready.
+  await context.addInitScript(() => {
+    window.print = () => {
+      ;(window as any).__printed = true
+    }
+  })
+
+  const page = await context.newPage()
+  const session: Session = { context, page, dialogs: [], log: [] }
+
+  page.on('dialog', (dialog) => {
+    session.dialogs.push(dialog.message())
+    void dialog.dismiss()
+  })
+  page.on('pageerror', (error) => session.log.push(`pageerror: ${error.message}`))
+  page.on('console', (message) => {
+    if (message.type() === 'error') session.log.push(`console: ${message.text()}`)
+  })
+
+  await page.goto(appURL)
+  await expect(page.locator('#submitBtn')).toBeVisible()
+  // `window.LiaExporter` is what switches the UI to in-tab exports.
+  expect(await page.evaluate(() => !!(window as any).LiaExporter)).toBe(true)
+
+  return session
+}
+
+/** Picks a format tile (or preset tile) and ticks the given checkboxes. */
+async function choose(page: Page, target: { format?: string; preset?: string }, tick: string[] = []) {
+  if (target.format) {
+    await page.locator('[data-export-tab="formats"]').click()
+    await page.locator(`.preset-tile:has(input[name="format"][value="${target.format}"])`).click()
+    await expect(page.locator(`input[name="format"][value="${target.format}"]`)).toBeChecked()
+  } else {
+    await page.locator(`.preset-tile:has(input[name="preset"][value="${target.preset}"])`).click()
+    await expect(page.locator(`input[name="preset"][value="${target.preset}"]`)).toBeChecked()
+  }
+
+  if (tick.length) {
+    const advanced = page.locator('#advancedSettings')
+    if (await advanced.evaluate((el) => el.classList.contains('hidden'))) {
+      await page.locator('#toggleAdvanced').click()
+    }
+    for (const id of tick) await page.locator(`#${id}`).check()
+  }
+}
+
+/** Uploads through the drop zone's file dialog, as a click would. */
+async function upload(page: Page, files: { name: string; mimeType: string; buffer: Buffer }[]) {
+  const chooser = page.waitForEvent('filechooser')
+  await page.locator('#uploadArea').click()
+  await (await chooser).setFiles(files)
+  await expect(page.locator('#fileList .file-item')).toHaveCount(files.length)
+}
+
+const courseUpload = (fixture: Fixture = LOCAL_FIXTURE) => [
+  { name: 'course.zip', mimeType: 'application/zip', buffer: zipCourse(fixture) },
+]
+
+interface Result {
+  status: 'completed' | 'failed' | 'refused'
+  error?: string
+  /** The downloaded (or, for pdf, printed) file. */
+  file?: string
+  /** For pdf outside Chromium: the print view's text in print media. */
+  printed?: string
+}
+
+/**
+ * Submits the form, follows the confirmation to the status page, waits for the
+ * job there (the page is what runs it) and fetches the result.
+ */
+async function submitAndCollect(session: Session, name: string, timeout: number): Promise<Result> {
+  const { page } = session
+
+  await page.locator('#submitBtn').click()
+
+  const modal = page.locator('#confirmationModal')
+  await expect
+    .poll(async () => (await modal.isVisible()) || session.dialogs.length > 0, { timeout: 60_000 })
+    .toBe(true)
+
+  // The form answers a bad submission with alert() and no job.
+  if (!(await modal.isVisible())) return { status: 'refused', error: session.dialogs.join('\n') }
+
+  await page.locator('#statusLink').click()
+  await page.waitForURL(/status\.html\?jobId=/)
+
+  const done = page.locator('#statusContent .status-completed, #statusContent .status-failed')
+  await expect(done).toBeVisible({ timeout })
+
+  if (await page.locator('#statusContent .status-failed').isVisible()) {
+    return { status: 'failed', error: await page.locator('#statusContent').innerText() }
+  }
+
+  const button = page.locator('#statusContent button[onclick="downloadResult()"]')
+  const isPrint = await page.evaluate(() => (window as any).lastJobData?.job?.print === true)
+
+  if (isPrint) {
+    const popup = page.context().waitForEvent('page')
+    await button.click()
+    const tab = await popup
+
+    await tab.waitForFunction(() => (window as any).__printed === true, null, { timeout })
+
+    if (browserName(page) !== 'chromium') {
+      await tab.emulateMedia({ media: 'print' })
+      const printed = await printedText(tab)
+      fs.writeFileSync(path.join(outDir(page), `${name}.print.txt`), printed)
+      await tab.close()
+
+      return { status: 'completed', printed }
+    }
+
+    const file = path.join(outDir(page), `${name}.pdf`)
+    await tab.pdf({ path: file, preferCSSPageSize: true, printBackground: true })
+    await tab.close()
+
+    return { status: 'completed', file }
+  }
+
+  const download = page.waitForEvent('download')
+  await button.click()
+  const saved = await download
+
+  const file = path.join(outDir(page), `${name}${path.extname(saved.suggestedFilename())}`)
+  await saved.saveAs(file)
+
+  return { status: 'completed', file }
+}
+
+function browserName(page: Page): string {
+  return page.context().browser()!.browserType().name()
+}
+
+/** One folder per browser: the projects run side by side. */
+function outDir(page: Page): string {
+  const dir = path.join(OUT_DIR, browserName(page))
+  fs.mkdirSync(dir, { recursive: true })
+  return dir
+}
+
+/**
+ * The text a print would show: what is visible in print media, plus the open
+ * shadow roots formulas and web components draw into (innerText skips them).
+ */
+function printedText(tab: Page): Promise<string> {
+  return tab.evaluate(() => {
+    const shadows = [...document.querySelectorAll('*')]
+      .flatMap((el) => (el.shadowRoot ? [...el.shadowRoot.children] : []))
+      .filter((child) => child.tagName !== 'STYLE')
+      .map((child) => (child instanceof HTMLElement ? child.innerText : child.textContent))
+    return [document.body.innerText, ...shadows].join('\n')
+  })
+}
+
+async function attachLog(session: Session, testInfo: import('@playwright/test').TestInfo) {
+  await testInfo.attach('browser.log', {
+    body: [...session.dialogs.map((d) => `dialog: ${d}`), ...session.log].join('\n'),
+    contentType: 'text/plain',
+  })
+}
+
+exportMatrix(CASES, {})
+
+/*
+ * The network course: remote images, embeds, a remote import and a remote
+ * script, fetched by the browser itself (CORS applies, unlike in the CLI).
+ * Every host it needs can be slow or down, hence NETWORK=1 only.
+ */
+exportMatrix(NETWORK_CASES, { fixture: NETWORK_FIXTURE, title: 'network', network: true })
+
+interface Matrix {
+  /** The course to upload and check against; the local course by default. */
+  fixture?: Fixture
+  /** Prefix of each describe title and output file. */
+  title?: string
+  /** Skip unless NETWORK=1. */
+  network?: boolean
+}
+
+function exportMatrix(cases: Case[], matrix: Matrix): void {
+  for (const c of cases) {
+    const name = matrix.title ? `${matrix.title} ${c.name}` : c.name
+
+    test.describe(name, () => {
+      // One export per format, shared by its tests; serial keeps them in one worker.
+      test.describe.configure({ mode: 'serial' })
+      // With every test skipped, beforeAll does not export either.
+      if (matrix.network) test.skip(!NETWORK, 'needs NETWORK=1')
+
+      let result: Result
+      let session: Session
+
+      test.beforeAll(async ({ browser }) => {
+        test.setTimeout(c.timeout + 60_000)
+
+        session = await openApp(browser)
+        await choose(session.page, { format: c.tile }, c.tick)
+        await upload(session.page, courseUpload(matrix.fixture))
+        result = await submitAndCollect(session, name.replace(' ', '-'), c.timeout)
+      })
+
+      test.afterAll(async () => {
+        await session?.context.close()
+      })
+
+      test('exports and passes its checker', async ({}, testInfo) => {
+        const bug = c.bug ?? (DEEP ? c.deepBug : undefined)
+        test.fail(!!bug, bug)
+
+        await attachLog(session, testInfo)
+
+        expect(result.status, result.error).toBe('completed')
+        expect(session.dialogs, 'the app raised a dialog').toEqual([])
+
+        const options = { method: 'webapp' as const, deep: DEEP, fixture: matrix.fixture }
+        const check =
+          result.printed !== undefined
+            ? checkPrint(result.printed, options)
+            : await checkOutput(c.format, result.file!, options)
+        await testInfo.attach('checker.json', {
+          body: JSON.stringify(check, null, 2),
+          contentType: 'application/json',
+        })
+
+        expect(check.problems).toEqual([])
+      })
+
+      if (c.render) {
+        test('renders every slide in a browser', async ({ page }, testInfo) => {
+          expect(result.file, 'nothing was downloaded').toBeTruthy()
+
+          const rendered = await checkRendered(page, result.file!, {
+            method: 'webapp',
+            fixture: matrix.fixture,
+          })
+          await testInfo.attach('rendered.json', {
+            body: JSON.stringify(rendered, null, 2),
+            contentType: 'application/json',
+          })
+
+          expect(rendered.problems).toEqual([])
+        })
+      }
+    })
+  }
+}
+
+test.describe('sources and targets', () => {
+  test('the hint under the button describes in-tab exports, in both languages', async ({ browser }) => {
+    const session = await openApp(browser)
+    const info = session.page.locator('#submitInfo')
+
+    try {
+      // The service's "Export jobs are queued" is wrong here: nothing queues.
+      await expect(info).toContainText('Exports run in your browser')
+      await expect(info).toContainText('keep its status page open')
+      await expect(info).not.toContainText('queued')
+
+      await session.page.locator('#language-selector').selectOption('de')
+      await expect(info).toContainText('Exporte laufen in Ihrem Browser')
+      await expect(info).not.toContainText('Warteschlange')
+    } finally {
+      await session.context.close()
+    }
+  })
+
+  test('android is server-only: the notice shows and export is disabled', async ({ browser }, testInfo) => {
+    const session = await openApp(browser)
+    const { page } = session
+    const submit = page.locator('#submitBtn')
+
+    try {
+      await upload(page, courseUpload())
+      await choose(page, { format: 'android' })
+
+      await expect(page.locator('.format-notice--unavailable')).toBeVisible()
+      await expect(submit).toBeDisabled()
+      await expect(submit).toHaveAttribute('title', /browser/i)
+
+      // Any other target makes it available again, a format or a preset.
+      await choose(page, { format: 'json' })
+      await expect(submit).toBeEnabled()
+      await expect(submit).not.toHaveAttribute('title')
+
+      await choose(page, { format: 'android' })
+      await expect(submit).toBeDisabled()
+      await page.locator('[data-export-tab="presets"]').click()
+      await choose(page, { preset: 'moodle4' })
+      await expect(submit).toBeEnabled()
+
+      await attachLog(session, testInfo)
+      expect(session.dialogs).toEqual([])
+    } finally {
+      await session.context.close()
+    }
+  })
+
+  test('the service still refuses android if the form is submitted anyway', async ({ browser }, testInfo) => {
+    const session = await openApp(browser)
+
+    try {
+      await choose(session.page, { format: 'android' })
+      await session.page.locator('#toggleAdvanced').click()
+      await session.page.locator('#androidAppId').fill('io.github.liascript.test')
+      await upload(session.page, courseUpload())
+
+      // The disabled button blocks a click; a scripted submit is the only way
+      // left, and `exportFormData` must still refuse it.
+      await session.page.locator('#exportForm').evaluate((form: HTMLFormElement) => form.requestSubmit())
+      await expect.poll(() => session.dialogs.length, { timeout: 30_000 }).toBeGreaterThan(0)
+      await attachLog(session, testInfo)
+
+      expect(session.dialogs.join('\n')).toMatch(/android/i)
+      await expect(session.page.locator('#confirmationModal')).toBeHidden()
+    } finally {
+      await session.context.close()
+    }
+  })
+
+  test('a single README.md upload exports', async ({ browser }, testInfo) => {
+    const session = await openApp(browser)
+
+    try {
+      await choose(session.page, { format: 'json' })
+      await upload(session.page, [
+        {
+          name: 'README.md',
+          mimeType: 'text/markdown',
+          buffer: fs.readFileSync(path.join(COURSE_DIR, 'README.md')),
+        },
+      ])
+
+      const result = await submitAndCollect(session, 'readme-only', QUICK_TIMEOUT)
+      await attachLog(session, testInfo)
+      expect(result.status, result.error).toBe('completed')
+
+      const check = await checkOutput('json', result.file!, { method: 'webapp' })
+      expect(check.problems).toEqual([])
+    } finally {
+      await session.context.close()
+    }
+  })
+
+  test('the moodle4 preset exports SCORM 1.2 with its options', async ({ browser }, testInfo) => {
+    test.setTimeout(QUICK_TIMEOUT + 60_000)
+    const session = await openApp(browser)
+
+    try {
+      await choose(session.page, { preset: 'moodle4' })
+      await upload(session.page, courseUpload())
+
+      const result = await submitAndCollect(session, 'preset-moodle4', QUICK_TIMEOUT)
+      await attachLog(session, testInfo)
+      expect(result.status, result.error).toBe('completed')
+      expect(path.extname(result.file!)).toBe('.zip')
+
+      const check = await checkOutput('scorm1.2', result.file!, { method: 'webapp', deep: DEEP })
+      await testInfo.attach('checker.json', {
+        body: JSON.stringify(check, null, 2),
+        contentType: 'application/json',
+      })
+      expect(check.problems).toEqual([])
+
+      // moodle4 sets scormEmbed: the course is bundled into course.js instead
+      // of being fetched at runtime.
+      expect(openPackage(result.file!).files).toContain('course.js')
+    } finally {
+      await session.context.close()
+    }
+  })
+
+  test('GitHub import', async ({ browser }, testInfo) => {
+    test.skip(!NETWORK, 'needs NETWORK=1')
+    test.setTimeout(3 * 60_000)
+    const session = await openApp(browser)
+
+    try {
+      const { page } = session
+      await choose(page, { format: 'json' })
+      await page.locator('[data-tab="git"]').click()
+      await page.locator('#gitUrl').fill('https://github.com/LiaPlayground/Quiz-Demo')
+
+      const result = await submitAndCollect(session, 'github', 2 * 60_000)
+      await attachLog(session, testInfo)
+      expect(result.status, result.error).toBe('completed')
+
+      const text = fs.readFileSync(result.file!, 'utf8')
+      expect(() => JSON.parse(text)).not.toThrow()
+      expect(text).toContain('Hier muss das Kreuz hin')
+    } finally {
+      await session.context.close()
+    }
+  })
+})

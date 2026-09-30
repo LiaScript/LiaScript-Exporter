@@ -33,6 +33,27 @@ export function isRemote(url: string): boolean {
 }
 
 /**
+ * The course's title as the render shows it: the first slide's heading, else
+ * the document title. Read before the render is disposed.
+ */
+export function courseTitle(doc: Document): string | undefined {
+  const heading = doc.querySelector('main header .h1, main header .h2')
+
+  return heading?.textContent?.trim() || doc.title || undefined
+}
+
+/**
+ * The course's `author:`, which LiaScript writes into `<meta name="author">`
+ * once the course is parsed — where the CLI reads it off the parsed JSON.
+ */
+export function courseAuthor(doc: Document): string | undefined {
+  return (
+    doc.querySelector('meta[name="author"]')?.getAttribute('content')?.trim() ||
+    undefined
+  )
+}
+
+/**
  * The file's own name, for labelling media that carries no description.
  */
 export function filename(url: string): string {
@@ -45,11 +66,40 @@ export function filename(url: string): string {
  * Removes the inline event handlers LiaScript renders with.
  */
 export function stripHandlers(body: HTMLElement): void {
-  const handlers = ['onload', 'onerror', 'onclick']
+  // Named rather than found by scanning every attribute of every element,
+  // which is ~100k visits on a big course. The quiz dropdown uses the key and
+  // focus ones.
+  const handlers = [
+    'onload',
+    'onerror',
+    'onclick',
+    'onkeydown',
+    'onkeyup',
+    'onfocus',
+    'onblur',
+    'oninput',
+    'onchange',
+  ]
 
   body
     .querySelectorAll(handlers.map((name) => `[${name}]`).join(','))
     .forEach((el) => handlers.forEach((name) => el.removeAttribute(name)))
+}
+
+/**
+ * Unwraps links to course files (the audio gallery, relative hrefs): in the
+ * render they are `blob:` URLs of this tab, dead once the document leaves the
+ * app. What they show is kept. The CLI does the same for its `file:` URLs, and
+ * likewise keeps `mailto:`.
+ */
+export function unlinkLocal(body: HTMLElement): void {
+  body.querySelectorAll('a[href]').forEach((a) => {
+    const href = a.getAttribute('href') || ''
+
+    if (isRemote(href) || /^(#|mailto:)/i.test(href)) return
+
+    a.replaceWith(...Array.from(a.childNodes))
+  })
 }
 
 /** Escapes text for inclusion in HTML. */
@@ -628,7 +678,28 @@ export function figures(doc: Document): Map<number, string> {
   hosts.forEach((figure, index) => {
     const svg = figure.querySelector('.lia-figure__media svg')
 
-    if (svg) images.set(index, serializeSvg(svg as unknown as SVGElement))
+    if (!svg) return
+
+    /*
+     * A formula written into ASCII art sits in a `<foreignObject>` as a
+     * `<lia-formula>`, drawn in its shadow root, which serializing leaves
+     * behind: the image would carry an unknown element and no formula. A copy
+     * takes the formula's MathML in its place, its description as a fallback.
+     */
+    const live = svg.querySelectorAll('lia-formula')
+    const copy = svg.cloneNode(true) as SVGElement
+
+    copy.querySelectorAll('lia-formula').forEach((formula, i) => {
+      const math = live[i]?.shadowRoot?.querySelector('.katex-mathml math')
+
+      formula.replaceWith(
+        math
+          ? math.cloneNode(true)
+          : doc.createTextNode(formula.textContent?.trim() ?? ''),
+      )
+    })
+
+    images.set(index, serializeSvg(copy))
   })
 
   return images

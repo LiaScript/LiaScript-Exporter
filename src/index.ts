@@ -14,6 +14,7 @@ import minimist from 'minimist'
 
 import { displayHelp } from './cli'
 import {
+  Arguments,
   parseArguments,
   validateAndNormalize,
   parsePresetsArguments,
@@ -70,14 +71,13 @@ async function main(): Promise<void> {
     displayHelp()
   } else if ((argv.f || argv.format) === 'presets') {
     // Handle presets mode
-    handlePresetsMode()
+    await handlePresetsMode()
   } else if (getGitOptions(argv)) {
     await runGitExport()
   } else if (argv.i || argv.input) {
     const args = parseArguments()
     const validatedArgs = validateAndNormalize(args)
-    const exporter = new Exporter()
-    await exporter.run(validatedArgs)
+    await runExport(validatedArgs)
   } else {
     console.warn('No input defined')
     displayHelp()
@@ -133,8 +133,7 @@ async function handlePresetsMode(): Promise<void> {
 async function runPresetExport(presetId: string): Promise<void> {
   const args = parsePresetsArguments(presetId)
   const validatedArgs = validateAndNormalize(args)
-  const exporter = new Exporter()
-  await exporter.run(validatedArgs)
+  await runExport(validatedArgs)
 }
 
 /**
@@ -158,8 +157,28 @@ async function runGitExport(): Promise<void> {
 
   const args = parseArguments()
   const validatedArgs = validateAndNormalize(args)
-  const exporter = new Exporter()
-  await exporter.run(validatedArgs)
+  await runExport(validatedArgs)
+}
+
+/**
+ * Runs one export and turns a run that never settles into a failure.
+ *
+ * Node exits 0 once nothing is left to do, even while `run()` is still
+ * pending, e.g. when Elm never answers. `beforeExit` fires exactly then.
+ */
+async function runExport(args: Arguments): Promise<void> {
+  const unsettled = () => {
+    console.error('Export failed: it stopped without writing any output')
+    process.exitCode = 1
+  }
+
+  process.once('beforeExit', unsettled)
+
+  try {
+    await new Exporter().run(args)
+  } finally {
+    process.off('beforeExit', unsettled)
+  }
 }
 
 // Execute main function

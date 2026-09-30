@@ -1,0 +1,264 @@
+/*
+ * What the fixture course contains, and what each format is expected to keep
+ * of it. The checkers compare every export against this.
+ *
+ * Markers are read from the README itself, so a new `MK...` word in the course
+ * is checked everywhere without touching this file. Only the exceptions are
+ * listed here: markers that must never render, markers whose rendered form
+ * differs from the source, and known gaps per format.
+ */
+import * as fs from 'node:fs'
+import * as path from 'node:path'
+import { zipSync } from 'fflate'
+
+export const COURSE_DIR = path.join(__dirname, 'course')
+export const COURSE_README = path.join(COURSE_DIR, 'README.md')
+
+export const MARKER_PATTERN = /MK[A-Z][A-Za-z0-9]*/g
+
+/** How an output is produced; known gaps can differ between the two. */
+export type Method = 'cli' | 'webapp'
+
+/** Formats that carry rendered course text, as opposed to the Markdown source. */
+export type RenderedFormat = 'epub' | 'docx' | 'pdf' | 'web'
+
+export interface KnownGap {
+  reason: string
+  /** Limits the gap to these methods; all methods when omitted. */
+  only?: Method[]
+  /**
+   * Text that must stand in for the marker, so that a gap cannot hide the
+   * element vanishing altogether.
+   */
+  fallback?: string
+}
+
+/** The facts about a course that the checkers compare an export with. */
+export interface CourseInfo {
+  title: string
+  author: string
+  email: string
+  language: string
+  version: string
+  /** One entry per `#`/`##` heading, in order. */
+  sections: string[]
+  /** Section index → number of quizzes / surveys / task lists in it. */
+  quizzes: Record<number, number>
+  surveys: Record<number, number>
+  tasks: Record<number, number>
+  /** Files next to the README that must never ship. */
+  hidden: string[]
+  /** Macros the course's `import:`s define; json must carry each one. */
+  macros?: string[]
+}
+
+/**
+ * A course plus what each format is expected to keep of it. The checkers take
+ * one through `CheckOptions.fixture`; the local course is the default.
+ */
+export interface Fixture {
+  /** The course folder; its README.md is the course. */
+  dir: string
+  course: CourseInfo
+  /** Markers that exist only in the source and must never reach rendered output. */
+  neverRendered: Record<string, string>
+  /** Markers whose rendered text differs from the source. */
+  renderedAs: Record<string, string>
+  /** Markers each rendered format is known to lose; a gap that renders is reported. */
+  knownGaps: Record<RenderedFormat, Record<string, KnownGap>>
+}
+
+export const COURSE: CourseInfo = {
+  title: 'Exporter Test Course',
+  author: 'LiaScript Exporter Tests',
+  email: 'LiaScript@web.de',
+  language: 'en',
+  version: '1.0.0',
+
+  /** One entry per `#`/`##` heading, in order. */
+  sections: [
+    'Exporter Test Course',
+    'Text Formatting',
+    'Lists and Tasks',
+    'Tables',
+    'Blockquotes',
+    'Images and Media',
+    'Code Blocks',
+    'Markdown Inside Code',
+    'Formulas',
+    'Footnotes',
+    'Charts',
+    'ASCII Art',
+    'Inline SVG',
+    'Quizzes',
+    'Surveys',
+    'Animations',
+    'Scripts and Dialogs',
+    'HTML',
+    'Final Chapter',
+  ],
+
+  /** Section index → number of quizzes / surveys / task lists in it. */
+  quizzes: { 13: 7 },
+  surveys: { 14: 4 },
+  tasks: { 2: 1 },
+
+  /** Files next to the README that must never ship. */
+  hidden: ['.hidden/secret.txt'],
+}
+
+/** Every file of the course except the README and hidden ones, posix paths. */
+export function courseAssets(fixture: Fixture = LOCAL_FIXTURE): string[] {
+  const root = fixture.dir
+  const out: string[] = []
+
+  const walk = (dir: string) => {
+    for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+      if (entry.name.startsWith('.')) continue
+
+      const full = path.join(dir, entry.name)
+      if (entry.isDirectory()) walk(full)
+      else out.push(path.relative(root, full).split(path.sep).join('/'))
+    }
+  }
+
+  walk(root)
+  return out.filter((file) => file !== 'README.md').sort()
+}
+
+/**
+ * The course directory as the zip a user would upload, `.hidden/` included,
+ * under a top-level `course/` folder.
+ */
+export function zipCourse(fixture: Fixture = LOCAL_FIXTURE): Buffer {
+  const root = fixture.dir
+  const files: Record<string, Uint8Array> = {}
+
+  const walk = (dir: string) => {
+    for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+      const full = path.join(dir, entry.name)
+      if (entry.isDirectory()) walk(full)
+      else files[`course/${path.relative(root, full).split(path.sep).join('/')}`] =
+        new Uint8Array(fs.readFileSync(full))
+    }
+  }
+
+  walk(root)
+  return Buffer.from(zipSync(files))
+}
+
+/** Every marker written in the course source. */
+export function sourceMarkers(fixture: Fixture = LOCAL_FIXTURE): string[] {
+  const source = fs.readFileSync(readmeOf(fixture), 'utf8')
+  return [...new Set(source.match(MARKER_PATTERN) ?? [])].sort()
+}
+
+/** Markers that exist only in the source and must never reach rendered output. */
+export const NEVER_RENDERED: Record<string, string> = {
+  MKCommentLeak: 'sits in an HTML comment',
+  MKAlertDialog: 'is the text of an alert() dialog',
+}
+
+/** Markers whose rendered text differs from the source. */
+export const RENDERED_AS: Record<string, string> = {
+  MKScriptResult: 'MKScriptResult42',
+}
+
+/** The markers a rendered format should contain, before known gaps. */
+export function renderedMarkers(fixture: Fixture = LOCAL_FIXTURE): string[] {
+  return sourceMarkers(fixture)
+    .filter((marker) => !(marker in fixture.neverRendered))
+    .map((marker) => fixture.renderedAs[marker] ?? marker)
+    .sort()
+}
+
+const MEDIA_LABEL =
+  'audio/video labels become a link or player, the label text is not kept'
+const PRINT_MEDIA_LABEL =
+  'the print render (LiaScript feat/fullPage) drops the audio/video label; the file name stands in'
+const HIDDEN_UNTIL_CLICKED =
+  'quiz hints and explanations stay hidden until the reader asks for them'
+
+/**
+ * Markers each rendered format is known to lose, measured on the CLI and web
+ * app output on 2026-09-29. A gap that starts to render is reported too, so this list can
+ * only shrink.
+ */
+export const KNOWN_GAPS: Record<RenderedFormat, Record<string, KnownGap>> = {
+  epub: {
+    MKAudio: { reason: PRINT_MEDIA_LABEL, fallback: 'tone.wav' },
+    MKVideo: { reason: PRINT_MEDIA_LABEL, fallback: 'clip.webm' },
+    MKQuizHint: { reason: HIDDEN_UNTIL_CLICKED },
+    MKQuizExplanation: { reason: HIDDEN_UNTIL_CLICKED },
+    MKSvgText: { reason: 'inline SVG is captured as an image' },
+  },
+  docx: {
+    MKAudio: { reason: PRINT_MEDIA_LABEL, fallback: 'tone.wav' },
+    MKVideo: { reason: PRINT_MEDIA_LABEL, fallback: 'clip.webm' },
+    MKQuizHint: { reason: HIDDEN_UNTIL_CLICKED },
+    MKQuizExplanation: { reason: HIDDEN_UNTIL_CLICKED },
+    MKSvgText: { reason: 'inline SVG is captured as an image' },
+  },
+  pdf: {
+    MKAudio: { reason: PRINT_MEDIA_LABEL, fallback: 'tone.wav' },
+    MKVideo: { reason: PRINT_MEDIA_LABEL, fallback: 'clip.webm' },
+    MKQuizHint: { reason: HIDDEN_UNTIL_CLICKED },
+    MKQuizExplanation: { reason: HIDDEN_UNTIL_CLICKED },
+    MKDetailsBody: { reason: '<details> is printed collapsed' },
+    MKImagePng: { reason: 'alt text is not visible text in a PDF' },
+    MKImageJpg: { reason: 'alt text is not visible text in a PDF' },
+    MKGalleryA: { reason: 'alt text is not visible text in a PDF' },
+    MKGalleryB: { reason: 'alt text is not visible text in a PDF' },
+    MKQuoteImage: { reason: 'alt text is not visible text in a PDF' },
+    MKAfterFenceImage: { reason: 'alt text is not visible text in a PDF' },
+  },
+  /** The live player, read slide by slide as a reader first sees it. */
+  web: {
+    MKAudio: { reason: MEDIA_LABEL },
+    MKVideo: { reason: MEDIA_LABEL },
+    MKQuizHint: { reason: HIDDEN_UNTIL_CLICKED },
+    MKQuizExplanation: { reason: HIDDEN_UNTIL_CLICKED },
+    MKDetailsBody: { reason: '<details> starts collapsed' },
+  },
+}
+
+export const LOCAL_FIXTURE: Fixture = {
+  dir: COURSE_DIR,
+  course: COURSE,
+  neverRendered: NEVER_RENDERED,
+  renderedAs: RENDERED_AS,
+  knownGaps: KNOWN_GAPS,
+}
+
+export function readmeOf(fixture: Fixture): string {
+  return path.join(fixture.dir, 'README.md')
+}
+
+/** The fallback text of each known gap that has one. */
+export function gapFallbacks(
+  format: RenderedFormat,
+  method: Method,
+  fixture: Fixture = LOCAL_FIXTURE,
+): Record<string, string> {
+  const out: Record<string, string> = {}
+
+  for (const [marker, gap] of Object.entries(fixture.knownGaps[format])) {
+    if (gap.fallback && (!gap.only || gap.only.includes(method))) out[marker] = gap.fallback
+  }
+
+  return out
+}
+
+export function knownGaps(
+  format: RenderedFormat,
+  method: Method,
+  fixture: Fixture = LOCAL_FIXTURE,
+): Record<string, string> {
+  const out: Record<string, string> = {}
+
+  for (const [marker, gap] of Object.entries(fixture.knownGaps[format])) {
+    if (!gap.only || gap.only.includes(method)) out[marker] = gap.reason
+  }
+
+  return out
+}

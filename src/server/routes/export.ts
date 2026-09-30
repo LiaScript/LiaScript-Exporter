@@ -11,9 +11,72 @@ import {
   findMainMarkdown,
   isZipFile,
   cloneGitRepo,
+  removeDirectory,
 } from '../utils/zipExtractor'
 
 export const exportRouter: FastifyPluginAsync = async (fastify) => {
+  /**
+   * Clones `source.gitUrl` and records the main markdown file on `source`, for
+   * multipart and JSON requests alike. Returns an error message for a 400, or
+   * null on success.
+   */
+  async function cloneSource(source: any): Promise<string | null> {
+    source.type = 'git'
+
+    fastify.log.info(`Cloning git repository: ${source.gitUrl}`)
+
+    const cloneDir = join(tmpdir(), 'liaex-git', randomUUID())
+    await mkdir(cloneDir, { recursive: true })
+
+    const error = await cloneInto(source, cloneDir)
+    if (error) {
+      // No job is created, so nothing else would remove the clone
+      await removeDirectory(cloneDir)
+    } else {
+      source.cloneDir = cloneDir
+    }
+    return error
+  }
+
+  async function cloneInto(source: any, cloneDir: string): Promise<string | null> {
+    try {
+      const repoPath = await cloneGitRepo(
+        source.gitUrl,
+        cloneDir,
+        source.gitBranch,
+        source.gitSubdir,
+      )
+
+      fastify.log.info(`Git repository cloned to: ${repoPath}`)
+
+      // Find main markdown file
+      let mainMarkdown: string | null = null
+      if (source.gitFile) {
+        const specificFile = join(repoPath, source.gitFile)
+        try {
+          await access(specificFile)
+          mainMarkdown = specificFile
+        } catch {
+          return `Specified file not found in repository: ${source.gitFile}`
+        }
+      } else {
+        mainMarkdown = await findMainMarkdown(repoPath)
+        if (!mainMarkdown) {
+          return 'No markdown file found in Git repository. Please include a README.md or any .md file.'
+        }
+      }
+
+      fastify.log.info(`Found main markdown: ${mainMarkdown}`)
+
+      source.mainFile = mainMarkdown
+      source.repoPath = repoPath
+      return null
+    } catch (error: any) {
+      fastify.log.error(`Failed to clone git repository: ${error.message}`)
+      return `Failed to clone git repository: ${error.message}`
+    }
+  }
+
   // GET /api/presets - Get available presets configuration
   fastify.get('/presets', async (request, reply) => {
     try {
@@ -83,27 +146,30 @@ export const exportRouter: FastifyPluginAsync = async (fastify) => {
 
   // POST /api/export - Create new export job
   fastify.post('/export', async (request, reply) => {
+    let jobData: any = {
+      source: {},
+      target: {},
+      options: {},
+    }
+    // Made before the parts are read, so before anyone knows a job will use it
+    let uploadDir: string | undefined
+    let queued = false
+
     try {
       const data = await request.body
-
-      let jobData: any = {
-        source: {},
-        target: {},
-        options: {},
-      }
 
       // Check if it's multipart (file upload)
       if (request.isMultipart()) {
         const parts = request.parts()
         const files: any[] = []
         const uploadId = randomUUID()
-        const uploadDir = join(tmpdir(), 'liaex-uploads', uploadId)
+        uploadDir = join(tmpdir(), 'liaex-uploads', uploadId)
         await mkdir(uploadDir, { recursive: true })
 
         for await (const part of parts) {
           if (part.type === 'file') {
             // Save file temporarily
-            const filepath = join(uploadDir, part.filename)
+            const filepath = join(uploadDir!, part.filename)
             const buffer = await part.toBuffer()
             await writeFile(filepath, new Uint8Array(buffer))
 
@@ -170,63 +236,8 @@ export const exportRouter: FastifyPluginAsync = async (fastify) => {
             jobData.source.extractedFrom = zipFile.filename
           }
         } else if (jobData.source.gitUrl) {
-          // Handle git repository cloning
-          jobData.source.type = 'git'
-
-          fastify.log.info(`Cloning git repository: ${jobData.source.gitUrl}`)
-
-          // Create clone directory
-          const cloneId = randomUUID()
-          const cloneDir = join(tmpdir(), 'liaex-git', cloneId)
-          await mkdir(cloneDir, { recursive: true })
-
-          try {
-            // Clone the repository
-            const repoPath = await cloneGitRepo(
-              jobData.source.gitUrl,
-              cloneDir,
-              jobData.source.gitBranch,
-              jobData.source.gitSubdir,
-            )
-
-            fastify.log.info(`Git repository cloned to: ${repoPath}`)
-
-            // Find main markdown file
-            let mainMarkdown: string | null = null
-            if (jobData.source.gitFile) {
-              const specificFile = join(repoPath, jobData.source.gitFile)
-              try {
-                await access(specificFile)
-                mainMarkdown = specificFile
-              } catch {
-                return reply.code(400).send({
-                  error: `Specified file not found in repository: ${jobData.source.gitFile}`,
-                })
-              }
-            } else {
-              mainMarkdown = await findMainMarkdown(repoPath)
-              if (!mainMarkdown) {
-                return reply.code(400).send({
-                  error:
-                    'No markdown file found in Git repository. Please include a README.md or any .md file.',
-                })
-              }
-            }
-
-            fastify.log.info(`Found main markdown: ${mainMarkdown}`)
-
-            // Update job data with cloned repo information
-            jobData.source.mainFile = mainMarkdown
-            jobData.source.cloneDir = cloneDir
-            jobData.source.repoPath = repoPath
-          } catch (error: any) {
-            fastify.log.error(
-              `Failed to clone git repository: ${error.message}`,
-            )
-            return reply.code(400).send({
-              error: `Failed to clone git repository: ${error.message}`,
-            })
-          }
+          const error = await cloneSource(jobData.source)
+          if (error) return reply.code(400).send({ error })
         } else {
           return reply.code(400).send({
             error: 'No files uploaded and no git URL provided',
@@ -237,11 +248,13 @@ export const exportRouter: FastifyPluginAsync = async (fastify) => {
         const body = data as any
 
         if (body.gitUrl) {
-          jobData.source.type = 'git'
           jobData.source.gitUrl = body.gitUrl
           jobData.source.gitBranch = body.gitBranch
           jobData.source.gitSubdir = body.gitSubdir
           jobData.source.gitFile = body.gitFile
+
+          const error = await cloneSource(jobData.source)
+          if (error) return reply.code(400).send({ error })
         } else {
           return reply.code(400).send({
             error: 'Invalid request format',
@@ -254,6 +267,7 @@ export const exportRouter: FastifyPluginAsync = async (fastify) => {
 
       // Add job to queue
       const result = jobQueue.addJob(jobData)
+      queued = true
 
       return reply.send(result)
     } catch (error: any) {
@@ -262,6 +276,12 @@ export const exportRouter: FastifyPluginAsync = async (fastify) => {
         error: 'Failed to create export job',
         message: error.message,
       })
+    } finally {
+      // The job removes its own upload once it ends; one no job took over
+      // (a rejected request, or a git import over multipart) goes now.
+      if (uploadDir && !(queued && jobData.source.uploadDir === uploadDir)) {
+        await removeDirectory(uploadDir)
+      }
     }
   })
 
@@ -298,6 +318,12 @@ export const exportRouter: FastifyPluginAsync = async (fastify) => {
 
     if (job.status !== 'completed') {
       return reply.code(400).send({ error: 'Job not completed yet' })
+    }
+
+    if (job.expired) {
+      return reply
+        .code(410)
+        .send({ error: 'Export expired, please export again' })
     }
 
     if (!job.result || !job.result.outputPath) {

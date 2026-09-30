@@ -97,12 +97,7 @@ export async function exporter(argument: ImsExportArguments, json: any) {
     index = helper.injectResponsivevoice(argument.key, index)
   }
 
-  try {
-    await fs.writeFile(path.join(tmpPath, 'index.html'), index)
-  } catch (e) {
-    console.warn(e)
-    return
-  }
+  await fs.writeFile(path.join(tmpPath, 'index.html'), index)
 
   await manifest(fs, tmpPath, json.lia)
 

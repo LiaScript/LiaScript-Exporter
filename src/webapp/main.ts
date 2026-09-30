@@ -9,7 +9,7 @@
  * is a small adapter rather than a second front end.
  */
 
-import { toOptions } from '../export/options'
+import { resolveFormat, toOptions } from '../export/options'
 import { exportCourse, download, Course } from './export'
 import * as jobs from './jobs'
 import { print as printPdf } from './formats/pdf'
@@ -180,7 +180,7 @@ function resolveTarget(formData: FormData): {
     return { format, options: toOptions(format, preset.options, userOptions) }
   }
 
-  const format = String(formData.get('format') || 'web')
+  const format = resolveFormat(String(formData.get('format') || 'web'), userOptions)
   return { format, options: toOptions(format, {}, userOptions) }
 }
 

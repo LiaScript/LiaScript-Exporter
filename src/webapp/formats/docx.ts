@@ -81,9 +81,15 @@ export async function exporter(
   const course = await render(markdown, files, options, onProgress)
 
   let html: string
+  // The flag, else the course's own title, as in the CLI. Read first:
+  // `assemble` rewrites the headings.
+  const title =
+    options['docx-title'] ||
+    extract.courseTitle(course.document) ||
+    'LiaScript Export'
 
   try {
-    html = await assemble(course.document, course.window, options)
+    html = await assemble(course.document, course.window, { ...options, 'docx-title': title })
   } finally {
     // Only needed for the scrape; freed before the slow conversion rather than
     // holding a second copy of the course in memory.
@@ -97,7 +103,7 @@ export async function exporter(
     options['docx-header-html'] || null,
     {
       orientation: options['docx-orientation'] || DEFAULTS.orientation,
-      title: options['docx-title'] || 'LiaScript Export',
+      title,
       creator: options['docx-author'] || 'LiaScript Exporter',
       subject: options['docx-subject'],
       description: options['docx-description'],
@@ -186,7 +192,9 @@ async function assemble(
   replaceTerminals(body, terminals)
   replaceCode(body, code)
   labelUnreachable(body, reachable)
+  extract.unlinkLocal(body)
   captions(body)
+  unlinkBlocks(body)
 
   return document_(chapters(body), options)
 }
@@ -296,6 +304,14 @@ function strip(body: HTMLElement): void {
     img.removeAttribute('loading')
   })
 
+  // The converter drops unknown inline elements with their text, such as a
+  // script's <output>.
+  body.querySelectorAll('output').forEach((output) => {
+    const span = output.ownerDocument.createElement('span')
+    span.textContent = output.textContent
+    output.replaceWith(span)
+  })
+
   extract.stripHandlers(body)
 
   // The converter wants `<img>` as a direct child of `<figure>`; the figure
@@ -323,6 +339,20 @@ function strip(body: HTMLElement): void {
     })
 }
 
+/** A `<figcaption>`'s content as a styled paragraph. */
+function captionFor(caption: Element): HTMLElement {
+  const p = caption.ownerDocument.createElement('p')
+
+  p.setAttribute(
+    'style',
+    'text-align: center; font-style: italic; color: #555; ' +
+      'font-size: 0.9em; margin-top: 0.3em; margin-bottom: 1em;',
+  )
+  p.innerHTML = caption.innerHTML
+
+  return p
+}
+
 /** Turns `<figcaption>` into a styled paragraph after its figure. */
 function captions(body: HTMLElement): void {
   body.querySelectorAll('figure > figcaption').forEach((caption) => {
@@ -330,16 +360,7 @@ function captions(body: HTMLElement): void {
 
     if (!figure) return
 
-    const p = figure.ownerDocument.createElement('p')
-
-    p.setAttribute(
-      'style',
-      'text-align: center; font-style: italic; color: #555; ' +
-        'font-size: 0.9em; margin-top: 0.3em; margin-bottom: 1em;',
-    )
-    p.innerHTML = caption.innerHTML
-
-    figure.parentNode?.insertBefore(p, figure.nextSibling)
+    figure.parentNode?.insertBefore(captionFor(caption), figure.nextSibling)
     caption.remove()
   })
 
@@ -351,6 +372,18 @@ function captions(body: HTMLElement): void {
     while (figure.firstChild) p.appendChild(figure.firstChild)
 
     figure.replaceWith(p)
+  })
+}
+
+/**
+ * Unwraps links around block content, keeping the content.
+ *
+ * LiaScript wraps a linked figure, such as a QR code, in one; the converter
+ * turns it into an empty hyperlink, dropping the image and its caption.
+ */
+function unlinkBlocks(body: HTMLElement): void {
+  body.querySelectorAll('a').forEach((a) => {
+    if (a.querySelector('p, div, figure, table')) a.replaceWith(...Array.from(a.childNodes))
   })
 }
 
@@ -417,16 +450,22 @@ function replaceMedia(body: HTMLElement): void {
         el.querySelector('source')?.getAttribute('src') ||
         ''
 
+      // The whole figure, as in epub: the label is a `<p>`, which the
+      // converter drops inside the figure's own `<span>` wrappers.
+      const target = el.closest('figure.lia-figure') ?? el
+
       if (url) {
-        el.replaceWith(media(doc, el, url, prefix))
+        target.replaceWith(media(doc, el, url, prefix))
       } else {
-        el.remove()
+        target.remove()
       }
     })
   }
 
   bare('iframe', '🔗 ')
   bare('video', '▶ ')
+  // the converter drops <audio> without a trace
+  bare('audio', '🔊 ')
 
   // Embeds are a rich preview of a remote page; the link is the content.
   body.querySelectorAll('lia-embed').forEach((embed) => {
@@ -546,7 +585,14 @@ function swap(
       'max-width: 100%; height: auto; display: block; margin: 0 auto;',
     )
 
-    el.replaceWith(framed(doc, img))
+    // A swapped figure (ASCII art) takes its caption with it otherwise;
+    // `captions` runs too late to rescue it.
+    const caption = el.querySelector(':scope > figcaption')
+
+    el.replaceWith(
+      framed(doc, img),
+      ...(caption ? [captionFor(caption)] : []),
+    )
   })
 }
 

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="100" viewBox="0 0 200 100">
+  <!-- From Error to P -- to summing: a double hyphen inside an XML comment (regression: repairSvg) -->
+  <rect x="5" y="5" width="190" height="90" fill="#eef" stroke="#336" stroke-width="3"/>
+  <circle cx="50" cy="50" r="25" fill="#c33"/>
+  <path d="M100 75 L130 25 L160 75 Z" fill="#3a3"/>
+</svg>

@@ -4,6 +4,7 @@ import * as path from 'path'
 import puppeteer, { Browser, Page } from 'puppeteer'
 import * as fs from 'fs'
 import { tmpdir } from 'os'
+import { createRequire } from 'module'
 
 // Default EPUB generation settings
 const DEFAULT_TIMEOUT_MS = 15000 // 15 seconds
@@ -232,12 +233,14 @@ export async function exporter(argument: EpubExportArguments, json: any) {
 
     argument['epub-title'] = argument['epub-title'] || json.lia.str_title
     let logo = json.lia.definition.logo
-    if (logo && !helper.isURL(logo) && helper.isURL(argument.input)) {
+    if (logo && !helper.isURL(logo)) {
       // Resolve relative logo paths (e.g. 'assets/images/logo.png') against
-      // the course's base URL, since the epub library treats non-'http'
-      // cover values as local filesystem paths and would otherwise fail
-      // with ENOENT.
-      logo = new URL(logo, argument.input).href
+      // the course, since the epub library treats non-'http' cover values as
+      // local filesystem paths relative to cwd and would otherwise fail with
+      // ENOENT.
+      logo = helper.isURL(argument.input)
+        ? new URL(logo, argument.input).href
+        : path.resolve(path.dirname(argument.input), logo)
     }
     argument['epub-cover'] = argument['epub-cover'] || logo
     argument['epub-author'] = argument['epub-author'] || json.lia.definition.author
@@ -489,8 +492,9 @@ async function toEPUB(
             img.setAttribute('style', style)
 
             if (options.reuseAsContainer) {
-              el.innerHTML = ''
-              el.appendChild(img)
+              // The figure's own caption (ASCII art's title) stays.
+              const caption = el.querySelector(':scope > figcaption')
+              el.replaceChildren(img, ...(caption ? [caption] : []))
               if (options.figureStyle)
                 el.setAttribute('style', options.figureStyle)
             } else if (options.wrapInFigure) {
@@ -708,6 +712,60 @@ async function toEPUB(
           }
         })
 
+      // A quiz cannot be answered in a book, and EPUB's XHTML rejects the live
+      // widget markup: a radio <input> without `aria-checked`, `role` on a
+      // <label>, block content (<div>, <h3>) inside a <label>. Choices and
+      // tasks keep a printed box that shows their state.
+      bodyClone.querySelectorAll('button, select, textarea').forEach((el: Element) => el.remove())
+      bodyClone.querySelectorAll('input').forEach((input: HTMLInputElement) => {
+        const kind = `${input.type} ${input.getAttribute('role') || ''} ${input.className}`
+        const mark = /radio/.test(kind)
+          ? input.checked ? '◉ ' : '○ '
+          : /checkbox/.test(kind)
+            ? input.checked ? '☑ ' : '☐ '
+            : ''
+        input.replaceWith(document.createTextNode(mark))
+      })
+      bodyClone.querySelectorAll('[role]').forEach((el: Element) => {
+        el.removeAttribute('role')
+        Array.from(el.attributes).forEach((attribute) => {
+          if (attribute.name.startsWith('aria-')) el.removeAttribute(attribute.name)
+        })
+      })
+      bodyClone.querySelectorAll('label').forEach((label: Element) => {
+        const div = document.createElement('div')
+        Array.from(label.attributes).forEach((a) => div.setAttribute(a.name, a.value))
+        while (label.firstChild) div.appendChild(label.firstChild)
+        label.replaceWith(div)
+      })
+
+      const isRemote = (url: string) => /^(https?:|\/\/|mailto:)/i.test(url)
+
+      // Local audio and video point into this machine's file system (file://
+      // URLs), and WAV or WebM are no EPUB core media types anyway: name them
+      // instead. Remote media stay playable.
+      bodyClone.querySelectorAll('audio, video').forEach((el: Element) => {
+        const src =
+          el.getAttribute('src') ||
+          el.querySelector('source')?.getAttribute('src') ||
+          ''
+        if (isRemote(src)) return
+
+        const p = document.createElement('p')
+        p.textContent =
+          (el.tagName === 'AUDIO' ? '♪ ' : '▶ ') +
+          (src.split(/[?#]/)[0].split('/').pop() || 'Media')
+        ;(el.closest('figure') ?? el).replaceWith(p)
+      })
+
+      // Links to local files would point into this machine's file system;
+      // keep only what they show.
+      bodyClone.querySelectorAll('a[href]').forEach((a: Element) => {
+        const href = a.getAttribute('href') || ''
+        if (isRemote(href) || href.startsWith('#')) return
+        a.replaceWith(...Array.from(a.childNodes))
+      })
+
       // Extract chapters from <main> elements
       const mainElements = bodyClone.querySelectorAll('main')
       const chapterList: Array<{ title: string; data: string }> = []
@@ -776,6 +834,9 @@ async function toEPUB(
     }
 
     // Sanitize chapter HTML for XHTML/XML compatibility
+    const svgDir = fs.mkdtempSync(path.join(tmpdir(), 'liaex-epub-svg-'))
+    // read back when the book is written, so it stays until exit
+    helper.removeOnExit(svgDir)
     for (const chapter of chapters) {
       // Strip HTML comments — XML forbids "--" inside comment bodies
       chapter.data = chapter.data.replace(/<!--[\s\S]*?-->/g, '')
@@ -785,6 +846,8 @@ async function toEPUB(
         /<((?!\/?\s*(?:svg|math|xlink|xml|xmlns)[:\s>])[a-zA-Z][a-zA-Z0-9]*:[^\s>]+[^>]*)>/g,
         '&lt;$1&gt;',
       )
+
+      chapter.data = repairLocalSvgs(chapter.data, svgDir)
     }
 
     // Read CSS and fonts from the pdf assets folder
@@ -801,6 +864,8 @@ async function toEPUB(
         allCSS +=
           fs.readFileSync(path.join(pdfAssetsPath, cssFile), 'utf-8') + '\n'
       })
+
+      allCSS = bookCss(allCSS)
 
       const fontMatches = allCSS.match(
         /url\(['"]?([^'")\s]+\.(?:woff2?|ttf|otf|eot))['"]?\)/gi,
@@ -882,7 +947,12 @@ async function toEPUB(
       version: (argument['epub-version'] || DEFAULT_EPUB_VERSION) as 2 | 3,
       content: chapters,
       verbose: false,
-      tempDir: path.join(tmpdir(), 'liaex-epub-temp'),
+      // Per run: the library removes only its own subfolder, and only on
+      // success; the patched OPF template lands here too.
+      tempDir: await helper.tmpDir().then((dir) => {
+        helper.removeOnExit(dir)
+        return dir
+      }),
     }
 
     if (argument['epub-publisher'])
@@ -891,6 +961,9 @@ async function toEPUB(
     if (argument['epub-description'])
       epubOptions.description = argument['epub-description']
     if (fonts.length > 0) epubOptions.fonts = fonts
+
+    const opfTemplate = patchedOpfTemplate(epubOptions.version, epubOptions.tempDir)
+    if (opfTemplate) epubOptions.customOpfTemplatePath = opfTemplate
 
     const outputPath = argument.output.endsWith('.epub')
       ? argument.output
@@ -903,11 +976,197 @@ async function toEPUB(
       new Function('m', 'return import(m)') as (m: string) => Promise<any>
     )(epubModuleName)
     const EPub = epubModule.EPub
-    await new EPub(epubOptions, outputPath).render()
+    try {
+      const epub = new EPub(epubOptions, outputPath)
+
+      // The library re-serializes every chapter as HTML, which drops the MathML
+      // namespace, and in XHTML an un-namespaced <math> is an unknown element.
+      // Text between two MathML elements is invalid as well; KaTeX writes a
+      // thin space there, which becomes the equivalent <mspace>.
+      for (const content of epub.content) {
+        if (typeof content.data !== 'string') continue
+
+        content.data = content.data.replace(/<math\b[\s\S]*?<\/math>/g, (math: string) =>
+          math
+            .replace(/^<math\b(?![^>]*\sxmlns=)/, '<math xmlns="http://www.w3.org/1998/Math/MathML"')
+            .replace(/(<\/m[a-z]+>)([^<]+)(?=<m)/g, (_match, close: string, text: string) =>
+              /^[ \t\r\n]*$/.test(text) ? close : `${close}<mspace width="0.1667em"></mspace>`,
+            ),
+        )
+      }
+
+      await epub.render()
+    } finally {
+      fs.rmSync(svgDir, { recursive: true, force: true })
+    }
     console.log(`EPUB successfully generated: ${outputPath}`)
   } catch (e) {
     const error = e as Error
     throw new Error(`Failed to generate EPUB: ${error.message}`)
+  }
+}
+
+/**
+ * Points local SVG images at comment-free copies.
+ *
+ * Course authors write prose in SVG comments, and a `--` there is a fatal XML
+ * error for every reader; the library copies a local image byte for byte.
+ */
+function repairLocalSvgs(html: string, dir: string): string {
+  return html.replace(/src="file:\/\/([^"]+?\.svg)"/gi, (match, file: string) => {
+    try {
+      const source = fs.readFileSync(decodeURIComponent(file), 'utf-8')
+      const svg = source.replace(/<!--[\s\S]*?-->/g, '')
+      if (svg === source) return match
+
+      const copy = path.join(dir, `${helper.random(12)}.svg`)
+      fs.writeFileSync(copy, svg)
+      return `src="file://${copy}"`
+    } catch {
+      return match
+    }
+  })
+}
+
+/**
+ * Makes LiaScript's style sheet valid for a book.
+ *
+ * - Rules selecting with `:-webkit-any()` are dropped. Parcel emits them as a
+ *   fallback next to an identical `:is()` rule, so nothing is lost, and
+ *   epubcheck cannot parse them (CSS-008).
+ * - Font URLs point into `fonts/`, where the library packs them (RSC-007).
+ *   EOT and SVG fonts are not packed, so their `src` entries go.
+ */
+function bookCss(css: string): string {
+  return dropRules(css, (prelude) => prelude.includes(':-webkit-any('))
+    .replace(/src:([^;}]*)(;?)/g, (_match, value: string, end: string) => {
+      const kept = value
+        .split(/,(?![^(]*\))/)
+        .filter((source) => !/url\([^)]*\.(?:eot|svg)\b/i.test(source))
+      return kept.length ? `src:${kept.join(',')}${end}` : ''
+    })
+    .replace(
+      /url\((['"]?)([^'")\s]+\.(?:woff2?|ttf|otf))\1\)/gi,
+      (_match, quote: string, url: string) =>
+        `url(${quote}fonts/${path.basename(url)}${quote})`,
+    )
+}
+
+/**
+ * Removes the style rules whose selector matches `drop`, descending into
+ * at-rules such as `@media`. Strings and comments are skipped over, so a brace
+ * inside them does not end a block.
+ */
+function dropRules(css: string, drop: (prelude: string) => boolean): string {
+  // Index just past the end of the string or comment starting at `i`, or `i`.
+  const skip = (i: number): number => {
+    const c = css[i]
+    if (c === '"' || c === "'") {
+      let j = i + 1
+      while (j < css.length && css[j] !== c) j += css[j] === '\\' ? 2 : 1
+      return j + 1
+    }
+    if (c === '/' && css[i + 1] === '*') {
+      const end = css.indexOf('*/', i + 2)
+      return end < 0 ? css.length : end + 2
+    }
+    return i
+  }
+
+  // Index of the `}` closing the block opened at `open`.
+  const close = (open: number): number => {
+    let depth = 0
+    for (let i = open; i < css.length; ) {
+      const next = skip(i)
+      if (next !== i) {
+        i = next
+        continue
+      }
+      if (css[i] === '{') depth++
+      else if (css[i] === '}' && --depth === 0) return i
+      i++
+    }
+    return css.length
+  }
+
+  const walk = (from: number, to: number): string => {
+    let out = ''
+    let start = from
+
+    for (let i = from; i < to; ) {
+      const next = skip(i)
+      if (next !== i) {
+        i = next
+        continue
+      }
+
+      if (css[i] === ';') {
+        out += css.slice(start, i + 1)
+        start = i + 1
+      } else if (css[i] === '{') {
+        const end = close(i)
+        const prelude = css.slice(start, i)
+
+        if (prelude.trim().startsWith('@')) {
+          out += prelude + '{' + walk(i + 1, end) + '}'
+        } else if (!drop(prelude)) {
+          out += css.slice(start, end + 1)
+        }
+
+        i = start = end + 1
+        continue
+      }
+      i++
+    }
+
+    return out + css.slice(start, to)
+  }
+
+  return walk(0, css.length)
+}
+
+/**
+ * Returns the library's own OPF template with two fixes, or nothing if the
+ * template has changed and they no longer apply:
+ *
+ * - html-to-epub (6.0.1 up to at least 6.2.0) leaves its cover page out of the
+ *   manifest but still lists it in the spine, as `content_0_item_0`, which
+ *   breaks the package document.
+ * - EPUB 3 requires `properties="mathml"` on a chapter that contains MathML
+ *   (OPF-014); the library never sets it.
+ */
+function patchedOpfTemplate(version: 2 | 3, dir: string): string | undefined {
+  try {
+    const manifest = createRequire(path.join(helper.dirname(), 'index.js')).resolve(
+      '@lesjoursfr/html-to-epub/package.json',
+    )
+    const source = fs.readFileSync(
+      path.join(path.dirname(manifest), `templates/epub${version}/content.opf.ejs`),
+      'utf8',
+    )
+    let fixed = source.replace(
+      '<% if(content.beforeToc){ %>',
+      '<% if(content.beforeToc && !content.isCover){ %>',
+    )
+    if (fixed === source) return undefined
+
+    if (version === 3) {
+      const item = 'href="<%= content.href %>" media-type="application/xhtml+xml" />'
+      if (!fixed.includes(item)) return undefined
+      fixed = fixed.replace(
+        item,
+        'href="<%= content.href %>" media-type="application/xhtml+xml"' +
+          `<% if(/<math\\b/.test(content.data || "")){ %> properties="mathml"<% } %> />`,
+      )
+    }
+
+    fs.mkdirSync(dir, { recursive: true })
+    const file = path.join(dir, `content-epub${version}.opf.ejs`)
+    fs.writeFileSync(file, fixed)
+    return file
+  } catch (e) {
+    console.warn('Could not patch the EPUB package template:', (e as Error).message)
+    return undefined
   }
 }
 

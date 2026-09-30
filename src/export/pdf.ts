@@ -389,6 +389,21 @@ async function toPDF(fs: ExportFS, argument: PdfExportArguments, page: Page) {
     throw new Error(`Failed to emulate media type: ${e}`)
   }
 
+  // Paper cannot play media, which would otherwise leave no trace; name the
+  // file.
+  await page.evaluate(() => {
+    document.querySelectorAll('audio, video').forEach((media) => {
+      const src =
+        media.getAttribute('src') || media.querySelector('source')?.getAttribute('src') || ''
+      const name = decodeURIComponent(src.split(/[?#]/)[0].split('/').pop() || '')
+      if (!name || src.startsWith('data:')) return
+
+      const label = document.createElement('p')
+      label.textContent = (media.tagName === 'AUDIO' ? '♪ ' : '▶ ') + name
+      media.after(label)
+    })
+  })
+
   try {
     // No `path:` here on purpose — letting Puppeteer write the file itself
     // would bypass the storage abstraction. Taking the bytes back and writing

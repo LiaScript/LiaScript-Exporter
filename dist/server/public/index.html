@@ -4,6 +4,9 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>LiaScript Exporter</title>
+    <link rel="icon" type="image/svg+xml" href="./assets/icon.svg" />
+    <link rel="icon" type="image/png" sizes="32x32" href="./assets/favicon-32.png" />
+    <link rel="apple-touch-icon" href="./assets/apple-touch-icon.png" />
     <link rel="stylesheet" href="styles.css" />
     <script src="i18n.js"></script>
   </head>
@@ -1444,23 +1447,6 @@
                     >Exports all details</span
                   >
                 </div>
-
-                <div class="form-group">
-                  <label>
-                    <input
-                      type="checkbox"
-                      id="jsonPretty"
-                      name="option_jsonPretty"
-                      checked
-                    />
-                    <span data-i18n="settings.json.prettyPrint"
-                      >Formatted (Pretty Print)</span
-                    >
-                  </label>
-                  <span class="hint" data-i18n="settings.json.prettyPrintHint"
-                    >Readable formatted JSON</span
-                  >
-                </div>
               </div>
 
               <!-- RDF Settings -->
@@ -1606,7 +1592,7 @@
               </svg>
               <span data-i18n="submit.button">Start Export</span>
             </button>
-            <p class="info-text" data-i18n-html="submit.info">
+            <p class="info-text" id="submitInfo" data-i18n-html="submit.info">
               Export jobs are queued.<br />Only one export is processed at a
               time.
             </p>

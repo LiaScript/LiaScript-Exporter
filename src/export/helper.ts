@@ -59,6 +59,31 @@ export function tmpDir(): Promise<string> {
   })
 }
 
+const removedOnExit = new Set<string>()
+
+/**
+ * Removes `dir` when the process exits, however it exits (except by SIGKILL).
+ *
+ * Temp dirs are left behind otherwise, by failed exports too, and the server
+ * and the desktop app start one CLI process per job, so they pile up there.
+ * Deferring to exit keeps it independent of each exporter's own control flow.
+ */
+export function removeOnExit(dir: string): void {
+  if (removedOnExit.size === 0) {
+    process.once('exit', () => {
+      for (const d of removedOnExit) {
+        try {
+          require('fs').rmSync(d, { recursive: true, force: true })
+        } catch {
+          // best effort; the process is going away
+        }
+      }
+    })
+  }
+
+  removedOnExit.add(dir)
+}
+
 /**
  * Returns the absolute path to the distribution directory.
  * @returns The path to the dist directory (where index.js is located)
@@ -71,6 +96,18 @@ export function dirname(): string {
   const resolved = fs_.realpathSync(mainFile)
 
   return nodePath().dirname(resolved)
+}
+
+/**
+ * Escapes text for HTML element content or a double-quoted attribute value,
+ * e.g. a course comment that contains quotes.
+ */
+export function escapeHtml(text: string): string {
+  return String(text)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
 }
 
 /**
