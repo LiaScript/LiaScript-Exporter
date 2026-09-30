@@ -1,7 +1,8 @@
 # Tests
 
 The exporter is tested by exporting one test course in every format, with every
-method (CLI, server, web app), and checking the **output**. A successful exit
+method (CLI, server, web app), and checking the **output**. The desktop app gets
+a smaller smoke test (see below). A successful exit
 code is not enough on its own: earlier bugs produced SCORM packages without the
 course, docx files with orphaned media and epubs with empty chapters, and the
 exporter still exited 0.
@@ -26,6 +27,7 @@ Single suites (build first, see below):
 | `npm run test:server` | every format through `serve` + `POST /api/export` | `npm run build` |
 | `npm run test:webapp[:deep]` | every format through the browser web app UI | `npm run webapp:build` |
 | `npm run test:webapp:browsers` | the web app suite in Firefox and WebKit | `npm run webapp:build`, `npx playwright install firefox webkit` |
+| `npm run test:desktop` | the Electron app: startup, update banner, json + docx through its window | `npm run build`, a display (or `xvfb-run -a`) |
 
 The e2e suites test the built output, so rebuild after changing `src/`
 (`npm run test:build` rebuilds both). A stale `dist/` gives misleading results.
@@ -41,6 +43,24 @@ in Firefox and WebKit (`test:webapp:browsers`, not part of `test:all`). Only
 Chromium can save a PDF from a test, so there the pdf case checks the print
 view's text instead of a PDF.
 
+### Desktop app
+
+The desktop app is the export server and its UI in an Electron window, so the
+server suite already covers every format. `desktop.spec.ts` (not part of
+`test:all`) tests only what the app does differently: the native file dialog,
+the Electron-only paths to the CLI and presets, the CLI run by the Electron
+binary starting Chrome, Electron's downloads and the update banner. The file
+dialog, `shell.openExternal` and the update check are stubbed in the main
+process.
+
+By default it runs `electron/main.js` from the sources. To test the packaged
+app, which is where path bugs show up, build it first:
+
+```sh
+npm run electron:pack
+DESKTOP_APP=release/linux-unpacked/liascript-exporter xvfb-run -a npm run test:desktop
+```
+
 ### Environment variables
 
 | Variable | Effect |
@@ -48,6 +68,7 @@ view's text instead of a PDF.
 | `DEEP=1` | deep checks: epubcheck and XSD validation (CLI and web app) |
 | `NETWORK=1` | adds the network course and the tests that import a course from GitHub |
 | `GIT_URL`, `GIT_BRANCH`, `GIT_SUBDIR` | a different repository for those tests (default: `LiaPlayground/Quiz-Demo`) |
+| `DESKTOP_APP` | the packaged executable for `test:desktop` instead of `electron/main.js` |
 | `EPUBCHECK_JAR` | use this epubcheck jar instead of the one in `tests/.cache` |
 
 ## Layout
@@ -60,7 +81,7 @@ tests/
 │   ├── network/       a second course with remote content
 │   └── network.ts     its expected sections and known gaps
 ├── checkers/          one checker per format, shared by every suite
-├── e2e/               Playwright: cli.spec.ts, server.spec.ts, webapp.spec.ts
+├── e2e/               Playwright: cli.spec.ts, server.spec.ts, webapp.spec.ts, desktop.spec.ts
 ├── unit/              Vitest
 └── scripts/           setup.ts (epubcheck download), check-output.ts
 ```

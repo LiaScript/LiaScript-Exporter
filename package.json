@@ -70,6 +70,7 @@
     "test:server": "playwright test --project=server",
     "test:webapp": "playwright test --project=webapp",
     "test:webapp:deep": "DEEP=1 playwright test --project=webapp",
+    "test:desktop": "playwright test --project=desktop",
     "test:webapp:browsers": "playwright test --project=webapp-firefox --project=webapp-webkit",
     "test:build": "npm run build && npm run webapp:build",
     "test:all": "npm run test:build && npm run test:types && npm run test:unit && playwright test --project=cli --project=server --project=webapp",

@@ -46,6 +46,10 @@ export default defineConfig({
       testMatch: 'webapp.spec.ts',
     },
     {
+      name: 'desktop',
+      testMatch: 'desktop.spec.ts',
+    },
+    {
       name: 'webapp-firefox',
       testMatch: 'webapp.spec.ts',
       use: { browserName: 'firefox' },
