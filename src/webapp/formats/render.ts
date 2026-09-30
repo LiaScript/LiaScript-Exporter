@@ -70,15 +70,20 @@ function mount(
   const frame = document.createElement('iframe')
 
   /*
-   * Off-screen rather than `display: none` or zero-sized: elements in a hidden
+   * Transparent rather than `display: none` or zero-sized: elements in a hidden
    * frame have no layout, so `getBoundingClientRect` returns zeros and anything
-   * measured or rasterised comes out empty. The size is also the viewport the
-   * course lays out against, matching the CLI's `setViewport` in docx.ts.
+   * measured or rasterised comes out empty. Inside the viewport rather than
+   * off-screen: WebKit never runs a course's scripts in an off-screen frame, so
+   * their output was missing. The size is also the viewport the course lays
+   * out against, matching the CLI's `setViewport` in docx.ts.
    */
   frame.setAttribute(
     'style',
-    'position:absolute;left:-10000px;top:0;width:1200px;height:800px;border:0;visibility:hidden;',
+    'position:fixed;left:0;top:0;width:1200px;height:800px;border:0;' +
+      'opacity:0;pointer-events:none;z-index:-1;',
   )
+  frame.setAttribute('aria-hidden', 'true')
+  frame.setAttribute('tabindex', '-1')
 
   const entry = new URL(PDF_ENTRY, location.href).href
   frame.src = `${entry}?${course}`
