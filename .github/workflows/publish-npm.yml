@@ -46,6 +46,13 @@ jobs:
             - name: Build and prepare for publish
               run: npm run build:all
 
+            - name: Show LiaScript submodule changes
+              if: failure()
+              run: |
+                cd LiaScript
+                git status --short
+                git diff --stat
+
             - name: Publish to npmjs.com
               run: npm publish --access public --tag latest
               env:
