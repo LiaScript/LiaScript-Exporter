@@ -124,7 +124,7 @@ cat "$DUPES_LIST" | while read line; do
   # Get first file as source
   source_file=$(echo "$files" | head -1)
   size=$(grep "^$filename.*$source_file" "$FILE_LIST" | cut -d'|' -f5)
-  size_kb=$(echo "scale=2; $size/1024" | bc)
+  size_kb=$(awk "BEGIN {printf \"%.2f\", $size/1024}")
   
   echo "Found duplicate in all directories: $filename ($size_kb KB)"
   
@@ -149,7 +149,7 @@ cat "$DUPES_LIST" | while read line; do
     
     # Total space saved for this file
     saved=$(( ($file_count - 1) * $size ))
-    echo "  Saved $(echo "scale=2; $saved/1024" | bc) KB by deduplicating $file_count copies"
+    echo "  Saved $(awk "BEGIN {printf \"%.2f\", $saved/1024}") KB by deduplicating $file_count copies"
   else
     echo "  ERROR: Failed to copy $source_file to common directory. Skipping deletion."
   fi
@@ -158,14 +158,14 @@ done
 # Calculate statistics after deduplication
 after_size=$(du -sb "$ASSETS_DIR" | cut -f1)
 total_saved=$(($before_size - $after_size))
-total_saved_mb=$(echo "scale=2; $total_saved/1048576" | bc)
+total_saved_mb=$(awk "BEGIN {printf \"%.2f\", $total_saved/1048576}")
 common_files=$(find "$COMMON_DIR" -type f | wc -l)
 
 echo "Deduplication complete!"
 echo "Total files moved to common directory: $common_files"
 echo "Total space saved: $total_saved_mb MB"
-echo "Original assets size: $(echo "scale=2; $before_size/1048576" | bc) MB"
-echo "New assets size: $(echo "scale=2; $after_size/1048576" | bc) MB"
+echo "Original assets size: $(awk "BEGIN {printf \"%.2f\", $before_size/1048576}") MB"
+echo "New assets size: $(awk "BEGIN {printf \"%.2f\", $after_size/1048576}") MB"
 
 # Cleanup
 rm -rf "$TEMP_DIR"
