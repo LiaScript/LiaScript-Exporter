@@ -1,6 +1,6 @@
 {
   "name": "@liascript/exporter",
-  "version": "3.4.1--2.1.0",
+  "version": "3.4.2--2.1.0",
   "description": "A generic exporter for LiaScript",
   "main": "dist/index.js",
   "repository": {
@@ -101,6 +101,7 @@
     "html2canvas": "^1.4.1",
     "isomorphic-git": "^1.38.4",
     "jsonld": "^9.0.0",
+    "minify":"9.2.0",
     "minimist": "^1.2.5",
     "node-fetch": "^2.7.0",
     "open": "^8.4.2",
@@ -177,6 +178,7 @@
     "lmdb@2.8.5": true,
     "itwcw-package-analytics@1.0.6": true,
     "ejs@2.7.4": true,
-    "electron@30.5.1": true
+    "electron@30.5.1": true,
+    "esbuild@0.28.2": true
   }
 }
