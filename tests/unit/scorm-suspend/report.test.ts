@@ -107,7 +107,10 @@ describe('SCORM 1.2: readable text', () => {
     expect(find(all, 'Q14.2').response).toBe('4')
     expect(find(all, 'Q14.3')).toMatchObject({ response: 'Python; HTML', pattern: 'Python; JavaScript', result: 'wrong' })
     // revealed solution: counts as wrong
-    expect(find(all, 'Q14.4')).toMatchObject({ response: 'blue', pattern: 'blue', result: 'wrong' })
+    // revealed: the quiz now holds the solution, the learner's last checked
+    // answer was reported before and is kept
+    expect(find(all, 'Q14.4')).toMatchObject({ pattern: 'blue', result: 'wrong' })
+    expect(find(all, 'Q14.4').response).toBeUndefined()
     expect(find(all, 'Q14.5')).toMatchObject({ response: 'Berlin | Rome', pattern: 'Berlin | Rome' })
     expect(find(all, 'Q14.6').response).toBe('Germany: Berlin; France: Paris; Italy: Rome')
     expect(find(all, 'Q14.7')).toMatchObject({ result: 'correct' })
@@ -138,7 +141,8 @@ describe('SCORM 2004: semantic types', () => {
       description: 'MKQuizSingle What is 2 + 2? [o1=3, o2=4, o3=5]',
     })
     expect(find(all, 'Q14.3')).toMatchObject({ response: 'o1[,]o3', pattern: 'o1[,]o2', result: 'incorrect' })
-    expect(find(all, 'Q14.4')).toMatchObject({ type: 'fill-in', response: 'blue', pattern: 'blue', result: 'incorrect' })
+    expect(find(all, 'Q14.4')).toMatchObject({ type: 'fill-in', pattern: 'blue', result: 'incorrect' })
+    expect(find(all, 'Q14.4').response).toBeUndefined()
     expect(find(all, 'Q14.5')).toMatchObject({ type: 'fill-in', response: 'Berlin[,]Rome' })
     expect(find(all, 'Q14.6')).toMatchObject({
       type: 'matching',

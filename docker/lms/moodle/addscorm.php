@@ -27,6 +27,11 @@ if (!$course) {
     ]);
 }
 
+// the learner in the lab is the admin: enrolled as a student, its attempts
+// show up in the activity's reports like those of any learner
+require_once($CFG->libdir . '/enrollib.php');
+enrol_try_internal_enrol($course->id, $admin->id, $DB->get_field('role', 'id', ['shortname' => 'student']));
+
 $draftid = file_get_unused_draft_itemid();
 get_file_storage()->create_file_from_pathname([
     'contextid' => context_user::instance($admin->id)->id,

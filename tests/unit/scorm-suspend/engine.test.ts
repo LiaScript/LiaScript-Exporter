@@ -202,6 +202,18 @@ for (const version of ['1.2', '2004'] as const) {
       expect(warn).toHaveBeenCalledWith(expect.stringContaining('newer version'))
     })
 
+    it('keeps the checked answer when the solution is revealed', () => {
+      const { engine, lms } = start({ version })
+      const field = version === '1.2' ? 'student_response' : 'learner_response'
+      const id = 'Q14.3_MKQuizMultiple_Which_are_programming_languages'
+
+      check(engine, 2, { solved: 0, trial: 1, state: { MultipleChoice: [true, false, true] } })
+      check(engine, 2, { solved: -1, trial: 1, state: { MultipleChoice: [true, true, false] } })
+
+      expect(lms.byId()[id][field]).toBe(version === '1.2' ? 'Python; HTML' : 'o1[,]o3')
+      expect(lms.byId()[id].result).toBe(version === '1.2' ? 'wrong' : 'incorrect')
+    })
+
     it('retries a refused answer in ASCII, then leaves the field alone', () => {
       const { engine, lms, warn } = start({ version, asciiOnly: true })
       const field = version === '1.2' ? 'student_response' : 'learner_response'
@@ -229,10 +241,20 @@ describe('status rules', () => {
     expect(lms.stored['cmi.core.score.raw']).toBe('85.71')
   })
 
-  it('1.2 with mastery: passed or failed, never back down', () => {
+  it('1.2 with mastery: passed or failed once everything is done, never back down', () => {
     const pass = start({ version: '1.2', mastery: '50' })
     solveAll(pass.engine, (i) => (i < 4 ? 1 : 0))
+    // enough points, but not done: passed would end the attempt, and any
+    // score would make Moodle set passed/failed when the learner leaves
+    expect(pass.lms.stored['cmi.core.lesson_status']).toBe('incomplete')
+    expect(pass.lms.stored['cmi.core.score.raw']).toBeUndefined()
+
+    check(pass.engine, 4, { solved: -1, trial: 2 })
+    check(pass.engine, 5, { solved: -1, trial: 2 })
+    expect(pass.lms.stored['cmi.core.lesson_status']).toBe('incomplete')
+    check(pass.engine, 6, { solved: -1, trial: 2 })
     expect(pass.lms.stored['cmi.core.lesson_status']).toBe('passed')
+    expect(pass.lms.stored['cmi.core.score.raw']).toBe('57.14')
 
     const fail = start({ version: '1.2', mastery: '90' })
     solveAll(fail.engine, (i) => (i < 4 ? 1 : -1))

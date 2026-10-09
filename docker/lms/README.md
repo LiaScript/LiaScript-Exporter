@@ -59,10 +59,11 @@ docker/lms/lms.sh test moodle405 /tmp/moodle4.zip
 - **Moodle** passes no mastery score to the package when the manifest says `0`.
   An attempt then has to be scored by the package itself. With a mastery
   score, SCORM 1.2 activities replace the status by `passed`/`failed` from
-  the score when the learner leaves ("Mastery score overrides status").
-- **Moodle** reports list enrolled students only; the lab learner is the
-  admin, so open its attempt directly:
-  `/mod/scorm/report/userreport.php?id=<cmid>&user=2&attempt=1` → Track details.
+  the score when the learner leaves ("Mastery score overrides status"), and
+  an attempt that is `passed`, `failed` or `completed` (2004: `completed`)
+  opens in review mode afterwards, where nothing is saved.
+- **Moodle** reports list enrolled students only, so `test` enrols the admin,
+  the lab's learner, as a student of the test course.
 - **ILIAS** (SCORM 2004) writes its interactions anew on every save, and the
   stored correct responses keep pointing at the old rows.
 - **ILIAS** and **OpenOlat** start a SCORM 1.2 package without the manifest's

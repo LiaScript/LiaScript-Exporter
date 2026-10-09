@@ -363,13 +363,20 @@ the package uses a different connector instead:
   `passed`/`failed` only if a mastery score is set. Neither status is ever set
   back. The score is reported in percent (1.2) or as points and scaled
   (2004).
+* In SCORM 1.2, `passed`, `failed` and `completed` end the attempt (Moodle,
+  for example, then opens it for review only), and with a mastery score
+  Moodle turns any reported score into `passed`/`failed` when the learner
+  leaves. So with a mastery score, a SCORM 1.2 package reports its score and
+  result once all quizzes and surveys are done; until then the attempt stays
+  `incomplete` and the learner can come back. SCORM 2004 reports the score
+  along the way.
 * Without credit (`no-credit` or `browse` mode, e.g. ILIAS without learning
   progress) the state is still kept, but nothing is reported.
 
-> Moodle and SCORM 1.2 with a mastery score: the activity setting *Mastery
-> score overrides status* (on by default) makes Moodle set `passed` or
-> `failed` from the score whenever the learner leaves, also before all
-> quizzes are done. Turn it off to keep `incomplete` until the course is done.
+> Moodle shows SCORM 1.2 answers in the activity's *Interactions report*
+> (tick *Summary of question*, *right answer* and *result*), downloadable as
+> a table for all learners. SCORM 2004 answers only appear under *Track
+> details* of each attempt; the interactions report stays empty for them.
 
 ``` shell
 $ liaex -i project/README.md --format scorm1.2 --scorm-storage suspend --scorm-masteryScore 80 --output rockOn
@@ -379,7 +386,7 @@ Where to find the answers:
 
 | LMS       | SCORM 1.2                                                    | SCORM 2004                                    |
 | --------- | ------------------------------------------------------------ | --------------------------------------------- |
-| Moodle    | Reports → Interactions report (one column per question)      | Reports → Attempt → Track details             |
+| Moodle    | Reports → Interactions report (four columns per question), download for all learners | Reports → Attempt → Track details, per learner |
 | ILIAS     | Learning progress / SCORM tracking data, export of interactions | the same                                    |
 
 Limits:
