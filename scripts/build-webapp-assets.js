@@ -16,11 +16,21 @@ const { zipSync } = require('fflate')
 
 /**
  * Asset directories the browser-portable formats read. `common` is shared by
- * every format, `web` doubles as the `ims` payload, and `indexeddb` backs the
- * `--*-indexeddb` variants. `pdf` is not here: it renders a page instead of
- * writing files, and is copied verbatim by scripts/copy-webapp-pdf.js.
+ * every format, `web` doubles as the `ims` payload, `indexeddb` backs the
+ * `--*-indexeddb` variants, and the `*-suspend` ones `--scorm-storage
+ * suspend`. `pdf` is not here: it renders a page instead of writing files,
+ * and is copied verbatim by scripts/copy-webapp-pdf.js.
  */
-const BUNDLES = ['common', 'web', 'xapi', 'scorm1.2', 'scorm2004', 'indexeddb']
+const BUNDLES = [
+  'common',
+  'web',
+  'xapi',
+  'scorm1.2',
+  'scorm2004',
+  'scorm1.2-suspend',
+  'scorm2004-suspend',
+  'indexeddb',
+]
 
 const ASSETS = path.join(__dirname, '..', 'dist', 'assets')
 

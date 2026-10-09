@@ -205,6 +205,54 @@ test('scorm: --lia-subfolder points the embedded course at content/', async () =
   expect(pkg.text('course.js')).toContain('base: content/')
 })
 
+/** `window.config_` (and the flags next to it) of a package's config.js */
+function configOf(pkg: Package): any {
+  const window: any = {}
+  new Function('window', pkg.text('config.js'))(window)
+  return window
+}
+
+for (const format of ['scorm1.2', 'scorm2004']) {
+  test(`${format}: --scorm-storage suspend ships the suspend runtime and the course description`, async () => {
+    test.setTimeout(QUICK_TIMEOUT)
+
+    const name = `storage-${format}`
+    const pkg = openPackage(
+      await exportWith(name, ['-f', format, '--scorm-storage', 'suspend'], `${name}.zip`, QUICK_TIMEOUT),
+    )
+    const { config_ } = configOf(pkg)
+    const quizzes = config_.meta.slides.find((slide: any) => slide.title === 'Quizzes')
+
+    expect(pkg.text('index.html')).toContain('<meta name="lia-scorm-storage" content="suspend"')
+    expect(config_.meta.version).toBe(1)
+    expect(config_.meta.slides.map((slide: any) => slide.quiz.length)).toEqual(config_.quiz.map((slide: any) => slide.length))
+    expect(quizzes.quiz[1]).toEqual({
+      type: 'single',
+      question: 'MKQuizSingle What is 2 + 2?',
+      options: ['3', '4', '5'],
+      solution: [false, true, false],
+    })
+  })
+}
+
+test('scorm: the default storage keeps the classic runtime and config.js', async () => {
+  test.setTimeout(QUICK_TIMEOUT)
+
+  const pkg = openPackage(await exportWith('storage-default', ['-f', 'scorm1.2'], 'storage-default.zip', QUICK_TIMEOUT))
+
+  expect(pkg.text('index.html')).not.toContain('lia-scorm-storage')
+  expect(Object.keys(configOf(pkg).config_)).toEqual(['task', 'quiz', 'survey'])
+})
+
+test('scorm: an unknown --scorm-storage fails before parsing', async () => {
+  test.setTimeout(QUICK_TIMEOUT)
+
+  const run = await runCli(['-i', COURSE, '-o', path.join(OUT_DIR, 'storage-bad'), '-f', 'scorm1.2', '--scorm-storage', 'suspended'], QUICK_TIMEOUT)
+
+  expect(run.code).not.toBe(0)
+  expect(run.log).toContain('--scorm-storage: unknown value "suspended"')
+})
+
 test('web: --web-iframe works whatever the wrapper page is called', async () => {
   test.setTimeout(QUICK_TIMEOUT)
 

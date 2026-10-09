@@ -21,6 +21,7 @@ import type * as DOCX from './export/docx'
 /** Mirrors `ANDROID.format`, inlined to keep that module out of the graph. */
 const ANDROID_FORMAT = 'android'
 import * as PRESETS from './export/presets'
+import * as STORAGE from './export/scorm-storage'
 import path from 'path'
 import { ExportFormat } from './types'
 import { ExportFS, NodeFS } from './fs'
@@ -103,6 +104,7 @@ export function parseArguments(): Arguments {
     'scorm-iframe': argv['scorm-iframe'],
     'scorm-embed': argv['scorm-embed'],
     'scorm-alwaysActive': argv['scorm-alwaysActive'],
+    'scorm-storage': argv['scorm-storage'],
     'lia-subfolder': argv['lia-subfolder'],
 
     // special IMS cases
@@ -286,6 +288,9 @@ export function validateAndNormalize(argument: Arguments): Arguments {
       process.exit(1)
     }
   }
+
+  // fail early on a typo, not after parsing the course
+  STORAGE.storageMode(argument)
 
   if (!argument.path && !helper.isURL(argument.input)) {
     argument.path = path.dirname(argument.input)

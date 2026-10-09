@@ -8,6 +8,7 @@ import * as helper from './export/helper'
 import * as IMS from './export/ims'
 import * as RDF from './export/rdf'
 import * as XAPI from './export/xapi'
+import * as STORAGE from './export/scorm-storage'
 
 import { getNext, storeNext } from './export/collection'
 
@@ -304,7 +305,7 @@ export class Exporter {
 
     if (next) {
       console.warn('loading:', next)
-      app.ports.input.send([ExportFormat.FULL_JSON, next])
+      app.ports.input.send([this.determineInternalFormat(argument), next])
     } else {
       await serverExporter('project').exporter(argument, this.collection)
     }
@@ -322,7 +323,7 @@ export class Exporter {
     argument: Arguments,
   ): Promise<void> {
     try {
-      const format = this.determineInternalFormat(argument.format)
+      const format = this.determineInternalFormat(argument)
 
       if (argument.format === SERVER_ONLY.PROJECT) {
         await this.handleProjectInput(app, argument, format)
@@ -349,7 +350,20 @@ export class Exporter {
    * Determines the internal format for processing
    * Some exporters need fulljson as intermediate format
    */
-  private determineInternalFormat(format: string): string {
+  private determineInternalFormat(argument: Arguments): string {
+    const format = argument.format
+
+    // the suspend connectors need the course description as well
+    if (
+      STORAGE.storageMode(argument) === 'suspend' &&
+      (format === SCORM12.format ||
+        format === SCORM2004.format ||
+        (format === SERVER_ONLY.PROJECT &&
+          (argument['project-generate-scorm12'] || argument['project-generate-scorm2004'])))
+    ) {
+      return STORAGE.FULL_JSON_META
+    }
+
     const needsFullJson = new Set<string>([
       SCORM12.format,
       SCORM2004.format,

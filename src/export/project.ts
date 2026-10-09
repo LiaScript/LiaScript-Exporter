@@ -696,8 +696,9 @@ function removeContext(obj) {
   return obj
 }
 
-function cleanHTML(html: string) {
-  return html.replace(/<[^>]+>/g, '')
+/** Plain text of a title or comment; a project file may leave either out. */
+function cleanHTML(html?: string) {
+  return (html || '').replace(/<[^>]+>/g, '')
 }
 
 /**

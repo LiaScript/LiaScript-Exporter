@@ -24,7 +24,7 @@
   "scripts": {
     "__postinstall": "npx puppeteer browsers install chrome",
     "__preinstall": "cd LiaScript && npm i --allow-git=all && npm run build:scorm1.2 && cp -r dist ../assets/scorm1.2",
-    "build:assets": "npm run clean && npm run asset:scorm1.2 && npm run asset:scorm2004 && npm run asset:xapi && npm run asset:web && npm run asset:indexeddb && npm run asset:pdf && npm run asset:capacitor && npm run asset:logo && npm run fix:file",
+    "build:assets": "npm run clean && npm run asset:scorm1.2 && npm run asset:scorm2004 && npm run asset:scorm1.2-suspend && npm run asset:scorm2004-suspend && npm run asset:xapi && npm run asset:web && npm run asset:indexeddb && npm run asset:pdf && npm run asset:capacitor && npm run asset:logo && npm run fix:file",
     "build:docker": "docker build -t liascript/exporter:latest .",
     "webapp:assets": "node scripts/build-webapp-assets.js",
     "webapp:html": "node scripts/build-webapp-html.js",
@@ -38,6 +38,8 @@
     "asset:pdf": "cd LiaScript && npm i --allow-git=all && git checkout -- package-lock.json && git checkout feat/fullPage && rm -rf node_modules .parcel-cache elm-stuff && npm i --allow-git=all && npm run build:pdf && cp -r dist ../dist/assets/pdf && git checkout -- package-lock.json && git checkout development && rm -rf node_modules && npm i --allow-git=all",
     "asset:scorm1.2": "cd LiaScript && npm i --allow-git=all && npm run build:scorm1.2 && cp -r dist ../dist/assets/scorm1.2",
     "asset:scorm2004": "cd LiaScript && npm i --allow-git=all && npm run build:scorm2004 && cp -r dist ../dist/assets/scorm2004",
+    "asset:scorm1.2-suspend": "cd LiaScript && npm i --allow-git=all && npm run build:scorm1.2-suspend && cp -r dist ../dist/assets/scorm1.2-suspend",
+    "asset:scorm2004-suspend": "cd LiaScript && npm i --allow-git=all && npm run build:scorm2004-suspend && cp -r dist ../dist/assets/scorm2004-suspend",
     "asset:indexeddb": "cd LiaScript && npm i --allow-git=all && npm run build:indexeddb && cp -r dist ../dist/assets/indexeddb",
     "asset:xapi": "cd LiaScript && npm i --allow-git=all && npm run build:xapi && cp -r dist ../dist/assets/xapi",
     "asset:capacitor": "cd LiaScript && npm i --allow-git=all && git checkout -- package-lock.json && git checkout feat/capacitor8 && rm -rf node_modules .parcel-cache elm-stuff && npm i --allow-git=all && npm run build:indexeddb && cp -r dist ../dist/assets/capacitor && git checkout -- package-lock.json && git checkout development && rm -rf node_modules && npm i --allow-git=all",

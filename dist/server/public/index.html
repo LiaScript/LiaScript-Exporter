@@ -554,6 +554,30 @@
                 </div>
 
                 <div class="form-group">
+                  <label for="scormStorage" data-i18n="settings.scorm.storage"
+                    >Learner Data</label
+                  >
+                  <select id="scormStorage" name="option_scormStorage">
+                    <option
+                      value=""
+                      selected
+                      data-i18n="settings.scorm.storageDefault"
+                    >
+                      Classic
+                    </option>
+                    <option
+                      value="suspend"
+                      data-i18n="settings.scorm.storageSuspend"
+                    >
+                      All in suspend_data, readable reports
+                    </option>
+                  </select>
+                  <span class="hint" data-i18n="settings.scorm.storageHint"
+                    >Keeps quizzes, surveys, tasks and code in cmi.suspend_data and reports every answer as a readable interaction</span
+                  >
+                </div>
+
+                <div class="form-group">
                   <label>
                     <input
                       type="checkbox"

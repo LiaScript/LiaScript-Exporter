@@ -29,14 +29,25 @@ OpenOlat schema) go to `docker/lms/.cache/`.
 `test` imports each package and opens it twice, the way a learner would. It is
 made for the fixture course, `tests/fixtures/course/README.md`:
 
-1. The first visit answers the text quiz (`MKQuizText`), then moves to slide 5.
+1. The first visit answers the text quiz (`MKQuizText`), the single-choice
+   quiz and the textarea survey, whose answer has line breaks, quotes and a
+   leading `{` (values strict LMS refuse unless the package cleans them up).
+   Then it moves to slide 5.
 2. The learner leaves and opens the activity again.
 3. The second visit checks that the LMS returned to slide 5 and restored the
-   quiz answer.
+   quiz answer and the survey.
 
 Every call to the LMS's own SCORM API is recorded with its error code, so a
-value the LMS rejects shows up as `apiErrors`. `stored` then shows what the LMS
-kept in its database: status, score and location.
+value the LMS rejects shows up as `apiErrors`; `responses` lists the answers
+the package reported as interactions, `suspendData` the size of what it kept.
+`stored` then shows what the LMS kept in its database: status, score,
+location, interactions and the size of `suspend_data`.
+
+```sh
+# the suspend connectors: all state in suspend_data, readable interactions
+liaex -i tests/fixtures/course/README.md -f scorm1.2 --scorm-storage suspend --scorm-embed -o /tmp/s12
+docker/lms/lms.sh test moodle405 /tmp/s12.zip
+```
 
 ```sh
 liaex -i tests/fixtures/course/README.md -f presets --moodle4 -o /tmp/moodle4
@@ -46,7 +57,14 @@ docker/lms/lms.sh test moodle405 /tmp/moodle4.zip
 ## Platform notes
 
 - **Moodle** passes no mastery score to the package when the manifest says `0`.
-  An attempt then has to be scored by the package itself.
+  An attempt then has to be scored by the package itself. With a mastery
+  score, SCORM 1.2 activities replace the status by `passed`/`failed` from
+  the score when the learner leaves ("Mastery score overrides status").
+- **Moodle** reports list enrolled students only; the lab learner is the
+  admin, so open its attempt directly:
+  `/mod/scorm/report/userreport.php?id=<cmid>&user=2&attempt=1` → Track details.
+- **ILIAS** (SCORM 2004) writes its interactions anew on every save, and the
+  stored correct responses keep pointing at the old rows.
 - **ILIAS** and **OpenOlat** start a SCORM 1.2 package without the manifest's
   launch parameters, so a plain export only shows LiaScript's start page there.
   Use `--scorm-iframe` or `--scorm-embed` (the `ilias` and `openolat` presets

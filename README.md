@@ -240,11 +240,10 @@ content and sub-folders of this folder is then copied into your SCORM.zip. The
 name is defined by your output definition and contains the current version
 number of you course as well as the current date.
 
-> Note: SCORM 1.2 is too restrictive for storing data, that is why we currently
-> only support to store location information, all states of quizzes, surveys, etc.
-> will be lost after reload.
->
-> Better use __SCORM2004__ as output
+> Note: With the default connector, SCORM 1.2 stores only the location, all
+> states of quizzes, surveys, etc. are lost after a reload. Use
+> [`--scorm-storage suspend`](#scorm-learner-data---scorm-storage) to keep
+> them, or __SCORM2004__ as output.
 
 __Text 2 Speech `--key`__
 
@@ -332,6 +331,68 @@ Done
 $ ls
 .. rockOn.zip ..
 ```
+
+### SCORM learner data `--scorm-storage`
+
+By default, the LiaScript runtime in a SCORM package keeps the course settings
+in `cmi.suspend_data` and, in SCORM 2004, the quiz states as JSON in the
+interactions. With `--scorm-storage suspend` (for `scorm1.2` and `scorm2004`)
+the package uses a different connector instead:
+
+* **Everything is restored.** Quizzes, surveys, task lists, the code of
+  executable code blocks (the current version of each project), the settings
+  and the last slide are kept, compressed, in `cmi.suspend_data`. This also
+  works in SCORM 1.2.
+* **Teachers can read the answers.** Every quiz, survey, task list and code
+  project is reported as one interaction, named after its question, e.g.
+  `Q14.1_What_is_the_capital_of_France`, with the learner's answer, the correct
+  answer and the result:
+  * SCORM 1.2 reports readable text: `Python; HTML`,
+    `Germany: Berlin; France: Paris`, `[x] Task A; [ ] Task B`.
+  * SCORM 2004 uses the matching interaction types (`choice`, `matching`,
+    `fill-in`, `long-fill-in`, `other`). Options are reported as ids that the
+    interaction's description explains, e.g.
+    `Which are programming languages? [o1=Python, o2=JavaScript, o3=HTML]`.
+  * A quiz counts as `correct` only if the learner solved it; a revealed
+    solution counts as wrong. Surveys, tasks and code are `neutral`.
+* **Values every LMS accepts.** Line breaks are shown as `⏎`, `"` as `＂`, and
+  long answers and code are shortened with `…[+N]` to the limits of the data
+  model.
+* **Status and score** use the fields SCORM defines for them: `incomplete`
+  from the start, `completed` once all quizzes and surveys are done, and
+  `passed`/`failed` only if a mastery score is set. Neither status is ever set
+  back. The score is reported in percent (1.2) or as points and scaled
+  (2004).
+* Without credit (`no-credit` or `browse` mode, e.g. ILIAS without learning
+  progress) the state is still kept, but nothing is reported.
+
+> Moodle and SCORM 1.2 with a mastery score: the activity setting *Mastery
+> score overrides status* (on by default) makes Moodle set `passed` or
+> `failed` from the score whenever the learner leaves, also before all
+> quizzes are done. Turn it off to keep `incomplete` until the course is done.
+
+``` shell
+$ liaex -i project/README.md --format scorm1.2 --scorm-storage suspend --scorm-masteryScore 80 --output rockOn
+```
+
+Where to find the answers:
+
+| LMS       | SCORM 1.2                                                    | SCORM 2004                                    |
+| --------- | ------------------------------------------------------------ | --------------------------------------------- |
+| Moodle    | Reports → Interactions report (one column per question)      | Reports → Attempt → Track details             |
+| ILIAS     | Learning progress / SCORM tracking data, export of interactions | the same                                    |
+
+Limits:
+
+* `cmi.suspend_data` holds 4096 characters in SCORM 1.2 (64000 in 2004). If
+  the state does not fit, code is left out first, then tasks, surveys, and
+  only at last quizzes; the browser console names what was not saved.
+* SCORM 1.2 reports at most 255 characters per answer, SCORM 2004 at most
+  3990 characters of code.
+* Code that is edited but never run is not stored.
+* Up to 250 elements per course are reported.
+* If the course is changed after learners started, answers to changed
+  elements start afresh; the others are kept.
 
 ### SCORM Examples
 

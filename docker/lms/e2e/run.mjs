@@ -6,8 +6,10 @@
  *   node run.mjs openolat <url> <zip>...    imports each package itself
  *
  * Every package is opened twice. The first visit answers the fixture course's
- * text quiz ("MKQuizText", tests/fixtures/course) and moves to slide 5; the
- * second checks that the LMS brought both back. Every call the LMS's own SCORM
+ * text quiz ("MKQuizText", tests/fixtures/course), a single-choice quiz and a
+ * textarea survey with line breaks, quotes and a leading brace, and moves to
+ * slide 5; the second checks that the LMS brought the slide, the quiz and the
+ * survey back. Every call the LMS's own SCORM
  * API answers is recorded, so a value the LMS rejects shows up with its error
  * code. Prints one JSON record per package.
  */
@@ -88,6 +90,11 @@ async function calls(page) {
 }
 
 const quizInput = (frame) => frame.locator('xpath=//*[contains(text(),"MKQuizText")]/following::input[1]')
+const after = (frame, text, what, n = 1) =>
+  frame.locator(`xpath=(//*[contains(text(),"${text}")]/following::${what})[${n}]`)
+const check = (frame, text) => after(frame, text, 'button[contains(@class,"lia-quiz__check")]').click()
+// a survey answer no LMS field takes as it is: line breaks, quotes, a leading brace
+const SURVEY_TEXT = '{lang=de} first line\nsays "hi"\nthird line'
 
 /** First visit: answer the quiz, go to slide 5. Second visit: read both back. */
 async function exercise(page, open, record, { revisit = true } = {}) {
@@ -102,6 +109,12 @@ async function exercise(page, open, record, { revisit = true } = {}) {
     await quizInput(frame).fill('Paris')
     await frame.locator('xpath=//*[contains(text(),"MKQuizText")]/following::button[1]').click()
     record.quiz = 'answered'
+    await after(frame, 'MKQuizSingle', 'input[@type="radio"]', 2).check({ force: true })
+    await check(frame, 'MKQuizSingle')
+    await frame.evaluate(() => window.LIA.goto(14))
+    await after(frame, 'MKSurveyTextarea', 'textarea').fill(SURVEY_TEXT, { timeout: 15000 })
+    await check(frame, 'MKSurveyTextarea')
+    record.quiz = 'answered, also single choice and survey'
   } catch (e) {
     record.quiz = 'failed: ' + e.message.split('\n')[0]
   }
@@ -115,6 +128,13 @@ async function exercise(page, open, record, { revisit = true } = {}) {
     // reading a value that was never set (401/403) is normal on a first visit
     .filter((c) => c.err !== '0' && c.err !== '?' && !(/GetValue/.test(c.fn) && ['401', '403'].includes(c.err)))
     .map((c) => `${c.fn}(${c.args.join(', ').slice(0, 80)}) -> ${c.err}`))]
+
+  const sets = made.filter((c) => /SetValue/.test(c.fn) && c.err === '0')
+  const suspend = sets.filter((c) => c.args[0] === 'cmi.suspend_data').pop()
+  if (suspend) record.suspendData = `${String(suspend.args[1]).slice(0, 4)}… ${String(suspend.args[1]).length} chars`
+  record.responses = [...new Set(sets
+    .filter((c) => /interactions\.\d+\.(learner|student)_response/.test(c.args[0]))
+    .map((c) => String(c.args[1]).slice(0, 60)))]
 
   if (!revisit) return
 
@@ -130,6 +150,10 @@ async function exercise(page, open, record, { revisit = true } = {}) {
   await again.evaluate(() => window.LIA.goto(13))
   await page.waitForTimeout(2500)
   record.quizRestored = (await quizInput(again).inputValue({ timeout: 5000 }).catch(() => null)) === 'Paris'
+  await again.evaluate(() => window.LIA.goto(14))
+  await page.waitForTimeout(2000)
+  record.surveyRestored =
+    (await after(again, 'MKSurveyTextarea', 'textarea').inputValue({ timeout: 5000 }).catch(() => null)) === SURVEY_TEXT
 }
 
 // --- Moodle -------------------------------------------------------------------

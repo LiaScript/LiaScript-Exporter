@@ -1,0 +1,213 @@
+{
+ "quiz": [
+  [],
+  [],
+  [],
+  [],
+  [],
+  [],
+  [],
+  [],
+  [],
+  [],
+  [],
+  [],
+  [],
+  [
+   {
+    "solved": 0,
+    "state": {
+     "Text": ""
+    },
+    "trial": 0,
+    "hint": 0,
+    "error_msg": "",
+    "score": 1
+   },
+   {
+    "solved": 0,
+    "state": {
+     "SingleChoice": [
+      false,
+      false,
+      false
+     ]
+    },
+    "trial": 0,
+    "hint": 0,
+    "error_msg": "",
+    "score": 1
+   },
+   {
+    "solved": 0,
+    "state": {
+     "MultipleChoice": [
+      false,
+      false,
+      false
+     ]
+    },
+    "trial": 0,
+    "hint": 0,
+    "error_msg": "",
+    "score": 1
+   },
+   {
+    "solved": 0,
+    "state": {
+     "Multi": [
+      {
+       "Select": -1
+      }
+     ]
+    },
+    "trial": 0,
+    "hint": 0,
+    "error_msg": "",
+    "score": 1
+   },
+   {
+    "solved": 0,
+    "state": {
+     "Multi": [
+      {
+       "Text": ""
+      },
+      {
+       "Text": ""
+      }
+     ]
+    },
+    "trial": 0,
+    "hint": 0,
+    "error_msg": "",
+    "score": 1
+   },
+   {
+    "solved": 0,
+    "state": {
+     "Matrix": [
+      {
+       "SingleChoice": [
+        false,
+        false,
+        false
+       ]
+      },
+      {
+       "SingleChoice": [
+        false,
+        false,
+        false
+       ]
+      },
+      {
+       "SingleChoice": [
+        false,
+        false,
+        false
+       ]
+      }
+     ]
+    },
+    "trial": 0,
+    "hint": 0,
+    "error_msg": "",
+    "score": 1
+   },
+   {
+    "solved": 0,
+    "state": {
+     "Generic": null
+    },
+    "trial": 0,
+    "hint": 0,
+    "error_msg": "",
+    "score": 1
+   }
+  ],
+  [],
+  [],
+  [],
+  [],
+  []
+ ],
+ "survey": [
+  [],
+  [],
+  [],
+  [],
+  [],
+  [],
+  [],
+  [],
+  [],
+  [],
+  [],
+  [],
+  [],
+  [],
+  [
+   {
+    "submitted": false,
+    "state": {
+     "MultipleChoice": {
+      "bad": false,
+      "good": false
+     }
+    }
+   },
+   {
+    "submitted": false,
+    "state": {
+     "SingleChoice": {
+      "ai": false,
+      "web": false
+     }
+    }
+   },
+   {
+    "submitted": false,
+    "state": {
+     "Text": ""
+    }
+   },
+   {
+    "submitted": false,
+    "state": {
+     "Text": ""
+    }
+   }
+  ],
+  [],
+  [],
+  [],
+  []
+ ],
+ "task": [
+  [],
+  [],
+  [
+   [
+    true,
+    false
+   ]
+  ],
+  [],
+  [],
+  [],
+  [],
+  [],
+  [],
+  [],
+  [],
+  [],
+  [],
+  [],
+  [],
+  [],
+  [],
+  [],
+  []
+ ]
+}

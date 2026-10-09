@@ -78,6 +78,7 @@ const SCORM_NAMES: Record<string, string> = {
   scormIframe: 'scorm-iframe',
   scormEmbed: 'scorm-embed',
   scormAlwaysActive: 'scorm-alwaysActive',
+  scormStorage: 'scorm-storage',
 }
 
 const NAME_MAPPERS: Record<string, (key: string) => string> = {

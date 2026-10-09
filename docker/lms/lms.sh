@@ -87,17 +87,21 @@ moodle_import() {
 
 moodle_stored() {
   moodle_env "$1"
+  # status, score, location, interactions (1.2: cmi.interactions_0.id) and
+  # the size of suspend_data
+  local pick="(status|score\\.(raw|scaled)|location|suspend_data)\$|^cmi\\.interactions[._][0-9]+\\.(id|type|result|learner_response|student_response)\$"
+  local show="case when %s = 'cmi.suspend_data' then left(%s, 4) || '… ' || length(%s) || ' chars' else left(%s, 70) end"
   local sql
   if [ "$1" = 311 ]; then
-    sql="select s.name, t.element, left(t.value, 50) from m_scorm_scoes_track t
+    sql="select s.name, t.element, $(printf "$show" t.element t.value t.value t.value) from m_scorm_scoes_track t
          join m_scorm s on s.id = t.scormid
-         where t.element ~ '(status|score\.(raw|scaled)|location)$' order by s.id, t.element"
+         where t.element ~ '$pick' order by s.id, t.element"
   else
-    sql="select s.name, e.element, left(v.value, 50) from m_scorm_scoes_value v
+    sql="select s.name, e.element, $(printf "$show" e.element v.value v.value v.value) from m_scorm_scoes_value v
          join m_scorm_element e on e.id = v.elementid
          join m_scorm_attempt a on a.id = v.attemptid
          join m_scorm s on s.id = a.scormid
-         where e.element ~ '(status|score\.(raw|scaled)|location)$' order by s.id, e.element"
+         where e.element ~ '$pick' order by s.id, e.element"
   fi
   $MOODLE_COMPOSE exec -T db psql -U moodle -d moodle -At -F ' | ' -c "$sql" </dev/null
 }

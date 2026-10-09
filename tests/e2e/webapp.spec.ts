@@ -633,6 +633,31 @@ test.describe('sources and targets', () => {
     }
   })
 
+  test('scorm2004: the learner data option ships the suspend runtime', async ({ browser }, testInfo) => {
+    test.setTimeout(QUICK_TIMEOUT + 60_000)
+    const session = await openApp(browser)
+
+    try {
+      await choose(session.page, { format: 'scorm2004' })
+      const advanced = session.page.locator('#advancedSettings')
+      if (await advanced.evaluate((el) => el.classList.contains('hidden'))) {
+        await session.page.locator('#toggleAdvanced').click()
+      }
+      await session.page.selectOption('#scormStorage', 'suspend')
+      await upload(session.page, courseUpload())
+
+      const result = await submitAndCollect(session, 'scorm2004-suspend', QUICK_TIMEOUT)
+      await attachLog(session, testInfo)
+      expect(result.status, result.error).toBe('completed')
+
+      const pkg = openPackage(result.file!)
+      expect(pkg.text('index.html')).toContain('<meta name="lia-scorm-storage" content="suspend"')
+      expect(pkg.text('config.js')).toContain('"meta":{"version":1')
+    } finally {
+      await session.context.close()
+    }
+  })
+
   test('switching presets leaves nothing of the previous one', async ({ browser }, testInfo) => {
     test.setTimeout(QUICK_TIMEOUT + 60_000)
     const session = await openApp(browser)
