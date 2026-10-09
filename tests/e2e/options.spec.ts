@@ -235,6 +235,19 @@ for (const format of ['scorm1.2', 'scorm2004']) {
   })
 }
 
+test('xapi: config.js carries the course description for readable statements', async () => {
+  test.setTimeout(QUICK_TIMEOUT)
+
+  const pkg = openPackage(await exportWith('xapi-meta', ['-f', 'xapi', '--xapi-zip'], 'xapi-meta.zip', QUICK_TIMEOUT))
+  const { config_ } = configOf(pkg)
+  const quizzes = config_.meta.slides.find((slide: any) => slide.title === 'Quizzes')
+
+  expect(config_.meta.version).toBe(1)
+  expect(config_.meta.slides.map((slide: any) => slide.quiz.length)).toEqual(config_.quiz.map((slide: any) => slide.length))
+  expect(quizzes.quiz[1].question).toBe('MKQuizSingle What is 2 + 2?')
+  expect(config_.totalSlides).toBe(config_.meta.slides.length)
+})
+
 test('scorm: the default storage keeps the classic runtime and config.js', async () => {
   test.setTimeout(QUICK_TIMEOUT)
 

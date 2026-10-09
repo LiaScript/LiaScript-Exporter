@@ -855,6 +855,56 @@ $ liaex -i project/README.md --format xapi --output course
 
 `--lia-subfolder` Place course files (Markdown, images, audio, etc.) into a `content/` subfolder, keeping LiaScript app files at the root.
 
+#### What is stored in the LRS
+
+The package sends one statement per event and restores the learner's state
+from them on the next visit (per learner and registration):
+
+* `experienced` for every slide, named `3. Lists and Tasks`; the course
+  resumes at the last one.
+* `answered` when a quiz is checked or resolved, or a survey is submitted
+  (only that survey, and only once).
+* `interacted` when a task list changes, and when the learner runs code they
+  changed: the code is stored and comes back on the next visit (code that is
+  edited but never run is not stored).
+* `initialized`, `progressed`, `completed` and `suspended`/`terminated` for
+  the course, with progress, score and time.
+
+#### How answers appear
+
+Every quiz, survey, task list and code project is an xAPI
+`cmi.interaction` activity, so statement browsers, CSV exports and analytics
+tools can show it directly:
+
+* **Name:** the question, e.g. `Which are programming languages?` (or the
+  slide title if there is no text in front of the element).
+* **Definition:** the interaction type (`choice`, `matching`, `fill-in`,
+  `long-fill-in`, `other`), the options (`choices`, or `source` and `target`
+  for a matrix) and, if the course has one, the correct answer
+  (`correctResponsesPattern`).
+* **`result.response`:** the answer in xAPI format, e.g. `o1[,]o3` or
+  `r1[.]c2[,]r2[.]c1`; text and code as written, with line breaks.
+* **`result.extensions["http://liascript.github.io/extensions/answer"]`:**
+  the same answer as plain text, e.g. `Python; HTML` or
+  `[x] Task A; [ ] Task B`.
+* **`result.success`:** whether a quiz was solved.
+
+Names and options use the course language (`language:` in the course header)
+as language key, `en-US` if none is set. Useful CSV columns, e.g. for
+[SQL LRS](https://github.com/yetanalytics/lrsql) (*Statement Browser →
+Download CSV*), for a course in English:
+
+```
+$.object.definition.name.en
+$.result.response
+$.result.extensions['http://liascript.github.io/extensions/answer']
+$.result.success
+```
+
+Packages exported with earlier versions send generic names (`Slide 13 -
+MultipleChoice 2`) and the raw state as response. Learners can switch between
+both: the state is restored either way.
+
 ### Project
 
 Projects are a way to bundle a collection of courses and to make a custom overview page for it.

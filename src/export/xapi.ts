@@ -1,5 +1,6 @@
 import * as helper from './helper'
 import * as RDF from './rdf'
+import { finalizeMeta } from './scorm-storage'
 import * as COLOR from '../colorize'
 import * as path from '../fs/path'
 import type { ExportFS } from '../fs/types'
@@ -166,6 +167,8 @@ export async function exporter(argument: XapiExportArguments, json: any) {
         masteryThreshold: argument['xapi-mastery-threshold'] || 0.8,
         progressThreshold: argument['xapi-progress-threshold'] || 0.9,
         totalSlides: json.lia.sections.length,
+        // questions, options and solutions, for readable statements
+        meta: finalizeMeta(json.meta, json, (message) => console.warn('xapi:', message)),
       }) +
       ';',
   )

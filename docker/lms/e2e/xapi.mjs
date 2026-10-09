@@ -3,8 +3,10 @@
  *
  *   node xapi.mjs <lrs url> <export.zip | export dir> <api key> <api secret>
  *
- * Serves the package, answers the fixture course's text quiz, moves to slide 5
- * and reloads, then asks the LRS what it received. Prints one JSON record.
+ * Serves the package; answers the fixture course's text and multiple-choice
+ * quizzes, submits a survey, edits and runs code; moves to slide 5 and
+ * reloads, checks that all of it came back, then asks the LRS what it
+ * received. Prints one JSON record.
  */
 import fs from 'node:fs'
 import http from 'node:http'
@@ -78,6 +80,12 @@ try {
     return false
   }
   const quiz = () => page.locator('xpath=//*[contains(text(),"MKQuizText")]/following::input[1]')
+  const survey = () => page.locator('xpath=//*[contains(text(),"MKSurveyText ")]/following::input[1]')
+  const editor = () => page.locator('lia-editor', { hasText: 'MKCodeRunLog' })
+  const goto = async (slide, wait = 2500) => {
+    await page.evaluate((s) => window.LIA.goto(s), slide)
+    await page.waitForTimeout(wait)
+  }
 
   await page.goto(url)
   record.rendered = await course()
@@ -87,17 +95,39 @@ try {
     await quiz().fill('Paris')
     await page.locator('xpath=//*[contains(text(),"MKQuizText")]/following::button[1]').click()
     await page.waitForTimeout(2000)
-    await page.evaluate(() => window.LIA.goto(4))
-    await page.waitForTimeout(4000)
+
+    // Python and HTML: a wrong answer, readable as "Python; HTML"
+    const multiple = page.locator('xpath=//*[contains(text(),"MKQuizMultiple")]/following::div[contains(@class,"lia-quiz")][1]')
+    await multiple.locator('input[type=checkbox]').nth(0).check()
+    await multiple.locator('input[type=checkbox]').nth(2).check()
+    await multiple.locator('.lia-quiz__check').click()
+    await page.waitForTimeout(2000)
+
+    await goto(14)
+    await survey().fill('MKSurveyAnswer')
+    await page.locator('xpath=//*[contains(text(),"MKSurveyText ")]/following::button[1]').click()
+    await page.waitForTimeout(2000)
+
+    await goto(6)
+    await editor().locator('.ace_content').click()
+    await page.keyboard.press('Control+End')
+    await page.keyboard.type('\n// MKCodeEdited')
+    await page.locator('.lia-code', { has: editor() }).locator('button[title="Execute"]').click()
+    await page.waitForTimeout(3000)
+
+    await goto(4, 4000)
 
     await page.reload()
     await course()
     await page.waitForTimeout(4000)
     record.resumedAt = await page.evaluate(() =>
       [...document.querySelectorAll('h1,h2')].filter((h) => h.offsetParent).map((h) => h.innerText.trim())[0])
-    await page.evaluate(() => window.LIA.goto(13))
-    await page.waitForTimeout(2500)
+    await goto(13)
     record.quizRestored = (await quiz().inputValue({ timeout: 5000 }).catch(() => null)) === 'Paris'
+    await goto(14)
+    record.surveyRestored = (await survey().inputValue({ timeout: 5000 }).catch(() => null)) === 'MKSurveyAnswer'
+    await goto(6)
+    record.codeRestored = /MKCodeEdited/.test(await editor().innerText({ timeout: 5000 }).catch(() => ''))
   }
   record.lrsRequestsFailed = [...new Set(failed)]
   if (process.env.XAPI_DEBUG) record.rejected = rejected
@@ -107,6 +137,22 @@ try {
   record.verbs = [...new Set(statements.map((s) => s.verb?.id?.split('/').pop()))]
   const answer = statements.find((s) => /answered/.test(s.verb?.id || ''))
   record.answered = answer ? { response: answer.result?.response, success: answer.result?.success, object: answer.object?.id } : null
+
+  // what an LRS statement browser and its CSV show, oldest first
+  const ext = (s, key) => s.object?.definition?.extensions?.[`http://liascript.github.io/extensions/${key}`]
+  const shown = statements.filter((s) => /answered|interacted/.test(s.verb?.id || '')).reverse()
+  record.readable = shown.map((s) => ({
+    verb: s.verb.id.split('/').pop(),
+    name: Object.values(s.object?.definition?.name || {})[0],
+    type: s.object?.definition?.interactionType,
+    response: s.result?.response,
+    answer: s.result?.extensions?.['http://liascript.github.io/extensions/answer'],
+    success: s.result?.success,
+  }))
+  record.surveyStatements = statements.filter((s) => ext(s, 'surveyIndex') !== undefined).length
+  record.codeStatements = statements.filter((s) => ext(s, 'codeIndex') !== undefined).length
+  record.slideNames = [...new Set(statements.filter((s) => /experienced/.test(s.verb?.id || ''))
+    .map((s) => Object.values(s.object?.definition?.name || {})[0]))]
 } finally {
   await browser.close()
   server.close()

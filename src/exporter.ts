@@ -364,6 +364,11 @@ export class Exporter {
       return STORAGE.FULL_JSON_META
     }
 
+    // and so does xAPI, to describe questions and answers readably
+    if (format === XAPI.format || (format === SERVER_ONLY.PROJECT && argument['project-generate-xapi'])) {
+      return STORAGE.FULL_JSON_META
+    }
+
     const needsFullJson = new Set<string>([
       SCORM12.format,
       SCORM2004.format,
