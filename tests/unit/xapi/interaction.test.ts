@@ -159,7 +159,9 @@ describe('interaction', () => {
     expect(code.definition.name).toEqual({ en: 'Run this' })
     expect(code.definition.description.en).toContain('main.js')
     expect(code.response).toBe('console.log("hi")\n// done')
-    expect(code.answer).toBe(code.response)
+    // the response already is plain text, and the statement carries the code
+    // of the whole slide besides: no third copy
+    expect(code.answer).toBeUndefined()
   })
 
   it('names an element without a question after its slide', () => {
@@ -188,6 +190,43 @@ describe('interaction', () => {
 
     expect(long.answer!.length).toBeLessThanOrEqual(10000)
     expect(long.answer).toMatch(/…\[\+\d+\]$/)
+  })
+})
+
+describe('interaction without or with partial descriptions', () => {
+  const quiz = (meta: any, state: any): Report.Item =>
+    ({ table: 'quiz', slide: 0, index: 0, id: 'Q1.1', title: 'Slide', meta, weight: 1 }) as Report.Item
+  const survey = (meta: any): Report.Item =>
+    ({ table: 'survey', slide: 0, index: 0, id: 'S1.1', title: 'Slide', meta, weight: 1 }) as Report.Item
+
+  it('accepts every correct option of a selection', () => {
+    const item = quiz({ type: 'select', question: 'Pick', options: ['a', 'b', 'c'], solution: [0, 2] }, null)
+    const described = Report.interaction(item, { solved: 1, trial: 1, state: { Select: 2 } }, 'en')
+
+    expect(described.definition.correctResponsesPattern).toEqual(['o1', 'o3'])
+    expect(described.response).toBe('o3')
+  })
+
+  it('lists every id the response uses, even without option labels', () => {
+    const described = Report.interaction(quiz(undefined, null), { solved: 1, trial: 1, state: { Select: 1 } }, 'en')
+
+    expect(described.response).toBe('o2')
+    expect(ids(described.definition.choices)).toContain('o2')
+
+    const submitted = Report.interaction(survey(undefined), { submitted: true, state: { Select: 3 } }, 'en')
+    expect(ids(submitted.definition.choices)).toContain('o4')
+  })
+
+  it('gives survey options unique ids, whatever their keys', () => {
+    const described = Report.interaction(
+      survey(undefined),
+      { submitted: true, state: { MultipleChoice: { o2: true, 'a b': false } } },
+      'en'
+    )
+    const choices = ids(described.definition.choices)
+
+    expect(new Set(choices).size).toBe(choices.length)
+    expect(described.response).toBe(choices[0])
   })
 })
 

@@ -188,6 +188,25 @@ for (const version of ['1.2', '2004'] as const) {
       expect(restored.version).toEqual([{ hashes: [md5('console.log(2)')], log: expect.any(Object) }])
     })
 
+    it('starts a slide’s code afresh if its code blocks changed since', () => {
+      const first = start({ version })
+      first.engine.load('code', 6)
+      first.engine.store('code', 6, [project(['main.js', 'console.log(1)'])])
+      first.engine.update('code', 6, (projects) => {
+        projects[0].file[0].code = 'console.log(2)'
+        return projects
+      })
+      first.clock.advance(TIMING.quiet)
+
+      // the author added a second code block to the slide
+      const changed = meta()
+      changed.slides[6].code.push({ question: 'More', files: [{ name: 'more.js', lang: 'js' }] })
+      const second = session(first.lms.next(), version, { meta: changed } as any)
+
+      expect(second.engine.load('code', 6)).toBeNull()
+      expect(second.warn).toHaveBeenCalledWith(expect.stringContaining('the course changed'), 'code 6')
+    })
+
     it('reads the classic connector’s settings and starts afresh', () => {
       const { engine, lms } = start({ version, stored: { 'cmi.suspend_data': '{"mode":"Slides"}' } })
       expect(engine.settings()).toEqual({ mode: 'Slides' })

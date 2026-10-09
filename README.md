@@ -886,7 +886,8 @@ tools can show it directly:
   `r1[.]c2[,]r2[.]c1`; text and code as written, with line breaks.
 * **`result.extensions["http://liascript.github.io/extensions/answer"]`:**
   the same answer as plain text, e.g. `Python; HTML` or
-  `[x] Task A; [ ] Task B`.
+  `[x] Task A; [ ] Task B` (not for code, whose response already is plain
+  text).
 * **`result.success`:** whether a quiz was solved.
 
 Names and options use the course language (`language:` in the course header)
@@ -900,6 +901,9 @@ $.result.response
 $.result.extensions['http://liascript.github.io/extensions/answer']
 $.result.success
 ```
+
+If the course changes after learners started, code of a slide whose code
+blocks changed starts afresh; everything else is kept.
 
 Packages exported with earlier versions send generic names (`Slide 13 -
 MultipleChoice 2`) and the raw state as response. Learners can switch between

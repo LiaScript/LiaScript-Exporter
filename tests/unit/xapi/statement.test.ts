@@ -139,6 +139,7 @@ describe('code', () => {
 
     expect(statement.object.definition.name).toEqual({ en: 'Run this' })
     expect(statement.object.definition.extensions[EXT + 'codeIndex']).toBe(0)
+    expect(EXT + 'answer' in statement.result.extensions).toBe(false)
     expect(statement.result.extensions[EXT + 'code']).toEqual(Code.encodeSlide(projects))
   })
 
@@ -174,6 +175,16 @@ describe('code', () => {
     broken.result.extensions[EXT + 'code'] = [[['js', 'a.js', 42, 1]]]
 
     expect(Code.restore([broken])).toEqual({})
+  })
+
+  it('falls back to an older statement if the newest is unreadable', () => {
+    const older = Statement.generateCodeStatement(actor, course, 'Course', 6, 0, [project(['a.js', 'older'])], 'reg')
+    const broken = Statement.generateCodeStatement(actor, course, 'Course', 6, 0, [project(['a.js', 'x'])], 'reg')
+    older.timestamp = '2026-01-01T10:00:00.000Z'
+    broken.timestamp = '2026-01-01T11:00:00.000Z'
+    broken.result.extensions[EXT + 'code'] = [[]]
+
+    expect(Code.restore([broken, older])[6][0].file[0].code).toBe('older')
   })
 
   it('restores a slide only if its code blocks still match the course', () => {

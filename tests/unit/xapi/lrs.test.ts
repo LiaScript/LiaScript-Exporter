@@ -54,10 +54,41 @@ describe('getStatements', () => {
     expect(result.statements).toEqual([{ id: 'a' }])
   })
 
+  it('resolves more against the page for an endpoint without host', async () => {
+    const fetch = vi
+      .fn()
+      .mockResolvedValueOnce(page([{ id: 'a' }], '/xapi/statements?more=abc'))
+      .mockResolvedValueOnce(page([{ id: 'b' }]))
+    vi.stubGlobal('fetch', fetch)
+    vi.stubGlobal('location', { href: 'https://courses.example.com/course/index.html' })
+
+    const result = await new LRSConnection('/xapi/', '').getStatements()
+
+    expect(result.statements).toEqual([{ id: 'a' }, { id: 'b' }])
+    expect(fetch.mock.calls[1][0]).toBe('https://courses.example.com/xapi/statements?more=abc')
+  })
+
   it('returns null if the first page fails', async () => {
     vi.stubGlobal('fetch', vi.fn().mockResolvedValueOnce({ ok: false, status: 401, text: async () => 'no' }))
     vi.spyOn(console, 'error').mockImplementation(() => {})
 
     expect(await new LRSConnection('https://lrs.example.com/xapi/', '').getStatements()).toBeNull()
+  })
+})
+
+describe('sendOnUnload', () => {
+  it('posts to the statements resource with its credentials, surviving the page', () => {
+    const fetch = vi.fn().mockResolvedValue({ ok: true })
+    vi.stubGlobal('fetch', fetch)
+
+    new LRSConnection('https://lrs.example.com/xapi/', 'Basic x').sendOnUnload({ id: 's' })
+
+    const [url, init] = fetch.mock.calls[0]
+    expect(url).toBe('https://lrs.example.com/xapi/statements')
+    expect(init.method).toBe('POST')
+    expect(init.keepalive).toBe(true)
+    expect(init.headers.Authorization).toBe('Basic x')
+    expect(init.headers['X-Experience-API-Version']).toBe('1.0.3')
+    expect(JSON.parse(init.body)).toEqual({ id: 's' })
   })
 })
