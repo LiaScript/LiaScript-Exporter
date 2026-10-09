@@ -117,9 +117,10 @@ function acceptedBy(format: string, key: string): boolean {
  * Merges preset and user options and renders them as exporter arguments.
  *
  * User options win over the preset's. `format` is dropped: it selects the
- * exporter rather than being passed to it. Booleans follow CLI semantics —
- * true becomes a present flag, false is omitted entirely — so an exporter
- * checking `argument['scorm-iframe']` behaves the same either way.
+ * exporter rather than being passed to it. A false from the preset is
+ * omitted, the same as an absent flag. A false from the user is kept: it is an
+ * unticked checkbox, which has to switch off what the preset turned on, or an
+ * exporter default that is true (`pdf-printBackground`).
  */
 export function toOptions(
   format: string,
@@ -142,7 +143,7 @@ export function toOptions(
     if (value === true || value === 'true') {
       out[mapper(key)] = true
     } else if (value === false || value === 'false') {
-      // A false flag is absent, not present-and-false.
+      if (key in userOptions) out[mapper(key)] = false
     } else if (value !== undefined && value !== null && value !== '') {
       out[mapper(key)] = value
     }
@@ -171,6 +172,10 @@ export function toCliArguments(options: Record<string, any>): string[] {
   for (const [key, value] of Object.entries(options)) {
     if (value === true) {
       args.push(`--${key}`)
+    } else if (value === false) {
+      // `--no-<key>` would be the minimist way, but the CLI reads an explicit
+      // false just as well, and it stays readable in the job log
+      args.push(`--${key}`, 'false')
     } else {
       args.push(`--${key}`, String(value))
     }

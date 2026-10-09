@@ -113,10 +113,24 @@ describe('toOptions', () => {
         { scormIframe: true, scormEmbed: false, typicalDuration: 'PT0H5M0S' },
         { scormIframe: 'false', scormEmbed: 'true' },
       ),
-    ).toEqual({ 'scorm-embed': true, 'scorm-typicalDuration': 'PT0H5M0S' })
+    ).toEqual({
+      'scorm-iframe': false,
+      'scorm-embed': true,
+      'scorm-typicalDuration': 'PT0H5M0S',
+    })
   })
 
-  it('drops false, empty and null values and the format key', () => {
+  it('keeps an unticked checkbox, so it can switch off a default', () => {
+    expect(toOptions('pdf', {}, { 'pdf-printBackground': 'false' })).toEqual({
+      'pdf-printBackground': false,
+    })
+    expect(toCliArguments({ 'pdf-printBackground': false })).toEqual([
+      '--pdf-printBackground',
+      'false',
+    ])
+  })
+
+  it("drops the preset's false, empty and null values and the format key", () => {
     expect(
       toOptions('pdf', {
         format: 'pdf',

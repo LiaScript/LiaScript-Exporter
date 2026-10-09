@@ -14,6 +14,7 @@
 
 import * as extract from './extract'
 import { render, EMBED_SRC } from './render'
+import { themeColor } from '../../export/helper'
 
 /** Where `scripts/copy-webapp-docx.js` puts the converter. */
 const CONVERTER = 'docx/html-to-docx.browser.js'
@@ -88,8 +89,21 @@ export async function exporter(
     extract.courseTitle(course.document) ||
     'LiaScript Export'
 
+  // `--docx-theme`, as in the CLI: the class recolors the render, and its main
+  // color is carried into the document by themeColor
+  let highlight: string | undefined
+  if (options['docx-theme']) {
+    const root = course.document.documentElement
+    root.classList.remove('lia-theme-default')
+    root.classList.add('lia-theme-' + options['docx-theme'])
+    highlight = course.window.getComputedStyle(root).getPropertyValue('--color-highlight')
+  }
+
   try {
-    html = await assemble(course.document, course.window, { ...options, 'docx-title': title })
+    html = themeColor(
+      await assemble(course.document, course.window, { ...options, 'docx-title': title }),
+      highlight,
+    )
   } finally {
     // Only needed for the scrape; freed before the slow conversion rather than
     // holding a second copy of the course in memory.

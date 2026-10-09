@@ -83,7 +83,9 @@ export class AssetLoader {
 
     const flag = INDEXEDDB_FLAG[format]
 
-    if (flag && options[flag] !== undefined) {
+    // A string is the database key, true asks for a generated one; an unticked
+    // checkbox arrives as false
+    if (flag && options[flag] !== undefined && options[flag] !== false) {
       return required.map((bundle) => (bundle === 'web' ? 'indexeddb' : bundle))
     }
 
