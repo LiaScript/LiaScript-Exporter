@@ -178,13 +178,14 @@ function checkScorm(
     if (!pkg.has(textOf(location))) problems.add('metadata file missing', textOf(location))
   }
 
-  if (options.deep) validateSchema(format, pkg, problems)
+  const unchecked = options.deep ? validateSchema(format, pkg, problems) : []
 
   return {
     title,
     course,
     launch,
     listedFiles: listed.length,
+    ...(unchecked.length ? { schemasUnavailable: unchecked } : {}),
   }
 }
 
@@ -220,18 +221,25 @@ function unparameterizedCourse(
 /**
  * Validates the manifest against the schemas shipped in the package. xmllint
  * takes one schema, so a wrapper imports one per namespace.
+ *
+ * A schema xmllint cannot compile is a limit of the tool, not a fault of the
+ * package: libxml2 rejects the official IMS metadata schema of SCORM 1.2
+ * (`imsmd_rootv1p2p1.xsd`, "content model is not determinist"). Such a schema
+ * is left out and the manifest checked against the others; what was left out
+ * is returned, to show up in the summary rather than as a problem.
  */
 function validateSchema(
   format: 'scorm1.2' | 'scorm2004',
   pkg: Package,
   problems: Problems,
-): void {
+): string[] {
   if (!hasXmllint()) {
     problems.add('deep check unavailable', 'xmllint is not installed')
-    return
+    return []
   }
 
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'lia-xsd-'))
+  const unavailable: string[] = []
 
   try {
     for (const file of pkg.files) {
@@ -240,23 +248,47 @@ function validateSchema(
       }
     }
 
-    const imports = Object.entries(SCHEMAS[format])
-      .map(([ns, file]) => `  <xs:import namespace="${ns}" schemaLocation="${file}"/>`)
-      .join('\n')
+    let schemas = Object.entries(SCHEMAS[format])
+    let errors: string[] = []
 
-    fs.writeFileSync(
-      path.join(dir, '_wrapper.xsd'),
-      `<?xml version="1.0"?>\n<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:liascript:test">\n${imports}\n</xs:schema>\n`,
-    )
+    // At most once per schema: each round drops those that did not compile
+    for (let round = 0; round <= Object.keys(SCHEMAS[format]).length; round++) {
+      const imports = schemas
+        .map(([ns, file]) => `  <xs:import namespace="${ns}" schemaLocation="${file}"/>`)
+        .join('\n')
+
+      fs.writeFileSync(
+        path.join(dir, '_wrapper.xsd'),
+        `<?xml version="1.0"?>\n<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:liascript:test">\n${imports}\n</xs:schema>\n`,
+      )
+
+      errors = xmllint(path.join(dir, '_wrapper.xsd'), path.join(dir, 'imsmanifest.xml'))
+
+      const broken = new Set(
+        errors
+          .filter((line) => line.includes('Schemas parser error'))
+          .map((line) => line.split(':')[0]),
+      )
+      const dropped = schemas.filter(([, file]) => broken.has(file))
+
+      if (dropped.length === 0) break
+
+      for (const [, file] of dropped) {
+        unavailable.push(`${file}: xmllint cannot compile it`)
+      }
+      schemas = schemas.filter(([, file]) => !broken.has(file))
+    }
 
     problems.many(
       'imsmanifest.xml fails its XSD',
-      xmllint(path.join(dir, '_wrapper.xsd'), path.join(dir, 'imsmanifest.xml')),
+      errors.filter((line) => !line.includes('Schemas parser error')),
       5,
     )
   } finally {
     fs.rmSync(dir, { recursive: true, force: true })
   }
+
+  return unavailable
 }
 
 function checkIms(pkg: Package, problems: Problems, course: CourseInfo): Record<string, unknown> {
