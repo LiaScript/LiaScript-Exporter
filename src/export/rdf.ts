@@ -5,6 +5,67 @@ import * as COLOR from '../colorize'
 import type { ExportFS } from '../fs/types'
 
 /**
+ * What compaction needs of the schema.org context, for when it cannot be
+ * downloaded (offline). Compacting with it gives the same result for the
+ * properties this exporter writes; `id` and `type` are the context's aliases.
+ */
+const SCHEMA_ORG_FALLBACK = {
+  '@context': { '@vocab': 'http://schema.org/', id: '@id', type: '@type' },
+}
+
+const documents = new Map<string, Promise<any>>()
+
+/**
+ * Fetches a JSON-LD document with the global `fetch`, following the
+ * `Link: rel="alternate"` header schema.org answers with.
+ *
+ * jsonld's own Node loader hands an `undici@6` dispatcher to Node's built-in
+ * fetch, which Node 26 rejects ("invalid onError method"), so every export that
+ * embeds JSON-LD (SCORM, web, IMS, xAPI, epub, docx, rdf) failed there.
+ */
+async function fetchDocument(url: string): Promise<any> {
+  const response = await fetch(url, {
+    headers: { Accept: 'application/ld+json, application/json' },
+  })
+
+  if (!response.ok) {
+    throw new Error(`${response.status} ${response.statusText}`)
+  }
+
+  if (!/json/.test(response.headers.get('content-type') || '')) {
+    const link = (response.headers.get('link') || '').match(
+      /<([^>]+)>;\s*rel="alternate";\s*type="application\/ld\+json"/,
+    )
+    if (link) {
+      return fetchDocument(new URL(link[1], response.url).href)
+    }
+  }
+
+  return { contextUrl: null, documentUrl: response.url, document: await response.json() }
+}
+
+jsonld.documentLoader = (url: string) => {
+  if (!documents.has(url)) {
+    documents.set(
+      url,
+      fetchDocument(url).catch((error) => {
+        if (!/^https?:\/\/schema\.org\/?$/.test(url)) {
+          documents.delete(url)
+          throw error
+        }
+
+        console.warn(
+          `Could not load ${url} (${error.message}), using a built-in schema.org context`,
+        )
+        return { contextUrl: null, documentUrl: url, document: SCHEMA_ORG_FALLBACK }
+      }),
+    )
+  }
+
+  return documents.get(url)
+}
+
+/**
  * Loads schema.org contexts over https.
  *
  * `jsonld.compact` dereferences `http://schema.org/` at runtime, which a
@@ -274,7 +335,9 @@ async function loadTemplate(
     }
 
     if (data) {
-      return await jsonld.expand(data)
+      // expand() returns a list of nodes; the course is the template's node
+      const expanded = await jsonld.expand(data)
+      return Array.isArray(expanded) ? expanded[0] || {} : expanded
     } else {
       console.warn('could not load template from:', templatePath)
       return {}
@@ -293,8 +356,16 @@ async function loadTemplate(
  */
 function setCoreProperties(doc: SchemaDoc, json: any, rdfType?: string): void {
   doc[SCHEMA_ORG_PROPS.NAME] = json.lia.str_title
+
+  // An expanded template carries its type as `@type: ['http://schema.org/X']`
+  const templateType = [].concat(doc['@type'] || [])[0] as string | undefined
+  delete doc['@type']
+
   doc[SCHEMA_ORG_PROPS.TYPE] =
-    doc[SCHEMA_ORG_PROPS.TYPE] || rdfType || SCHEMA_TYPES.COURSE
+    rdfType ||
+    doc[SCHEMA_ORG_PROPS.TYPE] ||
+    templateType?.replace(/^https?:\/\/schema\.org\//, '') ||
+    SCHEMA_TYPES.COURSE
 }
 
 /**

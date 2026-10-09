@@ -128,7 +128,16 @@ export async function exporter(argument: Scorm12ExportArguments, json: any) {
     index = helper.inject('<script src="course.js"></script>', index, true)
     await fs.writeFile(
       path.join(tmpPath, 'course.js'),
-      'window["liascript_course"] = ' + JSON.stringify(argument['scorm-embed']),
+      'window["liascript_course"] = ' +
+        JSON.stringify(
+          helper.embedBase(
+            String(argument['scorm-embed']),
+            path.join(
+              argument['lia-subfolder'] ? 'content' : '',
+              path.dirname(argument.readme),
+            ),
+          ),
+        ),
     )
   }
 

@@ -128,6 +128,15 @@ export async function exporter(argument: AndroidExportArguments, json: any) {
   // copy logo and splash
   await fs.copy(path.join(dirname, './resources'), path.join(tmp, './assets'))
 
+  // a custom app icon replaces the LiaScript logo for `@capacitor/assets`
+  if (argument['android-icon']) {
+    await fs.remove(path.join(tmp, './assets/icon.svg'))
+    await fs.copy(
+      path.resolve(argument['android-icon']),
+      path.join(tmp, './assets/icon.png'),
+    )
+  }
+
   if (argument['android-preview']) {
     // create a link, this way, the app can be updated interactively
     await fs.symlink(

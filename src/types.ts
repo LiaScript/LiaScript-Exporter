@@ -70,10 +70,11 @@ export interface PresetOptions {
 export interface Preset {
   id: string
   name: string
-  logo: string
+  logo: { icon?: string; url?: string }
   format: string
   subtitle: string
-  description: string
+  /** Per language, e.g. `{ de: '...', en: '...' }` */
+  description: Record<string, string>
   options: PresetOptions
 }
 

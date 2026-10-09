@@ -84,7 +84,7 @@ export function help() {
   COLOR.command(
     null,
     '--epub-timeout',
-    `            Additional wait time for rendering in ms (default: ${DEFAULT_TIMEOUT_MS})`,
+    `            Additional wait time for rendering in ms (default: none)`,
   )
   COLOR.command(
     null,
@@ -245,10 +245,12 @@ export async function exporter(argument: EpubExportArguments, json: any) {
     argument['epub-cover'] = argument['epub-cover'] || logo
     argument['epub-author'] = argument['epub-author'] || json.lia.definition.author
     argument['epub-language'] = argument['epub-language'] || json.lia.definition.language
-    argument['epub-description'] = argument['epub-description'] || json.lia.definition.comment
+    // `definition.comment` holds the parsed inline elements, `lia.comment` the text
+    argument['epub-description'] = argument['epub-description'] || json.lia.comment
 
     if (argument['epub-stylesheet']) {
-      const href = path.resolve(dirname + '/../', argument['epub-stylesheet'])
+      // Relative to where the exporter was called from, like every other path
+      const href = path.resolve(argument['epub-stylesheet'])
       try {
         await page.evaluate(async (href) => {
           const link = document.createElement('link')
@@ -915,9 +917,18 @@ async function toEPUB(
     }
 
 
+    // The first chapter is the course's title slide
+    if (argument['epub-chapter-title'] && chapters.length > 0) {
+      chapters[0].title = String(argument['epub-chapter-title'])
+    }
+
     let fonts: string[] = [...fontPaths]
     if (argument['epub-fonts']) {
-      fonts.push(...argument['epub-fonts'].split(',').map((f) => f.trim()))
+      fonts.push(
+        ...String(argument['epub-fonts'])
+          .split(',')
+          .map((f) => path.resolve(f.trim())),
+      )
     }
 
     let customCSS = allCSS
@@ -939,12 +950,10 @@ async function toEPUB(
       author: authors,
       lang: argument['epub-language'] || DEFAULT_LANG,
       tocTitle: argument['epub-toc-title'] || DEFAULT_TOC_TITLE,
-      appendChapterTitles:
-        argument['epub-chapter-title'] === undefined &&
-        DEFAULT_APPEND_CHAPTER_TITLES,
+      appendChapterTitles: DEFAULT_APPEND_CHAPTER_TITLES,
       hideToC: argument['epub-hide-toc'] ?? DEFAULT_HIDE_TOC,
       css: customCSS,
-      version: (argument['epub-version'] || DEFAULT_EPUB_VERSION) as 2 | 3,
+      version: Number(argument['epub-version'] || DEFAULT_EPUB_VERSION) as 2 | 3,
       content: chapters,
       verbose: false,
       // Per run: the library removes only its own subfolder, and only on
@@ -1158,6 +1167,16 @@ function patchedOpfTemplate(version: 2 | 3, dir: string): string | undefined {
         'href="<%= content.href %>" media-type="application/xhtml+xml"' +
           `<% if(/<math\\b/.test(content.data || "")){ %> properties="mathml"<% } %> />`,
       )
+
+      // The library's EPUB 3 template drops the description, EPUB 2 has it
+      const title = '<dc:title><%= title %></dc:title>'
+      if (fixed.includes(title) && !fixed.includes('<dc:description>')) {
+        fixed = fixed.replace(
+          title,
+          title +
+            '<% if(description){ %>\n        <dc:description><%= description %></dc:description><% } %>',
+        )
+      }
     }
 
     fs.mkdirSync(dir, { recursive: true })

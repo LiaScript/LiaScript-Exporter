@@ -269,9 +269,13 @@ export async function exporter(argument: ProjectExportArguments, json: any) {
     <meta charset="UTF-8">
     <title>${title}</title>
 
-    <script type="application/ld+json">
+    ${
+      argument['project-no-rdf']
+        ? ''
+        : `<script type="application/ld+json">
     ${JSON.stringify(jsonLD, null, 2)}
-    </script>
+    </script>`
+    }
   
     ${argument['project-no-meta'] ? '' : meta(json)}
 
@@ -691,15 +695,6 @@ function removeContext(obj) {
   }
   return obj
 }
-async function moveFile(oldPath, newPath) {
-  // 1. Create the destination directory if it does not exist
-  // Set the `recursive` option to `true` to create all the subdirectories
-
-  await fs.mkdir(path.dirname(newPath), { recursive: true })
-  // 2. Rename the file (move it to the new directory)
-  // Return the promise
-  return fs.rename(oldPath, newPath)
-}
 
 function cleanHTML(html: string) {
   return html.replace(/<[^>]+>/g, '')
@@ -897,6 +892,15 @@ async function toCard(
 
   const backupOutput = hash(course.data.lia.readme)
 
+  // Every course works on its own copy: the exporters below rewrite input,
+  // output and path, which would otherwise leak into the next course.
+  argument = { ...argument }
+
+  // Generated files live next to the overview page, which links to them as
+  // `assets/<format>/...`, wherever the exporter was called from.
+  const root = path.dirname(argument.output)
+  const at = (file: string) => path.join(root, file)
+
   const tagList = course.tags || tags
   for (let i = 0; i < tagList.length; i++) {
     Categories.add(tagList[i].toLowerCase())
@@ -904,82 +908,62 @@ async function toCard(
 
   let downloads = {}
 
-  if (argument['project-generate-pdf'])
-    downloads['pdf'] = 'assets/pdf/' + backupOutput + '.pdf'
-  if (argument['project-generate-ims'])
-    downloads['ims'] = 'assets/ims/' + backupOutput + '.zip'
-  if (argument['project-generate-scorm12'])
-    downloads['scorm12'] = 'assets/scorm12/' + backupOutput + '.zip'
-  if (argument['project-generate-scorm2004'])
-    downloads['scorm2004'] = 'assets/scorm2004/' + backupOutput + '.zip'
-  if (argument['project-generate-epub'])
-    downloads['epub'] = 'assets/epub/' + backupOutput + '.epub'
-  if (argument['project-generate-docx'])
-    downloads['docx'] = 'assets/docx/' + backupOutput + '.docx'
-  if (argument['project-generate-xapi'])
-    downloads['xapi'] = 'assets/xapi/' + backupOutput + '.zip'
-
   if (argument['project-generate-pdf']) {
     argument.input = course.data.lia.readme
-    argument.output = backupOutput
 
-    const file = argument.output + '.pdf'
+    const file = 'assets/pdf/' + backupOutput + '.pdf'
+    argument.output = at('assets/pdf/' + backupOutput)
 
-    if (
-      argument['project-generate-cache'] &&
-      fs.existsSync(path.join(process.cwd(), 'assets/pdf/' + file))
-    ) {
+    if (argument['project-generate-cache'] && fs.existsSync(at(file))) {
       console.log('using cached file of ', argument.input, ' -> ', file)
     } else {
       console.log('generate pdf of', argument.input, ' -> ', file)
 
+      fs.ensureDirSync(at('assets/pdf'))
       await PDF.exporter(argument, {})
-
-      if (fs.existsSync(file)) {
-        await moveFile(file, 'assets/pdf/' + file)
-      }
     }
+
+    if (fs.existsSync(at(file))) downloads['pdf'] = file
   }
 
   if (argument['project-generate-epub']) {
     argument.input = course.data.lia.readme
-    argument.output = 'assets/epub/' + backupOutput
 
-    const file = argument.output + '.epub'
+    const file = 'assets/epub/' + backupOutput + '.epub'
+    argument.output = at('assets/epub/' + backupOutput)
 
-    if (
-      argument['project-generate-cache'] &&
-      fs.existsSync(path.join(process.cwd(), file))
-    ) {
+    if (argument['project-generate-cache'] && fs.existsSync(at(file))) {
       console.log('using cached file of ', argument.input, ' -> ', file)
     } else {
       console.log('generate epub of', argument.input, ' -> ', file)
 
-      fs.ensureDirSync('assets/epub')
+      fs.ensureDirSync(at('assets/epub'))
       await EPUB.exporter(argument, course.data)
     }
+
+    if (fs.existsSync(at(file))) downloads['epub'] = file
   }
 
   if (argument['project-generate-docx']) {
     argument.input = course.data.lia.readme
-    argument.output = 'assets/docx/' + backupOutput
 
-    const file = argument.output + '.docx'
+    const file = 'assets/docx/' + backupOutput + '.docx'
+    argument.output = at('assets/docx/' + backupOutput)
 
-    if (
-      argument['project-generate-cache'] &&
-      fs.existsSync(path.join(process.cwd(), file))
-    ) {
+    if (argument['project-generate-cache'] && fs.existsSync(at(file))) {
       console.log('using cached file of ', argument.input, ' -> ', file)
     } else {
       console.log('generate docx of', argument.input, ' -> ', file)
 
-      fs.ensureDirSync('assets/docx')
+      fs.ensureDirSync(at('assets/docx'))
       await DOCX.exporter(argument, course.data)
     }
+
+    if (fs.existsSync(at(file))) downloads['docx'] = file
   }
 
   let repo
+  let clone: string | undefined
   if (
     argument['project-generate-ims'] ||
     argument['project-generate-scorm12'] ||
@@ -990,120 +974,112 @@ async function toCard(
     repo = helper.getRepository(course.url)
 
     if (repo) {
-      execSync(repo.cmd)
-      argument.input = path.join('tmp', repo.path)
+      // A fresh temp folder rather than `./tmp`, which may already exist in
+      // the directory the exporter was called from
+      clone = path.join(await helper.tmpDir(), 'repo')
+      helper.removeOnExit(path.dirname(clone))
+
+      execSync(repo.cmd.replace(/ tmp$/, ' ' + JSON.stringify(clone)))
+      argument.input = path.join(clone, repo.path)
 
       if (course.path) {
         // restrict packing to the sub-folder given in the yaml, instead of
         // the whole cloned repository
-        argument.path = path.join('tmp', course.path)
+        argument.path = path.join(clone, course.path)
         argument.readme = path.relative(course.path, repo.path)
       } else {
-        argument.path = 'tmp'
+        argument.path = clone
         argument.readme = path.join('./', repo.path)
       }
 
-      argument.output = backupOutput
-
-      execSync('rm -rf tmp/.git')
-      execSync('rm -rf tmp/.github')
-      execSync('rm -rf tmp/.gitignore')
+      fs.removeSync(path.join(clone, '.git'))
+      fs.removeSync(path.join(clone, '.github'))
+      fs.removeSync(path.join(clone, '.gitignore'))
+    } else {
+      console.warn(
+        'SCORM, IMS, xAPI and Android packages are only generated for courses on raw.githubusercontent.com, skipping',
+        course.url,
+      )
     }
   }
 
   // IMS
   if (repo && argument['project-generate-ims']) {
-    argument.output = 'assets/ims/' + backupOutput
-    const file = argument.output + '.zip'
+    const file = 'assets/ims/' + backupOutput + '.zip'
+    argument.output = at('assets/ims/' + backupOutput)
 
-    try {
-      execSync('mkdir assets/ims')
-    } catch (e) {}
-
-    if (
-      argument['project-generate-cache'] &&
-      fs.existsSync(path.join(process.cwd(), file))
-    ) {
+    if (argument['project-generate-cache'] && fs.existsSync(at(file))) {
       console.log('using cached file of ', argument.input, ' -> ', file)
     } else {
+      fs.ensureDirSync(at('assets/ims'))
       await IMS.exporter(argument, course.data)
     }
+
+    if (fs.existsSync(at(file))) downloads['ims'] = file
   }
 
   // SCORM12
   if (repo && argument['project-generate-scorm12']) {
-    argument.output = 'assets/scorm12/' + backupOutput
-    const asset = argument.output + '.zip'
+    const file = 'assets/scorm12/' + backupOutput + '.zip'
+    argument.output = at('assets/scorm12/' + backupOutput)
 
-    if (
-      argument['project-generate-cache'] &&
-      fs.existsSync(path.join(process.cwd(), asset))
-    ) {
-      console.log('using cached file of ', argument.input, ' -> ', asset)
+    if (argument['project-generate-cache'] && fs.existsSync(at(file))) {
+      console.log('using cached file of ', argument.input, ' -> ', file)
     } else {
       await SCORM12.exporter(argument, course.data)
     }
+
+    if (fs.existsSync(at(file))) downloads['scorm12'] = file
   }
 
   // SCORM2004
   if (repo && argument['project-generate-scorm2004']) {
-    argument.output = 'assets/scorm2004/' + backupOutput
+    const file = 'assets/scorm2004/' + backupOutput + '.zip'
+    argument.output = at('assets/scorm2004/' + backupOutput)
 
-    const asset = argument.output + '.zip'
-
-    if (
-      argument['project-generate-cache'] &&
-      fs.existsSync(path.join(process.cwd(), asset))
-    ) {
-      console.log('using cached file of ', argument.input, ' -> ', asset)
+    if (argument['project-generate-cache'] && fs.existsSync(at(file))) {
+      console.log('using cached file of ', argument.input, ' -> ', file)
     } else {
       await SCORM2004.exporter(argument, course.data)
     }
+
+    if (fs.existsSync(at(file))) downloads['scorm2004'] = file
   }
 
   // Android
   if (repo && argument['project-generate-android']) {
-    argument.output = backupOutput
-    const file = argument.output + '.apk'
+    const file = 'assets/android/' + backupOutput + '.apk'
+    argument.output = at('assets/android/' + backupOutput)
 
-    const asset = 'assets/android/' + file
-
-    if (
-      argument['project-generate-cache'] &&
-      fs.existsSync(path.join(process.cwd(), asset))
-    ) {
-      downloads['apk'] = asset
+    if (argument['project-generate-cache'] && fs.existsSync(at(file))) {
+      console.log('using cached file of ', argument.input, ' -> ', file)
     } else {
+      fs.ensureDirSync(at('assets/android'))
       await ANDROID.exporter(argument, course.data)
-
-      if (fs.existsSync(file)) {
-        await moveFile(file, asset)
-        downloads['apk'] = asset
-      }
     }
+
+    if (fs.existsSync(at(file))) downloads['apk'] = file
   }
 
   // xAPI
   if (repo && argument['project-generate-xapi']) {
-    argument.output = 'assets/xapi/' + backupOutput
+    const file = 'assets/xapi/' + backupOutput + '.zip'
+    argument.output = at('assets/xapi/' + backupOutput)
     argument['xapi-zip'] = true
-    const asset = argument.output + '.zip'
 
-    fs.ensureDirSync('assets/xapi')
-
-    if (
-      argument['project-generate-cache'] &&
-      fs.existsSync(path.join(process.cwd(), asset))
-    ) {
-      console.log('using cached file of ', argument.input, ' -> ', asset)
+    if (argument['project-generate-cache'] && fs.existsSync(at(file))) {
+      console.log('using cached file of ', argument.input, ' -> ', file)
     } else {
+      fs.ensureDirSync(at('assets/xapi'))
       await XAPI.exporter(argument, course.data)
     }
+
+    if (fs.existsSync(at(file))) downloads['xapi'] = file
   }
 
   // clean up
-  if (repo) {
-    execSync('rm -rf tmp')
+  if (clone) {
+    fs.removeSync(clone)
   }
 
   argument['rdf-url'] = course.data.lia.readme

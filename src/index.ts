@@ -104,8 +104,17 @@ async function handlePresetsMode(): Promise<void> {
   ])
   const presetFlags = Object.keys(argv).filter((key) => !reservedFlags.has(key))
 
-  // Check if a preset ID is specified (as a flag like --moodle)
-  const presetId = presetFlags.length > 0 ? presetFlags[0] : null
+  // Check if a preset ID is specified (as a flag like --moodle4). Known ids are
+  // matched against the raw arguments first: minimist splits a dotted flag such
+  // as `--scormcloud-1.2` into nested keys, and any other flag (`-p`, `--key`,
+  // an override) may come before the preset.
+  const knownIds = PRESETS.loadPresets().presets.map((preset) => preset.id)
+  const presetId =
+    process.argv
+      .slice(2)
+      .map((arg) => arg.replace(/^--/, ''))
+      .find((arg) => knownIds.includes(arg)) ??
+    (presetFlags.length > 0 ? presetFlags[0] : null)
 
   const gitOptions = getGitOptions(argv)
 

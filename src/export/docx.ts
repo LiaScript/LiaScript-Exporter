@@ -41,7 +41,7 @@ export function help() {
   COLOR.command(null, '--docx-page-number', '        Add page numbers to the footer (default: false)')
   COLOR.command(null, '--docx-stylesheet', '         Path to a local CSS file to inject before export')
   COLOR.command(null, '--docx-theme', '              LiaScript theme: default, turquoise, blue, red, yellow')
-  COLOR.command(null, '--docx-timeout', `            Additional wait time after rendering in ms (default: ${DEFAULT_TIMEOUT_MS})`)
+  COLOR.command(null, '--docx-timeout', `            Additional wait time after rendering in ms (default: none)`)
   COLOR.command(null, '--docx-preview', '            Open preview browser for debugging (default: false)')
 }
 
@@ -107,6 +107,14 @@ export async function exporter(argument: DocxExportArguments, json?: any) {
       launchOptions.devtools = true
     }
 
+    // Use custom executable path if provided, otherwise use Chrome channel,
+    // the same as the pdf and epub exports
+    if (process.env.PUPPETEER_EXECUTABLE_PATH) {
+      launchOptions.executablePath = process.env.PUPPETEER_EXECUTABLE_PATH
+    } else {
+      launchOptions.channel = 'chrome'
+    }
+
     browser = await puppeteer.launch(launchOptions)
     page = await browser.newPage()
     await page.setViewport({ width: 1200, height: 800 })
@@ -141,7 +149,8 @@ export async function exporter(argument: DocxExportArguments, json?: any) {
     })
 
     if (argument['docx-stylesheet']) {
-      const href = path.resolve(dirname + '/../', argument['docx-stylesheet'])
+      // Relative to where the exporter was called from, like every other path
+      const href = path.resolve(argument['docx-stylesheet'])
       try {
         await page.evaluate(async (href) => {
           const link = document.createElement('link')
@@ -161,11 +170,18 @@ export async function exporter(argument: DocxExportArguments, json?: any) {
       }
     }
 
+    let highlight: string | undefined
+
     if (argument['docx-theme']) {
       try {
-        await page.evaluate(async (theme) => {
+        highlight = await page.evaluate(async (theme) => {
           document.documentElement.classList.remove('lia-theme-default')
           document.documentElement.classList.add('lia-theme-' + theme)
+
+          // the theme's main color, carried into the document by themeColor
+          return getComputedStyle(document.documentElement).getPropertyValue(
+            '--color-highlight',
+          )
         }, argument['docx-theme'])
       } catch (e) {
         throw new Error(
@@ -181,7 +197,7 @@ export async function exporter(argument: DocxExportArguments, json?: any) {
         await helper.sleep(argument['docx-timeout'])
       }
 
-      await toDOCX(argument, page, dirname)
+      await toDOCX(argument, page, dirname, highlight)
     } else {
       console.log('Preview mode enabled - browser will remain open')
     }
@@ -208,6 +224,8 @@ async function toDOCX(
   argument: DocxExportArguments,
   page: Page,
   dirname: string,
+  /** `--docx-theme`'s `--color-highlight`, for headings and links */
+  highlight?: string,
 ) {
   try {
     console.log('Converting SVG diagrams to PNG images...')
@@ -751,7 +769,7 @@ async function toDOCX(
   <title>${argument['docx-title'] || 'LiaScript Export'}</title>
 </head>
 <body>
-${inlineLocalImages(processedHTML)}
+${helper.themeColor(inlineLocalImages(processedHTML), highlight)}
 </body>
 </html>`
 

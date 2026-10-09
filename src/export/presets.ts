@@ -4,6 +4,7 @@ import * as path from 'path'
 import YAML from 'yaml'
 import { Preset, PresetsConfig } from '../types'
 import { realpathSync } from 'fs'
+import { toOptions } from './options'
 
 export const format = 'presets'
 
@@ -23,17 +24,17 @@ export function help() {
   console.log(COLOR.italic('    liaex -f presets\n'))
 
   console.log('  Show configuration for a specific preset:')
-  console.log(COLOR.italic('    liaex -f presets --moodle\n'))
+  console.log(COLOR.italic('    liaex -f presets --moodle4\n'))
 
   console.log('  Export with preset configuration:')
   console.log(
-    COLOR.italic('    liaex -i course.md -f presets --moodle -o output\n'),
+    COLOR.italic('    liaex -i course.md -f presets --moodle4 -o output\n'),
   )
 
   console.log('  Override preset parameters with additional flags:')
   console.log(
     COLOR.italic(
-      '    liaex -i course.md -f presets --moodle --scorm-organization "My Org" -o output\n',
+      '    liaex -i course.md -f presets --moodle4 --scorm-organization "My Org" -o output\n',
     ),
   )
 
@@ -138,12 +139,12 @@ export function showPresetConfig(presetId: string): void {
 
   console.log('')
   console.log(
-    `${preset.logo}  ${COLOR.heading(preset.name)} - ${preset.subtitle}`,
+    `${preset.logo.icon}  ${COLOR.heading(preset.name)} - ${preset.subtitle}`,
   )
   console.log('')
 
   // Remove HTML tags from description
-  const cleanDesc = preset.description
+  const cleanDesc = preset.description.en
     .replace(/<[^>]*>/g, '')
     .replace(/\s+/g, ' ')
     .trim()
@@ -186,12 +187,16 @@ export function showPresetConfig(presetId: string): void {
 }
 
 /**
- * Get preset options merged with command-line arguments
+ * Get a preset's options as exporter arguments
+ *
+ * Uses the same name mapping as the server and the web app (`toOptions`), so
+ * every option of a preset (masteryScore, liaSubfolder, ...) reaches the
+ * exporter, not only a hand-picked few.
+ *
  * @param presetId - The preset identifier
- * @param cliArgs - Command-line arguments to override preset values
- * @returns Merged configuration
+ * @returns The preset's format and its options as CLI-style keys
  */
-export function getPresetOptions(presetId: string, cliArgs: any): any {
+export function getPresetOptions(presetId: string): Record<string, any> {
   const preset = findPreset(presetId)
 
   if (!preset) {
@@ -199,25 +204,8 @@ export function getPresetOptions(presetId: string, cliArgs: any): any {
     process.exit(1)
   }
 
-  // Map preset options to CLI argument format
-  const presetArgs: any = {
-    format: preset.options.format || preset.format,
+  return {
+    format: preset.format,
+    ...toOptions(preset.format, preset.options),
   }
-
-  // Map common options
-  if (preset.options.scormOrganization !== undefined) {
-    presetArgs['scorm-organization'] = preset.options.scormOrganization
-  }
-  if (preset.options.typicalDuration !== undefined) {
-    presetArgs['scorm-typicalDuration'] = preset.options.typicalDuration
-  }
-  if (preset.options.scormIframe !== undefined) {
-    presetArgs['scorm-iframe'] = preset.options.scormIframe
-  }
-  if (preset.options.scormEmbed !== undefined) {
-    presetArgs['scorm-embed'] = preset.options.scormEmbed
-  }
-
-  // Merge with CLI args, CLI args take precedence
-  return { ...presetArgs, ...cliArgs }
 }

@@ -111,7 +111,8 @@ Once installed, use `liaex` or `liascript-exporter`. Core options:
 -o --output   output file name (default: "output"; extension set by format)
 -f --format   scorm1.2, scorm2004, ims, web, pdf, epub, docx, xapi,
               android, project, rdf, json, fullJson (default: json)
--s --style    additional CSS to inject
+-s --style    additional CSS for the iframe that wraps the course
+              (--scorm-iframe, --web-iframe, IMS)
 -v --version  print version
 -k --key      ResponsiveVoice key for text-to-speech
 
@@ -265,7 +266,7 @@ in order to accomplish or pass the course by adding the `--scorm-masteryScore`
 parameter. Just set it to 0 to allow all to pass the course, otherwise choose a
 value between 0 and 100. All quizzes and surveys are treated equally, thus if
 your course contains 10 quizzes, every quiz counts as 10%. If you do not set
-this parameter, a default value of 80 percent is used.
+this parameter, a default value of 0 is used, so every learner passes.
 
 ``` shell
 $ liaex -i project/README.md --format scorm1.2 --scorm-masteryScore 0 --output rockOn
@@ -384,12 +385,7 @@ $ liaex -i project/README.md --format ims --output course --ims-indexeddb
 ..
 project/README.md
 project/Lizenz.md
-..Project settings:
-
---project-no-meta          Disable the generation of meta information for OpenGraph and Twitter-cards.
---project-no-categories    Disable the filter for categories/tags.
---project-category-blur    Enable this and the categories will be blurred instead of deleted.
---project-generate-pdf     PDFs are automatically generated and added to every card.
+..
 6041733 total bytes
 archiver has been finalized and the output file descriptor has closed.
 
@@ -550,13 +546,17 @@ __`--android-icon`__
 
 Optional app icon image (1024x1024 px).
 
-__`--android-splash`__
+__`--android-iconBackgroundColor`__ / __`--android-iconBackgroundColorDark`__
 
-Optional splash screen image (2732x2732 px).
+Background color of the adaptive app icon in light and dark mode (defaults:
+`#bbbbbb` and `#555555`).
 
-__`--android-splashDuration`__
+__`--android-release`__ / __`--android-bundle`__
 
-Duration for the splash screen in milliseconds. Default is 0.
+Build a signed release APK, or a signed AAB for the Play Store, instead of a
+debug APK. Signing uses `--android-keystore`, `--android-keystorePassword`,
+`--android-keyAlias` and `--android-keyPassword` (or the environment variables
+`KEYSTORE_FILE`, `KEYSTORE_PASSWORD`, `KEY_ALIAS` and `KEY_PASSWORD`).
 
 __Still a bit experimental__
 
@@ -628,8 +628,8 @@ __`--pdf-timeout`__
 You have to be aware, that the PDF generation can be quite time consuming
 especially for large courses with a lot of scripts and code-snippets to be
 executed and multimedia to be loaded. `puppeteer` thus sometimes does not know
-when the course is ready. If the generation fails, you should try to increase
-this value, the default is 15000, which means 15 seconds.
+when the course is ready. If the generation fails, you can add an extra wait
+time in milliseconds with this option; by default there is none.
 
 ``` bash
 $ liaex --format pdf \
@@ -650,7 +650,7 @@ __`--pdf-headerTemplate`__ HTML template for the print header. You can use the c
 
 __`--pdf-footerTemplate`__ HTML template for the print footer. Same format as `--pdf-headerTemplate`.
 
-__`--pdf-printBackground`__ Print background graphics. Defaults to false.
+__`--pdf-printBackground`__ Print background graphics. Defaults to true; turn it off with `--pdf-printBackground false`.
 
 __`--pdf-landscape`__ Paper orientation. Defaults to false.
 
@@ -672,7 +672,7 @@ __`--pdf-margin-left`__ Left margin, accepts values with units.
 
 __`--pdf-preferCSSPageSize`__ Give any CSS `@page` size declared in the page priority over `--pdf-format` / width / height options.
 
-__`--pdf-omitBackground`__ Hide the default white background, allowing screenshots with transparency. Defaults to true.
+__`--pdf-omitBackground`__ Hide the default white background, allowing screenshots with transparency. Defaults to false.
 
 ### ePub
 
@@ -682,13 +682,12 @@ ePub export generates e-books from your LiaScript course using Puppeteer to rend
 $ liaex -i project/README.md --format epub --epub-title "My Course" --epub-author "Author Name" --output course
 ```
 
-**Required settings:**
+**Settings** (title, author, language, description and cover default to the
+course's own header):
 
 `--epub-title` Title of the book.
 
 `--epub-author` Author name(s), semicolon-separated for multiple authors.
-
-**Optional settings:**
 
 `--epub-publisher` Publisher name.
 
@@ -708,7 +707,7 @@ $ liaex -i project/README.md --format epub --epub-title "My Course" --epub-autho
 
 `--epub-hide-toc` Hide table of contents in the generated EPUB (default: false).
 
-`--epub-timeout` Additional wait time for rendering in ms (default: 15000).
+`--epub-timeout` Additional wait time for rendering in ms (default: none).
 
 `--epub-fonts` Comma-separated paths to custom font files to embed.
 
@@ -756,7 +755,7 @@ $ liaex -i project/README.md --format docx --output course
 
 `--docx-theme` LiaScript theme: default, turquoise, blue, red, yellow.
 
-`--docx-timeout` Additional wait time after rendering in ms (default: 15000).
+`--docx-timeout` Additional wait time after rendering in ms (default: none).
 
 `--docx-preview` Open preview browser for debugging (default: false).
 
@@ -996,6 +995,14 @@ If `navbar` is absent, no navigation bar is rendered.
 `--project-generate-ims` Generate IMS resources for every course. Pass additional IMS settings alongside this flag.
 
 `--project-generate-pdf` PDFs are automatically generated and added to every card. Pass additional PDF settings alongside this flag.
+
+`--project-generate-epub` / `--project-generate-docx` Generate an ePub / DOCX for every course. Pass additional ePub or DOCX settings alongside this flag.
+
+`--project-generate-xapi` / `--project-generate-android` Generate an xAPI package / Android APK for every course.
+
+SCORM, IMS, xAPI and Android packages need the course's repository and are
+therefore only generated for courses linked via `raw.githubusercontent.com`.
+All generated files are stored in an `assets/` folder next to the output file.
 
 `--project-generate-cache` Only generate new files if they do not already exist.
 

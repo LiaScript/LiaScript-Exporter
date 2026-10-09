@@ -121,13 +121,14 @@ export function parseArguments(): Arguments {
     'pdf-footerTemplate': argv['pdf-footerTemplate'],
     'pdf-printBackground': argv['pdf-printBackground'],
     'pdf-landscape': argv['pdf-landscape'],
-    'pdf-format': argv['pdf-format'] || 'A4',
+    'pdf-format': argv['pdf-format'],
     'pdf-width': argv['pdf-width'],
     'pdf-height': argv['pdf-height'],
     'pdf-margin-top': argv['pdf-margin-top'],
     'pdf-margin-bottom': argv['pdf-margin-bottom'],
     'pdf-margin-right': argv['pdf-margin-right'],
     'pdf-margin-left': argv['pdf-margin-left'],
+    'pdf-pageRanges': argv['pdf-pageRanges'],
     'pdf-preferCSSPageSize': argv['pdf-preferCSSPageSize'],
     'pdf-omitBackground': argv['pdf-omitBackground'],
     'pdf-timeout': argv['pdf-timeout'],
@@ -135,12 +136,20 @@ export function parseArguments(): Arguments {
     'pdf-theme': argv['pdf-theme'],
 
     // epub cases
+    'epub-title': argv['epub-title'],
     'epub-author': argv['epub-author'],
     'epub-publisher': argv['epub-publisher'],
     'epub-cover': argv['epub-cover'],
+    'epub-description': argv['epub-description'],
+    'epub-language': argv['epub-language'],
+    'epub-version': argv['epub-version'],
     'epub-stylesheet': argv['epub-stylesheet'],
     'epub-theme': argv['epub-theme'],
+    'epub-toc-title': argv['epub-toc-title'],
+    'epub-hide-toc': argv['epub-hide-toc'],
     'epub-timeout': argv['epub-timeout'],
+    'epub-fonts': argv['epub-fonts'],
+    'epub-chapter-title': argv['epub-chapter-title'],
     'epub-preview': argv['epub-preview'],
 
     // docx cases
@@ -218,154 +227,22 @@ export function parseArguments(): Arguments {
 
 /**
  * Parses arguments when using presets mode
+ *
+ * The preset fills in only what the command line leaves open, so any flag
+ * passed alongside the preset (`--scorm-organization`, `--no-scorm-iframe`,
+ * ...) overrides the preset's default.
  */
 export function parsePresetsArguments(presetId: string): Arguments {
-  const argv = minimist(process.argv.slice(2))
+  const argument: any = parseArguments()
+  const presetOptions = PRESETS.getPresetOptions(presetId)
 
-  // Start with basic CLI arguments
-  const cliArgs: any = {
-    input: argv.i || argv.input,
-    output: argv.o || argv.output || 'output',
+  for (const [key, value] of Object.entries(presetOptions)) {
+    if (key === 'format' || argument[key] === undefined) {
+      argument[key] = value
+    }
   }
 
-  // Get preset options and merge with CLI args
-  const presetOptions = PRESETS.getPresetOptions(presetId, cliArgs)
-
-  // Build full argument object
-  const argument: Arguments = {
-    input: presetOptions.input || cliArgs.input,
-    readme: presetOptions.input || cliArgs.input,
-    output: presetOptions.output || cliArgs.output || 'output',
-    format: presetOptions.format || 'json',
-    path: argv.p || argv.path,
-    key: argv.k || argv.key,
-    style: argv.s || argv.style,
-
-    // Apply preset SCORM settings
-    'scorm-organization': presetOptions['scorm-organization'],
-    'scorm-masteryScore': presetOptions['scorm-masteryScore'],
-    'scorm-typicalDuration': presetOptions['scorm-typicalDuration'],
-    'scorm-iframe': presetOptions['scorm-iframe'],
-    'scorm-embed': presetOptions['scorm-embed'],
-    'scorm-alwaysActive': presetOptions['scorm-alwaysActive'],
-    'lia-subfolder': presetOptions['lia-subfolder'],
-
-    // IMS cases
-    'ims-indexeddb': argv['ims-indexeddb'],
-
-    // web-cases
-    'web-zip': argv['web-zip'],
-    'web-indexeddb': argv['web-indexeddb'],
-    'web-iframe': argv['web-iframe'],
-
-    // pdf cases
-    'pdf-preview': argv['pdf-preview'],
-    'pdf-scale': argv['pdf-scale'],
-    'pdf-displayHeaderFooter': argv['pdf-displayHeaderFooter'],
-    'pdf-headerTemplate': argv['pdf-headerTemplate'],
-    'pdf-footerTemplate': argv['pdf-footerTemplate'],
-    'pdf-printBackground': argv['pdf-printBackground'],
-    'pdf-landscape': argv['pdf-landscape'],
-    'pdf-format': argv['pdf-format'] || 'A4',
-    'pdf-width': argv['pdf-width'],
-    'pdf-height': argv['pdf-height'],
-    'pdf-margin-top': argv['pdf-margin-top'],
-    'pdf-margin-bottom': argv['pdf-margin-bottom'],
-    'pdf-margin-right': argv['pdf-margin-right'],
-    'pdf-margin-left': argv['pdf-margin-left'],
-    'pdf-preferCSSPageSize': argv['pdf-preferCSSPageSize'],
-    'pdf-omitBackground': argv['pdf-omitBackground'],
-    'pdf-timeout': argv['pdf-timeout'],
-    'pdf-stylesheet': argv['pdf-stylesheet'],
-    'pdf-theme': argv['pdf-theme'],
-
-    // epub cases
-    'epub-title': argv['epub-title'],
-    'epub-author': argv['epub-author'],
-    'epub-publisher': argv['epub-publisher'],
-    'epub-cover': argv['epub-cover'],
-    'epub-description': argv['epub-description'],
-    'epub-language': argv['epub-language'],
-    'epub-version': argv['epub-version'],
-    'epub-stylesheet': argv['epub-stylesheet'],
-    'epub-theme': argv['epub-theme'],
-    'epub-toc-title': argv['epub-toc-title'],
-    'epub-hide-toc': argv['epub-hide-toc'],
-    'epub-timeout': argv['epub-timeout'],
-    'epub-fonts': argv['epub-fonts'],
-    'epub-chapter-title': argv['epub-chapter-title'],
-    'epub-preview': argv['epub-preview'],
-
-    // docx cases
-    'docx-title': argv['docx-title'],
-    'docx-author': argv['docx-author'],
-    'docx-subject': argv['docx-subject'],
-    'docx-description': argv['docx-description'],
-    'docx-language': argv['docx-language'],
-    'docx-orientation': argv['docx-orientation'],
-    'docx-font': argv['docx-font'],
-    'docx-font-size': argv['docx-font-size'],
-    'docx-header': argv['docx-header'],
-    'docx-header-html': argv['docx-header-html'],
-    'docx-footer': argv['docx-footer'],
-    'docx-footer-html': argv['docx-footer-html'],
-    'docx-page-number': argv['docx-page-number'],
-    'docx-stylesheet': argv['docx-stylesheet'],
-    'docx-theme': argv['docx-theme'],
-    'docx-timeout': argv['docx-timeout'],
-    'docx-preview': argv['docx-preview'],
-
-    'android-sdk': escapeBackslash(argv['android-sdk']),
-    'android-appId': argv['android-appId'],
-    'android-appName': argv['android-appName'],
-    'android-icon': escapeBackslash(argv['android-icon']),
-    'android-iconBackgroundColor': argv['android-iconBackgroundColor'],
-    'android-iconBackgroundColorDark': argv['android-iconBackgroundColorDark'],
-    'android-preview': argv['android-preview'],
-    'android-release': argv['android-release'],
-    'android-bundle': argv['android-bundle'],
-    'android-keystore': escapeBackslash(argv['android-keystore']),
-    'android-keystorePassword': argv['android-keystorePassword'],
-    'android-keyAlias': argv['android-keyAlias'],
-    'android-keyPassword': argv['android-keyPassword'],
-
-    // project settings
-    'project-no-meta': argv['project-no-meta'],
-    'project-no-rdf': argv['project-no-rdf'],
-    'project-no-categories': argv['project-no-categories'],
-    'project-category-blur': argv['project-category-blur'],
-    'project-generate-pdf': argv['project-generate-pdf'],
-    'project-generate-ims': argv['project-generate-ims'],
-    'project-generate-scorm12': argv['project-generate-scorm12'],
-    'project-generate-scorm2004': argv['project-generate-scorm2004'],
-    'project-generate-android': argv['project-generate-android'],
-    'project-generate-epub': argv['project-generate-epub'],
-    'project-generate-docx': argv['project-generate-docx'],
-    'project-generate-xapi': argv['project-generate-xapi'],
-    'project-generate-cache': argv['project-generate-cache'],
-
-    // RDF settings
-    'rdf-format': argv['rdf-format'],
-    'rdf-preview': argv['rdf-preview'],
-    'rdf-url': argv['rdf-url'],
-    'rdf-type': argv['rdf-type'],
-    'rdf-license': argv['rdf-license'],
-    'rdf-educationalLevel': argv['rdf-educationalLevel'],
-    'rdf-template': argv['rdf-template'],
-
-    // xAPI settings
-    'xapi-endpoint': argv['xapi-endpoint'],
-    'xapi-auth': argv['xapi-auth'],
-    'xapi-actor': argv['xapi-actor'],
-    'xapi-course-id': argv['xapi-course-id'],
-    'xapi-course-title': argv['xapi-course-title'],
-    'xapi-mastery-threshold': argv['xapi-mastery-threshold'],
-    'xapi-progress-threshold': argv['xapi-progress-threshold'],
-    'xapi-debug': argv['xapi-debug'],
-    'xapi-zip': argv['xapi-zip'],
-  }
-
-  return argument
+  return argument as Arguments
 }
 
 /**
@@ -373,6 +250,14 @@ export function parsePresetsArguments(presetId: string): Arguments {
  */
 export function validateAndNormalize(argument: Arguments): Arguments {
   argument.format = argument.format.toLowerCase()
+
+  // minimist keeps `--pdf-printBackground false` as the string 'false', which
+  // every exporter would read as true. Only a bare flag or `--no-x` is boolean.
+  for (const [key, value] of Object.entries(argument)) {
+    if (value === 'true' || value === 'false') {
+      ;(argument as any)[key] = value === 'true'
+    }
+  }
 
   // Every CLI path lands here, so this is the one place the disk backing needs
   // to be supplied. A caller that already set one (the browser, or a test)
