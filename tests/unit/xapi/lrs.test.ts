@@ -27,14 +27,18 @@ describe('getStatements', () => {
     expect(fetch.mock.calls[1][1].headers.Authorization).toBe('Basic x')
   })
 
-  it('stops after 10 pages', async () => {
-    const fetch = vi.fn().mockImplementation(async () => page([{ id: 'x' }], '/xapi/statements?more=next'))
+  it('reads up to 10 000 statements, however small the pages are', async () => {
+    // lrsql returns at most 50 statements per page
+    const fifty = Array.from({ length: 50 }, (_, i) => ({ id: String(i) }))
+    const fetch = vi.fn().mockImplementation(async () => page(fifty, '/xapi/statements?more=next'))
     vi.stubGlobal('fetch', fetch)
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
 
     const result = await new LRSConnection('https://lrs.example.com/xapi', '').getStatements()
 
-    expect(fetch).toHaveBeenCalledTimes(10)
-    expect(result.statements).toHaveLength(10)
+    expect(fetch).toHaveBeenCalledTimes(200)
+    expect(result.statements).toHaveLength(10000)
+    expect(warn).toHaveBeenCalled()
   })
 
   it('keeps what it got when a later page fails', async () => {

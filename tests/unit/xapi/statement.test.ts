@@ -176,6 +176,31 @@ describe('code', () => {
     expect(Code.restore([broken])).toEqual({})
   })
 
+  it('restores a slide only if its code blocks still match the course', () => {
+    const projects = slide()
+    const statement = Statement.generateCodeStatement(actor, course, 'Course', 6, 0, projects, 'reg')
+    const blocks = (...files: string[][]) => ({
+      question: '',
+      files: files.map((name) => ({ name: name[0], lang: 'js' })),
+    })
+    const slides = (code: any[]) => {
+      const list: any[] = Array.from({ length: 8 }, () => ({ title: '', quiz: [], survey: [], task: [], code: [] }))
+      list[6].code = code
+      return list
+    }
+
+    const same = slides([blocks(['main.js'], ['test.js']), blocks(['other.js'])])
+    same[6].code[0].files = [{ name: 'main.js', lang: 'js' }, { name: 'test.js', lang: 'js' }]
+    expect(Code.restore([statement], same)[6]).toHaveLength(2)
+
+    // the author added a code block, or a slide moved the old one here
+    expect(Code.restore([statement], slides([blocks(['main.js']), blocks(['other.js']), blocks(['new.js'])]))).toEqual({})
+    expect(Code.restore([statement], slides([blocks(['main.py']), blocks(['other.js'])]))).toEqual({})
+
+    // without a course description, as before
+    expect(Code.restore([statement])[6]).toHaveLength(2)
+  })
+
   it('counts a project as changed only if its files’ code changed', () => {
     const before = slide()
 
