@@ -476,10 +476,10 @@
                     inputmode="numeric"
                     id="masteryScore"
                     name="option_masteryScore"
-                    placeholder="70"
+                    placeholder="0"
                   />
                   <span class="hint" data-i18n="settings.scorm.masteryScoreHint"
-                    >Minimum score to pass (0-100)</span
+                    >Minimum score to pass (0-100, default: 0)</span
                   >
                 </div>
 
@@ -1052,7 +1052,7 @@
                 </div>
 
                 <!-- Page Ranges -->
-                <div class="form-group">
+                <div class="form-group" data-server-only>
                   <label for="pdfPageRanges" data-i18n="settings.pdf.pageRanges"
                     >Page Ranges</label
                   >
@@ -1111,15 +1111,15 @@
                     inputmode="numeric"
                     id="pdfTimeout"
                     name="option_pdf-timeout"
-                    placeholder="15000"
+                    placeholder="0"
                   />
                   <span class="hint" data-i18n="settings.pdf.timeoutHint"
-                    >Wait time for complete loading (15000 = 15 seconds)</span
+                    >Extra wait before export in ms, e.g. for slow scripts (default: none)</span
                   >
                 </div>
 
                 <!-- Advanced Options -->
-                <div class="form-group">
+                <div class="form-group" data-server-only>
                   <label>
                     <input
                       type="checkbox"
@@ -1137,7 +1137,7 @@
                   >
                 </div>
 
-                <div class="form-group">
+                <div class="form-group" data-server-only>
                   <label>
                     <input
                       type="checkbox"
@@ -1420,10 +1420,10 @@
                     inputmode="numeric"
                     id="docxTimeout"
                     name="option_docx-timeout"
-                    placeholder="15000"
+                    placeholder="0"
                   />
                   <span class="hint" data-i18n="settings.docx.timeoutHint"
-                    >Wait time for complete loading (15000 = 15 seconds)</span
+                    >Extra wait before export in ms, e.g. for slow scripts (default: none)</span
                   >
                 </div>
               </div>
@@ -1465,22 +1465,6 @@
                   </select>
                   <span class="hint" data-i18n="settings.rdf.outputFormatHint"
                     >Format for RDF output (default: JSON-LD)</span
-                  >
-                </div>
-
-                <div class="form-group">
-                  <label>
-                    <input
-                      type="checkbox"
-                      id="rdfPreview"
-                      name="option_rdf-preview"
-                    />
-                    <span data-i18n="settings.rdf.previewConsole"
-                      >Preview in Console</span
-                    >
-                  </label>
-                  <span class="hint" data-i18n="settings.rdf.previewConsoleHint"
-                    >Display output in console</span
                   >
                 </div>
 
