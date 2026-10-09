@@ -24,3 +24,6 @@ dist/webapp/
 tests/.cache/
 test-results/
 playwright-report/
+
+# LMS test lab downloads (Moodle sources, moodle-docker, OpenOlat schema)
+docker/lms/.cache/

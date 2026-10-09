@@ -1,0 +1,28 @@
+# OpenOlat test instance, started by lms.sh: http://localhost:8970
+# frentix publishes this image "for testing only"; it ships no database, so
+# lms.sh extracts the schema from its jar into ../.cache/openolat first.
+services:
+  db:
+    image: postgres:16
+    environment:
+      - POSTGRES_USER=oodbu
+      - POSTGRES_PASSWORD=oodbpasswd
+      - POSTGRES_DB=oodb
+    volumes:
+      - ../.cache/openolat/setupDatabase.sql:/docker-entrypoint-initdb.d/setupDatabase.sql:ro
+    healthcheck:
+      # over TCP: while the schema loads, postgres listens on its socket only
+      test: ["CMD-SHELL", "pg_isready -h 127.0.0.1 -U oodbu -d oodb"]
+      interval: 5s
+      retries: 60
+  openolat:
+    image: frentix/openolat:19.1.6
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:8970:8080"
+    volumes:
+      # the image's own files point at a database host of frentix' setup
+      - ./ROOT.xml:/home/openolat/conf/Catalina/localhost/ROOT.xml:ro
+      - ./olat.local.properties:/home/openolat/lib/olat.local.properties:ro

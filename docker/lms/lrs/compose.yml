@@ -1,0 +1,20 @@
+# xAPI learning record store (Yet Analytics SQL LRS), started by lms.sh
+#   statements: http://localhost:8090/xapi  (Basic auth: liatest / LRS_PASSWORD)
+#   admin UI:   http://localhost:8090/admin (admin / LRS_PASSWORD)
+services:
+  lrs:
+    image: yetanalytics/lrsql:latest
+    ports:
+      - "127.0.0.1:8090:8080"
+    environment:
+      - LRSQL_API_KEY_DEFAULT=liatest
+      - LRSQL_API_SECRET_DEFAULT=${LRS_PASSWORD}
+      - LRSQL_ADMIN_USER_DEFAULT=admin
+      - LRSQL_ADMIN_PASS_DEFAULT=${LRS_PASSWORD}
+      - LRSQL_DB_NAME=db/lrsql.sqlite.db
+      # the course posts statements from its own origin
+      - LRSQL_ALLOW_ALL_ORIGINS=true
+    volumes:
+      - lrsdb:/lrsql/db
+volumes:
+  lrsdb:
