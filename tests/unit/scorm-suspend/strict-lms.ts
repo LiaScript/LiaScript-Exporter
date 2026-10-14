@@ -113,6 +113,8 @@ export function check(version: '1.2' | '2004', element: string, value: string, t
         return test(R12.CMIExit)
       case 'cmi.suspend_data':
         return test(/^[\s\S]{0,4096}$/)
+      case 'cmi.objectives.n.id':
+        return test(R12.CMIIdentifier)
       case 'cmi.interactions.n.id':
         return test(R12.CMIIdentifier, value.length > 0)
       case 'cmi.interactions.n.type':
