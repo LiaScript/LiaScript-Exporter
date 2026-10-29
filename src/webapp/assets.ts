@@ -8,6 +8,8 @@ import { requiredBundles } from './bundles'
 import commonBundle from 'url:./generated/assets/common.zip'
 import webBundle from 'url:./generated/assets/web.zip'
 import xapiBundle from 'url:./generated/assets/xapi.zip'
+import h5pBundle from 'url:./generated/assets/h5p.zip'
+import h5pLibraryBundle from 'url:./generated/assets/h5p-library.zip'
 import scorm12Bundle from 'url:./generated/assets/scorm1.2.zip'
 import scorm2004Bundle from 'url:./generated/assets/scorm2004.zip'
 import scorm12SuspendBundle from 'url:./generated/assets/scorm1.2-suspend.zip'
@@ -19,6 +21,8 @@ const BUNDLES: Record<string, string> = {
   common: commonBundle,
   web: webBundle,
   xapi: xapiBundle,
+  h5p: h5pBundle,
+  'h5p-library': h5pLibraryBundle,
   'scorm1.2': scorm12Bundle,
   'scorm2004': scorm2004Bundle,
   'scorm1.2-suspend': scorm12SuspendBundle,

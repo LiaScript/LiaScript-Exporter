@@ -3,8 +3,8 @@
 A generic LiaScript-Exporter that can export educational content into different
 formats, so that LiaScript courses can also be utilized in different Learning
 Management Systems (LMS) or as static documents (PDF, ePub, DOCX, ...).
-Supported export formats include SCORM 1.2, SCORM 2004, IMS, xAPI, Web, PDF,
-ePub, DOCX, Android, and more. See the last section
+Supported export formats include SCORM 1.2, SCORM 2004, IMS, xAPI, H5P, Web,
+PDF, ePub, DOCX, Android, and more. See the last section
 [LMS Support List](#LMS-Support-List)
 
 **Try it now in your browser: <https://liascript.github.io/LiaScript-Exporter/>**
@@ -32,8 +32,8 @@ browser: your course is never uploaded to a server.
   import it from a public **GitHub repository**
 - All presets (Moodle, ILIAS, OPAL, SCORM Cloud, ...) and advanced settings are
   available, just like in the desktop app
-- Supported formats: SCORM 1.2, SCORM 2004, IMS, xAPI, Web, PDF, ePub, DOCX,
-  JSON and RDF
+- Supported formats: SCORM 1.2, SCORM 2004, IMS, xAPI, H5P, Web, PDF, ePub,
+  DOCX, JSON and RDF
 
 A few things work differently from the desktop app:
 
@@ -92,7 +92,7 @@ $ liaex serve --port 8080
 The web interface allows you to:
 
 - **Upload files** or specify a **Git repository** as your project source
-- Select an **export target** (Moodle, ILIAS, OPAL, Generic LMS, Web, PDF, ePub, DOCX, xAPI)
+- Select an **export target** (Moodle, ILIAS, OPAL, Generic LMS, Web, PDF, ePub, DOCX, xAPI, H5P)
 - Configure **advanced settings** for your export
 - Queue export jobs and track their status
 
@@ -109,7 +109,7 @@ Once installed, use `liaex` or `liascript-exporter`. Core options:
 -i --input    input file (Markdown or YAML for projects)
 -p --path     path to pack (defaults to the input file's directory)
 -o --output   output file name (default: "output"; extension set by format)
--f --format   scorm1.2, scorm2004, ims, web, pdf, epub, docx, xapi,
+-f --format   scorm1.2, scorm2004, ims, web, pdf, epub, docx, xapi, h5p,
               android, project, rdf, json, fullJson (default: json)
 -s --style    additional CSS for the iframe that wraps the course
               (--scorm-iframe, --web-iframe, IMS)
@@ -909,6 +909,61 @@ Packages exported with earlier versions send generic names (`Slide 13 -
 MultipleChoice 2`) and the raw state as response. Learners can switch between
 both: the state is restored either way.
 
+### H5P
+
+An [H5P](https://h5p.org) package (`.h5p`) runs as H5P content in Moodle
+(H5P activity or content bank), ILIAS, WordPress, Drupal, Lumi and other H5P
+platforms. It carries the whole LiaScript runtime as its own library,
+`H5P.LiaScript`, so quizzes, code, animations, narration and everything else
+work as in the browser.
+
+``` shell
+$ liaex -i project/README.md --format h5p --output course
+```
+
+`--h5p-height` Height of the course in pixels (default: 600). The H5P
+fullscreen button, at the bottom right, shows it on the whole screen.
+
+`--h5p-mastery` Percentage of points needed to pass, e.g. `80` (default:
+none, the course is only completed).
+
+#### Installing the library
+
+H5P platforms install the libraries a package brings along, but only for
+users allowed to: in Moodle the capability `moodle/h5p:updatelibraries`, which
+administrators have; in WordPress and Drupal the right to install libraries
+must be switched on. So the first LiaScript package of a platform is uploaded
+by an administrator; after that, teachers add their courses like any H5P
+content. h5p.com accepts no libraries of its own.
+
+A platform keeps the newest `H5P.LiaScript` it has seen and uses it for every
+LiaScript course: its version (`2.2.x` for LiaScript 2.2) grows with every
+build of the exporter, so exporting a course again also updates the runtime
+of all other LiaScript courses on that platform.
+
+#### What the platform stores
+
+* **Grades:** once every quiz is answered (and every survey submitted), the
+  course reports itself `completed` with its points as an xAPI statement, the
+  way H5P content does. With `--h5p-mastery` it also reports whether the
+  learner passed. Moodle grades the activity from it; its attempts report
+  lists every quiz and survey with question, answer and points.
+* **Learner state:** answers, surveys, tasks, code and the current slide are
+  saved in H5P's user data (in Moodle with the activity setting *Save
+  content state*), so the course resumes where the learner left it.
+  Moodle starts a new attempt after a result was reported, and with it an
+  empty course, as for any H5P content.
+
+#### Limits
+
+H5P accepts only some file types in a package. Images, audio, video, PDFs,
+office documents and fonts are copied; **svg images** are embedded into the
+Markdown as data URLs; everything else (HTML pages, JavaScript files, …) is
+left out with a warning, so a course that loads its own scripts from files
+should take them from a URL instead.
+
+Tested with Moodle 4.5 and [h5p-standalone](https://github.com/tunapanda/h5p-standalone).
+
 ### Project
 
 Projects are a way to bundle a collection of courses and to make a custom overview page for it.
@@ -973,7 +1028,7 @@ collection:
     # logo: 
 
     # By default, formats that require the repository to be cloned (SCORM12/2004,
-    # IMS, Android, xAPI - see --project-generate-* below) pack the entire cloned
+    # IMS, Android, xAPI, H5P - see --project-generate-* below) pack the entire cloned
     # repository. If your course only occupies a sub-folder of the repository,
     # set `path` to restrict packing to that folder, just like the `-p/--path`
     # command line option does for single-file exports.
@@ -1120,9 +1175,9 @@ If `navbar` is absent, no navigation bar is rendered.
 
 `--project-generate-epub` / `--project-generate-docx` Generate an ePub / DOCX for every course. Pass additional ePub or DOCX settings alongside this flag.
 
-`--project-generate-xapi` / `--project-generate-android` Generate an xAPI package / Android APK for every course.
+`--project-generate-xapi` / `--project-generate-h5p` / `--project-generate-android` Generate an xAPI package / H5P package / Android APK for every course.
 
-SCORM, IMS, xAPI and Android packages need the course's repository and are
+SCORM, IMS, xAPI, H5P and Android packages need the course's repository and are
 therefore only generated for courses linked via `raw.githubusercontent.com`.
 All generated files are stored in an `assets/` folder next to the output file.
 

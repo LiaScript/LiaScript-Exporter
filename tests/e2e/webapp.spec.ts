@@ -71,6 +71,7 @@ const CASES: Case[] = [
   // "Package as ZIP" is ticked by default for web and xapi.
   { name: 'web', format: 'web', tile: 'web', timeout: QUICK_TIMEOUT, render: true },
   { name: 'xapi', format: 'xapi', tile: 'xapi', timeout: QUICK_TIMEOUT, render: true },
+  { name: 'h5p', format: 'h5p', tile: 'h5p', timeout: QUICK_TIMEOUT },
   { name: 'json', format: 'json', tile: 'json', timeout: QUICK_TIMEOUT },
   { name: 'fullJson', format: 'fullJson', tile: 'json', tick: ['jsonFull'], timeout: QUICK_TIMEOUT },
   { name: 'rdf', format: 'rdf', tile: 'rdf', timeout: QUICK_TIMEOUT },

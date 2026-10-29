@@ -5,6 +5,7 @@
 #   docker/lms/lms.sh down <target>           stop and delete, data included
 #   docker/lms/lms.sh test <target> <zip>...  import, run every package twice, report
 #                                             (lrs: run xAPI exports against the LRS)
+#   docker/lms/lms.sh add moodle<ver> <h5p>...  add H5P packages as activities, print their URLs
 #   docker/lms/lms.sh stored <target>         what the LMS stored for the last runs
 #   docker/lms/lms.sh list                    targets, ports and logins
 #
@@ -23,6 +24,7 @@ target      url                       login
 moodle311   http://localhost:8311     admin / $PASSWORD
 moodle405   http://localhost:8405     admin / $PASSWORD
 moodle500   http://localhost:8500     admin / $PASSWORD
+moodle502   http://localhost:8502     admin / $PASSWORD
 ilias9      http://localhost:8909     root / $PASSWORD
 ilias10     http://localhost:8910     root / $PASSWORD
 ilias11     http://localhost:8911     root / $PASSWORD
@@ -39,7 +41,8 @@ moodle_env() {
     311) php=7.4 dbver=13 ;;
     405) php=8.3 dbver=17 ;;
     500) php=8.3 dbver=17 ;;
-    *) echo "unknown Moodle version $ver (311, 405, 500)"; exit 1 ;;
+    502) php=8.3 dbver=17 ;;
+    *) echo "unknown Moodle version $ver (311, 405, 500, 502)"; exit 1 ;;
   esac
   export COMPOSE_PROJECT_NAME=lia-moodle$ver
   export MOODLE_DOCKER_WWWROOT=$CACHE/moodle$ver
@@ -73,6 +76,18 @@ moodle_down() {
   rm -f "$CACHE/.installed-moodle$1"
 }
 
+# Prints the course module id of each H5P package added as an H5P activity
+moodle_add_h5p() {
+  local ver=$1; shift
+  moodle_env "$ver"
+  $MOODLE_COMPOSE cp "$LMS/moodle/addh5p.php" webserver:/tmp/addh5p.php >/dev/null 2>&1
+  for pkg in "$@"; do
+    local name; name=$(basename "$pkg" .h5p)
+    $MOODLE_COMPOSE cp "$pkg" "webserver:/tmp/$name.h5p" >/dev/null 2>&1
+    $MOODLE_COMPOSE exec -T webserver php /tmp/addh5p.php "/tmp/$name.h5p" "$name" LIATEST </dev/null | tail -1
+  done
+}
+
 # Prints the course module id of each imported package, one per line
 moodle_import() {
   local ver=$1; shift
@@ -104,6 +119,18 @@ moodle_stored() {
          where e.element ~ '$pick' order by s.id, e.element"
   fi
   $MOODLE_COMPOSE exec -T db psql -U moodle -d moodle -At -F ' | ' -c "$sql" </dev/null
+
+  # H5P activities: attempts with score, then every answer of each attempt
+  $MOODLE_COMPOSE exec -T db psql -U moodle -d moodle -At -F ' | ' -c "
+    select h.name, 'attempt ' || a.attempt, a.rawscore || '/' || a.maxscore,
+           'completion ' || coalesce(a.completion::text, '-'), 'success ' || coalesce(a.success::text, '-')
+      from m_h5pactivity_attempts a join m_h5pactivity h on h.id = a.h5pactivityid
+     order by h.id, a.attempt;
+    select h.name, 'attempt ' || a.attempt, r.subcontent, left(r.response, 40), r.rawscore || '/' || r.maxscore
+      from m_h5pactivity_attempts_results r
+      join m_h5pactivity_attempts a on a.id = r.attemptid
+      join m_h5pactivity h on h.id = a.h5pactivityid
+     where r.subcontent <> '' order by h.id, a.attempt, r.id" </dev/null
 }
 
 # --- ILIAS, srsolutions/ilias --------------------------------------------------
@@ -201,6 +228,11 @@ case "$cmd:$target" in
   up:moodle*) moodle_up "${target#moodle}" ;;
   down:moodle*) moodle_down "${target#moodle}" ;;
   stored:moodle*) moodle_stored "${target#moodle}" ;;
+  add:moodle*)
+    for cmid in $(moodle_add_h5p "${target#moodle}" "$@"); do
+      echo "$(url_of "$target")/mod/h5pactivity/view.php?id=$cmid"
+    done
+    ;;
   test:moodle*)
     mapfile -t cmids < <(moodle_import "${target#moodle}" "$@")
     node "$LMS/e2e/run.mjs" moodle "$(url_of "$target")" "${cmids[@]}"

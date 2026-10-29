@@ -20,6 +20,8 @@ export const REQUIRED: Record<string, string[]> = {
   web: ['web', 'common'],
   ims: ['web', 'common'],
   xapi: ['xapi', 'common'],
+  // the runtime and the H5P.LiaScript wrapper around it
+  h5p: ['h5p', 'common', 'h5p-library'],
   'scorm1.2': ['scorm1.2', 'common', 'scorm-schemas'],
   scorm2004: ['scorm2004', 'common', 'scorm-schemas'],
 }

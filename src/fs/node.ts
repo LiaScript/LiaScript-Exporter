@@ -3,7 +3,7 @@
 import * as fs from 'fs-extra'
 import * as path from 'path'
 import * as temp from 'temp'
-import { ExportFS, CopyOptions } from './types'
+import { ExportFS, CopyOptions, ZipOptions } from './types'
 import { removeOnExit } from '../export/helper'
 
 const archiver = require('archiver')
@@ -117,7 +117,7 @@ export class NodeFS implements ExportFS {
     })
   }
 
-  zip(dir: string): Promise<Uint8Array> {
+  zip(dir: string, options: ZipOptions = {}): Promise<Uint8Array> {
     return new Promise((resolve, reject) => {
       const archive = archiver('zip', {
         zlib: { level: ZIP_COMPRESSION_LEVEL },
@@ -134,7 +134,11 @@ export class NodeFS implements ExportFS {
       })
       archive.on('end', () => resolve(Buffer.concat(chunks)))
 
-      archive.directory(dir, false)
+      if (options.filesOnly) {
+        archive.glob('**/*', { cwd: dir, dot: true, nodir: true })
+      } else {
+        archive.directory(dir, false)
+      }
       archive.finalize()
     })
   }

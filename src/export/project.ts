@@ -7,6 +7,7 @@ import * as ANDROID from './android'
 import * as EPUB from './epub'
 import * as DOCX from './docx'
 import * as XAPI from './xapi'
+import * as H5P from './h5p'
 import * as RDF from './rdf'
 import * as COLOR from '../colorize'
 
@@ -100,6 +101,11 @@ export function help() {
   )
   COLOR.command(
     null,
+    '--project-generate-h5p',
+    '    H5P packages and pass additional H5P settings.',
+  )
+  COLOR.command(
+    null,
     '--project-generate-cache',
     '  Only generate new files, if they do not exist.',
   )
@@ -130,6 +136,7 @@ export interface ProjectExportArguments {
   'project-generate-epub'?: boolean
   'project-generate-docx'?: boolean
   'project-generate-xapi'?: boolean
+  'project-generate-h5p'?: boolean
   'project-generate-cache'?: boolean
   'project-search'?: boolean
 }
@@ -970,7 +977,8 @@ async function toCard(
     argument['project-generate-scorm12'] ||
     argument['project-generate-scorm2004'] ||
     argument['project-generate-android'] ||
-    argument['project-generate-xapi']
+    argument['project-generate-xapi'] ||
+    argument['project-generate-h5p']
   ) {
     repo = helper.getRepository(course.url)
 
@@ -998,7 +1006,7 @@ async function toCard(
       fs.removeSync(path.join(clone, '.gitignore'))
     } else {
       console.warn(
-        'SCORM, IMS, xAPI and Android packages are only generated for courses on raw.githubusercontent.com, skipping',
+        'SCORM, IMS, xAPI, H5P and Android packages are only generated for courses on raw.githubusercontent.com, skipping',
         course.url,
       )
     }
@@ -1078,6 +1086,21 @@ async function toCard(
     if (fs.existsSync(at(file))) downloads['xapi'] = file
   }
 
+  // H5P
+  if (repo && argument['project-generate-h5p']) {
+    const file = 'assets/h5p/' + backupOutput + '.h5p'
+    argument.output = at('assets/h5p/' + backupOutput)
+
+    if (argument['project-generate-cache'] && fs.existsSync(at(file))) {
+      console.log('using cached file of ', argument.input, ' -> ', file)
+    } else {
+      fs.ensureDirSync(at('assets/h5p'))
+      await H5P.exporter(argument, course.data)
+    }
+
+    if (fs.existsSync(at(file))) downloads['h5p'] = file
+  }
+
   // clean up
   if (clone) {
     fs.removeSync(clone)
@@ -1117,6 +1140,7 @@ function card(
     epub?: string
     docx?: string
     xapi?: string
+    h5p?: string
   },
   img_url?: string,
   link?: string,
@@ -1222,6 +1246,13 @@ function card(
           ? '<li><a class="dropdown-item btn-sm" href="' +
             download.xapi +
             '">xAPI Package</a></li>'
+          : ''
+      }
+      ${
+        download.h5p
+          ? '<li><a class="dropdown-item btn-sm" href="' +
+            download.h5p +
+            '">H5P Package</a></li>'
           : ''
       }
       </ul>

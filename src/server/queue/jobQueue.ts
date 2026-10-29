@@ -432,7 +432,8 @@ export class JobQueue extends EventEmitter {
                 f.endsWith('.json') ||
                 f.endsWith('.jsonld') ||
                 f.endsWith('.nq') ||
-                f.endsWith('.apk'),
+                f.endsWith('.apk') ||
+                f.endsWith('.h5p'),
             )
 
             if (!outputFileName) {

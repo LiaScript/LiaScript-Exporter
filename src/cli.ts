@@ -8,6 +8,7 @@ import * as DOCX from './export/docx'
 import * as PROJECT from './export/project'
 import * as RDF from './export/rdf'
 import * as XAPI from './export/xapi'
+import * as H5P from './export/h5p'
 import * as PRESETS from './export/presets'
 
 /**
@@ -77,7 +78,7 @@ export function displayHelp(): void {
   COLOR.command(
     '-f',
     '--format',
-    'scorm1.2, scorm2004, json, fullJson, web, ims, pdf, epub, docx, android, rdf, presets (default is json)',
+    'scorm1.2, scorm2004, json, fullJson, web, ims, xapi, h5p, pdf, epub, docx, android, rdf, project, presets (default is json)',
   )
   COLOR.command('-v', '--version', 'output the current version')
   COLOR.command('\n-k', '--key', 'responsive voice key ')
@@ -92,4 +93,5 @@ export function displayHelp(): void {
   PROJECT.help()
   RDF.help()
   XAPI.help()
+  H5P.help()
 }

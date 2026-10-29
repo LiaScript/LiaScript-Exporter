@@ -6,6 +6,7 @@ import * as IMS from './export/ims'
 import * as PROJECT from './export/project'
 import * as RDF from './export/rdf'
 import * as XAPI from './export/xapi'
+import * as H5P from './export/h5p'
 
 /*
  * Server-only formats are imported for their argument types only: `parser.ts`
@@ -70,7 +71,8 @@ export type Arguments = BaseArguments &
   Partial<ANDROID.AndroidExportArguments> &
   Partial<PROJECT.ProjectExportArguments> &
   Partial<RDF.RDFArguments> &
-  Partial<XAPI.XapiExportArguments>
+  Partial<XAPI.XapiExportArguments> &
+  Partial<H5P.H5pExportArguments>
 
 /**
  * Escapes backslashes in Windows paths
@@ -201,6 +203,7 @@ export function parseArguments(): Arguments {
     'project-generate-epub': argv['project-generate-epub'],
     'project-generate-docx': argv['project-generate-docx'],
     'project-generate-xapi': argv['project-generate-xapi'],
+    'project-generate-h5p': argv['project-generate-h5p'],
     'project-generate-cache': argv['project-generate-cache'],
 
     // RDF settings
@@ -222,6 +225,10 @@ export function parseArguments(): Arguments {
     'xapi-progress-threshold': argv['xapi-progress-threshold'],
     'xapi-debug': argv['xapi-debug'],
     'xapi-zip': argv['xapi-zip'],
+
+    // H5P settings
+    'h5p-height': argv['h5p-height'],
+    'h5p-mastery': argv['h5p-mastery'],
   }
 
   return argument

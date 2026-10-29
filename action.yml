@@ -11,7 +11,7 @@ inputs:
     description: 'Path to README.md or project.yml file'
     required: true
   format:
-    description: 'Export format (scorm1.2, scorm2004, pdf, web, ims, xapi, rdf, json, project)'
+    description: 'Export format (scorm1.2, scorm2004, pdf, web, ims, xapi, h5p, rdf, json, project)'
     required: true
   output-name:
     description: 'Base name for output files'
@@ -114,6 +114,14 @@ inputs:
     description: 'Package as zip'
     required: false
     default: 'false'
+
+  # H5P settings
+  h5p-height:
+    description: 'Height of the course in pixels (default: 600)'
+    required: false
+  h5p-mastery:
+    description: 'Percentage of points needed to pass (default: none, completion only)'
+    required: false
 
   # RDF settings
   rdf-format:

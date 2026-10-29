@@ -36,6 +36,7 @@ const SERVER_FORMATS = [
   'scorm2004',
   'ims',
   'xapi',
+  'h5p',
   'web',
   'pdf',
   'epub',

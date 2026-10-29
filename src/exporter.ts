@@ -8,6 +8,7 @@ import * as helper from './export/helper'
 import * as IMS from './export/ims'
 import * as RDF from './export/rdf'
 import * as XAPI from './export/xapi'
+import * as H5P from './export/h5p'
 import * as STORAGE from './export/scorm-storage'
 
 import { getNext, storeNext } from './export/collection'
@@ -252,6 +253,9 @@ export class Exporter {
       case XAPI.format:
         await XAPI.exporter(argument, JSON.parse(json))
         break
+      case H5P.format:
+        await H5P.exporter(argument, JSON.parse(json))
+        break
       case SERVER_ONLY.PROJECT:
         await this.handleProjectExport(argument, JSON.parse(json), app)
         break
@@ -364,8 +368,13 @@ export class Exporter {
       return STORAGE.FULL_JSON_META
     }
 
-    // and so does xAPI, to describe questions and answers readably
-    if (format === XAPI.format || (format === SERVER_ONLY.PROJECT && argument['project-generate-xapi'])) {
+    // and so do xAPI, to describe questions and answers readably, and H5P,
+    // which runs the suspend engine and reports those answers to the platform
+    if (
+      format === XAPI.format ||
+      format === H5P.format ||
+      (format === SERVER_ONLY.PROJECT && (argument['project-generate-xapi'] || argument['project-generate-h5p']))
+    ) {
       return STORAGE.FULL_JSON_META
     }
 

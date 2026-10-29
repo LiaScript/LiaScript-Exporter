@@ -11,6 +11,12 @@ if (mode === 'presets') {
   fs.ensureDirSync('dist');
   fs.copyFileSync('src/presets.yaml', 'dist/presets.yaml');
   console.log('✓ Copied presets.yaml to dist/');
+} else if (mode === 'h5p') {
+  // The H5P.LiaScript library's own files, see src/export/h5p.ts
+  console.log('Copying the H5P library...');
+  fs.ensureDirSync('dist/assets');
+  fs.copySync('src/export/h5p-library', 'dist/assets/h5p-library');
+  console.log('✓ Copied src/export/h5p-library to dist/assets/h5p-library');
 } else {
   // Copy public folder to dist/server/
   console.log('Copying server/public folder...');

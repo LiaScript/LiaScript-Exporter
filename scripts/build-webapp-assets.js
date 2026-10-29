@@ -25,6 +25,8 @@ const BUNDLES = [
   'common',
   'web',
   'xapi',
+  'h5p',
+  'h5p-library',
   'scorm1.2',
   'scorm2004',
   'scorm1.2-suspend',

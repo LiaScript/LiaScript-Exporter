@@ -9,6 +9,7 @@ export type Format =
   | 'ims'
   | 'web'
   | 'xapi'
+  | 'h5p'
   | 'epub'
   | 'docx'
   | 'pdf'

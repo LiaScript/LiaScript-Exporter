@@ -9,13 +9,14 @@ throwaway database.
 docker/lms/lms.sh list                       # targets, ports and logins
 docker/lms/lms.sh up moodle405               # start; installs on the first run
 docker/lms/lms.sh test moodle405 course.zip  # import, run as a learner, report
+docker/lms/lms.sh add moodle405 course.h5p   # an H5P package as H5P activity
 docker/lms/lms.sh stored moodle405           # what Moodle saved for those runs
 docker/lms/lms.sh down moodle405             # stop and delete everything
 ```
 
 | Target | Platform | Image |
 |---|---|---|
-| `moodle311`, `moodle405`, `moodle500` | Moodle 3.11, 4.5 LTS, 5.0 | official [moodle-docker](https://github.com/moodlehq/moodle-docker) with the Moodle source of that branch |
+| `moodle311`, `moodle405`, `moodle500`, `moodle502` | Moodle 3.11, 4.5 LTS, 5.0, 5.2 | official [moodle-docker](https://github.com/moodlehq/moodle-docker) with the Moodle source of that branch |
 | `ilias9`, `ilias10`, `ilias11` | ILIAS | [srsolutions/ilias](https://hub.docker.com/r/srsolutions/ilias) |
 | `openolat` | OpenOlat 19.1 | [frentix/openolat](https://hub.docker.com/r/frentix/openolat) (published "for testing only") |
 | `lrs` | xAPI LRS | [yetanalytics/lrsql](https://hub.docker.com/r/yetanalytics/lrsql) |
@@ -52,6 +53,19 @@ docker/lms/lms.sh test moodle405 /tmp/s12.zip
 ```sh
 liaex -i tests/fixtures/course/README.md -f presets --moodle4 -o /tmp/moodle4
 docker/lms/lms.sh test moodle405 /tmp/moodle4.zip
+```
+
+## H5P
+
+`add` creates an H5P activity for each `.h5p` package (with grading and
+*Save content state* on) and prints its URL; there is no automated learner run
+yet. Log in as admin and open it: the first view installs the package's
+`H5P.LiaScript` library, which needs an administrator. `stored` lists every
+attempt with its score and the answers of each quiz and survey.
+
+```sh
+liaex -i tests/fixtures/course/README.md -f h5p -o /tmp/course
+docker/lms/lms.sh add moodle405 /tmp/course.h5p
 ```
 
 ## Platform notes
