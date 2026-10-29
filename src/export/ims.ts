@@ -105,6 +105,7 @@ export async function exporter(argument: ImsExportArguments, json: any) {
   await fs.copy(argument.path, contentPath, {
     filter: helper.filterHidden(argument.path),
   })
+  await helper.unblockReadmeImports(fs, contentPath, argument.readme)
 
   if (argument['ims-indexeddb']) {
     let newReadme = helper.random(20) + '.md'

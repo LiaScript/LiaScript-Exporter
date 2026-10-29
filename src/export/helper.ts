@@ -314,6 +314,57 @@ export function embedBase(markdown: string, folder: string): string {
   return markdown.slice(0, start) + `\nbase: ${base}\n` + markdown.slice(start).replace(/^[ \t]+/, '')
 }
 
+/**
+ * Moodle's recommended web server rules (MDL-69333) answer every URL with
+ * `/README` or `/readme` with a 404, so a package cannot load a local template
+ * named README.md. Such imports point at a copy of it named IMPORT_NAME.
+ */
+export const IMPORT_NAME = 'lia-template.md'
+
+const README = /readme\.md$/i
+
+/** the relative `import:` URLs of a course's header that name a README.md */
+function readmeImports(markdown: string): string[] {
+  const header = markdown.match(/^\s*<!--([\s\S]*?)-->/)
+  if (!header) return []
+
+  // a value goes on in indented lines
+  return [...header[1].matchAll(/^import:([^\n]*(?:\n[ \t]+\S[^\n]*)*)/gm)]
+    .flatMap((value) => value[1].split(/\s+/))
+    .filter((url) => README.test(url) && !/^([a-z][a-z0-9+.-]*:|\/)/i.test(url))
+}
+
+/** the course with its local README.md imports renamed to IMPORT_NAME */
+export function unblockImports(markdown: string): string {
+  for (const url of readmeImports(markdown)) {
+    markdown = markdown.split(url).join(url.replace(README, IMPORT_NAME))
+  }
+  return markdown
+}
+
+/**
+ * Applies `unblockImports` to `file` in the package `dir` and adds the copies,
+ * also for templates that import other templates.
+ */
+export async function unblockReadmeImports(fs: ExportFS, dir: string, file: string): Promise<void> {
+  // a missing course is reported by the exporter
+  if (!(await fs.exists(fsPath.join(dir, file)))) return
+  const markdown = await fs.readFile(fsPath.join(dir, file))
+  const imports = readmeImports(markdown)
+  if (!imports.length) return
+
+  await fs.writeFile(fsPath.join(dir, file), unblockImports(markdown))
+  for (const url of imports) {
+    const template = fsPath.join(dir, fsPath.dirname(file), url)
+    // shortcut: a course file already named IMPORT_NAME next to the template is taken for the copy; pick a rarer name if one shows up
+    const copy = template.replace(README, IMPORT_NAME)
+    if (!(await fs.exists(template)) || (await fs.exists(copy))) continue
+
+    await fs.writeFile(copy, await fs.readFile(template))
+    await unblockReadmeImports(fs, dir, fsPath.relative(dir, copy))
+  }
+}
+
 export async function iframe(
   fs: ExportFS,
   tmpPath: string,

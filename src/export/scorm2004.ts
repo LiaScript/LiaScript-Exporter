@@ -82,7 +82,7 @@ export async function exporter(argument: Scorm2004ExportArguments, json: any) {
       'window["liascript_course"] = ' +
         JSON.stringify(
           helper.embedBase(
-            String(argument['scorm-embed']),
+            helper.unblockImports(String(argument['scorm-embed'])),
             path.join(
               argument['lia-subfolder'] ? 'content' : '',
               path.dirname(argument.readme),
@@ -99,6 +99,7 @@ export async function exporter(argument: Scorm2004ExportArguments, json: any) {
   await fs.copy(argument.path, contentPath, {
     filter: helper.filterHidden(argument.path),
   })
+  await helper.unblockReadmeImports(fs, contentPath, argument.readme)
 
   let config = {
     // Storage backing, so the packager writes through the same abstraction

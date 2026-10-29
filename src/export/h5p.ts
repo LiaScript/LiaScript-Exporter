@@ -331,6 +331,7 @@ export async function exporter(argument: H5pExportArguments, json: any) {
 
   const contentDir = path.join(root, 'content')
   await fs.copy(argument.path, contentDir, { filter: helper.filterHidden(argument.path) })
+  await helper.unblockReadmeImports(fs, contentDir, path.normalize(argument.readme))
 
   const { removed, kept } = await prune(fs, contentDir, CONTENT_EXTENSIONS)
 

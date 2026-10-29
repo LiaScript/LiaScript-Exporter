@@ -3,7 +3,29 @@
  * bottom, so `base:` must come before the `import:` it applies to.
  */
 import { describe, expect, it } from 'vitest'
-import { embedBase } from '../../src/export/helper'
+import { embedBase, unblockImports } from '../../src/export/helper'
+
+describe('unblockImports', () => {
+  it('renames local README.md imports, Moodle refuses URLs with /README', () => {
+    const header = [
+      '<!--',
+      'import:   https://raw.githubusercontent.com/a/b/README.md',
+      '          ./lia-templates/check/README.md',
+      '          other/readme.md ./kept.md',
+      'script:   ./README.md',
+      '-->',
+    ]
+    expect(unblockImports(header.join('\n')).split('\n')).toEqual([
+      '<!--',
+      'import:   https://raw.githubusercontent.com/a/b/README.md',
+      '          ./lia-templates/check/lia-template.md',
+      '          other/lia-template.md ./kept.md',
+      'script:   ./README.md',
+      '-->',
+    ])
+    expect(unblockImports('# no header, import: ./README.md')).toBe('# no header, import: ./README.md')
+  })
+})
 
 describe('embedBase', () => {
   it('puts base: first in the header', () => {
