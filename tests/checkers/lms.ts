@@ -308,7 +308,7 @@ function checkIms(pkg: Package, problems: Problems, course: CourseInfo): Record<
     checkEntryPage(pkg, launch, problems)
 
     // start.html frames index.html with the course path appended at runtime
-    if (!pkg.text(launch).includes('README.md')) {
+    if (!/(lia-course|README)\.md/.test(pkg.text(launch))) {
       problems.add('launch page does not open the course', launch)
     }
   }

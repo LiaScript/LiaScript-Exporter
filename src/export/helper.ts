@@ -342,18 +342,29 @@ export function unblockImports(markdown: string): string {
   return markdown
 }
 
+/** the name a course loaded from the server gets instead of README.md */
+export function unblockedCourse(readme: string): string {
+  return readme.replace(README, 'lia-course.md')
+}
+
 /**
  * Applies `unblockImports` to `file` in the package `dir` and adds the copies,
- * also for templates that import other templates.
+ * also for templates that import other templates. Writes the course to `as`,
+ * see `unblockedCourse`, the original stays.
  */
-export async function unblockReadmeImports(fs: ExportFS, dir: string, file: string): Promise<void> {
+export async function unblockReadmeImports(
+  fs: ExportFS,
+  dir: string,
+  file: string,
+  as = file,
+): Promise<void> {
   // a missing course is reported by the exporter
   if (!(await fs.exists(fsPath.join(dir, file)))) return
   const markdown = await fs.readFile(fsPath.join(dir, file))
   const imports = readmeImports(markdown)
-  if (!imports.length) return
+  if (!imports.length && as === file) return
 
-  await fs.writeFile(fsPath.join(dir, file), unblockImports(markdown))
+  await fs.writeFile(fsPath.join(dir, as), unblockImports(markdown))
   for (const url of imports) {
     const template = fsPath.join(dir, fsPath.dirname(file), url)
     // shortcut: a course file already named IMPORT_NAME next to the template is taken for the copy; pick a rarer name if one shows up

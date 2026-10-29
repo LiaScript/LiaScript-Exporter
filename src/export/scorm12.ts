@@ -95,6 +95,9 @@ export async function exporter(argument: Scorm12ExportArguments, json: any) {
     ? path.join(tmpPath, 'content')
     : tmpPath
 
+  // the file a non-embedded package loads; Moodle's web server rules refuse README.md
+  const course = argument['scorm-embed'] ? argument.readme : helper.unblockedCourse(argument.readme)
+
   // copy assets to temp (always to root)
   const storage = STORAGE.storageMode(argument)
   await fs.copy(path.join(dirname, STORAGE.assetDir('scorm1.2', storage)), tmpPath)
@@ -120,7 +123,7 @@ export async function exporter(argument: Scorm12ExportArguments, json: any) {
       fs,
       tmpPath,
       'start.html',
-      argument.readme,
+      course,
       jsonLD,
       argument.style,
     )
@@ -150,7 +153,7 @@ export async function exporter(argument: Scorm12ExportArguments, json: any) {
   await fs.copy(argument.path, contentPath, {
     filter: helper.filterHidden(argument.path),
   })
-  await helper.unblockReadmeImports(fs, contentPath, argument.readme)
+  await helper.unblockReadmeImports(fs, contentPath, argument.readme, course)
 
   let config = {
     // Storage backing, so the packager writes through the same abstraction
@@ -164,7 +167,7 @@ export async function exporter(argument: Scorm12ExportArguments, json: any) {
     startingParameters:
       argument['scorm-iframe'] || argument['scorm-embed']
         ? undefined
-        : argument.readme,
+        : course,
     source: path.join(tmp, 'pro'),
     package: {
       version: json.lia.definition.version,

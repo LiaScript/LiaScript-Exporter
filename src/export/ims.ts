@@ -105,7 +105,10 @@ export async function exporter(argument: ImsExportArguments, json: any) {
   await fs.copy(argument.path, contentPath, {
     filter: helper.filterHidden(argument.path),
   })
-  await helper.unblockReadmeImports(fs, contentPath, argument.readme)
+  // the file the package loads; Moodle's web server rules refuse README.md
+  const course = argument['ims-indexeddb'] ? argument.readme : helper.unblockedCourse(argument.readme)
+  await helper.unblockReadmeImports(fs, contentPath, argument.readme, course)
+  argument.readme = course
 
   if (argument['ims-indexeddb']) {
     let newReadme = helper.random(20) + '.md'
