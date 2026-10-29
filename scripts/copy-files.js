@@ -22,5 +22,9 @@ if (mode === 'presets') {
   console.log('Copying server/public folder...');
   fs.ensureDirSync('dist/server');
   fs.copySync('src/server/public', 'dist/server/public');
+  const index = 'dist/server/public/index.html';
+  const version = require('../package.json').version;
+  fs.writeFileSync(index, fs.readFileSync(index, 'utf8').replace(
+    '<p id="exporter-version"></p>', `<p id="exporter-version">Version ${version}</p>`));
   console.log('✓ Copied src/server/public to dist/server/public');
 }

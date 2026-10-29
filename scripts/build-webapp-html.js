@@ -75,6 +75,10 @@ const PAGES = [
         '    <script src="app.js"></script>',
         `${EXPORTER_SCRIPT}\n    <script src="../../server/public/app.js"></script>`,
       ],
+      [
+        '<p id="exporter-version"></p>',
+        `<p id="exporter-version">Version ${require('../package.json').version}</p>`,
+      ],
     ],
   },
   {
