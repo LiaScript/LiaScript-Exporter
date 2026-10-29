@@ -1,7 +1,7 @@
 'use strict'
 
 import { zipSync, Zippable } from 'fflate'
-import { ExportFS, CopyOptions } from './types'
+import { ExportFS, CopyOptions, ZipOptions } from './types'
 import * as p from './path'
 
 const ZIP_COMPRESSION_LEVEL = 9
@@ -173,7 +173,8 @@ export class MemoryFS implements ExportFS {
     return dir
   }
 
-  async zip(dir: string): Promise<Uint8Array> {
+  // without directory entries in any case, see ZipOptions
+  async zip(dir: string, _options?: ZipOptions): Promise<Uint8Array> {
     const key = p.normalize(dir)
     const entries: Zippable = {}
 

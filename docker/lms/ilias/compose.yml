@@ -1,0 +1,23 @@
+# ILIAS test instance, started by lms.sh: ILIAS_VERSION=9|10|11, ILIAS_PORT=89xx
+services:
+  ilias:
+    image: srsolutions/ilias:${ILIAS_VERSION}
+    ports:
+      - "127.0.0.1:${ILIAS_PORT}:80"
+    depends_on:
+      - mysql
+    environment:
+      - ILIAS_AUTO_SETUP=1
+      - ILIAS_DB_HOST=mysql
+      - ILIAS_DB_USER=root
+      - ILIAS_DB_PASSWORD=example
+      - ILIAS_HTTP_PATH=http://localhost:${ILIAS_PORT}
+      - ILIAS_ROOT_PASSWORD=${ILIAS_ROOT_PASSWORD}
+      - ILIAS_MAX_UPLOAD_SIZE=500M
+  mysql:
+    image: mariadb:10.11
+    # utf8, not utf8mb4: the ILIAS dump exceeds InnoDB's row size otherwise
+    command: --character-set-server=utf8 --collation-server=utf8_general_ci --max-allowed-packet=64M --innodb-strict-mode=0
+    environment:
+      - MYSQL_ROOT_PASSWORD=example
+      - MYSQL_DATABASE=ilias

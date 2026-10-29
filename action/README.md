@@ -23,7 +23,7 @@ Add this action to your workflow:
 | Input | Description | Example |
 |-------|-------------|---------|
 | `input-file` | Path to README.md or project.yml file | `course1/README.md` |
-| `format` | Export format | `scorm1.2`, `pdf`, `web`, `ims`, `xapi`, `rdf`, `json` |
+| `format` | Export format | `scorm1.2`, `pdf`, `web`, `ims`, `xapi`, `h5p`, `rdf`, `json` |
 
 ### Core Inputs (Optional)
 
@@ -79,6 +79,17 @@ Add this action to your workflow:
 | `xapi-course-title` | Course title | - |
 | `xapi-debug` | Enable debug logging | `false` |
 | `xapi-zip` | Package as zip | `false` |
+
+### H5P Settings
+
+The `.h5p` package brings its own library, `H5P.LiaScript`. Installing it
+needs the right to install H5P libraries (in Moodle an administrator has it);
+after that anyone can add LiaScript courses.
+
+| Input | Description | Default |
+|-------|-------------|---------|
+| `h5p-height` | Height of the course in pixels | `600` |
+| `h5p-mastery` | Percentage of points needed to pass | none, completion only |
 
 ### RDF Settings
 

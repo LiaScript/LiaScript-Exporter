@@ -349,6 +349,9 @@ export const exportRouter: FastifyPluginAsync = async (fastify) => {
           'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
       } else if (filename.endsWith('.html')) {
         mimeType = 'text/html'
+      } else if (filename.endsWith('.h5p')) {
+        // an H5P package is a zip, platforms check the extension
+        mimeType = 'application/zip'
       }
 
       reply.header('Content-Disposition', `attachment; filename="${filename}"`)

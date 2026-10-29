@@ -52,6 +52,7 @@ const CHROME_TIMEOUT = 150_000
 
 const MIME: Record<string, string> = {
   zip: 'application/zip',
+  h5p: 'application/zip',
   pdf: 'application/pdf',
   epub: 'application/epub+zip',
   docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
@@ -81,6 +82,7 @@ const CASES: Case[] = [
   // The UI's "Package as ZIP" boxes are checked by default.
   { name: 'web', format: 'web', fields: { option_webZip: 'true' }, ext: 'zip', timeout: QUICK_TIMEOUT },
   { name: 'xapi', format: 'xapi', fields: { 'option_xapi-zip': 'true' }, ext: 'zip', timeout: QUICK_TIMEOUT },
+  { name: 'h5p', format: 'h5p', ext: 'h5p', timeout: QUICK_TIMEOUT },
   { name: 'json', format: 'json', ext: 'json', timeout: QUICK_TIMEOUT },
   { name: 'fullJson', format: 'fullJson', ext: 'json', timeout: QUICK_TIMEOUT },
   { name: 'rdf', format: 'rdf', ext: 'jsonld', timeout: QUICK_TIMEOUT },

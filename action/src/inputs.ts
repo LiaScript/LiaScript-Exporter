@@ -75,6 +75,10 @@ export interface LiaScriptExporterArgs {
   'xapi-course-title'?: string;
   'xapi-debug'?: boolean;
   'xapi-zip'?: boolean;
+
+  // H5P settings
+  'h5p-height'?: string;
+  'h5p-mastery'?: string;
 }
 
 /**
@@ -99,7 +103,7 @@ export function parseInputs(): LiaScriptExporterArgs {
   
   // Validate format
   const validFormats = [
-    'scorm1.2', 'scorm2004', 'pdf', 'web', 'ims', 'xapi', 'rdf', 'json', 'project'
+    'scorm1.2', 'scorm2004', 'pdf', 'web', 'ims', 'xapi', 'h5p', 'rdf', 'json', 'project'
   ];
   
   if (!validFormats.includes(format.toLowerCase())) {
@@ -155,6 +159,10 @@ export function parseInputs(): LiaScriptExporterArgs {
     'xapi-course-title': core.getInput('xapi-course-title') || undefined,
     'xapi-debug': getBooleanInput('xapi-debug'),
     'xapi-zip': getBooleanInput('xapi-zip'),
+
+    // H5P settings
+    'h5p-height': core.getInput('h5p-height') || undefined,
+    'h5p-mastery': core.getInput('h5p-mastery') || undefined,
   };
 
   return args;

@@ -172,7 +172,7 @@ async function handleReadmeRename(
   readmePath: string,
   webIndexedDB?: boolean | string,
 ): Promise<string> {
-  if (webIndexedDB === undefined) {
+  if (webIndexedDB === undefined || webIndexedDB === false) {
     return readmePath
   }
 

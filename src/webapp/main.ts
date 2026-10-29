@@ -64,6 +64,7 @@ const SUPPORTED = new Set([
   'web',
   'ims',
   'xapi',
+  'h5p',
   'rdf',
   'scorm1.2',
   'scorm2004',

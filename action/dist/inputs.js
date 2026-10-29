@@ -44,7 +44,7 @@ function parseInputs() {
     const coursePath = core.getInput('course-path');
     // Validate format
     const validFormats = [
-        'scorm1.2', 'scorm2004', 'pdf', 'web', 'ims', 'xapi', 'rdf', 'json', 'project'
+        'scorm1.2', 'scorm2004', 'pdf', 'web', 'ims', 'xapi', 'h5p', 'rdf', 'json', 'project'
     ];
     if (!validFormats.includes(format.toLowerCase())) {
         throw new Error(`Invalid format '${format}'. Valid formats: ${validFormats.join(', ')}`);
@@ -92,6 +92,9 @@ function parseInputs() {
         'xapi-course-title': core.getInput('xapi-course-title') || undefined,
         'xapi-debug': getBooleanInput('xapi-debug'),
         'xapi-zip': getBooleanInput('xapi-zip'),
+        // H5P settings
+        'h5p-height': core.getInput('h5p-height') || undefined,
+        'h5p-mastery': core.getInput('h5p-mastery') || undefined,
     };
     return args;
 }

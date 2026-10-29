@@ -145,6 +145,11 @@ export function findOutputFiles(args: LiaScriptExporterArgs): string[] {
       expectedFile = path.join(outputDir, `${outputName}.zip`);
       description = 'xAPI';
       break;
+
+    case 'h5p':
+      expectedFile = path.join(outputDir, `${outputName}.h5p`);
+      description = 'H5P';
+      break;
       
     case 'rdf':
       // RDF format has multiple possible extensions
@@ -241,7 +246,7 @@ function findProjectOutputFiles(args: LiaScriptExporterArgs, baseDir: string): s
   const projectFiles: string[] = [];
   
   // Project format can generate multiple files based on settings
-  const possibleExtensions = ['.zip', '.pdf', '.json', '.jsonld'];
+  const possibleExtensions = ['.zip', '.h5p', '.pdf', '.json', '.jsonld'];
   const possiblePrefixes = [args.output, 'project', 'course'];
   
   for (const prefix of possiblePrefixes) {

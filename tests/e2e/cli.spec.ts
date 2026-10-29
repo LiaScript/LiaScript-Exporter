@@ -84,6 +84,7 @@ const CASES: Case[] = [
     timeout: QUICK_TIMEOUT,
     render: true,
   },
+  { name: 'h5p', format: 'h5p', output: 'h5p.h5p', timeout: QUICK_TIMEOUT },
   { name: 'json', format: 'json', output: 'json.json', timeout: QUICK_TIMEOUT },
   { name: 'fullJson', format: 'fullJson', output: 'fullJson.json', timeout: QUICK_TIMEOUT },
   { name: 'rdf', format: 'rdf', output: 'rdf.jsonld', timeout: QUICK_TIMEOUT },

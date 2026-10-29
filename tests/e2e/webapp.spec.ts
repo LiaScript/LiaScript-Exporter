@@ -71,6 +71,7 @@ const CASES: Case[] = [
   // "Package as ZIP" is ticked by default for web and xapi.
   { name: 'web', format: 'web', tile: 'web', timeout: QUICK_TIMEOUT, render: true },
   { name: 'xapi', format: 'xapi', tile: 'xapi', timeout: QUICK_TIMEOUT, render: true },
+  { name: 'h5p', format: 'h5p', tile: 'h5p', timeout: QUICK_TIMEOUT },
   { name: 'json', format: 'json', tile: 'json', timeout: QUICK_TIMEOUT },
   { name: 'fullJson', format: 'fullJson', tile: 'json', tick: ['jsonFull'], timeout: QUICK_TIMEOUT },
   { name: 'rdf', format: 'rdf', tile: 'rdf', timeout: QUICK_TIMEOUT },
@@ -98,7 +99,6 @@ const NETWORK_CASES: Case[] = [
     format: 'pdf',
     tile: 'pdf',
     timeout: RENDER_TIMEOUT,
-    bug: 'the last page is blank',
   },
   { name: 'web', format: 'web', tile: 'web', timeout: QUICK_TIMEOUT, render: true },
   { name: 'json', format: 'json', tile: 'json', timeout: QUICK_TIMEOUT },
@@ -510,6 +510,172 @@ test.describe('sources and targets', () => {
       // moodle4 sets scormEmbed: the course is bundled into course.js instead
       // of being fetched at runtime.
       expect(openPackage(result.file!).files).toContain('course.js')
+    } finally {
+      await session.context.close()
+    }
+  })
+
+  test('unticking an option switches off what the preset turned on', async ({ browser }, testInfo) => {
+    test.setTimeout(QUICK_TIMEOUT + 60_000)
+    const session = await openApp(browser)
+
+    try {
+      await choose(session.page, { preset: 'moodle4' })
+      const advanced = session.page.locator('#advancedSettings')
+      if (await advanced.evaluate((el) => el.classList.contains('hidden'))) {
+        await session.page.locator('#toggleAdvanced').click()
+      }
+      await session.page.locator('#scormEmbed').uncheck()
+      await upload(session.page, courseUpload())
+
+      const result = await submitAndCollect(session, 'preset-moodle4-no-embed', QUICK_TIMEOUT)
+      await attachLog(session, testInfo)
+      expect(result.status, result.error).toBe('completed')
+
+      expect(openPackage(result.file!).files).not.toContain('course.js')
+    } finally {
+      await session.context.close()
+    }
+  })
+
+  test('pdf: scale, header and footer reach the print', async ({ browser }, testInfo) => {
+    test.skip(browser.browserType().name() !== 'chromium', 'only Chromium can save the print as PDF')
+    test.setTimeout(2 * RENDER_TIMEOUT + 60_000)
+
+    /** Text per page, and the height of the course's intro marker. */
+    const read = async (file: string) => {
+      const pdfjs = await import('pdfjs-dist/legacy/build/pdf.mjs')
+      const task = pdfjs.getDocument({ data: new Uint8Array(fs.readFileSync(file)), verbosity: 0 })
+
+      try {
+        const doc = await task.promise
+        const pages: string[] = []
+        let intro = 0
+
+        for (let n = 1; n <= doc.numPages; n++) {
+          const items = (await (await doc.getPage(n)).getTextContent()).items as any[]
+          pages.push(items.map((item) => item.str).join(' '))
+          const marker = items.find((item) => item.str.includes('MKCourseIntro'))
+          if (marker && !intro) intro = Math.abs(marker.transform[3])
+        }
+
+        return { pages, intro }
+      } finally {
+        await task.destroy()
+      }
+    }
+
+    const exportPdf = async (name: string, options: (page: Page) => Promise<void>) => {
+      const session = await openApp(browser)
+
+      try {
+        await choose(session.page, { format: 'pdf' })
+        const advanced = session.page.locator('#advancedSettings')
+        if (await advanced.evaluate((el) => el.classList.contains('hidden'))) {
+          await session.page.locator('#toggleAdvanced').click()
+        }
+        await options(session.page)
+        await upload(session.page, courseUpload())
+
+        const result = await submitAndCollect(session, name, RENDER_TIMEOUT)
+        await attachLog(session, testInfo)
+        expect(result.status, result.error).toBe('completed')
+
+        return read(result.file!)
+      } finally {
+        await session.context.close()
+      }
+    }
+
+    const plain = await exportPdf('pdf-plain', async () => {})
+    const styled = await exportPdf('pdf-options', async (page) => {
+      await page.locator('#pdfScale').fill('0.5')
+      await page.locator('#pdfDisplayHeaderFooter').check()
+      await page.locator('#pdfHeaderTemplate').fill('<div>MKPageHeader</div>')
+      await page
+        .locator('#pdfFooterTemplate')
+        .fill('<div>MKPageFooter <span class="pageNumber"></span> of <span class="totalPages"></span></div>')
+    })
+
+    // scale 0.5 halves the text, so the course needs fewer pages
+    expect(styled.intro).toBeGreaterThan(0)
+    expect(styled.intro / plain.intro).toBeCloseTo(0.5, 1)
+    expect(styled.pages.length).toBeLessThan(plain.pages.length)
+
+    // every page carries the header and its own number in the footer
+    styled.pages.forEach((text, index) => {
+      expect(text).toContain('MKPageHeader')
+      expect(text).toContain(`MKPageFooter ${index + 1} of ${styled.pages.length}`)
+    })
+    expect(plain.pages.join(' ')).not.toContain('MKPageHeader')
+  })
+
+  test('docx: the theme colors headings and links', async ({ browser }, testInfo) => {
+    test.setTimeout(RENDER_TIMEOUT + 60_000)
+    const session = await openApp(browser)
+
+    try {
+      await choose(session.page, { format: 'docx' })
+      const advanced = session.page.locator('#advancedSettings')
+      if (await advanced.evaluate((el) => el.classList.contains('hidden'))) {
+        await session.page.locator('#toggleAdvanced').click()
+      }
+      await session.page.selectOption('#docxTheme', 'red')
+      await upload(session.page, courseUpload())
+
+      const result = await submitAndCollect(session, 'docx-theme', RENDER_TIMEOUT)
+      await attachLog(session, testInfo)
+      expect(result.status, result.error).toBe('completed')
+
+      // the red theme's --color-highlight: 191,44,26
+      expect(openPackage(result.file!).text('word/document.xml')).toMatch(/<w:color w:val="bf2c1a"\/>/i)
+    } finally {
+      await session.context.close()
+    }
+  })
+
+  test('scorm2004: the learner data option ships the suspend runtime', async ({ browser }, testInfo) => {
+    test.setTimeout(QUICK_TIMEOUT + 60_000)
+    const session = await openApp(browser)
+
+    try {
+      await choose(session.page, { format: 'scorm2004' })
+      const advanced = session.page.locator('#advancedSettings')
+      if (await advanced.evaluate((el) => el.classList.contains('hidden'))) {
+        await session.page.locator('#toggleAdvanced').click()
+      }
+      await session.page.selectOption('#scormStorage', 'suspend')
+      await upload(session.page, courseUpload())
+
+      const result = await submitAndCollect(session, 'scorm2004-suspend', QUICK_TIMEOUT)
+      await attachLog(session, testInfo)
+      expect(result.status, result.error).toBe('completed')
+
+      const pkg = openPackage(result.file!)
+      expect(pkg.text('index.html')).toContain('<meta name="lia-scorm-storage" content="suspend"')
+      expect(pkg.text('config.js')).toContain('"meta":{"version":1')
+    } finally {
+      await session.context.close()
+    }
+  })
+
+  test('switching presets leaves nothing of the previous one', async ({ browser }, testInfo) => {
+    test.setTimeout(QUICK_TIMEOUT + 60_000)
+    const session = await openApp(browser)
+
+    try {
+      // learnworlds sets masteryScore 80, scormcloud-2004 sets none
+      await choose(session.page, { preset: 'learnworlds' })
+      await choose(session.page, { preset: 'scormcloud-2004' })
+      await upload(session.page, courseUpload())
+
+      const result = await submitAndCollect(session, 'preset-switch', QUICK_TIMEOUT)
+      await attachLog(session, testInfo)
+      expect(result.status, result.error).toBe('completed')
+
+      expect(openPackage(result.file!).text('imsmanifest.xml')).not.toMatch(
+        /<imsss:minNormalizedMeasure>\s*0\.8\s*</,
+      )
     } finally {
       await session.context.close()
     }

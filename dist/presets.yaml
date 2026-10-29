@@ -135,7 +135,7 @@ presets:
       typicalDuration: "PT0H5M0S"
       scormIframe: false
       scormEmbed: false
-      format: scorm2004
+      format: scorm1.2
 
   - id: scormcloud-1.2
     name: ScormCloud

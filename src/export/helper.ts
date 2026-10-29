@@ -245,6 +245,74 @@ export function isURL(uri: string): boolean {
  * @param index - Optional custom index.html filename
  * @returns Promise that resolves when the file is written
  */
+/**
+ * Colors headings and links with a LiaScript theme's highlight color.
+ *
+ * A docx keeps only inline styles, so the theme class that recolors the
+ * rendered course leaves no trace in it; this carries the theme's main color
+ * (`--color-highlight`, an `r,g,b` triple) over.
+ *
+ * @param html - Document HTML as handed to html-to-docx
+ * @param rgb - The theme's `--color-highlight`, as read from the render
+ */
+export function themeColor(html: string, rgb: string | undefined): string {
+  const color = (rgb || '').trim()
+
+  if (!/^\d{1,3}\s*,\s*\d{1,3}\s*,\s*\d{1,3}$/.test(color)) {
+    return html
+  }
+
+  return html.replace(/<(h[1-6]|a)(\s[^>]*)?>/gi, (_, name, attributes = '') => {
+    let style = ''
+    const rest = attributes.replace(/\sstyle="([^"]*)"/i, (_: string, value: string) => {
+      style = value
+      return ''
+    })
+
+    const kept = style
+      .split(';')
+      .map((rule) => rule.trim())
+      .filter((rule) => rule && !/^color\s*:/i.test(rule))
+
+    return `<${name}${rest} style="${[...kept, `color: rgb(${color})`].join('; ')}">`
+  })
+}
+
+/**
+ * Points the relative links of an embedded course at its folder.
+ *
+ * An embedded course (`window.liascript_course`) has no URL, so LiaScript
+ * resolves `img/x.png` against the package root. When the course sits in a
+ * sub-folder (`--lia-subfolder`, or a readme below `--path`), its header gets a
+ * `base:` that LiaScript prefixes to every relative link. A `base:` the author
+ * set is kept.
+ *
+ * @param markdown - The course source
+ * @param folder - The course's folder, relative to the package root
+ */
+export function embedBase(markdown: string, folder: string): string {
+  folder = fsPath.normalize(folder)
+
+  if (folder === '') {
+    return markdown
+  }
+
+  const base = folder.replace(/\/?$/, '/')
+  const header = markdown.match(/^\s*<!--([\s\S]*?)-->/)
+
+  if (!header) {
+    return `<!--\nbase: ${base}\n-->\n\n` + markdown
+  }
+
+  if (/^\s*base\s*:/m.test(header[1])) {
+    return markdown
+  }
+
+  // Before the closing `-->`, so it cannot become part of a multi-line value
+  const end = header.index! + header[0].length - 3
+  return markdown.slice(0, end) + `\nbase: ${base}\n` + markdown.slice(end)
+}
+
 export async function iframe(
   fs: ExportFS,
   tmpPath: string,
@@ -263,12 +331,14 @@ export async function iframe(
     </head>
     <body style="height:100%; margin: 0px">
     
-    <iframe id="lia-container" src="" style="${
-      style || 'border: 0px; width: 100%; height: 100%'
+    <iframe id="lia-container" src="" style="border: 0px; width: 100%; height: 100%;${
+      style ? ' ' + style : ''
     }"></iframe>
     
     <script>
-      let path = window.location.pathname.replace("start.html", "")
+      // the folder of this page, whatever it is called (start.html, or
+      // index.html for web exports) and also when served as a bare folder URL
+      let path = window.location.pathname.replace(/[^/]*$/, "")
       let iframe = document.getElementById("lia-container")
 
       if (iframe) {
@@ -411,7 +481,9 @@ export async function checkLicense(baseURL: string): Promise<boolean> {
 export function baseURL(url: string): string {
   const pathSegments = url.split('/')
   pathSegments.pop()
-  return pathSegments.join('/')
+  // Keep the trailing slash: `new URL('img/logo.png', base)` would otherwise
+  // drop the last directory of the base
+  return pathSegments.join('/') + '/'
 }
 
 /**

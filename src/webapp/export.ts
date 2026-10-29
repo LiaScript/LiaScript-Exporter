@@ -153,7 +153,7 @@ async function collect(
   name: string,
   format: string,
 ): Promise<Export> {
-  for (const extension of ['.zip', '.json', '.jsonld', '.nq', '.pdf']) {
+  for (const extension of ['.zip', '.h5p', '.json', '.jsonld', '.nq', '.pdf']) {
     const file = output + extension
 
     if (await fs.exists(file)) {

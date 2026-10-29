@@ -3,12 +3,17 @@
 import { unzipSync } from 'fflate'
 import { MemoryFS } from '../fs/memory'
 import { ExportError } from './errors'
+import { requiredBundles } from './bundles'
 
 import commonBundle from 'url:./generated/assets/common.zip'
 import webBundle from 'url:./generated/assets/web.zip'
 import xapiBundle from 'url:./generated/assets/xapi.zip'
+import h5pBundle from 'url:./generated/assets/h5p.zip'
+import h5pLibraryBundle from 'url:./generated/assets/h5p-library.zip'
 import scorm12Bundle from 'url:./generated/assets/scorm1.2.zip'
 import scorm2004Bundle from 'url:./generated/assets/scorm2004.zip'
+import scorm12SuspendBundle from 'url:./generated/assets/scorm1.2-suspend.zip'
+import scorm2004SuspendBundle from 'url:./generated/assets/scorm2004-suspend.zip'
 import indexeddbBundle from 'url:./generated/assets/indexeddb.zip'
 import scormSchemas from 'url:./generated/assets/scorm-schemas.zip'
 
@@ -16,8 +21,12 @@ const BUNDLES: Record<string, string> = {
   common: commonBundle,
   web: webBundle,
   xapi: xapiBundle,
+  h5p: h5pBundle,
+  'h5p-library': h5pLibraryBundle,
   'scorm1.2': scorm12Bundle,
   'scorm2004': scorm2004Bundle,
+  'scorm1.2-suspend': scorm12SuspendBundle,
+  'scorm2004-suspend': scorm2004SuspendBundle,
   indexeddb: indexeddbBundle,
   'scorm-schemas': scormSchemas,
 }
@@ -28,30 +37,6 @@ const BUNDLES: Record<string, string> = {
  * directory under Node). See `scormAdapter`.
  */
 export const SCORM_SCHEMA_ROOT = '/assets/scorm-packager'
-
-/**
- * Bundles each format needs seeded, mirroring the `assets/<name>` directories
- * the exporters read via `fs.assetRoot()`. `ims` ships the `web` payload; `rdf`
- * and the json formats touch no assets at all.
- */
-const REQUIRED: Record<string, string[]> = {
-  json: [],
-  fulljson: [],
-  rdf: [],
-  // `pdf` seeds nothing: it renders from loose static assets, not the store.
-  pdf: [],
-  web: ['web', 'common'],
-  ims: ['web', 'common'],
-  xapi: ['xapi', 'common'],
-  'scorm1.2': ['scorm1.2', 'common', 'scorm-schemas'],
-  scorm2004: ['scorm2004', 'common', 'scorm-schemas'],
-}
-
-/** Option that swaps a format's payload for the IndexedDB variant. */
-const INDEXEDDB_FLAG: Record<string, string> = {
-  web: 'web-indexeddb',
-  ims: 'ims-indexeddb',
-}
 
 /**
  * Fetches and seeds the asset bundles a format needs.
@@ -69,9 +54,9 @@ export class AssetLoader {
 
   constructor(private fs: MemoryFS) {}
 
-  /** Bundles `format` needs, honouring its IndexedDB variant when requested. */
+  /** Bundles `format` needs, honouring its IndexedDB and suspend variants. */
   required(format: string, options: Record<string, any> = {}): string[] {
-    const required = REQUIRED[format]
+    const required = requiredBundles(format, options)
 
     if (!required) {
       throw new ExportError(
@@ -79,12 +64,6 @@ export class AssetLoader {
         '"{format}" cannot be exported in the browser',
         { format },
       )
-    }
-
-    const flag = INDEXEDDB_FLAG[format]
-
-    if (flag && options[flag] !== undefined) {
-      return required.map((bundle) => (bundle === 'web' ? 'indexeddb' : bundle))
     }
 
     return required

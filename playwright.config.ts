@@ -35,7 +35,7 @@ export default defineConfig({
   projects: [
     {
       name: 'cli',
-      testMatch: 'cli.spec.ts',
+      testMatch: ['cli.spec.ts', 'options.spec.ts'],
     },
     {
       name: 'server',

@@ -416,6 +416,25 @@
                     <p data-i18n="formats.xapi.subtitle">Learning Analytics</p>
                   </div>
                 </label>
+
+                <label class="preset-tile">
+                  <input
+                    type="radio"
+                    name="format"
+                    value="h5p"
+                    data-i18n-description="formats.h5p.description"
+                    data-description="H5P package for Moodle, ILIAS, WordPress, Drupal and Lumi. Brings its own H5P.LiaScript library, which an administrator installs with the first upload. Grades, answers and the learner's progress are kept by the platform. <a href='https://h5p.org' target='_blank'>Learn more</a>"
+                  />
+                  <div class="preset-content">
+                    <img
+                      style="height: 48px"
+                      src="../assets/h5p.svg"
+                      alt="H5P"
+                    />
+                    <h3 data-i18n="formats.h5p.title">H5P</h3>
+                    <p data-i18n="formats.h5p.subtitle">Interactive Content</p>
+                  </div>
+                </label>
               </div>
 
               <hr
@@ -476,10 +495,10 @@
                     inputmode="numeric"
                     id="masteryScore"
                     name="option_masteryScore"
-                    placeholder="70"
+                    placeholder="0"
                   />
                   <span class="hint" data-i18n="settings.scorm.masteryScoreHint"
-                    >Minimum score to pass (0-100)</span
+                    >Minimum score to pass (0-100, default: 0)</span
                   >
                 </div>
 
@@ -550,6 +569,30 @@
                     class="hint"
                     data-i18n="settings.scorm.embedMarkdownHint"
                     >Recommended for Moodle 4</span
+                  >
+                </div>
+
+                <div class="form-group">
+                  <label for="scormStorage" data-i18n="settings.scorm.storage"
+                    >Learner Data</label
+                  >
+                  <select id="scormStorage" name="option_scormStorage">
+                    <option
+                      value=""
+                      selected
+                      data-i18n="settings.scorm.storageDefault"
+                    >
+                      Classic
+                    </option>
+                    <option
+                      value="suspend"
+                      data-i18n="settings.scorm.storageSuspend"
+                    >
+                      All in suspend_data, readable reports
+                    </option>
+                  </select>
+                  <span class="hint" data-i18n="settings.scorm.storageHint"
+                    >Keeps quizzes, surveys, tasks and code in cmi.suspend_data and reports every answer as a readable interaction</span
                   >
                 </div>
 
@@ -744,6 +787,45 @@
                   </label>
                   <span class="hint" data-i18n="settings.liaSubfolderHint"
                     >Place course files (md, images, audio) in a content/ subfolder</span
+                  >
+                </div>
+              </div>
+
+              <!-- H5P Settings -->
+              <div class="settings-group" data-formats="h5p">
+                <h3 class="settings-heading" data-i18n="settings.h5p.title">
+                  H5P Settings
+                </h3>
+
+                <div class="form-group">
+                  <label for="h5pHeight" data-i18n="settings.h5p.height"
+                    >Height</label
+                  >
+                  <input
+                    type="text"
+                    inputmode="numeric"
+                    id="h5pHeight"
+                    name="option_h5p-height"
+                    placeholder="600"
+                  />
+                  <span class="hint" data-i18n="settings.h5p.heightHint"
+                    >Height of the course in pixels (default: 600)</span
+                  >
+                </div>
+
+                <div class="form-group">
+                  <label for="h5pMastery" data-i18n="settings.h5p.mastery"
+                    >Mastery Score</label
+                  >
+                  <input
+                    type="text"
+                    inputmode="decimal"
+                    id="h5pMastery"
+                    name="option_h5p-mastery"
+                    placeholder="80"
+                  />
+                  <span class="hint" data-i18n="settings.h5p.masteryHint"
+                    >Percentage of points needed to pass (empty: completion only)</span
                   >
                 </div>
               </div>
@@ -1052,7 +1134,7 @@
                 </div>
 
                 <!-- Page Ranges -->
-                <div class="form-group">
+                <div class="form-group" data-server-only>
                   <label for="pdfPageRanges" data-i18n="settings.pdf.pageRanges"
                     >Page Ranges</label
                   >
@@ -1111,15 +1193,15 @@
                     inputmode="numeric"
                     id="pdfTimeout"
                     name="option_pdf-timeout"
-                    placeholder="15000"
+                    placeholder="0"
                   />
                   <span class="hint" data-i18n="settings.pdf.timeoutHint"
-                    >Wait time for complete loading (15000 = 15 seconds)</span
+                    >Extra wait before export in ms, e.g. for slow scripts (default: none)</span
                   >
                 </div>
 
                 <!-- Advanced Options -->
-                <div class="form-group">
+                <div class="form-group" data-server-only>
                   <label>
                     <input
                       type="checkbox"
@@ -1137,7 +1219,7 @@
                   >
                 </div>
 
-                <div class="form-group">
+                <div class="form-group" data-server-only>
                   <label>
                     <input
                       type="checkbox"
@@ -1420,10 +1502,10 @@
                     inputmode="numeric"
                     id="docxTimeout"
                     name="option_docx-timeout"
-                    placeholder="15000"
+                    placeholder="0"
                   />
                   <span class="hint" data-i18n="settings.docx.timeoutHint"
-                    >Wait time for complete loading (15000 = 15 seconds)</span
+                    >Extra wait before export in ms, e.g. for slow scripts (default: none)</span
                   >
                 </div>
               </div>
@@ -1465,22 +1547,6 @@
                   </select>
                   <span class="hint" data-i18n="settings.rdf.outputFormatHint"
                     >Format for RDF output (default: JSON-LD)</span
-                  >
-                </div>
-
-                <div class="form-group">
-                  <label>
-                    <input
-                      type="checkbox"
-                      id="rdfPreview"
-                      name="option_rdf-preview"
-                    />
-                    <span data-i18n="settings.rdf.previewConsole"
-                      >Preview in Console</span
-                    >
-                  </label>
-                  <span class="hint" data-i18n="settings.rdf.previewConsoleHint"
-                    >Display output in console</span
                   >
                 </div>
 

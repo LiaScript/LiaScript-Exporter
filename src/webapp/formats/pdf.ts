@@ -23,9 +23,58 @@ export const PDF_ENTRY = 'pdf/index.html'
 /** Matches the CLI's page defaults; the assets carry no `@page` rule. */
 const MARGIN = { top: 80, right: 30, bottom: 80, left: 30 }
 
-/** Bare numbers are points, matching the CLI's margin defaults. */
+/** Bare numbers are CSS pixels, as Puppeteer reads them in the CLI. */
 function length(value: string | number): string {
-  return /^\d+(\.\d+)?$/.test(String(value)) ? `${value}pt` : String(value)
+  return /^\d+(\.\d+)?$/.test(String(value)) ? `${value}px` : String(value)
+}
+
+/** An option that may arrive as a boolean or as form text. */
+function flag(value: any, fallback: boolean): boolean {
+  if (value === undefined || value === null || value === '') return fallback
+  return value === true || value === 'true'
+}
+
+/**
+ * Turns a Puppeteer header/footer template into CSS `content`.
+ *
+ * Puppeteer fills elements of the classes `pageNumber`, `totalPages`, `date`,
+ * `title` and `url`; a `@page` margin box has counters and strings only, so the
+ * template's markup and styling are dropped and its text kept.
+ */
+export function templateContent(template: string): string {
+  const quote = (text: string) =>
+    text ? JSON.stringify(text.replace(/\s+/g, ' ')) : ''
+
+  const parts: string[] = []
+  let text = ''
+
+  const replacements: Record<string, () => string> = {
+    pageNumber: () => 'counter(page)',
+    totalPages: () => 'counter(pages)',
+    date: () => quote(new Date().toLocaleDateString()),
+    title: () => quote(document.title),
+    url: () => quote(location.href),
+  }
+
+  const tokens = template.split(
+    /(<[a-z]+[^>]*class=["'][^"']*\b(?:pageNumber|totalPages|date|title|url)\b[^"']*["'][^>]*>[\s\S]*?<\/[a-z]+>)/i,
+  )
+
+  for (const token of tokens) {
+    const special = token.match(/class=["'][^"']*\b(pageNumber|totalPages|date|title|url)\b/)
+
+    if (special && token.startsWith('<')) {
+      if (text.trim()) parts.push(quote(text))
+      text = ''
+      parts.push(replacements[special[1]]())
+    } else {
+      text += token.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ')
+    }
+  }
+
+  if (text.trim()) parts.push(quote(text))
+
+  return parts.filter(Boolean).join(' ') || '""'
 }
 
 /** Maps `--pdf-format`/`--pdf-width`/`--pdf-height` onto a CSS `@page size`. */
@@ -52,17 +101,49 @@ function pageSize(options: Record<string, any>): string {
  * the dialog asks for that furniture.
  */
 export function pageRule(options: Record<string, any>): string {
-  const padding = [
-    length(options['pdf-margin-top'] ?? MARGIN.top),
-    length(options['pdf-margin-right'] ?? MARGIN.right),
-    length(options['pdf-margin-bottom'] ?? MARGIN.bottom),
-    length(options['pdf-margin-left'] ?? MARGIN.left),
+  const margin = [
+    length(options['pdf-margin-top'] || MARGIN.top),
+    length(options['pdf-margin-right'] || MARGIN.right),
+    length(options['pdf-margin-bottom'] || MARGIN.bottom),
+    length(options['pdf-margin-left'] || MARGIN.left),
   ].join(' ')
 
-  return [
-    `@page { size: ${pageSize(options)}; margin: 0; }`,
-    `body { padding: ${padding}; box-sizing: border-box; }`,
-  ].join('\n')
+  const rules: string[] = []
+
+  if (flag(options['pdf-displayHeaderFooter'], false)) {
+    // Header and footer need the page's margin area: the margin moves from the
+    // body onto the page, and the templates into its margin boxes.
+    const box = (template: any) =>
+      `content: ${templateContent(String(template ?? ''))}; font-size: 10px;`
+
+    rules.push(
+      `@page { size: ${pageSize(options)}; margin: ${margin};` +
+        ` @top-center { ${box(options['pdf-headerTemplate'])} }` +
+        ` @bottom-center { ${box(options['pdf-footerTemplate'])} } }`,
+    )
+  } else {
+    rules.push(
+      `@page { size: ${pageSize(options)}; margin: 0; }`,
+      // `clone` repeats the padding on every page, not only the first and last
+      `body { padding: ${margin}; box-sizing: border-box;` +
+        ` box-decoration-break: clone; -webkit-box-decoration-break: clone; }`,
+    )
+  }
+
+  const scale = parseFloat(options['pdf-scale'])
+  if (scale && scale !== 1) {
+    // Puppeteer's scale: smaller rendering, so more fits on a line and a page
+    rules.push(`body { zoom: ${scale}; }`)
+  }
+
+  // Puppeteer's printBackground (default on); the print dialog's own
+  // "Background graphics" box defaults to off, `exact` overrides it
+  const background = flag(options['pdf-printBackground'], true) ? 'exact' : 'economy'
+  rules.push(
+    `html { print-color-adjust: ${background}; -webkit-print-color-adjust: ${background}; }`,
+  )
+
+  return rules.join('\n')
 }
 
 /** What the print tab needs, stored with the job: export now, print later. */
@@ -73,6 +154,8 @@ export interface PrintJob {
   css: string
   /** `--pdf-theme`, applied as a class on the render. */
   theme?: string
+  /** `--pdf-timeout`: extra milliseconds to wait before printing. */
+  delay?: number
 }
 
 /** Enough of a content-type guess for the media a course embeds. */
@@ -160,6 +243,7 @@ export async function prepare(
     markdown: parts.join(''),
     css: pageRule(options),
     theme: options['pdf-theme'],
+    delay: Number(options['pdf-timeout']) || 0,
   }
 }
 
@@ -317,7 +401,7 @@ export function print(job: PrintJob): boolean {
 
   const entry = new URL(PDF_ENTRY, location.href).href
   const options = encodeURIComponent(
-    JSON.stringify({ css: job.css, theme: job.theme ?? null }),
+    JSON.stringify({ css: job.css, theme: job.theme ?? null, delay: job.delay ?? 0 }),
   )
 
   const tab = window.open(

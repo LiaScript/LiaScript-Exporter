@@ -3,8 +3,8 @@
 A generic LiaScript-Exporter that can export educational content into different
 formats, so that LiaScript courses can also be utilized in different Learning
 Management Systems (LMS) or as static documents (PDF, ePub, DOCX, ...).
-Supported export formats include SCORM 1.2, SCORM 2004, IMS, xAPI, Web, PDF,
-ePub, DOCX, Android, and more. See the last section
+Supported export formats include SCORM 1.2, SCORM 2004, IMS, xAPI, H5P, Web,
+PDF, ePub, DOCX, Android, and more. See the last section
 [LMS Support List](#LMS-Support-List)
 
 **Try it now in your browser: <https://liascript.github.io/LiaScript-Exporter/>**
@@ -32,8 +32,8 @@ browser: your course is never uploaded to a server.
   import it from a public **GitHub repository**
 - All presets (Moodle, ILIAS, OPAL, SCORM Cloud, ...) and advanced settings are
   available, just like in the desktop app
-- Supported formats: SCORM 1.2, SCORM 2004, IMS, xAPI, Web, PDF, ePub, DOCX,
-  JSON and RDF
+- Supported formats: SCORM 1.2, SCORM 2004, IMS, xAPI, H5P, Web, PDF, ePub,
+  DOCX, JSON and RDF
 
 A few things work differently from the desktop app:
 
@@ -92,7 +92,7 @@ $ liaex serve --port 8080
 The web interface allows you to:
 
 - **Upload files** or specify a **Git repository** as your project source
-- Select an **export target** (Moodle, ILIAS, OPAL, Generic LMS, Web, PDF, ePub, DOCX, xAPI)
+- Select an **export target** (Moodle, ILIAS, OPAL, Generic LMS, Web, PDF, ePub, DOCX, xAPI, H5P)
 - Configure **advanced settings** for your export
 - Queue export jobs and track their status
 
@@ -109,9 +109,10 @@ Once installed, use `liaex` or `liascript-exporter`. Core options:
 -i --input    input file (Markdown or YAML for projects)
 -p --path     path to pack (defaults to the input file's directory)
 -o --output   output file name (default: "output"; extension set by format)
--f --format   scorm1.2, scorm2004, ims, web, pdf, epub, docx, xapi,
+-f --format   scorm1.2, scorm2004, ims, web, pdf, epub, docx, xapi, h5p,
               android, project, rdf, json, fullJson (default: json)
--s --style    additional CSS to inject
+-s --style    additional CSS for the iframe that wraps the course
+              (--scorm-iframe, --web-iframe, IMS)
 -v --version  print version
 -k --key      ResponsiveVoice key for text-to-speech
 
@@ -239,11 +240,10 @@ content and sub-folders of this folder is then copied into your SCORM.zip. The
 name is defined by your output definition and contains the current version
 number of you course as well as the current date.
 
-> Note: SCORM 1.2 is too restrictive for storing data, that is why we currently
-> only support to store location information, all states of quizzes, surveys, etc.
-> will be lost after reload.
->
-> Better use __SCORM2004__ as output
+> Note: With the default connector, SCORM 1.2 stores only the location, all
+> states of quizzes, surveys, etc. are lost after a reload. Use
+> [`--scorm-storage suspend`](#scorm-learner-data---scorm-storage) to keep
+> them, or __SCORM2004__ as output.
 
 __Text 2 Speech `--key`__
 
@@ -265,7 +265,7 @@ in order to accomplish or pass the course by adding the `--scorm-masteryScore`
 parameter. Just set it to 0 to allow all to pass the course, otherwise choose a
 value between 0 and 100. All quizzes and surveys are treated equally, thus if
 your course contains 10 quizzes, every quiz counts as 10%. If you do not set
-this parameter, a default value of 80 percent is used.
+this parameter, a default value of 0 is used, so every learner passes.
 
 ``` shell
 $ liaex -i project/README.md --format scorm1.2 --scorm-masteryScore 0 --output rockOn
@@ -332,6 +332,75 @@ $ ls
 .. rockOn.zip ..
 ```
 
+### SCORM learner data `--scorm-storage`
+
+By default, the LiaScript runtime in a SCORM package keeps the course settings
+in `cmi.suspend_data` and, in SCORM 2004, the quiz states as JSON in the
+interactions. With `--scorm-storage suspend` (for `scorm1.2` and `scorm2004`)
+the package uses a different connector instead:
+
+* **Everything is restored.** Quizzes, surveys, task lists, the code of
+  executable code blocks (the current version of each project), the settings
+  and the last slide are kept, compressed, in `cmi.suspend_data`. This also
+  works in SCORM 1.2.
+* **Teachers can read the answers.** Every quiz, survey, task list and code
+  project is reported as one interaction, named after its question, e.g.
+  `Q14.1_What_is_the_capital_of_France`, with the learner's answer, the correct
+  answer and the result:
+  * SCORM 1.2 reports readable text: `Python; HTML`,
+    `Germany: Berlin; France: Paris`, `[x] Task A; [ ] Task B`.
+  * SCORM 2004 uses the matching interaction types (`choice`, `matching`,
+    `fill-in`, `long-fill-in`, `other`). Options are reported as ids that the
+    interaction's description explains, e.g.
+    `Which are programming languages? [o1=Python, o2=JavaScript, o3=HTML]`.
+  * A quiz counts as `correct` only if the learner solved it; a revealed
+    solution counts as wrong. Surveys, tasks and code are `neutral`.
+* **Values every LMS accepts.** Line breaks are shown as `⏎`, `"` as `＂`, and
+  long answers and code are shortened with `…[+N]` to the limits of the data
+  model.
+* **Status and score** use the fields SCORM defines for them: `incomplete`
+  from the start, `completed` once all quizzes and surveys are done, and
+  `passed`/`failed` only if a mastery score is set. Neither status is ever set
+  back. The score is reported in percent (1.2) or as points and scaled
+  (2004).
+* In SCORM 1.2, `passed`, `failed` and `completed` end the attempt (Moodle,
+  for example, then opens it for review only), and with a mastery score
+  Moodle turns any reported score into `passed`/`failed` when the learner
+  leaves. So with a mastery score, a SCORM 1.2 package reports its score and
+  result once all quizzes and surveys are done; until then the attempt stays
+  `incomplete` and the learner can come back. SCORM 2004 reports the score
+  along the way.
+* Without credit (`no-credit` or `browse` mode, e.g. ILIAS without learning
+  progress) the state is still kept, but nothing is reported.
+
+> Moodle shows SCORM 1.2 answers in the activity's *Interactions report*
+> (tick *Summary of question*, *right answer* and *result*), downloadable as
+> a table for all learners. SCORM 2004 answers only appear under *Track
+> details* of each attempt; the interactions report stays empty for them.
+
+``` shell
+$ liaex -i project/README.md --format scorm1.2 --scorm-storage suspend --scorm-masteryScore 80 --output rockOn
+```
+
+Where to find the answers:
+
+| LMS       | SCORM 1.2                                                    | SCORM 2004                                    |
+| --------- | ------------------------------------------------------------ | --------------------------------------------- |
+| Moodle    | Reports → Interactions report (four columns per question), download for all learners | Reports → Attempt → Track details, per learner |
+| ILIAS     | Learning progress / SCORM tracking data, export of interactions | the same                                    |
+
+Limits:
+
+* `cmi.suspend_data` holds 4096 characters in SCORM 1.2 (64000 in 2004). If
+  the state does not fit, code is left out first, then tasks, surveys, and
+  only at last quizzes; the browser console names what was not saved.
+* SCORM 1.2 reports at most 255 characters per answer, SCORM 2004 at most
+  3990 characters of code.
+* Code that is edited but never run is not stored.
+* Up to 250 elements per course are reported.
+* If the course is changed after learners started, answers to changed
+  elements start afresh; the others are kept.
+
 ### SCORM Examples
 
 Minimal examples for SCORM1.2 and SCORM2004 for tested LMS:
@@ -384,12 +453,7 @@ $ liaex -i project/README.md --format ims --output course --ims-indexeddb
 ..
 project/README.md
 project/Lizenz.md
-..Project settings:
-
---project-no-meta          Disable the generation of meta information for OpenGraph and Twitter-cards.
---project-no-categories    Disable the filter for categories/tags.
---project-category-blur    Enable this and the categories will be blurred instead of deleted.
---project-generate-pdf     PDFs are automatically generated and added to every card.
+..
 6041733 total bytes
 archiver has been finalized and the output file descriptor has closed.
 
@@ -550,13 +614,17 @@ __`--android-icon`__
 
 Optional app icon image (1024x1024 px).
 
-__`--android-splash`__
+__`--android-iconBackgroundColor`__ / __`--android-iconBackgroundColorDark`__
 
-Optional splash screen image (2732x2732 px).
+Background color of the adaptive app icon in light and dark mode (defaults:
+`#bbbbbb` and `#555555`).
 
-__`--android-splashDuration`__
+__`--android-release`__ / __`--android-bundle`__
 
-Duration for the splash screen in milliseconds. Default is 0.
+Build a signed release APK, or a signed AAB for the Play Store, instead of a
+debug APK. Signing uses `--android-keystore`, `--android-keystorePassword`,
+`--android-keyAlias` and `--android-keyPassword` (or the environment variables
+`KEYSTORE_FILE`, `KEYSTORE_PASSWORD`, `KEY_ALIAS` and `KEY_PASSWORD`).
 
 __Still a bit experimental__
 
@@ -628,8 +696,8 @@ __`--pdf-timeout`__
 You have to be aware, that the PDF generation can be quite time consuming
 especially for large courses with a lot of scripts and code-snippets to be
 executed and multimedia to be loaded. `puppeteer` thus sometimes does not know
-when the course is ready. If the generation fails, you should try to increase
-this value, the default is 15000, which means 15 seconds.
+when the course is ready. If the generation fails, you can add an extra wait
+time in milliseconds with this option; by default there is none.
 
 ``` bash
 $ liaex --format pdf \
@@ -650,7 +718,7 @@ __`--pdf-headerTemplate`__ HTML template for the print header. You can use the c
 
 __`--pdf-footerTemplate`__ HTML template for the print footer. Same format as `--pdf-headerTemplate`.
 
-__`--pdf-printBackground`__ Print background graphics. Defaults to false.
+__`--pdf-printBackground`__ Print background graphics. Defaults to true; turn it off with `--pdf-printBackground false`.
 
 __`--pdf-landscape`__ Paper orientation. Defaults to false.
 
@@ -672,7 +740,7 @@ __`--pdf-margin-left`__ Left margin, accepts values with units.
 
 __`--pdf-preferCSSPageSize`__ Give any CSS `@page` size declared in the page priority over `--pdf-format` / width / height options.
 
-__`--pdf-omitBackground`__ Hide the default white background, allowing screenshots with transparency. Defaults to true.
+__`--pdf-omitBackground`__ Hide the default white background, allowing screenshots with transparency. Defaults to false.
 
 ### ePub
 
@@ -682,13 +750,12 @@ ePub export generates e-books from your LiaScript course using Puppeteer to rend
 $ liaex -i project/README.md --format epub --epub-title "My Course" --epub-author "Author Name" --output course
 ```
 
-**Required settings:**
+**Settings** (title, author, language, description and cover default to the
+course's own header):
 
 `--epub-title` Title of the book.
 
 `--epub-author` Author name(s), semicolon-separated for multiple authors.
-
-**Optional settings:**
 
 `--epub-publisher` Publisher name.
 
@@ -708,7 +775,7 @@ $ liaex -i project/README.md --format epub --epub-title "My Course" --epub-autho
 
 `--epub-hide-toc` Hide table of contents in the generated EPUB (default: false).
 
-`--epub-timeout` Additional wait time for rendering in ms (default: 15000).
+`--epub-timeout` Additional wait time for rendering in ms (default: none).
 
 `--epub-fonts` Comma-separated paths to custom font files to embed.
 
@@ -756,7 +823,7 @@ $ liaex -i project/README.md --format docx --output course
 
 `--docx-theme` LiaScript theme: default, turquoise, blue, red, yellow.
 
-`--docx-timeout` Additional wait time after rendering in ms (default: 15000).
+`--docx-timeout` Additional wait time after rendering in ms (default: none).
 
 `--docx-preview` Open preview browser for debugging (default: false).
 
@@ -787,6 +854,115 @@ $ liaex -i project/README.md --format xapi --output course
 `--xapi-zip` Package the output as a zip file.
 
 `--lia-subfolder` Place course files (Markdown, images, audio, etc.) into a `content/` subfolder, keeping LiaScript app files at the root.
+
+#### What is stored in the LRS
+
+The package sends one statement per event and restores the learner's state
+from them on the next visit (per learner and registration):
+
+* `experienced` for every slide, named `3. Lists and Tasks`; the course
+  resumes at the last one.
+* `answered` when a quiz is checked or resolved, or a survey is submitted
+  (only that survey, and only once).
+* `interacted` when a task list changes, and when the learner runs code they
+  changed: the code is stored and comes back on the next visit (code that is
+  edited but never run is not stored).
+* `initialized`, `progressed`, `completed` and `suspended`/`terminated` for
+  the course, with progress, score and time.
+
+#### How answers appear
+
+Every quiz, survey, task list and code project is an xAPI
+`cmi.interaction` activity, so statement browsers, CSV exports and analytics
+tools can show it directly:
+
+* **Name:** the question, e.g. `Which are programming languages?` (or the
+  slide title if there is no text in front of the element).
+* **Definition:** the interaction type (`choice`, `matching`, `fill-in`,
+  `long-fill-in`, `other`), the options (`choices`, or `source` and `target`
+  for a matrix) and, if the course has one, the correct answer
+  (`correctResponsesPattern`).
+* **`result.response`:** the answer in xAPI format, e.g. `o1[,]o3` or
+  `r1[.]c2[,]r2[.]c1`; text and code as written, with line breaks.
+* **`result.extensions["http://liascript.github.io/extensions/answer"]`:**
+  the same answer as plain text, e.g. `Python; HTML` or
+  `[x] Task A; [ ] Task B` (not for code, whose response already is plain
+  text).
+* **`result.success`:** whether a quiz was solved.
+
+Names and options use the course language (`language:` in the course header)
+as language key, `en-US` if none is set. Useful CSV columns, e.g. for
+[SQL LRS](https://github.com/yetanalytics/lrsql) (*Statement Browser →
+Download CSV*), for a course in English:
+
+```
+$.object.definition.name.en
+$.result.response
+$.result.extensions['http://liascript.github.io/extensions/answer']
+$.result.success
+```
+
+If the course changes after learners started, code of a slide whose code
+blocks changed starts afresh; everything else is kept.
+
+Packages exported with earlier versions send generic names (`Slide 13 -
+MultipleChoice 2`) and the raw state as response. Learners can switch between
+both: the state is restored either way.
+
+### H5P
+
+An [H5P](https://h5p.org) package (`.h5p`) runs as H5P content in Moodle
+(H5P activity or content bank), ILIAS, WordPress, Drupal, Lumi and other H5P
+platforms. It carries the whole LiaScript runtime as its own library,
+`H5P.LiaScript`, so quizzes, code, animations, narration and everything else
+work as in the browser.
+
+``` shell
+$ liaex -i project/README.md --format h5p --output course
+```
+
+`--h5p-height` Height of the course in pixels (default: 600). The H5P
+fullscreen button, at the bottom right, shows it on the whole screen.
+
+`--h5p-mastery` Percentage of points needed to pass, e.g. `80` (default:
+none, the course is only completed).
+
+#### Installing the library
+
+H5P platforms install the libraries a package brings along, but only for
+users allowed to: in Moodle the capability `moodle/h5p:updatelibraries`, which
+administrators have; in WordPress and Drupal the right to install libraries
+must be switched on. So the first LiaScript package of a platform is uploaded
+by an administrator; after that, teachers add their courses like any H5P
+content. h5p.com accepts no libraries of its own.
+
+A platform keeps the newest `H5P.LiaScript` it has seen and uses it for every
+LiaScript course: its version (`2.2.x` for LiaScript 2.2) grows with every
+build of the exporter, so exporting a course again also updates the runtime
+of all other LiaScript courses on that platform.
+
+#### What the platform stores
+
+* **Grades:** once every quiz is answered (and every survey submitted), the
+  course reports itself `completed` with its points as an xAPI statement, the
+  way H5P content does. With `--h5p-mastery` it also reports whether the
+  learner passed. Moodle grades the activity from it; its attempts report
+  lists every quiz and survey with question, answer and points.
+* **Learner state:** answers, surveys, tasks, code and the current slide are
+  saved in H5P's user data (in Moodle with the activity setting *Save
+  content state*), so the course resumes where the learner left it.
+  Moodle starts a new attempt after a result was reported, and with it an
+  empty course, as for any H5P content.
+
+#### Limits
+
+H5P accepts only some file types in a package. Images, audio, video, PDFs,
+office documents and fonts are copied; **svg images** are embedded into the
+Markdown as data URLs; everything else (HTML pages, JavaScript files, …) is
+left out with a warning, so a course that loads its own scripts from files
+should take them from a URL instead.
+
+Tested with Moodle 4.5 and [h5p-standalone](https://github.com/tunapanda/h5p-standalone).
 
 ### Project
 
@@ -852,7 +1028,7 @@ collection:
     # logo: 
 
     # By default, formats that require the repository to be cloned (SCORM12/2004,
-    # IMS, Android, xAPI - see --project-generate-* below) pack the entire cloned
+    # IMS, Android, xAPI, H5P - see --project-generate-* below) pack the entire cloned
     # repository. If your course only occupies a sub-folder of the repository,
     # set `path` to restrict packing to that folder, just like the `-p/--path`
     # command line option does for single-file exports.
@@ -996,6 +1172,14 @@ If `navbar` is absent, no navigation bar is rendered.
 `--project-generate-ims` Generate IMS resources for every course. Pass additional IMS settings alongside this flag.
 
 `--project-generate-pdf` PDFs are automatically generated and added to every card. Pass additional PDF settings alongside this flag.
+
+`--project-generate-epub` / `--project-generate-docx` Generate an ePub / DOCX for every course. Pass additional ePub or DOCX settings alongside this flag.
+
+`--project-generate-xapi` / `--project-generate-h5p` / `--project-generate-android` Generate an xAPI package / H5P package / Android APK for every course.
+
+SCORM, IMS, xAPI, H5P and Android packages need the course's repository and are
+therefore only generated for courses linked via `raw.githubusercontent.com`.
+All generated files are stored in an `assets/` folder next to the output file.
 
 `--project-generate-cache` Only generate new files if they do not already exist.
 

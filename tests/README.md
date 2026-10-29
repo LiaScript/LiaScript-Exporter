@@ -23,7 +23,7 @@ Single suites (build first, see below):
 |---|---|---|
 | `npm run test:unit` | Vitest: checkers and form options → CLI flags | – |
 | `npm run test:types` | `tsc` over `tests/` | – |
-| `npm run test:cli[:deep]` | every format through `dist/index.js` | `npm run build` |
+| `npm run test:cli[:deep]` | every format through `dist/index.js`, plus `options.spec.ts`: format options reach the output | `npm run build` |
 | `npm run test:server` | every format through `serve` + `POST /api/export` | `npm run build` |
 | `npm run test:webapp[:deep]` | every format through the browser web app UI | `npm run webapp:build` |
 | `npm run test:webapp:browsers` | the web app suite in Firefox and WebKit | `npm run webapp:build`, `npx playwright install firefox webkit` |
@@ -71,6 +71,13 @@ DESKTOP_APP=release/linux-unpacked/liascript-exporter xvfb-run -a npm run test:d
 | `DESKTOP_APP` | the packaged executable for `test:desktop` instead of `electron/main.js` |
 | `EPUBCHECK_JAR` | use this epubcheck jar instead of the one in `tests/.cache` |
 
+### Real LMS
+
+The suites check packages against their manifests and a browser, not against
+an LMS. For that, `docker/lms/` starts Moodle (3.11, 4.5, 5.0), ILIAS (9, 10,
+11), OpenOlat and an xAPI LRS locally and runs packages of the fixture course
+in them as a learner: see [docker/lms/README.md](../docker/lms/README.md).
+
 ## Layout
 
 ```
@@ -81,7 +88,7 @@ tests/
 │   ├── network/       a second course with remote content
 │   └── network.ts     its expected sections and known gaps
 ├── checkers/          one checker per format, shared by every suite
-├── e2e/               Playwright: cli.spec.ts, server.spec.ts, webapp.spec.ts, desktop.spec.ts
+├── e2e/               Playwright: cli.spec.ts, options.spec.ts, server.spec.ts, webapp.spec.ts, desktop.spec.ts
 ├── unit/              Vitest
 └── scripts/           setup.ts (epubcheck download), check-output.ts
 ```

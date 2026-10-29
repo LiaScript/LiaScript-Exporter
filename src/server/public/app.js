@@ -8,7 +8,7 @@ let presetsConfig = null
 // Using type="text" with inputmode instead of type="number"
 function initializeNumberInputs() {
   const numberInputs = [
-    { id: 'masteryScore', min: 0, max: 100, isInteger: true, value: 70 },
+    { id: 'masteryScore', min: 0, max: 100, isInteger: true, value: null },
     { id: 'xapiMasteryScore', min: 0, max: 1, isInteger: false, value: null },
     {
       id: 'xapiProgressThreshold',
@@ -18,9 +18,9 @@ function initializeNumberInputs() {
       value: null,
     },
     { id: 'pdfScale', min: 0.1, max: 2, isInteger: false, value: 1 },
-    { id: 'pdfTimeout', min: 1000, max: null, isInteger: true, value: 15000 },
+    { id: 'pdfTimeout', min: 0, max: null, isInteger: true, value: null },
     { id: 'docxFontSize', min: 10, max: 100, isInteger: true, value: null },
-    { id: 'docxTimeout', min: 1000, max: 120000, isInteger: true, value: null },
+    { id: 'docxTimeout', min: 0, max: 120000, isInteger: true, value: null },
   ]
 
   numberInputs.forEach((config) => {
@@ -59,11 +59,16 @@ function initializeNumberInputs() {
 
         const currentValue = input.value
 
-        // Allow digits
+        // Allow digits; `data` is a whole insertion when pasting, so it is
+        // checked as one piece rather than as a single keystroke
         if (/^\d+$/.test(data)) return
 
-        // Allow decimal point for non-integer fields (only one)
-        if (!config.isInteger && data === '.' && !currentValue.includes('.')) {
+        // Allow decimals for non-integer fields, with one decimal point in all
+        if (
+          !config.isInteger &&
+          /^\d*\.?\d*$/.test(data) &&
+          (currentValue + data).split('.').length <= 2
+        ) {
           return
         }
 
@@ -90,6 +95,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   initializeExportSelection()
   initializeFormatDescription()
   initializeFormatNotices()
+  initializeServerOnlyOptions()
   initializeSubmitInfo()
   initializePresetDescription()
   checkForUpdates()
@@ -335,16 +341,7 @@ function initializeExportTabs() {
         document.querySelectorAll('input[name="preset"]').forEach((radio) => {
           radio.checked = false
         })
-        // Reset all option fields to their HTML defaults
-        document
-          .querySelectorAll('[name^="option_"]')
-          .forEach((field) => {
-            if (field.type === 'checkbox') {
-              field.checked = field.defaultChecked
-            } else {
-              field.value = field.defaultValue
-            }
-          })
+        resetOptions()
       }
     })
   })
@@ -491,7 +488,8 @@ function initializeExportSelection() {
         radio.checked = false
       })
 
-      // Apply preset options to the form
+      // Start from the defaults, so nothing of the previous preset remains
+      resetOptions()
       applyPresetOptions(e.target)
 
       // Get the preset configuration to determine the format
@@ -534,6 +532,28 @@ function initializeExportSelection() {
   initializePdfHeaderFooter()
 }
 
+// Reset all option fields to their HTML defaults
+function resetOptions() {
+  document.querySelectorAll('[name^="option_"]').forEach((field) => {
+    if (field.type === 'checkbox') {
+      field.checked = field.defaultChecked
+    } else if (field.tagName === 'SELECT') {
+      // a <select> has no defaultValue; its options remember what was selected
+      const index = [...field.options].findIndex((option) => option.defaultSelected)
+      field.selectedIndex = index < 0 ? 0 : index
+    } else {
+      field.value = field.defaultValue
+    }
+  })
+}
+
+// Only the settings of the chosen format count: hidden groups belong to other
+// formats, and some fields (liaSubfolder) exist in several of them
+function isActiveOption(element) {
+  const group = element.closest('.settings-group')
+  return !group || group.style.display !== 'none'
+}
+
 // Apply preset options to form fields
 function applyPresetOptions(presetInput) {
   try {
@@ -544,18 +564,14 @@ function applyPresetOptions(presetInput) {
       const value = options[key]
       const fieldName = `option_${key}`
 
-      // Try to find the field by name
-      const field = document.querySelector(`[name="${fieldName}"]`)
-
-      if (field) {
+      // Some options (liaSubfolder) have a field in every format's group
+      document.querySelectorAll(`[name="${fieldName}"]`).forEach((field) => {
         if (field.type === 'checkbox') {
-          field.checked = Boolean(value)
-        } else if (field.type === 'number') {
-          field.value = value
+          field.checked = value === true || value === 'true'
         } else {
-          field.value = value || ''
+          field.value = value ?? ''
         }
-      }
+      })
     })
   } catch (error) {
     console.error('Failed to apply preset options:', error)
@@ -711,11 +727,14 @@ function initializeForm() {
       const formElements = form.elements
       for (let i = 0; i < formElements.length; i++) {
         const element = formElements[i]
-        if (element.name && element.name.startsWith('option_')) {
+        if (
+          element.name &&
+          element.name.startsWith('option_') &&
+          isActiveOption(element)
+        ) {
           if (element.type === 'checkbox') {
-            if (element.checked) {
-              formData.append(element.name, 'true')
-            }
+            // 'false' too: an unticked box has to override the preset
+            formData.append(element.name, element.checked ? 'true' : 'false')
           } else if (element.value) {
             formData.append(element.name, element.value)
           }
@@ -905,6 +924,30 @@ function initializeSubmitInfo() {
   info.innerHTML = window.i18n
     ? window.i18n.t(key)
     : 'Exports run in your browser, one at a time.<br />After you start one, keep its status page open until it finishes.'
+}
+
+/**
+ * Options the browser's print dialog cannot take from a web page: it always
+ * uses the CSS page size and paints no page background, and its page range is
+ * chosen in the dialog itself. The standalone build hides them and says where
+ * the page range went.
+ */
+function initializeServerOnlyOptions() {
+  if (!hasLocalExporter()) return
+
+  document.querySelectorAll('[data-server-only]').forEach((group) => {
+    if (group.querySelector('#pdfPageRanges')) {
+      const hint = document.createElement('span')
+      hint.className = 'hint'
+      hint.dataset.i18n = 'settings.pdf.pageRangesBrowser'
+      hint.textContent = window.i18n
+        ? window.i18n.t('settings.pdf.pageRangesBrowser')
+        : 'Choose the pages in the print dialog that opens after the export.'
+      group.replaceChildren(hint)
+    } else {
+      group.remove()
+    }
+  })
 }
 
 function initializeFormatNotices() {

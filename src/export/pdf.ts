@@ -51,7 +51,7 @@ export function help() {
   COLOR.command(
     null,
     '--pdf-timeout',
-    `             Set an additional time horizon to wait until finished (default ${DEFAULT_TIMEOUT_MS} ms)`,
+    `             Set an additional time horizon to wait until finished (default: none)`,
   )
   COLOR.command(
     null,
@@ -290,10 +290,8 @@ export async function exporter(argument: PdfExportArguments) {
     })
 
     if (argument['pdf-stylesheet']) {
-      const href = nodePath.resolve(
-        dirname + '/../',
-        argument['pdf-stylesheet'],
-      )
+      // Relative to where the exporter was called from, like every other path
+      const href = nodePath.resolve(argument['pdf-stylesheet'])
 
       try {
         await page.evaluate(async (href) => {
@@ -410,7 +408,13 @@ async function toPDF(fs: ExportFS, argument: PdfExportArguments, page: Page) {
     // them through `fs` is what lets the browser hand them to a download
     // instead, exactly as `ExportFS.zip` does for archives.
     const pdf = await page.pdf({
-      format: (argument['pdf-format'] as any) || DEFAULT_FORMAT,
+      // Puppeteer lets `format` win over width/height, so the default paper
+      // format applies only when no explicit size was asked for.
+      format:
+        (argument['pdf-format'] as any) ||
+        (argument['pdf-width'] || argument['pdf-height']
+          ? undefined
+          : DEFAULT_FORMAT),
       printBackground:
         argument['pdf-printBackground'] ?? DEFAULT_PRINT_BACKGROUND,
       displayHeaderFooter:
@@ -427,7 +431,10 @@ async function toPDF(fs: ExportFS, argument: PdfExportArguments, page: Page) {
       landscape: argument['pdf-landscape'] ?? DEFAULT_LANDSCAPE,
       width: argument['pdf-width'] ?? '',
       height: argument['pdf-height'] ?? '',
-      pageRanges: argument['pdf-pageRanges'],
+      pageRanges:
+        argument['pdf-pageRanges'] !== undefined
+          ? String(argument['pdf-pageRanges'])
+          : undefined,
       preferCSSPageSize: argument['pdf-preferCSSPageSize'],
       omitBackground: argument['pdf-omitBackground'] ?? DEFAULT_OMIT_BACKGROUND,
     })

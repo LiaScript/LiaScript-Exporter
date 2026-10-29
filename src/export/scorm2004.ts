@@ -4,6 +4,7 @@ import { scormAdapter } from '../fs/scorm-adapter'
 import * as path from '../fs/path'
 
 import * as RDF from './rdf'
+import * as STORAGE from './scorm-storage'
 
 const scormPackager = require('@liascript/simple-scorm-packager')
 
@@ -21,6 +22,7 @@ export interface Scorm2004ExportArguments {
   'scorm-iframe'?: boolean
   'scorm-embed'?: string | boolean
   'scorm-alwaysActive'?: boolean
+  'scorm-storage'?: string
   'lia-subfolder'?: boolean
   /** Storage backing; supplied by the CLI or the browser host. */
   fs?: ExportFS
@@ -43,7 +45,8 @@ export async function exporter(argument: Scorm2004ExportArguments, json: any) {
     : tmpPath
 
   // copy assets to temp (always to root)
-  await fs.copy(path.join(dirname, './assets/scorm2004'), tmpPath)
+  const storage = STORAGE.storageMode(argument)
+  await fs.copy(path.join(dirname, STORAGE.assetDir('scorm2004', storage)), tmpPath)
   await fs.copy(path.join(dirname, './assets/common'), tmpPath)
 
   let index = await fs.readFile(path.join(tmpPath, 'index.html'))
@@ -55,24 +58,7 @@ export async function exporter(argument: Scorm2004ExportArguments, json: any) {
 
   index = helper.inject('<script src="config.js"></script>', index)
 
-  let conf =
-    'window.config_ = ' +
-    JSON.stringify({
-      task: json.task,
-      quiz: json.quiz,
-      survey: json.survey,
-    }) +
-    ';'
-
-  if (argument['scorm-alwaysActive']) {
-    conf += '\n\nwindow["ACTIVE"] = true;'
-
-    if (argument['scorm-masteryScore']) {
-      conf +=
-        '\n\nwindow["MASTERY_SCORE"] =' +
-        parseFloat(argument['scorm-masteryScore']) / 100
-    }
-  }
+  const conf = STORAGE.configScript('scorm2004', json, argument, storage)
 
   await fs.writeFile(path.join(tmpPath, 'config.js'), conf)
 
@@ -93,7 +79,16 @@ export async function exporter(argument: Scorm2004ExportArguments, json: any) {
     index = helper.inject('<script src="course.js"></script>', index, true)
     await fs.writeFile(
       path.join(tmpPath, 'course.js'),
-      'window["liascript_course"] = ' + JSON.stringify(argument['scorm-embed'])
+      'window["liascript_course"] = ' +
+        JSON.stringify(
+          helper.embedBase(
+            String(argument['scorm-embed']),
+            path.join(
+              argument['lia-subfolder'] ? 'content' : '',
+              path.dirname(argument.readme),
+            ),
+          ),
+        )
     )
   }
 

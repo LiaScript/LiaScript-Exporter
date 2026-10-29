@@ -75,12 +75,15 @@
         media.parentNode.insertBefore(label, media.nextSibling)
       })
 
-      // Two frames: the injected rules must be laid out before printing.
-      requestAnimationFrame(function () {
+      // `--pdf-timeout`: time for slow scripts, then two frames, so the
+      // injected rules are laid out before printing.
+      setTimeout(function () {
         requestAnimationFrame(function () {
-          window.print()
+          requestAnimationFrame(function () {
+            window.print()
+          })
         })
-      })
+      }, options.delay || 0)
     },
     { once: true },
   )

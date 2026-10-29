@@ -8,6 +8,7 @@
  */
 import { checkDocx } from './docx'
 import { checkEpub } from './epub'
+import { checkH5p } from './h5p'
 import { checkJson, checkRdf } from './json'
 import { checkLms } from './lms'
 import { checkPdf } from './pdf'
@@ -25,6 +26,7 @@ export const FORMATS: Format[] = [
   'ims',
   'web',
   'xapi',
+  'h5p',
   'epub',
   'docx',
   'pdf',
@@ -48,6 +50,8 @@ export async function checkOutput(
     case 'web':
     case 'xapi':
       return checkLms(format, source, options)
+    case 'h5p':
+      return checkH5p(source, options)
     case 'epub':
       return checkEpub(source, options)
     case 'docx':

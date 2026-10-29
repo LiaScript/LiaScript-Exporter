@@ -4,6 +4,7 @@ import { scormAdapter } from '../fs/scorm-adapter'
 import * as path from '../fs/path'
 import * as RDF from './rdf'
 import * as COLOR from '../colorize'
+import * as STORAGE from './scorm-storage'
 
 const scormPackager = require('@liascript/simple-scorm-packager')
 
@@ -48,6 +49,11 @@ export function help() {
   )
   COLOR.command(
     null,
+    '--scorm-storage',
+    '           "default" or "suspend": keep all learner state (quizzes, surveys, tasks, code) in cmi.suspend_data and report readable answers as interactions',
+  )
+  COLOR.command(
+    null,
     '--lia-subfolder',
     '         place LiaScript content files into a "content/" subfolder, keeping SCORM spec files at the root',
   )
@@ -67,6 +73,7 @@ export interface Scorm12ExportArguments {
   'scorm-iframe'?: boolean
   'scorm-embed'?: string | boolean
   'scorm-alwaysActive'?: boolean
+  'scorm-storage'?: string
   'lia-subfolder'?: boolean
   /** Storage backing; supplied by the CLI or the browser host. */
   fs?: ExportFS
@@ -89,7 +96,8 @@ export async function exporter(argument: Scorm12ExportArguments, json: any) {
     : tmpPath
 
   // copy assets to temp (always to root)
-  await fs.copy(path.join(dirname, './assets/scorm1.2'), tmpPath)
+  const storage = STORAGE.storageMode(argument)
+  await fs.copy(path.join(dirname, STORAGE.assetDir('scorm1.2', storage)), tmpPath)
   await fs.copy(path.join(dirname, './assets/common'), tmpPath)
 
   let index = await fs.readFile(path.join(tmpPath, 'index.html'))
@@ -102,13 +110,7 @@ export async function exporter(argument: Scorm12ExportArguments, json: any) {
   index = helper.inject('<script src="config.js"></script>', index)
   await fs.writeFile(
     path.join(tmpPath, 'config.js'),
-    'window.config_ = ' +
-      JSON.stringify({
-        task: json.task,
-        quiz: json.quiz,
-        survey: json.survey,
-      }) +
-      ';',
+    STORAGE.configScript('scorm1.2', json, argument, storage),
   )
 
   const jsonLD = await RDF.script(argument, json)
@@ -128,7 +130,16 @@ export async function exporter(argument: Scorm12ExportArguments, json: any) {
     index = helper.inject('<script src="course.js"></script>', index, true)
     await fs.writeFile(
       path.join(tmpPath, 'course.js'),
-      'window["liascript_course"] = ' + JSON.stringify(argument['scorm-embed']),
+      'window["liascript_course"] = ' +
+        JSON.stringify(
+          helper.embedBase(
+            String(argument['scorm-embed']),
+            path.join(
+              argument['lia-subfolder'] ? 'content' : '',
+              path.dirname(argument.readme),
+            ),
+          ),
+        ),
     )
   }
 

@@ -6,6 +6,10 @@
  */
 export type CopyFilter = (src: string, dest: string) => boolean
 
+export interface ZipOptions {
+  filesOnly?: boolean
+}
+
 export interface CopyOptions {
   filter?: CopyFilter
 }
@@ -87,8 +91,11 @@ export interface ExportFS {
    * Returning bytes rather than writing a stream is what lets the browser hand
    * the result to a download while the CLI writes it to disk — the callers
    * decide where it lands, not the archiver.
+   *
+   * `filesOnly` leaves out the entries of directories, which H5P refuses as
+   * files without an extension (the in-memory backing never writes them).
    */
-  zip(dir: string): Promise<Uint8Array>
+  zip(dir: string, options?: ZipOptions): Promise<Uint8Array>
 
   /**
    * Zips `dir` and stores the archive at `<filename>.zip`.
