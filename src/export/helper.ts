@@ -308,9 +308,10 @@ export function embedBase(markdown: string, folder: string): string {
     return markdown
   }
 
-  // Before the closing `-->`, so it cannot become part of a multi-line value
-  const end = header.index! + header[0].length - 3
-  return markdown.slice(0, end) + `\nbase: ${base}\n` + markdown.slice(end)
+  // First, LiaScript resolves `import:`, `script:` and `link:` with the
+  // `base:` set above them; on its own line, so no multi-line value takes it
+  const start = header.index! + header[0].indexOf('<!--') + 4
+  return markdown.slice(0, start) + `\nbase: ${base}\n` + markdown.slice(start).replace(/^[ \t]+/, '')
 }
 
 export async function iframe(

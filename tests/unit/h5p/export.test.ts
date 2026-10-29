@@ -9,7 +9,7 @@ import { describe, expect, it } from 'vitest'
 import {
   CONTENT_EXTENSIONS,
   LIBRARY_EXTENSIONS,
-  inlineImages,
+  inlineFiles,
   libraryVersion,
   runtimeHead,
   wrapper,
@@ -81,7 +81,7 @@ describe('H5P export', () => {
       'not img/a.svg.png or myimg/a.svg',
     ].join('\n')
 
-    const result = inlineImages(markdown, [
+    const result = inlineFiles(markdown, [
       { path: 'img/a.svg', data: svg },
       { path: 'unused.svg', data: svg },
     ])
@@ -93,6 +93,23 @@ describe('H5P export', () => {
       'not img/a.svg.png or myimg/a.svg',
     ])
     expect(result.unused).toEqual(['unused.svg'])
+  })
+
+  it('embeds scripts and styles of the header, also above the Markdown file', () => {
+    const js = new TextEncoder().encode('window.x = 1')
+    const css = new TextEncoder().encode('body {}')
+    const b64 = (data: Uint8Array) => Buffer.from(data).toString('base64')
+    const result = inlineFiles('script: ./check.js\nlink:   x.css\n        ../a/b.css', [
+      { path: 'check.js', data: js },
+      { path: '../a/b.css', data: css },
+    ])
+
+    expect(result.markdown.split('\n')).toEqual([
+      `script: data:text/javascript;base64,${b64(js)}`,
+      'link:   x.css',
+      `        data:text/css;base64,${b64(css)}`,
+    ])
+    expect(result.unused).toEqual([])
   })
 
   it('allows only what Moodle allows, and scripts and styles in libraries', () => {

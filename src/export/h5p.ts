@@ -143,20 +143,37 @@ const extension = (file: string) => path.extname(file).slice(1).toLowerCase()
 
 /**
  * Removes every file under `dir` whose extension is not in `allowed`,
- * returns their paths relative to `dir`.
+ * returns the paths of the removed and the kept files relative to `dir`.
  */
-async function prune(fs: ExportFS, dir: string, allowed: string[], base = dir): Promise<string[]> {
+async function prune(
+  fs: ExportFS,
+  dir: string,
+  allowed: string[],
+  base = dir,
+): Promise<{ removed: string[]; kept: string[] }> {
   const removed: string[] = []
+  const kept: string[] = []
   for (const name of await fs.readDir(dir)) {
     const file = path.join(dir, name)
     if (await fs.isDirectory(file)) {
-      removed.push(...(await prune(fs, file, allowed, base)))
+      const sub = await prune(fs, file, allowed, base)
+      removed.push(...sub.removed)
+      kept.push(...sub.kept)
     } else if (!allowed.includes(extension(name))) {
       await fs.remove(file)
       removed.push(path.relative(base, file))
+    } else {
+      kept.push(path.relative(base, file))
     }
   }
-  return removed
+  return { removed, kept }
+}
+
+/** refused files that become data URLs in the Markdown that mentions them */
+const INLINE_TYPES: Record<string, string> = {
+  svg: 'image/svg+xml',
+  js: 'text/javascript',
+  css: 'text/css',
 }
 
 function base64(bytes: Uint8Array): string {
@@ -170,10 +187,11 @@ function base64(bytes: Uint8Array): string {
 const escapeRegExp = (text: string) => text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 
 /**
- * H5P refuses svg files, so the course's svg images become data URLs in the
- * Markdown. Returns the Markdown and the svg files it does not mention.
+ * H5P refuses svg, js and css files, so the course's svg images, scripts and
+ * styles (also those of local templates) become data URLs in the Markdown.
+ * Returns the Markdown and the files it does not mention.
  */
-export function inlineImages(
+export function inlineFiles(
   markdown: string,
   images: { path: string; data: Uint8Array }[],
 ): { markdown: string; unused: string[] } {
@@ -186,7 +204,7 @@ export function inlineImages(
       'gm',
     )
     let found = false
-    const url = 'data:image/svg+xml;base64,' + base64(image.data)
+    const url = `data:${INLINE_TYPES[extension(image.path)]};base64,` + base64(image.data)
     markdown = markdown.replace(pattern, (_, before) => {
       found = true
       return before + url
@@ -314,7 +332,7 @@ export async function exporter(argument: H5pExportArguments, json: any) {
   const contentDir = path.join(root, 'content')
   await fs.copy(argument.path, contentDir, { filter: helper.filterHidden(argument.path) })
 
-  const removed = await prune(fs, contentDir, CONTENT_EXTENSIONS)
+  const { removed, kept } = await prune(fs, contentDir, CONTENT_EXTENSIONS)
 
   const readme = path.normalize(argument.readme)
   const readmeFile = path.join(contentDir, readme)
@@ -322,22 +340,25 @@ export async function exporter(argument: H5pExportArguments, json: any) {
     throw new Error(`H5P accepts no file like ${readme}, rename the course to a .md file`)
   }
 
-  const svgs = removed.filter((file) => extension(file) === 'svg')
-  if (svgs.length) {
-    const images = await Promise.all(
-      svgs.map(async (file) => ({
-        path: path.relative(path.dirname(readme), file),
-        data: await fs.readFileRaw(path.join(argument.path, file)),
-      })),
-    )
-    const inlined = inlineImages(await fs.readFile(readmeFile), images)
-    await fs.writeFile(readmeFile, inlined.markdown)
-    if (inlined.unused.length) {
-      warn(`svg images are not allowed in H5P, not found in ${readme} to embed: ${inlined.unused.join(', ')}`)
-    }
+  // every Markdown file, a local template (import:) refers to its own files
+  const inline = await Promise.all(
+    removed
+      .filter((file) => extension(file) in INLINE_TYPES)
+      .map(async (file) => ({ file, data: await fs.readFileRaw(path.join(argument.path, file)) })),
+  )
+  const unused = new Set(inline.map(({ file }) => file))
+  for (const md of inline.length ? kept.filter((file) => extension(file) === 'md') : []) {
+    const files = inline.map(({ file, data }) => ({ file, path: path.relative(path.dirname(md), file), data }))
+    const inlined = inlineFiles(await fs.readFile(path.join(contentDir, md)), files)
+    if (inlined.unused.length === files.length) continue
+    await fs.writeFile(path.join(contentDir, md), inlined.markdown)
+    files.filter((file) => !inlined.unused.includes(file.path)).forEach(({ file }) => unused.delete(file))
+  }
+  if (unused.size) {
+    warn(`H5P does not accept svg, js and css files, not found in a Markdown file to embed: ${[...unused].join(', ')}`)
   }
 
-  const dropped = removed.filter((file) => extension(file) !== 'svg')
+  const dropped = removed.filter((file) => !(extension(file) in INLINE_TYPES))
   if (dropped.length) {
     warn(`H5P does not accept these files, they are left out: ${dropped.join(', ')}`)
   }
