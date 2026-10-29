@@ -1043,11 +1043,13 @@ function repairLocalSvgs(html: string, dir: string): string {
  * - Rules selecting with `:-webkit-any()` are dropped. Parcel emits them as a
  *   fallback next to an identical `:is()` rule, so nothing is lost, and
  *   epubcheck cannot parse them (CSS-008).
+ * - Rules selecting with `:has()` are dropped too (CSS-008), they only style
+ *   interactive states, such as the focus ring of a dark editor.
  * - Font URLs point into `fonts/`, where the library packs them (RSC-007).
  *   EOT and SVG fonts are not packed, so their `src` entries go.
  */
 function bookCss(css: string): string {
-  return dropRules(css, (prelude) => prelude.includes(':-webkit-any('))
+  return dropRules(css, (prelude) => prelude.includes(':-webkit-any(') || prelude.includes(':has('))
     .replace(/src:([^;}]*)(;?)/g, (_match, value: string, end: string) => {
       const kept = value
         .split(/,(?![^(]*\))/)

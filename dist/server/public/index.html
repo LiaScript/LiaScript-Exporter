@@ -416,6 +416,25 @@
                     <p data-i18n="formats.xapi.subtitle">Learning Analytics</p>
                   </div>
                 </label>
+
+                <label class="preset-tile">
+                  <input
+                    type="radio"
+                    name="format"
+                    value="h5p"
+                    data-i18n-description="formats.h5p.description"
+                    data-description="H5P package for Moodle, ILIAS, WordPress, Drupal and Lumi. Brings its own H5P.LiaScript library, which an administrator installs with the first upload. Grades, answers and the learner's progress are kept by the platform. <a href='https://h5p.org' target='_blank'>Learn more</a>"
+                  />
+                  <div class="preset-content">
+                    <img
+                      style="height: 48px"
+                      src="../assets/h5p.svg"
+                      alt="H5P"
+                    />
+                    <h3 data-i18n="formats.h5p.title">H5P</h3>
+                    <p data-i18n="formats.h5p.subtitle">Interactive Content</p>
+                  </div>
+                </label>
               </div>
 
               <hr
@@ -768,6 +787,45 @@
                   </label>
                   <span class="hint" data-i18n="settings.liaSubfolderHint"
                     >Place course files (md, images, audio) in a content/ subfolder</span
+                  >
+                </div>
+              </div>
+
+              <!-- H5P Settings -->
+              <div class="settings-group" data-formats="h5p">
+                <h3 class="settings-heading" data-i18n="settings.h5p.title">
+                  H5P Settings
+                </h3>
+
+                <div class="form-group">
+                  <label for="h5pHeight" data-i18n="settings.h5p.height"
+                    >Height</label
+                  >
+                  <input
+                    type="text"
+                    inputmode="numeric"
+                    id="h5pHeight"
+                    name="option_h5p-height"
+                    placeholder="600"
+                  />
+                  <span class="hint" data-i18n="settings.h5p.heightHint"
+                    >Height of the course in pixels (default: 600)</span
+                  >
+                </div>
+
+                <div class="form-group">
+                  <label for="h5pMastery" data-i18n="settings.h5p.mastery"
+                    >Mastery Score</label
+                  >
+                  <input
+                    type="text"
+                    inputmode="decimal"
+                    id="h5pMastery"
+                    name="option_h5p-mastery"
+                    placeholder="80"
+                  />
+                  <span class="hint" data-i18n="settings.h5p.masteryHint"
+                    >Percentage of points needed to pass (empty: completion only)</span
                   >
                 </div>
               </div>

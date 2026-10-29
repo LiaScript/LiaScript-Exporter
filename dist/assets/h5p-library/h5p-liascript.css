@@ -1,0 +1,26 @@
+.h5p-liascript {
+  position: relative;
+}
+
+.h5p-liascript-frame {
+  display: block;
+  width: 100%;
+  border: 0;
+}
+
+/* LiaScript has its own menu in the top right corner, where H5P puts its
+   fullscreen button: that one goes to the bottom right, which LiaScript
+   leaves empty. Newer H5P cores position a container of controls, older ones
+   the button itself. */
+.h5p-content .h5p-content-controls,
+.h5p-content > .h5p-enable-fullscreen,
+.h5p-content > .h5p-disable-fullscreen {
+  top: auto;
+  bottom: 0;
+}
+
+/* in fullscreen the course takes the whole screen */
+.h5p-fullscreen .h5p-liascript-frame,
+.h5p-semi-fullscreen .h5p-liascript-frame {
+  height: 100vh !important;
+}

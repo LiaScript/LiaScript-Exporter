@@ -334,7 +334,8 @@ function strand(body: HTMLElement): void {
   })
 
   // Whatever is left carries ARIA for a widget that no longer exists.
-  body.querySelectorAll('[role]').forEach((el) => {
+  // Charts (role="img") keep their aria-label, it becomes the alt of their image.
+  body.querySelectorAll('[role]:not(lia-chart)').forEach((el) => {
     el.removeAttribute('role')
 
     Array.from(el.attributes).forEach((attribute) => {

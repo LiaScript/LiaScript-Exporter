@@ -172,8 +172,6 @@ export function renderedMarkers(fixture: Fixture = LOCAL_FIXTURE): string[] {
     .sort()
 }
 
-const MEDIA_LABEL =
-  'audio/video labels become a link or player, the label text is not kept'
 const PRINT_MEDIA_LABEL =
   'the print render (LiaScript feat/fullPage) drops the audio/video label; the file name stands in'
 const HIDDEN_UNTIL_CLICKED =
@@ -214,8 +212,6 @@ export const KNOWN_GAPS: Record<RenderedFormat, Record<string, KnownGap>> = {
   },
   /** The live player, read slide by slide as a reader first sees it. */
   web: {
-    MKAudio: { reason: MEDIA_LABEL },
-    MKVideo: { reason: MEDIA_LABEL },
     MKQuizHint: { reason: HIDDEN_UNTIL_CLICKED },
     MKQuizExplanation: { reason: HIDDEN_UNTIL_CLICKED },
     MKDetailsBody: { reason: '<details> starts collapsed' },
