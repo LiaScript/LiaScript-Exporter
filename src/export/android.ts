@@ -123,8 +123,6 @@ export async function exporter(argument: AndroidExportArguments, json: any) {
     path.join(tmp, './www'),
   )
 
-  await fs.copy(path.join(dirname, './assets/common'), path.join(tmp, './www'))
-
   // copy logo and splash
   await fs.copy(path.join(dirname, './resources'), path.join(tmp, './assets'))
 
