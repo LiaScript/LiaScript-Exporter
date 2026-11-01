@@ -264,23 +264,6 @@ async function toDOCX(
     const chartImages = await extractChartSvgs(page)
     console.log(`Extracted ${chartImages.size} chart(s)`)
 
-    // Inject KaTeX CSS so formula clones render correctly outside shadow DOM
-    await page.evaluate(() => {
-      const link = document.createElement('link')
-      link.rel = 'stylesheet'
-      link.href = 'https://cdn.jsdelivr.net/npm/katex@0.16.27/dist/katex.min.css'
-      document.head.appendChild(link)
-    })
-    await page.waitForFunction(() => {
-      const sheets = document.styleSheets
-      for (let i = 0; i < sheets.length; i++) {
-        try {
-          if (sheets[i].href?.includes('katex') && sheets[i].cssRules.length > 0) return true
-        } catch (e) { /* CORS */ }
-      }
-      return false
-    }, { timeout: 5000 }).catch(() => console.warn('KaTeX CSS load timeout — formulas may not render correctly'))
-
     console.log('Screenshotting math formulas...')
     const formulaImages = await screenshotTaggedElements(
       page, 'lia-formula', 'data-formula-index', 'formula',
@@ -1022,8 +1005,8 @@ async function screenshotTaggedElements(
       if (!el) continue
 
       // For lia-formula: clone KaTeX HTML into a regular <div> where the
-      // globally-injected KaTeX CDN stylesheet applies (declarative shadow
-      // DOM styles don't work in headless Chromium).
+      // page's KaTeX stylesheet applies (declarative shadow DOM styles don't
+      // work in headless Chromium).
       const hasShadow = await page.evaluate((el: Element) => {
         const shadow = (el as any).shadowRoot
         if (!shadow) return false
@@ -1037,7 +1020,7 @@ async function screenshotTaggedElements(
         const container = document.createElement('div')
         container.setAttribute('data-formula-clone', 'true')
         container.style.cssText =
-          'position:absolute;top:0;left:10000px;display:inline-block;background:white;padding:8px;'
+          'position:absolute;top:0;left:10000px;width:max-content;background:white;padding:8px;'
         container.appendChild(clone)
         document.body.appendChild(container)
         return true
