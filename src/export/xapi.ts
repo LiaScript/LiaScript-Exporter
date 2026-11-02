@@ -174,9 +174,10 @@ export async function exporter(argument: XapiExportArguments, json: any) {
   )
 
   // Add default course
+  // the course may sit in a sub-folder of --path or of a project's repository
   const courseURL = argument['lia-subfolder']
-    ? 'content/' + path.basename(argument.readme)
-    : path.basename(argument.readme)
+    ? 'content/' + path.normalize(argument.readme)
+    : path.normalize(argument.readme)
 
   index = helper.inject(
     `<script>
