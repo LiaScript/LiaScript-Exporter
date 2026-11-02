@@ -57,7 +57,6 @@ export const NETWORK_FIXTURE: Fixture = {
     },
     /** The live player, as for the local course. */
     web: {
-      MKNetYoutube: { reason: PLAYER_LABEL },
       MKNetEmbed: { reason: PLAYER_LABEL },
     },
   },
