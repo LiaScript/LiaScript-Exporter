@@ -202,7 +202,6 @@ export const KNOWN_GAPS: Record<RenderedFormat, Record<string, KnownGap>> = {
     MKVideo: { reason: PRINT_MEDIA_LABEL, fallback: 'clip.webm' },
     MKQuizHint: { reason: HIDDEN_UNTIL_CLICKED },
     MKQuizExplanation: { reason: HIDDEN_UNTIL_CLICKED },
-    MKDetailsBody: { reason: '<details> is printed collapsed' },
     MKImagePng: { reason: 'alt text is not visible text in a PDF' },
     MKImageJpg: { reason: 'alt text is not visible text in a PDF' },
     MKGalleryA: { reason: 'alt text is not visible text in a PDF' },
