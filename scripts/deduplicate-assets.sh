@@ -16,6 +16,16 @@ fi
 
 before=$(du -sb "$ASSETS" | cut -f1)
 
+# Parcel >= 2.16 names chunks after the entry folder (web/base.1ff079e7.js,
+# xapi/xapi.1ff079e7.js); a shared prefix lets identical chunks reach common
+for d in "${DIRS[@]}"; do
+  p=$d; [ "$d" = web ] && p=base
+  for f in "$ASSETS/$d/$p".????????.*; do
+    [ -e "$f" ] && mv "$f" "$ASSETS/$d/lia.${f#"$ASSETS/$d/$p."}"
+  done
+  sed -i "s/\([ =\"']\)${p//./\\.}\.\([0-9a-f]\{8\}\.\)/\1lia.\2/g" "$ASSETS/$d/index.html"
+done
+
 cd "$ASSETS/${DIRS[0]}"
 find . -type f -print0 | while IFS= read -r -d '' f; do
   for d in "${DIRS[@]:1}"; do
