@@ -327,6 +327,8 @@ async function toDOCX(
       videoIframeImages: toEntries(videoIframeImages),
     }
 
+    await page.evaluate(`(${helper.docxPaper})(document.body)`)
+
     // Extract and process the full document HTML
     const htmlContent = await page.evaluate((data) => {
       const {
@@ -402,16 +404,6 @@ async function toDOCX(
         img.removeAttribute('onerror')
         img.removeAttribute('onclick')
         img.removeAttribute('loading')
-      })
-
-      // html-to-docx 1.20.1 recurses into a <blockquote> without its document
-      // argument, so anything but plain text inside one (images, fonts, media)
-      // throws and aborts the export. Unwrap them all; italics survives.
-      bodyClone.querySelectorAll('blockquote').forEach((quote: Element) => {
-        const div = document.createElement('div')
-        div.setAttribute('style', 'font-style: italic;')
-        while (quote.firstChild) div.appendChild(quote.firstChild)
-        quote.replaceWith(div)
       })
 
       // Unwrap images from lia-figure__media divs (html-to-docx needs <img> as direct child of <figure>)

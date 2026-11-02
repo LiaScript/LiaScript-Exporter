@@ -14,7 +14,7 @@
 
 import * as extract from './extract'
 import { render, EMBED_SRC } from './render'
-import { themeColor } from '../../export/helper'
+import { themeColor, docxPaper } from '../../export/helper'
 
 /** Where `scripts/copy-webapp-docx.js` puts the converter. */
 const CONVERTER = 'docx/html-to-docx.browser.js'
@@ -297,22 +297,9 @@ function strip(body: HTMLElement): void {
    * an `(e, t, n)` signature, `n` being the document that registers media and
    * fonts. Everything inside therefore sees `undefined` and throws on whatever
    * it needs first — `imageProcessing`, `createMediaFile`, `createFont`.
-   *
-   * All of them are unwrapped rather than a chosen few: LiaScript renders every
-   * quote as `<blockquote><p class="lia-paragraph">`, so there is no bare-text
-   * case left to protect, and the failure costs the entire export. The quote's
-   * indentation goes with the tag, which the converter keys on instead of CSS.
+   * docxPaper turns quotes into boxes, and fixes quizzes and styles.
    */
-  body.querySelectorAll('blockquote').forEach((quote) => {
-    const div = quote.ownerDocument.createElement('div')
-
-    // Italics is the one quote marker that does survive the conversion.
-    div.setAttribute('style', 'font-style: italic;')
-
-    while (quote.firstChild) div.appendChild(quote.firstChild)
-
-    quote.replaceWith(div)
-  })
+  docxPaper(body)
 
   body.querySelectorAll('img').forEach((img) => {
     img.removeAttribute('loading')

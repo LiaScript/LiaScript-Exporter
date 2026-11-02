@@ -279,6 +279,92 @@ export function themeColor(html: string, rgb: string | undefined): string {
 }
 
 /**
+ * Rewrites quotes, quizzes and styles of a rendered course that html-to-docx
+ * 1.20.1 gets wrong. Shared by the CLI and the web app.
+ *
+ * Runs on the live page: it reads computed colors and ticked boxes. The CLI
+ * hands it to Puppeteer as source, so it must not use anything from outside.
+ */
+export function docxPaper(body: HTMLElement): void {
+  const doc = body.ownerDocument
+  const view = doc.defaultView!
+
+  // The converter drops alpha (rgba(…, 0.15) turns black): mix onto white
+  const solid = (color: string) => {
+    const [r, g, b, a = 1] = (color.match(/[\d.]+/g) || []).map(Number)
+    if (!a || r === undefined) return null
+    const mix = (c: number) => Math.round(c * a + 255 * (1 - a))
+    return `rgb(${mix(r)}, ${mix(g)}, ${mix(b)})`
+  }
+
+  // The converter recurses into a <blockquote> without its document argument,
+  // so anything but plain text inside one (images, fonts, media) throws and
+  // aborts the export. A one-cell table in the quote's colors keeps the box
+  // (notes, warnings, ...). It drops tables inside tables, so a quote holding
+  // one (or code, which becomes one) is only unwrapped.
+  body.querySelectorAll('blockquote').forEach((quote) => {
+    if (quote.querySelector('table, blockquote, .lia-code, .lia-code-terminal')) {
+      quote.replaceWith(...Array.from(quote.childNodes))
+      return
+    }
+    const css = view.getComputedStyle(quote)
+    const background = solid(css.backgroundColor)
+    const table = doc.createElement('table')
+    table.setAttribute('style', 'width: 100%; border-collapse: collapse;')
+    const cell = table.insertRow().insertCell()
+    cell.setAttribute('style',
+      (background ? `background-color: ${background}; ` : '') +
+      `border-left: 4px solid ${solid(css.borderLeftColor) || '#999'}; padding: 8px;`)
+    while (quote.firstChild) cell.appendChild(quote.firstChild)
+    quote.replaceWith(table)
+  })
+
+  // The converter reads any text-decoration, even `inherit` (LiaScript's
+  // quotes, quiz fields, summaries), as underline plus strike-through
+  body.querySelectorAll('[style*="inherit"]').forEach((el) => {
+    const style = (el as HTMLElement).style
+    Array.from(style).forEach((name) => {
+      if (style.getPropertyValue(name) === 'inherit') style.removeProperty(name)
+    })
+  })
+
+  // Quizzes on paper: buttons and feedback go, a selection lists its options,
+  // check boxes and radio buttons become symbols, text fields a line to write on
+  body
+    .querySelectorAll('.lia-quiz__check, .lia-quiz__resolve, .lia-quiz__hint, [id^="lia-quiz-feedback"]')
+    .forEach((el) => el.remove())
+  body.querySelectorAll('.lia-dropdown').forEach((dropdown) => {
+    const id = dropdown.querySelector('[aria-controls]')?.getAttribute('aria-controls')
+    const list = id ? doc.getElementById(id) : null
+    const options = Array.from(list?.querySelectorAll('.lia-dropdown__option') || [])
+      .map((option) => option.textContent?.trim())
+    list?.remove()
+    dropdown.replaceWith(`[ ${options.join(' | ')} ]`)
+  })
+  body.querySelectorAll('input, textarea').forEach((input) => {
+    const type = input.getAttribute('type')
+    const checked = (input as HTMLInputElement).checked
+    const mark = type === 'checkbox' ? (checked ? '☑ ' : '☐ ')
+      : type === 'radio' ? (checked ? '◉ ' : '○ ') : ' __________ '
+    // the symbol goes in front of its answer, not on a line of its own
+    const answer = input.nextElementSibling?.querySelector('p')
+    if (answer) {
+      answer.prepend(mark)
+      input.remove()
+    } else {
+      input.replaceWith(mark)
+    }
+  })
+
+  // A list item holding a <div> comes out empty (quizzes in lists). Code
+  // stays: later steps find it by its classes.
+  let div: Element | null
+  while ((div = body.querySelector('li > div:not([class*="lia-code"])'))) {
+    div.replaceWith(...Array.from(div.childNodes))
+  }
+}
+
+/**
  * Points the relative links of an embedded course at its folder.
  *
  * An embedded course (`window.liascript_course`) has no URL, so LiaScript
