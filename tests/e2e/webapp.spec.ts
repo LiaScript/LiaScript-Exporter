@@ -652,7 +652,7 @@ test.describe('sources and targets', () => {
       expect(result.status, result.error).toBe('completed')
 
       const pkg = openPackage(result.file!)
-      expect(pkg.text('index.html')).toContain('<meta name="lia-scorm-storage" content="suspend"')
+      expect(pkg.text('index.html')).toMatch(/<meta name="?lia-scorm-storage"? content="?suspend/)
       expect(pkg.text('config.js')).toContain('"meta":{"version":1')
     } finally {
       await session.context.close()

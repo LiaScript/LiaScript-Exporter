@@ -200,14 +200,19 @@ export function injectResponsivevoice(key: string, into: string): string {
  *   - string: opening tag like `<body>` (injects after) or closing tag like `</body>` (injects before)
  * @returns - new index.html content
  */
+/** Parcel >= 2.16 minifies the optional <head> and </head> away, this puts them back */
+export function withHead(html: string): string {
+  if (!/<head[\s>]/.test(html)) html = html.replace(/<html[^>]*>/, '$&<head>')
+  if (!html.includes('</head>')) html = html.replace(/<body[\s>]/, '</head>$&')
+  return html
+}
+
 export function inject(
   element: string,
   into: string,
   tag: string | boolean = false,
 ): string {
-  // Parcel >= 2.16 minifies the optional <head> and </head> away
-  if (!/<head[\s>]/.test(into)) into = into.replace(/<html[^>]*>/, '$&<head>')
-  if (!into.includes('</head>')) into = into.replace(/<body[\s>]/, '</head>$&')
+  into = withHead(into)
 
   // Backward compatibility: handle boolean parameter
   if (typeof tag === 'boolean') {

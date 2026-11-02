@@ -167,7 +167,8 @@ function checkRuntime(pkg: Package, dir: string, problems: Problems): void {
   if (!pkg.has(wrapper)) return
 
   const code = pkg.text(wrapper)
-  const refs = [...code.matchAll(/%BASE%([^"'\\\s]+)\\?["']/g)].map((match) => `${dir}/runtime/${match[1]}`)
+  // values may be quoted or, in a minified runtime, bare
+  const refs = [...code.matchAll(/=\\?["']?%BASE%([^"'\\\s>]+)/g)].map((match) => `${dir}/runtime/${match[1]}`)
 
   if (refs.length === 0) problems.add('runtime', 'the wrapper loads no runtime')
   problems.many('runtime files missing', [...new Set(refs)].filter((file) => !pkg.has(file)))

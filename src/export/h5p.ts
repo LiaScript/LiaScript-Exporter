@@ -121,11 +121,16 @@ export function libraryVersion(stamp: { version?: string; built?: number }): Lib
  * `%BASE%`, which the wrapper replaces by the library's URL.
  */
 export function runtimeHead(index: string): string {
-  const head = index.match(/<head[^>]*>([\s\S]*)<\/head>/i)
+  const head = helper.withHead(index).match(/<head[^>]*>([\s\S]*)<\/head>/i)
   if (!head) throw new Error('the H5P runtime has no <head>')
 
-  return head[1].replace(/(\s(?:src|href)=)(["'])(.*?)\2/gi, (all, attribute, quote, url) =>
-    NOT_LOCAL.test(url) ? all : `${attribute}${quote}%BASE%${url}${quote}`,
+  // minified pages leave attribute values unquoted
+  return head[1].replace(
+    /(\s(?:src|href)=)(?:(["'])(.*?)\2|([^\s"'>]+))/gi,
+    (all, attribute, quote = '', quoted, bare) => {
+      const url = quoted ?? bare
+      return NOT_LOCAL.test(url) ? all : `${attribute}${quote}%BASE%${url}${quote}`
+    },
   )
 }
 

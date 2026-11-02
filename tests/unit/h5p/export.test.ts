@@ -50,6 +50,18 @@ describe('H5P export', () => {
     expect(head).not.toContain('<head>')
   })
 
+  it('reads the head of a runtime minified by Parcel >= 2.16', () => {
+    const head = runtimeHead(
+      '<!DOCTYPE html><html lang=en><link rel=stylesheet href=lia.1.css><title>Lia</title>' +
+        '<script defer type=module src=lia.2.js></script><link rel=icon href=https://example.org/l.png>' +
+        '<body>\n<noscript>x</noscript>',
+    )
+    expect(head).toBe(
+      '<link rel=stylesheet href=%BASE%lia.1.css><title>Lia</title>' +
+        '<script defer type=module src=%BASE%lia.2.js></script><link rel=icon href=https://example.org/l.png>',
+    )
+  })
+
   it('ships a wrapper that parses, also inlined in a <script>', () => {
     const head = runtimeHead(INDEX)
     const code = wrapper(SOURCE, head)

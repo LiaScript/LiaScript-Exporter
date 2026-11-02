@@ -223,7 +223,7 @@ for (const format of ['scorm1.2', 'scorm2004']) {
     const { config_ } = configOf(pkg)
     const quizzes = config_.meta.slides.find((slide: any) => slide.title === 'Quizzes')
 
-    expect(pkg.text('index.html')).toContain('<meta name="lia-scorm-storage" content="suspend"')
+    expect(pkg.text('index.html')).toMatch(/<meta name="?lia-scorm-storage"? content="?suspend/)
     expect(config_.meta.version).toBe(1)
     expect(config_.meta.slides.map((slide: any) => slide.quiz.length)).toEqual(config_.quiz.map((slide: any) => slide.length))
     expect(quizzes.quiz[1]).toEqual({
