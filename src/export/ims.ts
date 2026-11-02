@@ -108,18 +108,16 @@ export async function exporter(argument: ImsExportArguments, json: any) {
   // the file the package loads; Moodle's web server rules refuse README.md
   const course = argument['ims-indexeddb'] ? argument.readme : helper.unblockedCourse(argument.readme)
   await helper.unblockReadmeImports(fs, contentPath, argument.readme, course)
-  argument.readme = course
+  // local: a project export hands the same argument on to SCORM, xAPI and H5P
+  let readme = course
 
   if (argument['ims-indexeddb']) {
     let newReadme = helper.random(20) + '.md'
 
-    let old_ = path.join(contentPath, argument.readme)
+    let old_ = path.join(contentPath, readme)
     let new_ = path.join(path.dirname(old_), newReadme)
 
-    argument.readme = argument.readme.replace(
-      path.basename(argument.readme),
-      newReadme,
-    )
+    readme = readme.replace(path.basename(readme), newReadme)
 
     await fs.move(old_, new_)
   }
@@ -127,8 +125,8 @@ export async function exporter(argument: ImsExportArguments, json: any) {
   const jsonLD = await RDF.script(argument, json)
 
   const iframeReadme = argument['lia-subfolder']
-    ? 'content/' + argument.readme.replace('./', '')
-    : argument.readme
+    ? 'content/' + readme.replace('./', '')
+    : readme
 
   await helper.iframe(
     fs,
