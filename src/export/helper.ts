@@ -205,6 +205,10 @@ export function inject(
   into: string,
   tag: string | boolean = false,
 ): string {
+  // Parcel >= 2.16 minifies the optional <head> and </head> away
+  if (!/<head[\s>]/.test(into)) into = into.replace(/<html[^>]*>/, '$&<head>')
+  if (!into.includes('</head>')) into = into.replace(/<body[\s>]/, '</head>$&')
+
   // Backward compatibility: handle boolean parameter
   if (typeof tag === 'boolean') {
     return tag

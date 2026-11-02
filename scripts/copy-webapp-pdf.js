@@ -45,14 +45,18 @@ fs.cpSync(SRC, out, { recursive: true })
 const index = path.join(out, 'index.html')
 const html = fs.readFileSync(index, 'utf8')
 
-if (!html.includes('</body>')) {
-  console.error('copy-webapp-pdf: no </body> in the pdf entry to hook into')
+if (!html.includes('<body')) {
+  console.error('copy-webapp-pdf: no <body> in the pdf entry to hook into')
   process.exit(1)
 }
 
 const hook = `<script>\n${fs.readFileSync(AUTOPRINT, 'utf8')}</script>`
 
-fs.writeFileSync(index, html.replace('</body>', `${hook}</body>`))
+// Parcel >= 2.16 omits the optional </body>, then the end of the file is the end of the body
+fs.writeFileSync(
+  index,
+  html.includes('</body>') ? html.replace('</body>', `${hook}</body>`) : html + hook,
+)
 
 let count = 0
 const walk = (dir) => {
