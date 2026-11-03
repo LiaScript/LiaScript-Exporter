@@ -12,7 +12,7 @@ import { answered, defaults, meta, project } from './fixture-meta'
 
 const clone = <T>(value: T): T => JSON.parse(JSON.stringify(value))
 
-function session(lms: FakeLMS, version: '1.2' | '2004', extra: { mastery?: number; slides?: number } = {}) {
+function session(lms: FakeLMS, version: '1.2' | '2004', extra: { mastery?: number; slides?: number; points?: boolean } = {}) {
   const clock = new FakeClock()
   const warn = vi.fn()
   const engine = new Engine(lms, { profile: profile(version), defaults, meta: meta(), warn, ...extra }, clock)
@@ -291,8 +291,9 @@ describe('status rules', () => {
     solveAll(engine, (i) => (i < 4 ? 1 : 0))
     expect(lms.stored['cmi.success_status']).toBe('passed')
     expect(lms.stored['cmi.completion_status']).toBe('incomplete')
-    expect(lms.stored['cmi.score.raw']).toBe('4')
-    expect(lms.stored['cmi.score.max']).toBe('7')
+    // percent: Moodle grades the raw score as it is, ignoring min and max
+    expect(lms.stored['cmi.score.raw']).toBe('57.14')
+    expect(lms.stored['cmi.score.max']).toBe('100')
 
     check(engine, 4, { solved: -1, trial: 2 })
     check(engine, 5, { solved: -1, trial: 2 })
@@ -300,6 +301,29 @@ describe('status rules', () => {
     expect(lms.stored['cmi.completion_status']).toBe('completed')
     expect(lms.stored['cmi.progress_measure']).toBe('1')
     expect(lms.refusals).toEqual([])
+  })
+
+  it('2004 with a passing score: no score while quizzes are open and too few points', () => {
+    // the LMS judges success from score.scaled itself, ILIAS would say failed
+    const { engine, lms } = start({ version: '2004', mastery: '0.5' })
+    const done = answered()
+    engine.store('survey', 14, done.survey[14])
+    check(engine, 0, { solved: 1, trial: 1 })
+    expect(lms.stored['cmi.score.scaled']).toBeUndefined()
+    expect(lms.stored['cmi.score.raw']).toBeUndefined()
+
+    for (let i = 1; i < 7; i++) check(engine, i, { solved: -1, trial: 2 })
+    expect(lms.stored['cmi.success_status']).toBe('failed')
+    expect(lms.stored['cmi.score.scaled']).toBe('0.1429')
+    expect(lms.stored['cmi.score.raw']).toBe('14.29')
+    expect(lms.refusals).toEqual([])
+  })
+
+  it('2004 in points for H5P', () => {
+    const { engine, lms } = session(new FakeLMS({ version: '2004' }), '2004', { points: true })
+    expect(lms.stored['cmi.score.max']).toBe('7')
+    check(engine, 0, { solved: 1, trial: 1 })
+    expect(lms.stored['cmi.score.raw']).toBe('1')
   })
 
   it('2004 without a passing score: no success status at all', () => {

@@ -34,7 +34,7 @@ class FakeBridge implements Adapter.Bridge {
 function session(bridge: FakeBridge) {
   const clock = new FakeClock()
   const warn = vi.fn()
-  const engine = new Engine(Adapter.connect(bridge, warn), { profile: profile('2004'), defaults, meta: meta(), warn }, clock)
+  const engine = new Engine(Adapter.connect(bridge, warn), { profile: profile('2004'), defaults, meta: meta(), warn, points: true }, clock)
   engine.start()
   return { engine, clock, warn, bridge }
 }
