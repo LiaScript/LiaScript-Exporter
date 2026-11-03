@@ -94,6 +94,45 @@ export function isZipFile(filename: string): boolean {
   return extname(filename).toLowerCase() === '.zip'
 }
 
+export type GitSource = {
+  url: string
+  branch?: string
+  subdir?: string
+  file?: string
+}
+
+/**
+ * Splits a GitLab link into what `cloneGitRepo` needs, like LiaScript does in
+ * `UrlPattern/GitLab.elm`: gitlab.com, self-hosted instances (`/-/` links) and
+ * LiaScript's `gitlab://host/group/repo/...` form, e.g.
+ * `gitlab://git.example.org/group/repo/-/blob/main/course/README.md` →
+ * `https://git.example.org/group/repo.git`, `main`, `course`, `README.md`.
+ * Other URLs pass through unchanged.
+ */
+export function parseGitUrl(gitUrl: string): GitSource {
+  const url = gitUrl.trim().replace(/^gitlab:\/\//i, 'https://')
+  const isGitLab =
+    url !== gitUrl.trim() ||
+    /^(https?:\/\/)?(www\.)?gitlab\.com\//i.test(url) ||
+    url.includes('/-/')
+  if (!isGitLab) return { url: gitUrl }
+
+  const plain = url.replace(/[?#].*$/, '').replace(/\/+$/, '')
+  // shortcut: a branch name containing "/" is read as branch + path, pass --git-branch/--git-subdir for those
+  const link = plain.match(/^(.*?)\/-\/(?:blob|raw|tree)\/([^/]+)(?:\/(.*))?$/)
+  const repo = (link ? link[1] : plain).replace(/\.git$/, '') + '.git'
+  if (!link) return { url: repo }
+
+  const path = decodeURIComponent(link[3] || '').split('/').filter(Boolean)
+  const file = /\.md$/i.test(path[path.length - 1] || '') ? path.pop() : undefined
+  return {
+    url: repo,
+    branch: link[2],
+    subdir: path.join('/') || undefined,
+    file,
+  }
+}
+
 /**
  * Clones a Git repository to a target directory
  * @param gitUrl Git repository URL

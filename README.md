@@ -116,7 +116,7 @@ Once installed, use `liaex` or `liascript-exporter`. Core options:
 -v --version  print version
 -k --key      ResponsiveVoice key for text-to-speech
 
-   --git-url     clone a git/GitHub repository and export from it (used instead of -i)
+   --git-url     clone a git/GitHub/GitLab repository (also gitlab://host/...) and export from it (used instead of -i)
    --git-branch  branch or tag to checkout (default: repository default)
    --git-subdir  subdirectory within the repository to use as the root
    --git-file    specific markdown file to export (default: README.md or first .md found)
@@ -141,6 +141,16 @@ liaex --git-url https://github.com/user/repo \
   --git-subdir docs \
   --git-file 01_Intro.md \
   -f web -o course
+```
+
+GitLab links work as well, on gitlab.com and on self-hosted instances. As in
+LiaScript, a self-hosted GitLab can be marked with `gitlab://` instead of
+`https://`. Branch, subdirectory and file are taken from a `-/blob/`, `-/raw/`
+or `-/tree/` link; `--git-branch`, `--git-subdir` and `--git-file` override them.
+
+``` bash
+liaex --git-url https://gitlab.com/group/repo/-/blob/main/course/README.md -f h5p -o course
+liaex --git-url gitlab://git.example.org/group/repo -f scorm1.2 -o course
 ```
 
 ### Presets

@@ -13,7 +13,11 @@ import { join } from 'path'
 import { randomUUID } from 'crypto'
 import { tmpdir } from 'os'
 
-import { cloneGitRepo, findMainMarkdown } from './server/utils/zipExtractor'
+import {
+  cloneGitRepo,
+  findMainMarkdown,
+  parseGitUrl,
+} from './server/utils/zipExtractor'
 
 export type GitExportOptions = {
   gitUrl: string
@@ -33,11 +37,12 @@ export function getGitOptions(argv: any): GitExportOptions | null {
     return null
   }
 
+  const fromUrl = parseGitUrl(String(gitUrl))
   return {
-    gitUrl,
-    gitBranch: argv['git-branch'],
-    gitSubdir: argv['git-subdir'],
-    gitFile: argv['git-file'],
+    gitUrl: fromUrl.url,
+    gitBranch: argv['git-branch'] || fromUrl.branch,
+    gitSubdir: argv['git-subdir'] || fromUrl.subdir,
+    gitFile: argv['git-file'] || fromUrl.file,
   }
 }
 

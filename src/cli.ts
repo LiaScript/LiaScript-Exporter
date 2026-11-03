@@ -43,7 +43,7 @@ export function displayHelp(): void {
   COLOR.command(
     '',
     '--git-url',
-    'clone a git/GitHub repository and export from it (used instead of -i)',
+    'clone a git/GitHub/GitLab repository (also gitlab://host/...) and export from it (used instead of -i)',
   )
   COLOR.command(
     '',

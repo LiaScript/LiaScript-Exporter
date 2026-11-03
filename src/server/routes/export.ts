@@ -11,6 +11,7 @@ import {
   findMainMarkdown,
   isZipFile,
   cloneGitRepo,
+  parseGitUrl,
   removeDirectory,
 } from '../utils/zipExtractor'
 
@@ -22,6 +23,12 @@ export const exportRouter: FastifyPluginAsync = async (fastify) => {
    */
   async function cloneSource(source: any): Promise<string | null> {
     source.type = 'git'
+
+    const fromUrl = parseGitUrl(String(source.gitUrl))
+    source.gitUrl = fromUrl.url
+    source.gitBranch ||= fromUrl.branch
+    source.gitSubdir ||= fromUrl.subdir
+    source.gitFile ||= fromUrl.file
 
     fastify.log.info(`Cloning git repository: ${source.gitUrl}`)
 
