@@ -5,6 +5,7 @@ import puppeteer, { Browser, Page } from 'puppeteer'
 import * as fs from 'fs'
 import { tmpdir } from 'os'
 import { createRequire } from 'module'
+import { pathToFileURL } from 'url'
 
 // Default EPUB generation settings
 const DEFAULT_TIMEOUT_MS = 15000 // 15 seconds
@@ -131,6 +132,73 @@ export interface EpubExportArguments {
 }
 
 export const format = 'epub'
+
+const COVER_EXTENSIONS: Record<string, string> = {
+  'image/jpeg': 'jpg',
+  'image/png': 'png',
+  'image/gif': 'gif',
+  'image/webp': 'webp',
+  'image/svg+xml': 'svg',
+}
+
+/**
+ * html-to-epub downloads the cover and the images left as URLs with axios.
+ * index.ts sets a global XMLHttpRequest for Elm, so axios picks its XHR
+ * adapter also in Node and returns strings instead of streams: a cover is
+ * written as UTF-8 text ("unsupported file type: undefined") and a failed
+ * image download crashes ("err.response.data.destroy is not a function").
+ * This sets the Node http adapter on the axios module the library imports,
+ * resolved from the library's folder as its `import 'axios'` is.
+ */
+async function useHttpAdapterInEpubLibrary(): Promise<void> {
+  try {
+    const library = createRequire(path.join(helper.dirname(), 'index.js')).resolve(
+      '@lesjoursfr/html-to-epub/package.json',
+    )
+    const manifest = createRequire(library).resolve('axios/package.json')
+    // the ESM entry of axios ("exports" → "." → "default"), not the CommonJS build
+    const entry = pathToFileURL(path.join(path.dirname(manifest), 'index.js')).href
+    const axios = (
+      await (new Function('m', 'return import(m)') as (m: string) => Promise<any>)(entry)
+    ).default
+    axios.defaults.adapter = 'http'
+  } catch (e: any) {
+    console.warn(`ePub: could not set the http adapter for axios (${e.message})`)
+  }
+}
+
+/**
+ * Downloads an http(s) cover into `dir` and returns the file, local paths pass
+ * through. html-to-epub takes the cover's type from the URL's extension and
+ * stops the export for URLs without one (`…/avatar?id=1`); here it comes from
+ * the content type. A cover that cannot be loaded is left out, as before.
+ */
+export async function localCover(
+  cover: string,
+  dir: string,
+  fetch: typeof globalThis.fetch = helper.fetch,
+): Promise<string | undefined> {
+  if (!/^(https?:)?\/\//i.test(cover)) return cover
+
+  const url = cover.startsWith('//') ? 'https:' + cover : cover
+  try {
+    const response = await fetch(url)
+    if (!response.ok) throw new Error(`HTTP ${response.status}`)
+
+    const type = (response.headers.get('content-type') || '').split(';')[0].trim().toLowerCase()
+    const extension =
+      COVER_EXTENSIONS[type] ||
+      path.extname(new URL(url).pathname).slice(1).toLowerCase().replace('jpeg', 'jpg') ||
+      'jpg'
+
+    const file = path.join(dir, `cover.${extension}`)
+    fs.writeFileSync(file, Buffer.from(await response.arrayBuffer()))
+    return file
+  } catch (e: any) {
+    console.warn(`Cover image left out, it could not be loaded: ${url} (${e.message})`)
+    return undefined
+  }
+}
 
 /**
  * Exports a LiaScript course to EPUB format using Puppeteer and @lesjoursfr/html-to-epub.
@@ -966,7 +1034,10 @@ async function toEPUB(
 
     if (argument['epub-publisher'])
       epubOptions.publisher = argument['epub-publisher']
-    if (argument['epub-cover']) epubOptions.cover = argument['epub-cover']
+    if (argument['epub-cover']) {
+      const cover = await localCover(argument['epub-cover'], epubOptions.tempDir)
+      if (cover) epubOptions.cover = cover
+    }
     if (argument['epub-description'])
       epubOptions.description = argument['epub-description']
     if (fonts.length > 0) epubOptions.fonts = fonts
@@ -985,6 +1056,7 @@ async function toEPUB(
       new Function('m', 'return import(m)') as (m: string) => Promise<any>
     )(epubModuleName)
     const EPub = epubModule.EPub
+    await useHttpAdapterInEpubLibrary()
     try {
       const epub = new EPub(epubOptions, outputPath)
 
