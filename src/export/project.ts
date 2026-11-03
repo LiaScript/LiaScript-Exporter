@@ -1014,7 +1014,7 @@ async function toCard(
       fs.removeSync(path.join(clone, '.gitignore'))
     } else {
       console.warn(
-        'SCORM, IMS, xAPI, H5P and Android packages are only generated for courses on raw.githubusercontent.com, skipping',
+        'SCORM, IMS, xAPI, H5P and Android packages are only generated for courses on raw.githubusercontent.com or GitLab (…/-/raw/<branch>/<file>), skipping',
         course.url,
       )
     }

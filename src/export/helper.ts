@@ -2,6 +2,7 @@
 
 import type { ExportFS } from '../fs/types'
 import * as fsPath from '../fs/path'
+import { isGitLabUrl, parseGitUrl } from '../gitUrl'
 const beautify = require('simply-beautiful')
 
 /*
@@ -588,10 +589,19 @@ export function random(length: number = RANDOM_STRING_LENGTH): string {
   return str
 }
 
+/** POSIX single-quoting: nothing inside is expanded by the shell. */
+function shellQuote(value: string): string {
+  return "'" + value.replace(/'/g, "'\\''") + "'"
+}
+
 /**
- * Parses a raw GitHub URL and extracts repository information.
- * Supports URLs in format: raw.githubusercontent.com/org/repo/branch/path or raw.githubusercontent.com/org/repo/refs/heads/branch/path
- * @param raw_url - Raw GitHub URL to parse
+ * Parses the URL of a course file and extracts repository information, so a
+ * project export can clone the course for SCORM, IMS, xAPI, H5P and Android.
+ * Supports raw.githubusercontent.com/org/repo/branch/path (also
+ * .../refs/heads/branch/path) and GitLab file links, as `parseGitUrl` reads
+ * them: gitlab.com, self-hosted `/-/raw/` or `/-/blob/` links and
+ * `gitlab://host/...`, e.g. https://gitlab.com/group/repo/-/raw/main/course/README.md.
+ * @param raw_url - URL of the course file
  * @returns Object with repository information or null if URL doesn't match
  */
 export function getRepository(raw_url: string): {
@@ -614,6 +624,21 @@ export function getRepository(raw_url: string): {
       branch,
       path: filePath,
       cmd: `git clone --branch ${branch} ${url} tmp`,
+    }
+  }
+
+  if (isGitLabUrl(raw_url)) {
+    const source = parseGitUrl(raw_url)
+
+    // a link to a file on a branch; a bare repository URL names no course
+    if (source.branch && source.file) {
+      return {
+        url: source.url,
+        branch: source.branch,
+        path: [source.subdir, source.file].filter(Boolean).join('/'),
+        // branch and URL come from project.yaml: quote them for the shell
+        cmd: `git clone --branch ${shellQuote(source.branch)} ${shellQuote(source.url)} tmp`,
+      }
     }
   }
 
