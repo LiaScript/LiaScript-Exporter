@@ -26,6 +26,7 @@
 import * as fs from 'node:fs'
 import * as path from 'node:path'
 import { Browser, BrowserContext, expect, Page, test } from '@playwright/test'
+import { unzipSync } from 'fflate'
 import { checkOutput, Format } from '../checkers'
 import { openPackage } from '../checkers/package'
 import { checkPrint } from '../checkers/pdf'
@@ -462,6 +463,43 @@ test.describe('sources and targets', () => {
       await session.context.close()
     }
   })
+
+  for (const [platform, extension] of [
+    ['win', '.exe'],
+    ['linux', '.zip'],
+  ]) {
+    test(`desktop builds the ${platform} app in the browser`, async ({ browser }, testInfo) => {
+      test.setTimeout(QUICK_TIMEOUT)
+      const session = await openApp(browser)
+
+      try {
+        await upload(session.page, courseUpload())
+        await choose(session.page, { format: 'desktop' })
+        await session.page.locator('#toggleAdvanced').click()
+        await session.page.locator('#desktopPlatform').selectOption(platform)
+        await session.page.locator('#desktopAppId').fill('io.github.liascript.test')
+
+        const result = await submitAndCollect(session, `desktop-${platform}`, QUICK_TIMEOUT)
+        await attachLog(session, testInfo)
+        expect(result.error).toBeUndefined()
+        expect(path.extname(result.file!)).toBe(extension)
+
+        const bytes = fs.readFileSync(result.file!)
+        if (platform === 'win') {
+          expect(bytes.subarray(0, 2).toString()).toBe('MZ')
+          // the resources are embedded and the binary told so
+          expect(bytes.includes('POSTJECT_SENTINEL_fce680ab2cc467b6e072b8b5df1996b2:1')).toBe(true)
+          expect(bytes.includes('io.github.liascript.test')).toBe(true)
+        } else {
+          const names = Object.keys(unzipSync(bytes))
+          expect(names).toContain('Exporter-Test-Course/resources.neu')
+          expect(names).toContain('Exporter-Test-Course/Exporter-Test-Course')
+        }
+      } finally {
+        await session.context.close()
+      }
+    })
+  }
 
   test('a single README.md upload exports', async ({ browser }, testInfo) => {
     const session = await openApp(browser)

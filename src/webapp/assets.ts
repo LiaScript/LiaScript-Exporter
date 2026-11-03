@@ -16,6 +16,9 @@ import scorm12SuspendBundle from 'url:./generated/assets/scorm1.2-suspend.zip'
 import scorm2004SuspendBundle from 'url:./generated/assets/scorm2004-suspend.zip'
 import indexeddbBundle from 'url:./generated/assets/indexeddb.zip'
 import scormSchemas from 'url:./generated/assets/scorm-schemas.zip'
+import desktopMacBundle from 'url:./generated/assets/desktop-mac.zip'
+import desktopWinBundle from 'url:./generated/assets/desktop-win.zip'
+import desktopLinuxBundle from 'url:./generated/assets/desktop-linux.zip'
 
 const BUNDLES: Record<string, string> = {
   common: commonBundle,
@@ -29,6 +32,9 @@ const BUNDLES: Record<string, string> = {
   'scorm2004-suspend': scorm2004SuspendBundle,
   indexeddb: indexeddbBundle,
   'scorm-schemas': scormSchemas,
+  'desktop-mac': desktopMacBundle,
+  'desktop-win': desktopWinBundle,
+  'desktop-linux': desktopLinuxBundle,
 }
 
 /**

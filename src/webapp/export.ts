@@ -161,6 +161,15 @@ async function collect(
     }
   }
 
+  // desktop names its output by platform: `<output>-win-x64.exe` and the like
+  const suffixed = fs.list().find((f) => f.startsWith(`${output}-`))
+  if (suffixed) {
+    return {
+      bytes: await fs.readFileRaw(suffixed),
+      filename: name + suffixed.slice(output.length),
+    }
+  }
+
   throw new Error(
     `the "${format}" export produced no recognisable output — found: ${fs
       .list()

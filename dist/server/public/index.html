@@ -326,6 +326,25 @@
                   <input
                     type="radio"
                     name="format"
+                    value="desktop"
+                    data-i18n-description="formats.desktop.description"
+                    data-description="Offline app for macOS, Windows or Linux that uses the system's web view."
+                  />
+                  <div class="preset-content">
+                    <img
+                      style="height: 48px"
+                      src="../assets/desktop.svg"
+                      alt="Desktop"
+                    />
+                    <h3 data-i18n="formats.desktop.title">Desktop</h3>
+                    <p data-i18n="formats.desktop.subtitle">macOS, Windows, Linux</p>
+                  </div>
+                </label>
+
+                <label class="preset-tile">
+                  <input
+                    type="radio"
+                    name="format"
                     value="json"
                     data-i18n-description="formats.json.description"
                     data-description="Structured data format for programmatic processing and API integration. Perfect for developers and automated workflows. <a href='https://en.wikipedia.org/wiki/JSON' target='_blank'>Learn more</a>"
@@ -1273,6 +1292,64 @@
                     data-required="true"
                   />
                   <span class="hint" data-i18n="settings.android.appIdHint"
+                    >Unique app identifier (e.g. io.github.liascript)</span
+                  >
+                </div>
+              </div>
+
+              <!-- Desktop Settings -->
+              <div class="settings-group" data-formats="desktop">
+                <h3 class="settings-heading" data-i18n="settings.desktop.title">
+                  Desktop Settings
+                </h3>
+
+                <div class="form-group">
+                  <label
+                    for="desktopPlatform"
+                    data-i18n="settings.desktop.platform"
+                    >Platform</label
+                  >
+                  <select id="desktopPlatform" name="option_desktop-platform">
+                    <option value="mac">macOS</option>
+                    <option value="win">Windows</option>
+                    <option value="linux">Linux</option>
+                  </select>
+                  <span class="hint" data-i18n="settings.desktop.platformHint"
+                    >One app per export</span
+                  >
+                </div>
+
+                <div class="form-group">
+                  <label
+                    for="desktopAppName"
+                    data-i18n="settings.desktop.appName"
+                    >App Name</label
+                  >
+                  <input
+                    type="text"
+                    id="desktopAppName"
+                    name="option_desktop-appName"
+                    data-i18n-placeholder="settings.desktop.appNameHint"
+                    placeholder="My App"
+                  />
+                  <span class="hint" data-i18n="settings.desktop.appNameHint"
+                    >Name of the app, defaults to the course title</span
+                  >
+                </div>
+
+                <div class="form-group">
+                  <label for="desktopAppId" data-i18n="settings.desktop.appId"
+                    >App ID *</label
+                  >
+                  <input
+                    type="text"
+                    id="desktopAppId"
+                    name="option_desktop-appId"
+                    data-i18n-placeholder="settings.desktop.appIdPlaceholder"
+                    placeholder="io.github.liascript"
+                    data-required="true"
+                  />
+                  <span class="hint" data-i18n="settings.desktop.appIdHint"
                     >Unique app identifier (e.g. io.github.liascript)</span
                   >
                 </div>

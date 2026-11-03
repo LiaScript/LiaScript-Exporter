@@ -32,6 +32,9 @@ const BUNDLES = [
   'scorm1.2-suspend',
   'scorm2004-suspend',
   'indexeddb',
+  'desktop-mac',
+  'desktop-win',
+  'desktop-linux',
 ]
 
 const ASSETS = path.join(__dirname, '..', 'dist', 'assets')

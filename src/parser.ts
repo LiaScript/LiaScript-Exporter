@@ -7,6 +7,7 @@ import * as PROJECT from './export/project'
 import * as RDF from './export/rdf'
 import * as XAPI from './export/xapi'
 import * as H5P from './export/h5p'
+import type * as DESKTOP from './export/desktop'
 
 /*
  * Server-only formats are imported for their argument types only: `parser.ts`
@@ -69,6 +70,7 @@ export type Arguments = BaseArguments &
   Partial<DOCX.DocxExportArguments> &
   Partial<IMS.ImsExportArguments> &
   Partial<ANDROID.AndroidExportArguments> &
+  Partial<DESKTOP.DesktopExportArguments> &
   Partial<PROJECT.ProjectExportArguments> &
   Partial<RDF.RDFArguments> &
   Partial<XAPI.XapiExportArguments> &
@@ -188,6 +190,11 @@ export function parseArguments(): Arguments {
     'android-keystorePassword': argv['android-keystorePassword'],
     'android-keyAlias': argv['android-keyAlias'],
     'android-keyPassword': argv['android-keyPassword'],
+
+    'desktop-appId': argv['desktop-appId'],
+    'desktop-appName': argv['desktop-appName'],
+    'desktop-icon': escapeBackslash(argv['desktop-icon']),
+    'desktop-platform': argv['desktop-platform'],
 
     // project settings
     'project-no-meta': argv['project-no-meta'],

@@ -24,6 +24,8 @@ export const REQUIRED: Record<string, string[]> = {
   h5p: ['h5p', 'common', 'h5p-library'],
   'scorm1.2': ['scorm1.2', 'common', 'scorm-schemas'],
   scorm2004: ['scorm2004', 'common', 'scorm-schemas'],
+  // the web export with its appId as IndexedDB key, plus one binary per platform
+  desktop: ['indexeddb', 'common'],
 }
 
 /**
@@ -57,6 +59,11 @@ const SWAPS: Array<{
 export function requiredBundles(format: string, options: Record<string, any> = {}): string[] | undefined {
   const required = REQUIRED[format]
   if (!required) return undefined
+
+  if (format === 'desktop') {
+    const platforms = options['desktop-platform'] || 'mac,win,linux'
+    return [...required, ...platforms.split(',').map((p: string) => `desktop-${p.trim()}`)]
+  }
 
   return SWAPS.filter((s) => s.formats.includes(format) && s.when(options, format)).reduce(
     (bundles, s) => bundles.map(s.swap),

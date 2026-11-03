@@ -73,6 +73,7 @@ const SUPPORTED = new Set([
   'pdf',
   'docx',
   'epub',
+  'desktop',
 ])
 
 /** Formats rendered as one document in memory; big courses strain the tab. */

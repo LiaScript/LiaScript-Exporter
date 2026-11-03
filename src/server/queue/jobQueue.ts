@@ -433,6 +433,7 @@ export class JobQueue extends EventEmitter {
                 f.endsWith('.jsonld') ||
                 f.endsWith('.nq') ||
                 f.endsWith('.apk') ||
+                f.endsWith('.exe') ||
                 f.endsWith('.h5p'),
             )
 

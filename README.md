@@ -114,7 +114,7 @@ Once installed, use `liaex` or `liascript-exporter`. Core options:
 -p --path     path to pack (defaults to the input file's directory)
 -o --output   output file name (default: "output"; extension set by format)
 -f --format   scorm1.2, scorm2004, ims, web, pdf, epub, docx, xapi, h5p,
-              android, project, rdf, json, fullJson (default: json)
+              android, desktop, project, rdf, json, fullJson (default: json)
 -s --style    additional CSS for the iframe that wraps the course
               (--scorm-iframe, --web-iframe, IMS)
 -v --version  print version
@@ -641,6 +641,44 @@ debug APK. Signing uses `--android-keystore`, `--android-keystorePassword`,
 `KEYSTORE_FILE`, `KEYSTORE_PASSWORD`, `KEY_ALIAS` and `KEY_PASSWORD`).
 
 __Still a bit experimental__
+
+### Desktop
+
+Wraps the offline web export (`--web-indexeddb`) into a
+[Neutralinojs](https://neutralino.js.org/) app for macOS, Windows and Linux. It
+uses the system webview (WKWebView, WebView2, WebKitGTK) instead of bundling a
+browser, so an app is about 3 MB plus the course. Everything builds on any
+system within seconds and offline, no Xcode or Wine needed, also in the web
+app, which builds one platform per export.
+
+``` shell
+$ liaex -i README.md -f desktop \
+  --desktop-appId io.github.liascript.mycourse \
+  -o mycourse
+...
+✅ mycourse-win-x64.exe
+✅ mycourse-linux-x64.zip
+✅ mycourse-mac-universal.zip
+```
+
+The Windows `.exe` carries the course inside. The mac zip holds one `.app`
+for Intel and Apple Silicon, the Linux zip a folder with the executable and its
+`resources.neu`. The Neutralinojs binaries ship in `dist/assets/desktop-*`
+(`npm run asset:desktop` updates them).
+
+__`--desktop-appId`__ (required) unique id in reverse URL notation.
+
+__`--desktop-appName`__ name of the app, defaults to the course title.
+
+__`--desktop-icon`__ png with 1024x1024 px, defaults to the LiaScript logo.
+
+__`--desktop-platform`__ comma separated subset of `mac,win,linux` (default: all).
+
+> Unsigned apps trigger warnings: on macOS right-click → "Open" (or
+> `xattr -cr MyCourse.app`), on Windows SmartScreen → "More info" → "Run
+> anyway". Rendering and read-aloud depend on the system's webview; Linux needs
+> `libwebkit2gtk-4.1`. The course runs on a local server at a port derived from
+> the appId, which keeps the stored progress across starts.
 
 ### PDF
 

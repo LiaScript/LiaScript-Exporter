@@ -379,7 +379,7 @@ ${signingConfig}`,
  * Runs the commands one after another, rejecting at the first that fails, so a
  * broken build reaches the caller and the CLI exits non-zero.
  */
-async function execute(cmds: string[], cwd: string): Promise<void> {
+export async function execute(cmds: string[], cwd: string): Promise<void> {
   for (const cmd of cmds) {
     console.log('exec:', cmd)
 

@@ -9,6 +9,7 @@ import * as IMS from './export/ims'
 import * as RDF from './export/rdf'
 import * as XAPI from './export/xapi'
 import * as H5P from './export/h5p'
+import * as DESKTOP from './export/desktop'
 import * as STORAGE from './export/scorm-storage'
 
 import { getNext, storeNext } from './export/collection'
@@ -250,6 +251,9 @@ export class Exporter {
       case SERVER_ONLY.ANDROID:
         await serverExporter('android').exporter(argument, JSON.parse(json))
         break
+      case DESKTOP.format:
+        await DESKTOP.exporter(argument, JSON.parse(json))
+        break
       case XAPI.format:
         await XAPI.exporter(argument, JSON.parse(json))
         break
@@ -390,6 +394,7 @@ export class Exporter {
       SERVER_ONLY.EPUB,
       SERVER_ONLY.DOCX,
       SERVER_ONLY.ANDROID,
+      DESKTOP.format,
     ])
 
     return needsFullJson.has(format) ? ExportFormat.FULL_JSON : format

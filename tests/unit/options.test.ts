@@ -44,6 +44,7 @@ const SERVER_FORMATS = [
   'json',
   'fulljson',
   'rdf',
+  'desktop',
 ]
 
 /**

@@ -2,6 +2,7 @@ import * as COLOR from './colorize'
 import * as SCORM12 from './export/scorm12'
 import * as IMS from './export/ims'
 import * as ANDROID from './export/android'
+import * as DESKTOP from './export/desktop'
 import * as PDF from './export/pdf'
 import * as EPUB from './export/epub'
 import * as DOCX from './export/docx'
@@ -78,7 +79,7 @@ export function displayHelp(): void {
   COLOR.command(
     '-f',
     '--format',
-    'scorm1.2, scorm2004, json, fullJson, web, ims, xapi, h5p, pdf, epub, docx, android, rdf, project, presets (default is json)',
+    'scorm1.2, scorm2004, json, fullJson, web, ims, xapi, h5p, pdf, epub, docx, android, desktop, rdf, project, presets (default is json)',
   )
   COLOR.command('-v', '--version', 'output the current version')
   COLOR.command('\n-k', '--key', 'responsive voice key ')
@@ -87,6 +88,7 @@ export function displayHelp(): void {
   SCORM12.help()
   IMS.help()
   ANDROID.help()
+  DESKTOP.help()
   PDF.help()
   EPUB.help()
   DOCX.help()
