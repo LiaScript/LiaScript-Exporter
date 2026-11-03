@@ -1003,6 +1003,17 @@ footer: >
   Simply add a custom footer - that can also contain HTML
   <a href="https://liascript.github.io" target="_blank">Made with LiaScript</a>
 
+# Own design: stylesheets and CSS, added to the <head> after Bootstrap, so
+# your rules win without !important. 'link' takes one URL or a list, like the
+# LiaScript header. A local file (relative to this yaml) is copied next to the
+# generated page, so publishing the output folder is enough.
+link:
+  - https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap
+  - theme.css
+style: |
+  body { font-family: Inter, sans-serif; }
+  .btn-secondary { background: #003366; border-color: #003366; }
+
 # With this settings you can customize social metadata, og-graph for facebook or twitter
 # if not present, the title, comment, and logo will be used.
 # You can explicitly turn this of with the cmd-parameter --project-no-meta

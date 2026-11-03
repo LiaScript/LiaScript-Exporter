@@ -150,6 +150,8 @@ export async function exporter(argument: ProjectExportArguments, json: any) {
   const output = argument.output
   // `-o some/dir/index`: the page and its assets/ go there, create it
   fs.ensureDirSync(path.dirname(path.resolve(output)))
+  // read before the courses, which work on copies of argument with their own input
+  const styles = headStyles(json, argument.input, output)
   const itemList: any[] = []
   const searchIndex: any[] = []
 
@@ -296,6 +298,7 @@ export async function exporter(argument: ProjectExportArguments, json: any) {
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    ${styles}
 
     <script>
       // Globale Variable zum Speichern der ausgewählten Kategorien
@@ -1301,6 +1304,52 @@ export function scormArguments(argument: any, courseFile: string) {
   if (!argument['scorm-embed'] && !argument['lia-subfolder']) return argument
 
   return { ...argument, 'scorm-embed': fs.readFileSync(courseFile, 'utf8') }
+}
+
+/**
+ * `link:` and `style:` of a project.yaml as `<head>` markup. It goes after
+ * Bootstrap, so its rules win without `!important`. `link:` is one URL or a
+ * list; a local stylesheet (relative to project.yaml) is copied to the same
+ * relative place next to the page, so publishing the output folder is enough.
+ * Paths leading out of the folder of project.yaml are linked but not copied.
+ */
+export function headStyles(
+  json: { link?: string | string[]; style?: string },
+  yamlFile: string,
+  outputFile: string,
+): string {
+  const from = path.dirname(path.resolve(yamlFile))
+  const to = path.dirname(path.resolve(outputFile))
+  let html = ''
+
+  for (const entry of ([] as any[]).concat(json.link || [])) {
+    const link = String(entry).trim()
+    if (!link) continue
+
+    const local =
+      !helper.isURL(link) && !link.startsWith('//') && !link.startsWith('data:')
+
+    if (local && !helper.isURL(yamlFile)) {
+      const rel = path.normalize(link)
+
+      if (path.isAbsolute(rel) || rel.startsWith('..')) {
+        console.warn('link: outside the folder of project.yaml, not copied:', link)
+      } else if (!fs.existsSync(path.join(from, rel))) {
+        console.warn('link: file not found:', path.join(from, rel))
+      } else if (path.join(from, rel) !== path.join(to, rel)) {
+        fs.ensureDirSync(path.dirname(path.join(to, rel)))
+        fs.copySync(path.join(from, rel), path.join(to, rel))
+      }
+    }
+
+    html += `<link rel="stylesheet" href="${helper.escapeHtml(link)}">\n`
+  }
+
+  if (json.style) {
+    html += `<style>\n${json.style}\n</style>\n`
+  }
+
+  return html
 }
 
 function stringToColor(str: string) {
