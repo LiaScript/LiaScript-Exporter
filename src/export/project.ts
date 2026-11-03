@@ -148,6 +148,8 @@ export async function exporter(argument: ProjectExportArguments, json: any) {
 
   let cards = ''
   const output = argument.output
+  // `-o some/dir/index`: the page and its assets/ go there, create it
+  fs.ensureDirSync(path.dirname(path.resolve(output)))
   const itemList: any[] = []
   const searchIndex: any[] = []
 
@@ -972,6 +974,8 @@ async function toCard(
 
   let repo
   let clone: string | undefined
+  // the course's Markdown file inside its clone
+  let courseFile = ''
   if (
     argument['project-generate-ims'] ||
     argument['project-generate-scorm12'] ||
@@ -989,7 +993,8 @@ async function toCard(
       helper.removeOnExit(path.dirname(clone))
 
       execSync(repo.cmd.replace(/ tmp$/, ' ' + JSON.stringify(clone)))
-      argument.input = path.join(clone, repo.path)
+      courseFile = path.join(clone, repo.path)
+      argument.input = courseFile
 
       if (course.path) {
         // restrict packing to the sub-folder given in the yaml, instead of
@@ -1035,7 +1040,10 @@ async function toCard(
     if (argument['project-generate-cache'] && fs.existsSync(at(file))) {
       console.log('using cached file of ', argument.input, ' -> ', file)
     } else {
-      await SCORM12.exporter(argument, course.data)
+      await SCORM12.exporter(
+        scormArguments(argument, courseFile),
+        course.data,
+      )
     }
 
     if (fs.existsSync(at(file))) downloads['scorm12'] = file
@@ -1049,7 +1057,10 @@ async function toCard(
     if (argument['project-generate-cache'] && fs.existsSync(at(file))) {
       console.log('using cached file of ', argument.input, ' -> ', file)
     } else {
-      await SCORM2004.exporter(argument, course.data)
+      await SCORM2004.exporter(
+        scormArguments(argument, courseFile),
+        course.data,
+      )
     }
 
     if (fs.existsSync(at(file))) downloads['scorm2004'] = file
@@ -1278,6 +1289,18 @@ function card(
     </div>
     ${footer}
     </div>`
+}
+
+/**
+ * The SCORM settings for one course of a project. `--scorm-embed` and
+ * `--lia-subfolder` need the course's Markdown in `scorm-embed`, which the
+ * single export puts there (exporter.ts); a project course is read from its
+ * own clone. Without this the package embeds the flag's value, `true`.
+ */
+export function scormArguments(argument: any, courseFile: string) {
+  if (!argument['scorm-embed'] && !argument['lia-subfolder']) return argument
+
+  return { ...argument, 'scorm-embed': fs.readFileSync(courseFile, 'utf8') }
 }
 
 function stringToColor(str: string) {
