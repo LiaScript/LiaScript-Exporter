@@ -30,7 +30,7 @@ export function isZipFile(filename: string): boolean {
  * markdown search. The server can afford to be laxer: it extracts to disk and
  * copies from there, so the junk is already on the filesystem either way.
  */
-function isContent(path: string): boolean {
+export function isContent(path: string): boolean {
   const segments = path.split('/')
 
   return !segments.some(
@@ -47,7 +47,7 @@ function isContent(path: string): boolean {
  * root wins over one nested inside a chapter directory — entry order in a zip
  * is the writer's, not something to rely on.
  */
-function findMainMarkdown(paths: string[]): string | undefined {
+export function findMainMarkdown(paths: string[]): string | undefined {
   const markdown = paths.filter((path) => /\.(md|markdown)$/i.test(path))
 
   if (markdown.length === 0) return undefined
@@ -102,6 +102,18 @@ export async function unpackZip(file: File): Promise<UnpackedZip> {
     )
   }
 
+  return toCourse(entries, paths, main)
+}
+
+/**
+ * Re-keys the files relative to the course file's directory (see `unpackZip`),
+ * shared with the repository imports so every source yields the same course.
+ */
+export function toCourse(
+  entries: Record<string, Uint8Array>,
+  paths: string[],
+  main: string,
+): UnpackedZip {
   const directory = main.includes('/')
     ? main.slice(0, main.lastIndexOf('/') + 1)
     : ''

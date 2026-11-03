@@ -15,6 +15,8 @@ import * as jobs from './jobs'
 import { print as printPdf } from './formats/pdf'
 import { isZipFile, unpackZip } from './import/zip'
 import { fetchCourse } from './import/github'
+import { fetchGitLabCourse } from './import/gitlab'
+import { isGitLabUrl } from '../gitUrl'
 import { ExportError, translate } from './errors'
 
 import moodleLogo from 'url:./generated/logos/moodle.svg'
@@ -89,7 +91,7 @@ function field(formData: FormData, name: string): string | undefined {
   return typeof value === 'string' && value.trim() ? value.trim() : undefined
 }
 
-/** Reads the course out of the form: a GitHub repository, or uploaded files. */
+/** Reads the course out of the form: a GitHub or GitLab repository, or uploaded files. */
 async function readCourse(
   formData: FormData,
   onProgress?: (message: string) => void,
@@ -99,12 +101,15 @@ async function readCourse(
   // A repository is a whole-directory source like an archive, and yields the
   // same `Course` shape.
   if (gitUrl) {
-    return fetchCourse(gitUrl, {
+    const options = {
       branch: field(formData, 'gitBranch'),
       subdir: field(formData, 'gitSubdir'),
       file: field(formData, 'gitFile'),
       onProgress,
-    })
+    }
+    return isGitLabUrl(gitUrl)
+      ? fetchGitLabCourse(gitUrl, options)
+      : fetchCourse(gitUrl, options)
   }
 
   const files = formData.getAll('files').filter((f): f is File => f instanceof File)

@@ -3,7 +3,7 @@
  * clone URL, branch, subdirectory and file for `--git-url`.
  */
 import { describe, expect, it } from 'vitest'
-import { parseGitUrl } from '../../src/server/utils/zipExtractor'
+import { parseGitUrl } from '../../src/gitUrl'
 
 describe('parseGitUrl', () => {
   it('leaves GitHub and other URLs alone', () => {

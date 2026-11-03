@@ -29,7 +29,8 @@ start exporting. There is nothing to install, and everything runs in your
 browser: your course is never uploaded to a server.
 
 - Upload your course as Markdown files or as a `.zip` of the whole folder, or
-  import it from a public **GitHub repository**
+  import it from a public **GitHub or GitLab repository** (gitlab.com,
+  self-hosted, or `gitlab://host/group/repo`)
 - All presets (Moodle, ILIAS, OPAL, SCORM Cloud, ...) and advanced settings are
   available, just like in the desktop app
 - Supported formats: SCORM 1.2, SCORM 2004, IMS, xAPI, H5P, Web, PDF, ePub,
@@ -42,8 +43,11 @@ A few things work differently from the desktop app:
 - **PDF, ePub and DOCX** are created in the browser's memory, so very large
   courses can be slow or run out of memory. For those, use the desktop app.
 - One export runs at a time, and only while its status page is open.
-- Private repositories and other git hosts (GitLab, ...) can't be imported;
-  download the course and upload it as a `.zip` instead.
+- Private repositories and other git hosts can't be imported; download the
+  course and upload it as a `.zip` instead.
+- GitLab files are loaded one by one, and GitLab limits anonymous requests per
+  IP. Repositories with hundreds of files can hit that limit; use the desktop
+  app or the CLI for those.
 
 ### 2. Desktop App
 

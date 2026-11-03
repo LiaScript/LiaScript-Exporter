@@ -13,11 +13,8 @@ import { join } from 'path'
 import { randomUUID } from 'crypto'
 import { tmpdir } from 'os'
 
-import {
-  cloneGitRepo,
-  findMainMarkdown,
-  parseGitUrl,
-} from './server/utils/zipExtractor'
+import { cloneGitRepo, findMainMarkdown } from './server/utils/zipExtractor'
+import { parseGitUrl } from './gitUrl'
 
 export type GitExportOptions = {
   gitUrl: string

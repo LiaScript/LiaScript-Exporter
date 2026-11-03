@@ -11,9 +11,9 @@ import {
   findMainMarkdown,
   isZipFile,
   cloneGitRepo,
-  parseGitUrl,
   removeDirectory,
 } from '../utils/zipExtractor'
+import { parseGitUrl } from '../../gitUrl'
 
 export const exportRouter: FastifyPluginAsync = async (fastify) => {
   /**

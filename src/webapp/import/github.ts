@@ -281,7 +281,7 @@ export async function fetchCourse(
   if (!isGitHubUrl(url)) {
     throw new ExportError(
       'errors.github.notGitHub',
-      'Only GitHub repositories can be imported in the browser. Download the course and upload it instead.',
+      'Only GitHub and GitLab repositories can be imported in the browser. Download the course and upload it instead.',
     )
   }
 

@@ -703,4 +703,31 @@ test.describe('sources and targets', () => {
       await session.context.close()
     }
   })
+
+  // A deep link: branch, subdirectory and file all come from the URL, and the
+  // archive is fetched through GitLab's CORS-open API.
+  test('GitLab import', async ({ browser }, testInfo) => {
+    test.skip(!NETWORK, 'needs NETWORK=1')
+    test.setTimeout(3 * 60_000)
+    const session = await openApp(browser)
+
+    try {
+      const { page } = session
+      await choose(page, { format: 'json' })
+      await page.locator('[data-tab="git"]').click()
+      await page
+        .locator('#gitUrl')
+        .fill('https://gitlab.com/Freinet/LiaScript/-/blob/master/src/assets/README.md')
+
+      const result = await submitAndCollect(session, 'gitlab', 2 * 60_000)
+      await attachLog(session, testInfo)
+      expect(result.status, result.error).toBe('completed')
+
+      const text = fs.readFileSync(result.file!, 'utf8')
+      expect(() => JSON.parse(text)).not.toThrow()
+      expect(text).toContain('Quizze')
+    } finally {
+      await session.context.close()
+    }
+  })
 })
