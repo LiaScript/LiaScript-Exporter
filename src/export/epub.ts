@@ -168,6 +168,17 @@ async function useHttpAdapterInEpubLibrary(): Promise<void> {
 }
 
 /**
+ * html-to-epub names a chapter file after the slug of its title unless it gets
+ * a `filename`. Titles are the full heading text, and a heading with a macro
+ * (e.g. JSXGraph code) gave names far beyond the 255-byte limit: ENAMETOOLONG.
+ */
+export function withChapterFiles<T extends { title: string; data: string }>(
+  chapters: T[],
+): Array<T & { filename: string }> {
+  return chapters.map((chapter, i) => ({ ...chapter, filename: `chapter_${i + 1}.xhtml` }))
+}
+
+/**
  * Downloads an http(s) cover into `dir` and returns the file, local paths pass
  * through. html-to-epub takes the cover's type from the URL's extension and
  * stops the export for URLs without one (`…/avatar?id=1`); here it comes from
@@ -1022,7 +1033,7 @@ async function toEPUB(
       hideToC: argument['epub-hide-toc'] ?? DEFAULT_HIDE_TOC,
       css: customCSS,
       version: Number(argument['epub-version'] || DEFAULT_EPUB_VERSION) as 2 | 3,
-      content: chapters,
+      content: withChapterFiles(chapters),
       verbose: false,
       // Per run: the library removes only its own subfolder, and only on
       // success; the patched OPF template lands here too.
