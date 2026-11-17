@@ -92,7 +92,7 @@
   "settings.xapi.actorHint": "xAPI Actor im JSON-Format (Standard: anonym)",
   "settings.xapi.actorPlaceholder": "{\"objectType\":\"Agent\",\"name\":\"Anonym\",\"mbox\":\"mailto:anonymous@example.com\"}",
   "settings.xapi.courseId": "Kurs-ID",
-  "settings.xapi.courseIdHint": "Eindeutiger Identifikator für den Kurs (Standard: Kurs-URL)",
+  "settings.xapi.courseIdHint": "Eindeutiger Identifikator für den Kurs (Standard: eine erzeugte ID, dieselbe wie in tincan.xml)",
   "settings.xapi.courseTitle": "Kurstitel",
   "settings.xapi.courseTitleHint": "Angezeigter Kurstitel (Standard: aus Dokument)",
   "settings.xapi.masteryScore": "Mastery Score",

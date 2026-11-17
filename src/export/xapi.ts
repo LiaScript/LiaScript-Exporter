@@ -189,6 +189,12 @@ export async function exporter(argument: XapiExportArguments, json: any) {
     index,
   )
 
+  // One id for the package, in tincan.xml and in the page: statements sent
+  // under another id than the LMS knows the activity by are not found again
+  const courseId =
+    argument['xapi-course-id'] ||
+    `https://liascript.github.io/course/${helper.random(12)}`
+
   // Add xAPI configuration
   const xapiConfig = {
     endpoint: argument['xapi-endpoint'] || '',
@@ -200,7 +206,7 @@ export async function exporter(argument: XapiExportArguments, json: any) {
           name: 'Anonymous',
           mbox: 'mailto:anonymous@example.com',
         },
-    courseId: argument['xapi-course-id'] || '',
+    courseId,
     courseTitle:
       argument['xapi-course-title'] || json.lia.str_title || 'LiaScript Course',
     debug: argument['xapi-debug'] || false,
@@ -405,9 +411,6 @@ export async function exporter(argument: XapiExportArguments, json: any) {
   const courseTitle = json.lia.str_title || 'LiaScript Course'
   const courseDescription =
     json.lia.definition?.macro?.comment || 'A LiaScript course'
-  const courseId =
-    argument['xapi-course-id'] ||
-    `https://liascript.github.io/course/${helper.random(12)}`
   const tincanXml = generateTincanXml(
     courseTitle,
     courseDescription,

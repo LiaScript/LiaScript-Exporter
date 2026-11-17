@@ -328,6 +328,24 @@ function checkTincan(pkg: Package, problems: Problems, course: CourseInfo): Reco
   if (!launch) problems.add('no launch', 'tincan.xml has no <launch>')
   else if (!pkg.has(launch)) problems.add('launch file missing', launch)
 
+  // the id the statements are sent under, without launch parameters: the last
+  // xAPIConfig is the exporter's, the runtime's own default comes before it
+  const id = activity && attr(activity, 'id')
+  const config = launch && pkg.has(launch)
+    ? [...pkg.text(launch).matchAll(/window\.xAPIConfig\s*=\s*(\{[\s\S]*?\});?\s*<\/script>/g)].pop()?.[1]
+    : undefined
+  if (config) {
+    let courseId: unknown
+    try {
+      courseId = JSON.parse(config).courseId
+    } catch {
+      problems.add('unreadable xAPIConfig', launch)
+    }
+    if (courseId !== undefined && courseId !== id) {
+      problems.add('course id differs from tincan.xml', `"${courseId}" in ${launch}, "${id}" in tincan.xml`)
+    }
+  }
+
   const resources = byName(doc, 'resource').map(textOf)
   problems.many(
     'tincan.xml lists missing files',

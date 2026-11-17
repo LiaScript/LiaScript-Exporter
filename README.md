@@ -893,7 +893,7 @@ $ liaex -i project/README.md --format xapi --output course
 
 `--xapi-actor` JSON string representing the xAPI actor (default: anonymous).
 
-`--xapi-course-id` Custom identifier for the course (default: course URL).
+`--xapi-course-id` Custom identifier for the course (default: a generated `https://liascript.github.io/course/…` ID, the same in `tincan.xml` and in the package, so statements of a standalone and of an LMS-launched package share one activity).
 
 `--xapi-course-title` Custom title for the course (default: from document).
 

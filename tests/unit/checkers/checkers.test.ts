@@ -135,6 +135,12 @@ describe('xapi', () => {
     )
     expectOnly((await check(files)).problems, /^tincan.xml lists missing files: 1 × .hidden\/secret.txt/)
   })
+
+  // statements under one id, the LMS's activity under another: an LMS that
+  // looks the course up by its tincan.xml id finds none of them
+  it('reports a course id in the page that tincan.xml does not have', async () => {
+    expectOnly((await check(build.xapi(''))).problems, /^course id differs from tincan.xml/)
+  })
 })
 
 describe('epub', () => {

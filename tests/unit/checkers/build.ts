@@ -100,8 +100,12 @@ export function scorm12(): Files {
   return files
 }
 
-export function xapi(): Files {
+export function xapi(courseId = 'x'): Files {
   const files = playerFiles()
+  files['index.html'] = String(files['index.html']).replace(
+    '</head>',
+    `<script>window.xAPIConfig = {"endpoint": "", "courseId": "${courseId}"};</script></head>`,
+  )
   const resources = Object.keys(files)
     .map((f) => `<resource lang="en-us">${f}</resource>`)
     .join('')
