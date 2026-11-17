@@ -109,7 +109,19 @@ async function exercise(page, open, record, { revisit = true } = {}) {
     await quizInput(frame).fill('Paris')
     await frame.locator('xpath=//*[contains(text(),"MKQuizText")]/following::button[1]').click()
     record.quiz = 'answered'
-    await after(frame, 'MKQuizSingle', 'input[@type="radio"]', 2).check({ force: true })
+    // LiaScript re-renders the quiz after a click; when that comes late (slow
+    // frames in OpenOlat), Playwright sees no change yet and gives up, so retry
+    const radio = after(frame, 'MKQuizSingle', 'input[@type="radio"]', 2)
+    for (let attempt = 1; ; attempt++) {
+      try {
+        await radio.check({ force: true, timeout: 5000 })
+        break
+      } catch (e) {
+        if (await radio.isChecked().catch(() => false)) break
+        if (attempt === 3) throw e
+        await page.waitForTimeout(1000)
+      }
+    }
     await check(frame, 'MKQuizSingle')
     await frame.evaluate(() => window.LIA.goto(14))
     await after(frame, 'MKSurveyTextarea', 'textarea').fill(SURVEY_TEXT, { timeout: 15000 })

@@ -188,7 +188,7 @@ export async function exporter(argument: ProjectExportArguments, json: any) {
         }
       }
 
-      const itemListElement = {
+      const itemListElement: Record<string, any> = {
         '@type': 'ItemList',
         itemListElement: subItemList,
       }
@@ -257,7 +257,7 @@ export async function exporter(argument: ProjectExportArguments, json: any) {
       '</select>'
   }
 
-  const jsonLD = {
+  const jsonLD: Record<string, any> = {
     '@context': 'http://schema.org/',
     '@type': 'ItemList',
     itemListElement: removeContext(itemList),
@@ -695,7 +695,7 @@ function generateNavbar(navbar: any, hasSearch: boolean = false): string {
     </script>`
 }
 
-function removeContext(obj) {
+function removeContext(obj: any) {
   for (let key in obj) {
     if (obj.hasOwnProperty(key)) {
       if (key === '@context') {
@@ -834,7 +834,7 @@ function meta(json: any) {
   return metaData
 }
 
-function overwrite(check, defaultsTo) {
+function overwrite(check: any, defaultsTo: any) {
   return check === null ? null : check || defaultsTo
 }
 
@@ -854,12 +854,12 @@ function toLinkCard(
   small: boolean = false,
 ): string {
   if (course.arguments) {
-    argument = course.arguments.reduce((a, b) => {
+    argument = course.arguments.reduce((a: any, b: any) => {
       return { ...a, ...b }
     }, argument)
   }
 
-  let tags = []
+  let tags: string[] = []
 
   const tagList = course.tags || tags
   for (let i = 0; i < tagList.length; i++) {
@@ -889,7 +889,7 @@ async function toCard(
   // then they are treated
 
   if (course.arguments) {
-    argument = course.arguments.reduce((a, b) => {
+    argument = course.arguments.reduce((a: any, b: any) => {
       return { ...a, ...b }
     }, argument)
   }
@@ -919,7 +919,7 @@ async function toCard(
     Categories.add(tagList[i].toLowerCase())
   }
 
-  let downloads = {}
+  let downloads: Record<string, string> = {}
 
   if (argument['project-generate-pdf']) {
     argument.input = course.data.lia.readme
@@ -933,7 +933,7 @@ async function toCard(
       console.log('generate pdf of', argument.input, ' -> ', file)
 
       fs.ensureDirSync(at('assets/pdf'))
-      await PDF.exporter(argument, {})
+      await PDF.exporter(argument)
     }
 
     if (fs.existsSync(at(file))) downloads['pdf'] = file

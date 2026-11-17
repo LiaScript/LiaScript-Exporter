@@ -19,7 +19,7 @@ function fakeFetch(body: Buffer, contentType: string, status = 200) {
   const calls: string[] = []
   const fetch = (async (url: string) => {
     calls.push(url)
-    return new Response(status === 200 ? body : null, {
+    return new Response(status === 200 ? new Uint8Array(body) : null, {
       status,
       headers: { 'content-type': contentType },
     })
