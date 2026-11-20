@@ -73,12 +73,16 @@ export async function exportCourse(
   }
 
   if (format === 'epub') {
+    if (options['epub-form']) onProgress?.('Reading the quizzes…')
+    const meta = options['epub-form'] ? await courseMeta(course, options) : null
+
     return {
       bytes: await epub.exporter(
         course.markdown,
         course.files,
         options,
         onProgress,
+        meta,
       ),
       filename: `${course.name}.epub`,
     }

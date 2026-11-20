@@ -19,6 +19,9 @@
 
 import * as extract from './extract'
 import { quizPaper } from '../../export/helper'
+import { markFields } from '../../export/pdf-form-marks'
+import { formScripts, Spec } from '../../export/form-scripts'
+import { runtimeScript } from '../../export/epub-form-runtime'
 import { render, EMBED_SRC } from './render'
 import { build, Book, Chapter, Resource } from './epub-builder'
 
@@ -36,6 +39,8 @@ export async function exporter(
   files: Record<string, Uint8Array> = {},
   options: Record<string, any> = {},
   onProgress?: (message: string) => void,
+  /** `--epub-form`: the course description with the solutions, else null */
+  meta: any = null,
 ): Promise<Uint8Array> {
   const course = await render(markdown, files, options, onProgress)
 
@@ -50,7 +55,7 @@ export async function exporter(
       extract.courseTitle(course.document) ||
       'LiaScript Course'
     author = options['epub-author'] || extract.courseAuthor(course.document)
-    chapters = assemble(course.document, course.window)
+    chapters = assemble(course.document, course.window, options['epub-form'] ? { meta } : null)
   } finally {
     // Only needed for the scrape; freed before packaging rather than holding a
     // second copy of the course in memory.
@@ -85,6 +90,11 @@ export async function exporter(
     }
 
     chapter.data = sanitize(externalize(fetched.html, images, seen))
+
+    // --epub-form: the runtime goes with every chapter that has a quiz
+    if (options['epub-form'] && /\bliaex-(f|quiz)\b/.test(chapter.data)) {
+      chapter.data += runtimeScript((text) => btoa(unescape(encodeURIComponent(text))))
+    }
   }
 
   if (packaged || failed) {
@@ -179,7 +189,11 @@ async function loadCover(
  * Everything interactive is replaced with something static, as in the DOCX path
  * — except formulas, which stay as markup.
  */
-function assemble(doc: Document, view: Window): Chapter[] {
+function assemble(doc: Document, view: Window, form: { meta: any } | null = null): Chapter[] {
+  // --epub-form: marked while the page is LiaScript's, the marks then live on
+  // through the worksheet (quizPaper) for the book's runtime
+  if (form) markQuizzes(doc, form.meta)
+
   // First: shadow roots and computed styles are readable only while the
   // document is live, and the rewrite below relies on the `data-*-index` tags
   // these place.
@@ -279,6 +293,23 @@ function strip(body: HTMLElement): void {
 
   unwrapFigures(body)
   strand(body)
+}
+
+/**
+ * Marks the fields and quizzes for the book's runtime, and gives each quiz box
+ * its scripts, as the CLI does in the page.
+ */
+function markQuizzes(doc: Document, meta: any): void {
+  const scripts = formScripts(markFields(meta, 'data', doc) as Spec[])
+
+  doc.querySelectorAll('.liaex-quiz').forEach((box) => {
+    const spec = JSON.parse(box.getAttribute('data-liaex') || '{}')
+    const found = scripts.find((s) => s.spot.feedback === spec.name)
+    if (!found) return
+    spec.scripts = { check: found.check, resolve: found.resolve }
+    // HTML leaves < and > raw in attributes; XHTML does not take them
+    box.setAttribute('data-liaex', JSON.stringify(spec).replace(/</g, '\\u003c').replace(/>/g, '\\u003e').replace(/&/g, '\\u0026'))
+  })
 }
 
 /**

@@ -856,6 +856,13 @@ course's own header):
 
 `--epub-timeout` Additional wait time for rendering in ms (default: none).
 
+`--epub-form` Turns the quizzes and surveys into a form, for readers that run
+JavaScript (Apple Books, Thorium, …): the same check, solution and submit
+buttons, trial count and feedback as `--pdf-form`, in LiaScript's texts. Other
+readers, Kindle among them, show the worksheet as without the option: boxes,
+circles and lines. Chapters with quizzes then carry a script, declared as
+`scripted`; some stores do not accept that, so it is an option.
+
 `--epub-fonts` Comma-separated paths to custom font files to embed.
 
 `--epub-chapter-title` Custom title for the main chapter (default: course title).

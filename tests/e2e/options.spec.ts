@@ -13,6 +13,7 @@ import * as fs from 'node:fs'
 import * as os from 'node:os'
 import * as path from 'node:path'
 import { expect, test } from '@playwright/test'
+import { checkOutput } from '../checkers'
 import { openPackage, Package } from '../checkers/package'
 
 const ROOT = path.resolve(__dirname, '../..')
@@ -286,6 +287,66 @@ test('pdf: --pdf-form gets the solutions for a course URL and in a project', asy
     expect(await scripted(path.join(project, 'assets/pdf', pdfs[0]))).toBe(6)
   } finally {
     server.close()
+  }
+})
+
+test('epub: --epub-form turns the worksheet into a form in readers with JavaScript', async ({ browser }) => {
+  test.setTimeout(CHROME_TIMEOUT)
+
+  const file = await exportWith('epub-form', ['-f', 'epub', '--epub-form'], 'epub-form.epub', CHROME_TIMEOUT)
+
+  // still a valid book, and the worksheet for readers without JavaScript
+  expect((await checkOutput('epub', file)).problems).toEqual([])
+
+  const pkg = openPackage(file)
+  const chapter = (marker: string) => pkg.files.find((f) => f.endsWith('.xhtml') && pkg.text(f).includes(marker))!
+  const quizzes = chapter('MKQuizIntro')
+  const surveys = chapter('MKSurveySingle')
+  for (const name of [quizzes, surveys]) {
+    expect(opfOf(pkg), name).toMatch(new RegExp(`href="${path.posix.basename(name)}"[^>]*properties="[^"]*scripted`))
+  }
+
+  // a chapter as a reader with JavaScript opens it
+  const page = await browser.newPage()
+  const errors: string[] = []
+  page.on('pageerror', (e) => errors.push(e.message))
+  const open = async (name: string) => {
+    const local = path.join(OUT_DIR, 'epub-form-' + path.posix.basename(name))
+    fs.writeFileSync(local, pkg.text(name))
+    await page.goto('file://' + local)
+  }
+
+  try {
+    await open(quizzes)
+    expect(await page.locator('.liaex-f').count(), 'marks left').toBe(0)
+    const box = (i: number) => page.locator('.liaex-quiz').nth(i)
+    const feedback = (i: number) => box(i).locator('div').last()
+
+    const text = page.locator('.lia-quiz').first().locator('input.liaex-input')
+    await text.fill('London')
+    await box(0).locator('button').first().click()
+    await expect(feedback(0)).toHaveText('The correct answer has not yet been given')
+    await expect(box(0).locator('button').first()).toHaveText('Check 1')
+    await text.fill('Paris')
+    await box(0).locator('button').first().click()
+    await expect(feedback(0)).toHaveText('Congratulations, that was the right answer')
+    await expect(text).toBeDisabled()
+
+    // the multiple choice quiz, resolved
+    await box(2).locator('button').nth(1).click()
+    await expect(feedback(2)).toHaveText('Resolved answer')
+    const boxes = page.locator('.lia-quiz').nth(2).locator('input[type=checkbox]')
+    expect([await boxes.nth(0).isChecked(), await boxes.nth(1).isChecked(), await boxes.nth(2).isChecked()]).toEqual([true, true, false])
+
+    await open(surveys)
+    await box(0).locator('button').click()
+    await expect(feedback(0)).toHaveText('This question must be answered before submitting.')
+    await page.locator('.lia-quiz').first().locator('input[type=radio]').first().check()
+    await box(0).locator('button').click()
+    await expect(feedback(0)).toHaveText('Thank you for your feedback!')
+    expect(errors).toEqual([])
+  } finally {
+    await page.close()
   }
 })
 

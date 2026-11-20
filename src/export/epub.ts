@@ -1,4 +1,7 @@
 import * as helper from './helper'
+import { markFields } from './pdf-form-marks'
+import { formScripts, Spec } from './form-scripts'
+import { runtimeScript } from './epub-form-runtime'
 import * as COLOR from '../colorize'
 import * as path from 'path'
 import puppeteer, { Browser, Page } from 'puppeteer'
@@ -84,6 +87,11 @@ export function help() {
   )
   COLOR.command(
     null,
+    '--epub-form',
+    '               Quizzes as a form in readers with JavaScript (Apple Books, Thorium)',
+  )
+  COLOR.command(
+    null,
     '--epub-timeout',
     `            Additional wait time for rendering in ms (default: none)`,
   )
@@ -129,6 +137,7 @@ export interface EpubExportArguments {
   'epub-fonts'?: string
   'epub-chapter-title'?: string
   'epub-preview'?: boolean
+  'epub-form'?: boolean
 }
 
 export const format = 'epub'
@@ -373,7 +382,7 @@ export async function exporter(argument: EpubExportArguments, json: any) {
         await helper.sleep(argument['epub-timeout'])
       }
 
-      await toEPUB(argument, page, dirname)
+      await toEPUB(argument, page, dirname, json)
     } else {
       console.log('Preview mode enabled - browser will remain open')
     }
@@ -418,6 +427,7 @@ async function toEPUB(
   argument: EpubExportArguments,
   page: Page,
   dirname: string,
+  json?: any,
 ) {
   try {
     console.log('Converting SVG diagrams to PNG images...')
@@ -509,7 +519,28 @@ async function toEPUB(
       formulas: toEntries(formulaHtml),
       inlineSvgImages: toEntries(inlineSvgImages),
     }
-    await page.evaluate(`(${helper.quizPaper})(document.body)`)
+    if (argument['epub-form']) {
+      // the fields keep their marks for the book's runtime, which turns the
+      // worksheet back into the form; the quiz boxes carry their scripts
+      const specs = (await page.evaluate(
+        `(function () { var specs = (${markFields})(${JSON.stringify(json?.meta ?? null)}, 'data'); (${helper.quizPaper})(document.body); return specs })()`,
+      )) as Spec[]
+      await page.evaluate((scripts) => {
+        document.querySelectorAll('.liaex-quiz').forEach((box) => {
+          const spec = JSON.parse(box.getAttribute('data-liaex') || '{}')
+          const found = scripts.find((s: any) => s.spot.feedback === spec.name)
+          if (!found) return
+          spec.scripts = { check: found.check, resolve: found.resolve }
+          // the scripts have < and &, which the ePub library leaves raw in attributes
+          box.setAttribute(
+            'data-liaex',
+            JSON.stringify(spec).replace(/</g, '\\u003c').replace(/>/g, '\\u003e').replace(/&/g, '\\u0026'),
+          )
+        })
+      }, formScripts(specs) as any)
+    } else {
+      await page.evaluate(`(${helper.quizPaper})(document.body)`)
+    }
 
     const chapters = await page.evaluate((data) => {
       const {
@@ -948,6 +979,11 @@ async function toEPUB(
       )
 
       chapter.data = repairLocalSvgs(chapter.data, svgDir)
+
+      // --epub-form: the runtime goes with every chapter that has a quiz
+      if (argument['epub-form'] && /\bliaex-(f|quiz)\b/.test(chapter.data)) {
+        chapter.data += runtimeScript((text) => Buffer.from(text, 'utf8').toString('base64'))
+      }
     }
 
     // Read CSS and fonts from the pdf assets folder
@@ -1086,6 +1122,11 @@ async function toEPUB(
       new Function('m', 'return import(m)') as (m: string) => Promise<any>
     )(epubModuleName)
     const EPub = epubModule.EPub
+    // the marks the book's runtime reads; the library checks the attribute by
+    // its hast property name. Every other attribute as before.
+    if (argument['epub-form']) {
+      epubOptions.allowedAttributes = [...epubModule.defaultAllowedAttributes, 'dataLiaex', 'data-liaex']
+    }
     await useHttpAdapterInEpubLibrary()
     try {
       const epub = new EPub(epubOptions, outputPath)
@@ -1269,7 +1310,8 @@ function patchedOpfTemplate(version: 2 | 3, dir: string): string | undefined {
       fixed = fixed.replace(
         item,
         'href="<%= content.href %>" media-type="application/xhtml+xml"' +
-          `<% if(/<math\\b/.test(content.data || "")){ %> properties="mathml"<% } %> />`,
+          `<% var props = [/<math\\b/.test(content.data || "") && "mathml", /<script\\b/.test(content.data || "") && "scripted"].filter(Boolean); %>` +
+          `<% if(props.length){ %> properties="<%= props.join(" ") %>"<% } %> />`,
       )
 
       // The library's EPUB 3 template drops the description, EPUB 2 has it

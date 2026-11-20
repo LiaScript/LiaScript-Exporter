@@ -302,6 +302,17 @@ export function quizPaper(body: HTMLElement, inputs = true): void {
   // selection lists its options, check boxes and radio buttons become symbols
   // in front of their answer, a text field a line, a text area several lines.
   // Self-contained: the CLI runs it in the page as `(${quizPaper})(body)`.
+  // A field that --epub-form marked keeps its mark: its symbol is wrapped, so
+  // the book's runtime can turn it back into the field.
+  const marked = (el: Element, mark: string | Node): string | Node => {
+    const data = el.getAttribute('data-liaex')
+    if (!data) return mark
+    const span = doc.createElement('span')
+    span.className = 'liaex-f'
+    span.setAttribute('data-liaex', data)
+    span.append(mark)
+    return span
+  }
   body
     .querySelectorAll('.lia-quiz__check, .lia-quiz__resolve, .lia-quiz__hint, [id^="lia-quiz-feedback"]')
     .forEach((el) => el.remove())
@@ -313,7 +324,7 @@ export function quizPaper(body: HTMLElement, inputs = true): void {
       .map((option) => option.textContent?.trim())
       .filter(Boolean)
     if (list !== dropdown) list.remove()
-    dropdown.replaceWith(`[ ${options.join(' | ')} ]`)
+    dropdown.replaceWith(marked(dropdown, `[ ${options.join(' | ')} ]`))
   })
 
   // PDF keeps its drawn fields, only the "?" placeholder would look like an answer
@@ -324,8 +335,8 @@ export function quizPaper(body: HTMLElement, inputs = true): void {
 
   body.querySelectorAll('input').forEach((input) => {
     const type = input.getAttribute('type')
-    const mark = type === 'checkbox' ? (input.checked ? '☑ ' : '☐ ')
-      : type === 'radio' ? (input.checked ? '◉ ' : '○ ') : ' __________ '
+    const mark = marked(input, type === 'checkbox' ? (input.checked ? '☑ ' : '☐ ')
+      : type === 'radio' ? (input.checked ? '◉ ' : '○ ') : ' __________ ')
     // the symbol goes in front of its answer, not on a line of its own
     const answer = input.nextElementSibling?.querySelector('p')
     if (answer) {
@@ -341,6 +352,12 @@ export function quizPaper(body: HTMLElement, inputs = true): void {
       const line = doc.createElement('p')
       line.textContent = '_'.repeat(40)
       lines.appendChild(line)
+    }
+    // a block of lines: marked itself, a span may not hold it
+    const data = area.getAttribute('data-liaex')
+    if (data) {
+      lines.className = 'liaex-f'
+      lines.setAttribute('data-liaex', data)
     }
     area.replaceWith(lines)
   })

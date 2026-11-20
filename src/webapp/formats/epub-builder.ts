@@ -313,6 +313,8 @@ function packageDocument(book: Book, id: string): string {
 
     if (chapter.data.includes('<math')) declared.push('mathml')
     if (chapter.data.includes('<svg')) declared.push('svg')
+    // --epub-form: a chapter with the quiz runtime
+    if (chapter.data.includes('<script')) declared.push('scripted')
 
     const properties = declared.length
       ? ` properties="${declared.join(' ')}"`

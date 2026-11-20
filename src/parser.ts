@@ -155,6 +155,7 @@ export function parseArguments(): Arguments {
     'epub-toc-title': argv['epub-toc-title'],
     'epub-hide-toc': argv['epub-hide-toc'],
     'epub-timeout': argv['epub-timeout'],
+    'epub-form': argv['epub-form'],
     'epub-fonts': argv['epub-fonts'],
     'epub-chapter-title': argv['epub-chapter-title'],
     'epub-preview': argv['epub-preview'],

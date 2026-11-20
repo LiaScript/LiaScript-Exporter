@@ -184,6 +184,8 @@
   "settings.epub.publisherHint": "Verlag/Verlagshaus",
   "settings.epub.timeout": "Timeout (ms)",
   "settings.epub.timeoutHint": "Zusätzliche Wartezeit vor dem Export in ms, z. B. für langsame Skripte (Standard: keine)",
+  "settings.epub.form": "Quizze als Formular",
+  "settings.epub.formHint": "Ausfüllbare Quizze und Umfragen in Readern mit JavaScript, z. B. Apple Books oder Thorium; sonst ein Arbeitsblatt",
   "settings.docx.title": "DOCX-Einstellungen",
   "settings.docx.docTitle": "Dokumenttitel",
   "settings.docx.docTitleHint": "Titel des Word-Dokuments",

@@ -538,6 +538,39 @@ test.describe('sources and targets', () => {
     }
   })
 
+  test('epub: --epub-form, the book turns its worksheet into a form', async ({ browser }, testInfo) => {
+    test.setTimeout(RENDER_TIMEOUT + 60_000)
+    const session = await openApp(browser)
+
+    try {
+      await choose(session.page, { format: 'epub' }, ['epubForm'])
+      await upload(session.page, courseUpload())
+
+      const result = await submitAndCollect(session, 'epub-form', RENDER_TIMEOUT)
+      await attachLog(session, testInfo)
+      expect(result.status, result.error).toBe('completed')
+      expect((await checkOutput('epub', result.file!, { method: 'webapp' })).problems).toEqual([])
+
+      const pkg = openPackage(result.file!)
+      const quizzes = pkg.files.find((f) => f.endsWith('.xhtml') && pkg.text(f).includes('MKQuizIntro'))!
+      const opf = pkg.text(pkg.files.find((f) => f.endsWith('.opf'))!)
+      expect(opf).toMatch(new RegExp(`href="${path.posix.basename(quizzes)}"[^>]*properties="[^"]*scripted`))
+
+      // the chapter as a reader with JavaScript opens it
+      const local = path.join(outDir(session.page), 'epub-form-quizzes.xhtml')
+      fs.writeFileSync(local, pkg.text(quizzes))
+      const page = await session.context.newPage()
+      await page.goto('file://' + local)
+      const box = page.locator('.liaex-quiz').first()
+      await page.locator('.lia-quiz').first().locator('input.liaex-input').fill('Paris')
+      await box.locator('button').first().click()
+      await expect(box.locator('div').last()).toHaveText('Congratulations, that was the right answer')
+      await expect(box.locator('button').first()).toHaveText('Check 1')
+    } finally {
+      await session.context.close()
+    }
+  })
+
   test('a single README.md upload exports', async ({ browser }, testInfo) => {
     const session = await openApp(browser)
 

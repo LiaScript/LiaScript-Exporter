@@ -1,8 +1,9 @@
 'use strict'
 
 /**
- * The page side of `--pdf-form`, see [pdf-form.ts](./pdf-form.ts): free of
- * pdf-lib, as the web app's print tab runs it too.
+ * The page side of `--pdf-form` and `--epub-form`, see
+ * [pdf-form.ts](./pdf-form.ts) and [epub-form-runtime.ts](./epub-form-runtime.ts):
+ * free of pdf-lib, as the web app's print tab runs it too.
  */
 
 /** One quiz of the page, by the names of its PDF fields. */
@@ -23,22 +24,30 @@ export interface QuizSpot {
 }
 
 /**
- * Lays a link over every field and quiz button of the rendered course that
- * names it, and returns how many quizzes it found. Runs in the page, so it is
- * self-contained.
+ * Marks every field and quiz of the rendered course, and returns what it wrote
+ * about each. Runs in the page, so it is self-contained.
+ *
+ * - `links`, for a PDF: an empty link laid over each field and quiz button
+ *   names it, and Chrome prints each link with its place on its page.
+ * - `data`, for an ePub: a `data-liaex` attribute on each field, and a
+ *   `.liaex-quiz` box after each quiz, from which the book's runtime builds
+ *   the form; the fields themselves turn into paper marks (quizPaper).
  *
  * `meta` is the course description (`json.meta`, see scorm-storage.ts). The
- * feedback link of each quiz carries the quiz, its solution and the language,
- * so the printed PDF is all that `addForm` needs, also when a browser printed
- * it. Without `meta` the quiz buttons are hidden; surveys still submit.
+ * feedback spec of each quiz carries the quiz, its solution and the language,
+ * so the output is all the form needs, also when a browser printed it.
+ * Without `meta` the quiz buttons are left out; surveys still submit.
  */
-export function markFields(meta: any): number {
+export function markFields(meta: any, mode: 'links' | 'data' = 'links', doc: Document = document): object[] {
   const LINK = 'https://liaex.invalid/field/'
   const checks = !!meta
-  const lang = (meta && meta.lang) || document.documentElement.lang || 'en'
+  const lang = (meta && meta.lang) || doc.documentElement.lang || 'en'
+  const view = doc.defaultView || window
+  const links = mode === 'links'
+  const specs: object[] = []
 
   // the pdf runtime hides the quiz controls; hints have no text in the page yet
-  const style = document.createElement('style')
+  const style = doc.createElement('style')
   style.textContent =
     '.lia-quiz__control{display:flex!important;align-items:center;gap:.5rem}' +
     '.lia-quiz__control.liaex-off,.lia-quiz__hint{display:none!important}' +
@@ -46,24 +55,38 @@ export function markFields(meta: any): number {
     'a.liaex-feedback{display:block;height:1.6em;min-width:20em;margin-top:.25rem}' +
     // room in the check button for its trial count
     '.liaex-count{display:inline-block;width:1.4em;height:1.6em;vertical-align:-.38em;margin:-.3em 0 -.3em .2em}'
-  document.head.appendChild(style)
+  if (links) doc.head.appendChild(style)
 
+  const safe = (json: string) => json.replace(/</g, '\\u003c').replace(/>/g, '\\u003e').replace(/&/g, '\\u0026')
   let count = 0
+  const record = (spec: object) => {
+    const full = Object.assign({ id: count++ }, spec)
+    specs.push(full)
+    return JSON.stringify(full)
+  }
   const link = (spec: object) => {
-    const a = document.createElement('a')
-    a.href = LINK + encodeURIComponent(JSON.stringify(Object.assign({ id: count++ }, spec)))
+    const a = doc.createElement('a')
+    a.href = LINK + encodeURIComponent(record(spec))
     return a
   }
   type Spec = { name: string; [key: string]: unknown }
+
+  // ePub: the field says itself what it is. Without < > &, which the ePub
+  // library leaves raw in attributes, and XHTML does not take.
+  const tag = (el: Element, spec: Spec) => {
+    el.setAttribute('data-liaex', safe(record(spec)))
+    return spec.name
+  }
 
   // Chrome prints no link around a lone form control, and LiaScript draws a
   // field anew once it is moved. So an empty link is laid over each field,
   // where nothing is redrawn: a gap of a gap text, HTML that LiaScript writes
   // itself, gets it right behind, pulled back over the gap by a negative margin.
   const follow = (el: Element, spec: Spec) => {
+    if (!links) return tag(el, spec)
     const a = link(spec)
     const rect = el.getBoundingClientRect()
-    const style = getComputedStyle(el)
+    const style = view.getComputedStyle(el)
     a.style.display = 'inline-block'
     a.style.width = rect.width + 'px'
     a.style.height = rect.height + 'px'
@@ -77,8 +100,9 @@ export function markFields(meta: any): number {
   // trailing children be: the link is appended, and laid over the field.
   // Horizontally in percent, as the paper is narrower than the screen.
   const cover = (el: Element, spec: Spec) => {
+    if (!links) return tag(el, spec)
     const host = (el.matches('input, textarea') ? el.parentElement : el) as HTMLElement
-    if (getComputedStyle(host).position === 'static') host.style.position = 'relative'
+    if (view.getComputedStyle(host).position === 'static') host.style.position = 'relative'
     const a = link(spec)
     a.style.position = 'absolute'
     a.style.display = 'block'
@@ -102,7 +126,7 @@ export function markFields(meta: any): number {
     done.add(el)
     if (el.matches('.lia-dropdown')) {
       const id = el.querySelector('[aria-controls]')?.getAttribute('aria-controls')
-      const list = (id && document.getElementById(id)) || el
+      const list = (id && doc.getElementById(id)) || el
       return mark(el, {
         kind: 'select',
         name,
@@ -123,13 +147,13 @@ export function markFields(meta: any): number {
     return group
   }
 
-  const mains = Array.from(document.querySelectorAll('main.lia-slide__content'))
+  const mains = Array.from(doc.querySelectorAll('main.lia-slide__content'))
   const sectionOf = (el: Element) => mains.indexOf(el.closest('main.lia-slide__content') as Element)
 
   // The gaps of a gap text sit outside their quiz; their handlers name it:
   // track: [["quiz",S],["input",Q]] … param: {id: G
   const gaps = new Map<string, string[]>()
-  document.querySelectorAll('main.lia-slide__content [oninput], main.lia-slide__content [onclick]').forEach((el) => {
+  doc.querySelectorAll('main.lia-slide__content [oninput], main.lia-slide__content [onclick]').forEach((el) => {
     const handler = el.getAttribute('oninput') || el.getAttribute('onclick') || ''
     const match = handler.match(/\["quiz",\d+\],\["input",(\d+)\]\][\s\S]*?\bid: ?(\d+)/)
     if (!match || !el.matches('input, .lia-dropdown')) return
@@ -140,8 +164,7 @@ export function markFields(meta: any): number {
     gaps.set(key, list)
   })
 
-  const quizzes: QuizSpot[] = []
-  document.querySelectorAll('main.lia-slide__content .lia-quiz').forEach((quiz) => {
+  doc.querySelectorAll('main.lia-slide__content .lia-quiz').forEach((quiz) => {
     const feedback = quiz.querySelector(':scope > [id^="lia-quiz-feedback-"]')
     const control = quiz.querySelector(':scope > .lia-quiz__control')
     const check = control?.querySelector('.lia-quiz__check')
@@ -176,29 +199,44 @@ export function markFields(meta: any): number {
 
     const resolve = survey ? null : quiz.querySelector('.lia-quiz__resolve:not(.hide)')
     if ((checks || survey) && type !== 'generic' && spot.rows.flat().length && check) {
-      spot.check = cover(check, { kind: 'button', name: name + 'check' })
-      if (!survey) {
-        const count = document.createElement('span')
-        count.className = 'liaex-count'
-        check.appendChild(count)
-        const look = getComputedStyle(check)
-        spot.counter = cover(count, { kind: 'counter', name: name + 'count', color: look.color, size: parseFloat(look.fontSize) * 0.75 })
-      }
-      if (resolve) spot.resolve = cover(resolve, { kind: 'button', name: name + 'resolve' })
-      spot.feedback = name + 'feedback'
       const solution = (!survey && meta && meta.slides && meta.slides[s] && meta.slides[s].quiz && meta.slides[s].quiz[q]) || null
-      const box = link({ kind: 'feedback', name: spot.feedback, spot, meta: solution, lang })
-      box.className = 'liaex-feedback'
-      ;(feedback || quiz).appendChild(box)
+      spot.feedback = name + 'feedback'
+
+      if (links) {
+        spot.check = cover(check, { kind: 'button', name: name + 'check' })
+        if (!survey) {
+          const count = doc.createElement('span')
+          count.className = 'liaex-count'
+          check.appendChild(count)
+          const look = view.getComputedStyle(check)
+          spot.counter = cover(count, { kind: 'counter', name: name + 'count', color: look.color, size: parseFloat(look.fontSize) * 0.75 })
+        }
+        if (resolve) spot.resolve = cover(resolve, { kind: 'button', name: name + 'resolve' })
+        const box = link({ kind: 'feedback', name: spot.feedback, spot, meta: solution, lang })
+        box.className = 'liaex-feedback'
+        ;(feedback || quiz).appendChild(box)
+      } else {
+        // the book draws the buttons, with LiaScript's labels
+        spot.check = name + 'check'
+        if (!survey) spot.counter = name + 'count'
+        if (resolve) spot.resolve = name + 'resolve'
+        const box = doc.createElement('div')
+        box.className = 'liaex-quiz'
+        quiz.appendChild(box)
+        const labels = {
+          check: ((check.firstChild && check.firstChild.textContent) || check.textContent || '').trim(),
+          resolve: resolve ? resolve.getAttribute('title') || '' : '',
+        }
+        tag(box, { kind: 'feedback', name: spot.feedback, spot, meta: solution, lang, labels })
+      }
     } else {
       control?.classList.add('liaex-off')
     }
-    quizzes.push(spot)
   })
 
   // surveys, tasks and anything else: fields without a check
   const groups = new Map<string, Element[]>()
-  document
+  doc
     .querySelectorAll('main.lia-slide__content input, main.lia-slide__content textarea, main.lia-slide__content .lia-dropdown')
     .forEach((el) => {
       if (done.has(el) || el.closest('.lia-code, .ace_editor')) return
@@ -213,6 +251,6 @@ export function markFields(meta: any): number {
     })
   groups.forEach((els, group) => radios(els, group))
 
-  return quizzes.length
+  return specs
 }
 

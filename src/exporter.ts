@@ -373,6 +373,11 @@ export class Exporter {
       return STORAGE.FULL_JSON_META
     }
 
+    // an ePub form too
+    if (format === SERVER_ONLY.EPUB && argument['epub-form']) {
+      return STORAGE.FULL_JSON_META
+    }
+
     // a PDF form checks its quizzes against their solutions
     if (argument['pdf-form'] && (format === SERVER_ONLY.PDF || (format === SERVER_ONLY.PROJECT && argument['project-generate-pdf']))) {
       return STORAGE.FULL_JSON_META
