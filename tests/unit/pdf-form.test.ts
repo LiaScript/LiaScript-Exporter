@@ -71,10 +71,8 @@ describe('addForm', () => {
         { kind: 'button', name: 'b' },
         { kind: 'feedback', name: 'f' },
       ]),
-      [],
-      undefined,
     )
-    const pdf = await PDFDocument.load(bytes)
+    const pdf = await PDFDocument.load(bytes!)
     const form = pdf.getForm()
 
     expect(form.getField('t')).toBeInstanceOf(PDFTextField)
@@ -89,19 +87,10 @@ describe('addForm', () => {
   it('checks and resolves a gap text with a text and a select gap', async () => {
     const spot: QuizSpot = { section: 0, quiz: 0, type: 'multi', rows: [['g0', 'g1']], check: 'k', resolve: 'x', feedback: 'f', counter: 'n' }
     const meta = {
-      lang: 'en',
-      slides: [
-        {
-          quiz: [
-            {
-              type: 'gap',
-              gaps: [
-                { type: 'text', solution: 'schaumig' },
-                { type: 'select', options: ['halbiert', 'geviertelt'], solution: [1] },
-              ],
-            },
-          ],
-        },
+      type: 'gap',
+      gaps: [
+        { type: 'text', solution: 'schaumig' },
+        { type: 'select', options: ['halbiert', 'geviertelt'], solution: [1] },
       ],
     }
     const bytes = await addForm(
@@ -110,14 +99,11 @@ describe('addForm', () => {
         { kind: 'select', name: 'g1', options: ['halbiert', 'geviertelt'] },
         { kind: 'button', name: 'k' },
         { kind: 'button', name: 'x' },
-        { kind: 'feedback', name: 'f' },
+        { kind: 'feedback', name: 'f', spot, meta, lang: 'en' },
         { kind: 'counter', name: 'n', color: 'rgb(11, 122, 117)', size: 10 },
       ]),
-      [spot],
-      meta,
-      'en',
     )
-    const { values, readonly, run } = runner((await PDFDocument.load(bytes)).getForm())
+    const { values, readonly, run } = runner((await PDFDocument.load(bytes!)).getForm())
 
     values.set('g0', ' schaumig ')
     values.set('g1', 'halbiert')
@@ -143,10 +129,19 @@ describe('addForm', () => {
 
   it('leaves the buttons without a script when the description does not fit', async () => {
     const spot: QuizSpot = { section: 0, quiz: 0, type: 'single-choice', rows: [['r']], check: 'k', feedback: 'f' }
-    const meta = { slides: [{ quiz: [{ type: 'multiple', options: ['a'], solution: [true] }] }] }
-    const bytes = await addForm(await printed([{ kind: 'button', name: 'k' }]), [spot], meta)
-    const widget = (await PDFDocument.load(bytes)).getForm().getButton('k').acroField.getWidgets()[0]
+    const meta = { type: 'multiple', options: ['a'], solution: [true] }
+    const bytes = await addForm(
+      await printed([
+        { kind: 'button', name: 'k' },
+        { kind: 'feedback', name: 'f', spot, meta, lang: 'en' },
+      ]),
+    )
+    const widget = (await PDFDocument.load(bytes!)).getForm().getButton('k').acroField.getWidgets()[0]
 
     expect(widget.dict.has(PDFName.of('A'))).toBe(false)
+  })
+
+  it('returns null for a PDF without its links', async () => {
+    expect(await addForm(await printed([]))).toBeNull()
   })
 })

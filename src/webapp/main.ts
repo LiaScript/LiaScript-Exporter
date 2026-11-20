@@ -348,6 +348,23 @@ const LiaExporter = {
   },
 
   /**
+   * The second step of `--pdf-form`: the PDF the browser saved from the print
+   * tab becomes the form. `'nofields'` means the PDF has none of the field
+   * links, printed without the option or by a browser that drops links.
+   */
+  async form(id: string, file: File): Promise<'ok' | 'gone' | 'nofields'> {
+    if (!(await jobs.get(id))?.print?.form) return 'gone'
+
+    const { addForm } = await import('../export/pdf-form')
+    const bytes = await addForm(new Uint8Array(await file.arrayBuffer()))
+
+    if (!bytes) return 'nofields'
+
+    download(bytes, file.name.replace(/(\.pdf)?$/i, '-form.pdf'))
+    return 'ok'
+  },
+
+  /**
    * The message to show for a failed export, in the current language. The
    * export modules carry locale keys; this is where they meet `window.i18n`.
    */

@@ -501,6 +501,43 @@ test.describe('sources and targets', () => {
     })
   }
 
+  test('pdf: --pdf-form, the saved PDF becomes a form that checks itself', async ({ browser }, testInfo) => {
+    test.skip(browser.browserType().name() !== 'chromium', 'only Chromium saves a PDF in a test')
+    test.setTimeout(RENDER_TIMEOUT + 60_000)
+    const session = await openApp(browser)
+
+    try {
+      await choose(session.page, { format: 'pdf' }, ['pdfForm'])
+      await upload(session.page, courseUpload())
+
+      const result = await submitAndCollect(session, 'pdf-form-printed', RENDER_TIMEOUT)
+      await attachLog(session, testInfo)
+      expect(result.status, result.error).toBe('completed')
+
+      // the second step, on the status page: the saved PDF comes back
+      const download = session.page.waitForEvent('download')
+      await session.page.locator('#formInput').setInputFiles(result.file!)
+      const file = path.join(outDir(session.page), 'pdf-form.pdf')
+      await (await download).saveAs(file)
+
+      const { PDFDocument, PDFButton, PDFName } = await import('pdf-lib')
+      const buttons = (await PDFDocument.load(fs.readFileSync(file)))
+        .getForm()
+        .getFields()
+        .filter((field) => field instanceof PDFButton && field.getName().endsWith('check'))
+      const scripted = (kind: string) =>
+        buttons.filter(
+          (b) => new RegExp(kind + '\\d+check$').test(b.getName()) && b.acroField.getWidgets()[0].dict.has(PDFName.of('A')),
+        )
+
+      // as from the CLI: six quizzes with a solution, four surveys
+      expect(scripted('q')).toHaveLength(6)
+      expect(scripted('v')).toHaveLength(4)
+    } finally {
+      await session.context.close()
+    }
+  })
+
   test('a single README.md upload exports', async ({ browser }, testInfo) => {
     const session = await openApp(browser)
 

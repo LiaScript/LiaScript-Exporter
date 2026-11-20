@@ -2,7 +2,7 @@
 
 import { MemoryFS } from '../fs/memory'
 import { Arguments } from '../parser'
-import { Exporter } from '../exporter'
+import { Exporter, registerServerExporters } from '../exporter'
 import { useHttpsSchemaOrg } from '../export/rdf'
 import { AssetLoader, SCORM_SCHEMA_ROOT } from './assets'
 import { prepare as preparePrint, PrintJob } from './formats/pdf'
@@ -46,11 +46,18 @@ export async function exportCourse(
   options: Record<string, any> = {},
   onProgress?: (message: string) => void,
 ): Promise<Export> {
-  // `pdf` produces no files: nothing to seed, nothing for the Exporter.
+  // `pdf` produces no files: nothing to seed, and the Exporter only parses
+  // the course for the solutions of a form.
   if (format === 'pdf') {
     onProgress?.('Preparing…')
+    const print = await preparePrint(course.markdown, course.files, options)
 
-    return { print: await preparePrint(course.markdown, course.files, options) }
+    if (options['pdf-form']) {
+      onProgress?.('Reading the quizzes…')
+      print.form = { meta: await courseMeta(course, options) }
+    }
+
+    return { print }
   }
 
   // `docx` and `epub` render the course rather than transforming its markdown,
@@ -87,19 +94,7 @@ export async function exportCourse(
     options,
   )
 
-  // The course has to live in the store: exporters copy `argument.path`
-  // wholesale into their temp dir, and rewrite the readme in place.
-  const readme = `${course.name}.md`
-  await fs.writeFile(`${COURSE_ROOT}/${readme}`, course.markdown)
-
-  for (const [name, bytes] of Object.entries(course.files ?? {})) {
-    // The staged course wins over a file of the same name: it is the document
-    // the user actually asked to export.
-    if (name === readme) continue
-
-    await fs.writeFileRaw(`${COURSE_ROOT}/${name}`, bytes)
-  }
-
+  const readme = await stage(fs, course)
   const output = `${OUTPUT_ROOT}/${course.name}`
 
   const argument = {
@@ -122,6 +117,52 @@ export async function exportCourse(
   await new Exporter().run(argument)
 
   return collect(fs, output, course.name, format)
+}
+
+/**
+ * Puts the course into the store: exporters copy `argument.path` wholesale
+ * into their temp dir, and rewrite the readme in place. Returns its name.
+ */
+async function stage(fs: MemoryFS, course: Course): Promise<string> {
+  const readme = `${course.name}.md`
+  await fs.writeFile(`${COURSE_ROOT}/${readme}`, course.markdown)
+
+  for (const [name, bytes] of Object.entries(course.files ?? {})) {
+    // The staged course wins over a file of the same name: it is the document
+    // the user actually asked to export.
+    if (name === readme) continue
+
+    await fs.writeFileRaw(`${COURSE_ROOT}/${name}`, bytes)
+  }
+
+  return readme
+}
+
+/**
+ * The course description with the quiz solutions (`json.meta`), as the CLI's
+ * `--pdf-form` gets it: the Exporter parses the course for `pdf` with
+ * `pdf-form`, and hands the result to the `pdf` exporter, which here only
+ * keeps it. Null if the course could not be parsed.
+ */
+async function courseMeta(course: Course, options: Record<string, any>): Promise<any> {
+  const fs = new MemoryFS()
+  const readme = await stage(fs, course)
+  let meta: any = null
+
+  registerServerExporters({ pdf: { exporter: async (_: unknown, json: any) => (meta = json?.meta ?? null) } })
+
+  await new Exporter().run({
+    ...options,
+    input: `${COURSE_ROOT}/${readme}`,
+    readme: `./${readme}`,
+    path: COURSE_ROOT,
+    output: `${OUTPUT_ROOT}/${course.name}`,
+    format: 'pdf',
+    'pdf-form': true,
+    fs,
+  } as Arguments)
+
+  return meta
 }
 
 /**

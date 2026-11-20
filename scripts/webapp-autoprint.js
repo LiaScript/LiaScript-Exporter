@@ -102,7 +102,15 @@
       setTimeout(function () {
         requestAnimationFrame(function () {
           requestAnimationFrame(function () {
-            quizPaper()
+            if (options.form) {
+              // --pdf-form: fields and buttons stay, each under a link that
+              // names it; the web app turns the saved PDF into the form.
+              // Source from the app's own bundle (markFields in
+              // src/export/pdf-form-marks.ts), self-contained.
+              new Function('return (' + options.form.mark + ')')()(options.form.meta)
+            } else {
+              quizPaper()
+            }
             window.print()
           })
         })

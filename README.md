@@ -775,6 +775,11 @@ apps) still let learners fill in the form; tasks become fillable fields too.
 $ liaex --format pdf --pdf-form -i README.md
 ```
 
+The web app, which prints through the browser's print dialog, needs two steps:
+save the print as PDF, then choose that file on the export's status page, which
+turns it into the form. This needs a PDF saved by Chrome or Edge, which keep the
+links the form is built from.
+
 The solution button is there when the course shows it from the start (the
 default); one that appears only after some trials (`data-solution-button="3"`)
 or never is left out. Hints, custom feedback texts (`data-text-solved`, …) and

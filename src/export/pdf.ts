@@ -1,5 +1,5 @@
 import * as helper from './helper'
-import { addForm, markFields, QuizSpot } from './pdf-form'
+import { addForm, markFields } from './pdf-form'
 import * as COLOR from '../colorize'
 import type { ExportFS } from '../fs/types'
 import puppeteer, { Browser, Page } from 'puppeteer'
@@ -411,9 +411,8 @@ async function toPDF(fs: ExportFS, argument: PdfExportArguments, page: Page, jso
 
   // A form keeps every field and button for pdf-lib to fill in after printing;
   // on plain paper a dropdown cannot open, so it lists its options.
-  let quizzes: QuizSpot[] = []
   if (argument['pdf-form']) {
-    quizzes = await page.evaluate(markFields, !!json?.meta)
+    await page.evaluate(markFields, json?.meta ?? null)
   } else {
     await page.evaluate(`(${helper.quizPaper})(document.body, false)`)
   }
@@ -455,9 +454,7 @@ async function toPDF(fs: ExportFS, argument: PdfExportArguments, page: Page, jso
       omitBackground: argument['pdf-omitBackground'] ?? DEFAULT_OMIT_BACKGROUND,
     })
 
-    const bytes = argument['pdf-form']
-      ? await addForm(pdf, quizzes, json?.meta, json?.meta?.lang || json?.lia?.definition?.language)
-      : new Uint8Array(pdf)
+    const bytes = (argument['pdf-form'] && (await addForm(pdf))) || new Uint8Array(pdf)
 
     await fs.writeFileRaw(argument.output + '.pdf', bytes)
 

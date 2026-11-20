@@ -1,5 +1,7 @@
 'use strict'
 
+import { markFields } from '../../export/pdf-form-marks'
+
 /**
  * Browser PDF export.
  *
@@ -156,6 +158,8 @@ export interface PrintJob {
   theme?: string
   /** `--pdf-timeout`: extra milliseconds to wait before printing. */
   delay?: number
+  /** `--pdf-form`: the course description with the solutions, for the marks. */
+  form?: { meta: any }
 }
 
 /** Enough of a content-type guess for the media a course embeds. */
@@ -401,7 +405,14 @@ export function print(job: PrintJob): boolean {
 
   const entry = new URL(PDF_ENTRY, location.href).href
   const options = encodeURIComponent(
-    JSON.stringify({ css: job.css, theme: job.theme ?? null, delay: job.delay ?? 0 }),
+    JSON.stringify({
+      css: job.css,
+      theme: job.theme ?? null,
+      delay: job.delay ?? 0,
+      // The print tab's script is plain JavaScript beside the render, so the
+      // marking travels as source; it is self-contained for that reason.
+      form: job.form ? { mark: markFields.toString(), meta: job.form.meta } : null,
+    }),
   )
 
   const tab = window.open(

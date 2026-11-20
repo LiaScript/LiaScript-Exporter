@@ -138,6 +138,8 @@
             // service renders with Puppeteer and returns a real .pdf, so its
             // own records never carry this.
             print: !!job.print,
+            // --pdf-form: the saved PDF comes back here to become the form
+            form: !!(job.print && job.print.form),
           },
         }
       }
@@ -323,6 +325,21 @@
               <p style="margin-top: 0.75rem; color: #555;">
                 ${t('status.printHint', 'The course opens in a new tab and the print dialog appears — choose "Save as PDF" as the destination.')}
               </p>
+              ${
+                job.form
+                  ? `
+              <div style="margin-top: 1.25rem;">
+                <label class="btn-primary" for="formInput" style="display: inline-flex; cursor: pointer;">
+                  ${t('status.formButton', 'Make the saved PDF a form')}
+                </label>
+                <input type="file" id="formInput" accept="application/pdf,.pdf" style="display: none;" onchange="makeForm(this)" />
+                <p style="margin-top: 0.75rem; color: #555;">
+                  ${t('status.formHint', 'Then choose the PDF you saved: the quizzes become a fillable form, which checks the answers in readers with PDF JavaScript, e.g. Acrobat or Firefox. Works with PDFs saved by Chrome or Edge.')}
+                </p>
+              </div>
+          `
+                  : ''
+              }
             </div>
           `
                 : `
@@ -384,6 +401,28 @@
         window.lastJobData = null
         window.history.replaceState({}, '', 'status.html')
         showNoExport()
+      }
+
+      async function makeForm(input) {
+        const file = input.files && input.files[0]
+        input.value = ''
+        if (!file || !window.LiaExporter) return
+
+        const result = await window.LiaExporter.form(jobId, file)
+        if (result === 'ok') return
+
+        const messages = {
+          nofields: [
+            'status.formNoFields',
+            'This PDF has no form fields. Please choose the PDF saved from the print dialog of this export, in Chrome or Edge.',
+          ],
+          gone: [
+            'status.resultGone',
+            'This export is no longer available — the file is kept only while the page stays open. Please export again.',
+          ],
+        }
+        const [key, fallback] = messages[result] || messages.gone
+        alert(window.i18n ? window.i18n.t(key) : fallback)
       }
 
       async function downloadResult() {

@@ -30,212 +30,12 @@ import {
   StandardFonts,
 } from 'pdf-lib'
 import TEXTS from './pdf-form-texts.json'
+import type { QuizSpot } from './pdf-form-marks'
+
+export { markFields } from './pdf-form-marks'
+export type { QuizSpot }
 
 const LINK = 'https://liaex.invalid/field/'
-
-/** One quiz of the page, by the names of its PDF fields. */
-export interface QuizSpot {
-  section: number
-  quiz: number
-  /** The quiz class: text, single-choice, multiple-choice, select, matrix, multi, generic */
-  type: string
-  /** Answer fields per row (a matrix has several, every other quiz one); a radio group counts once. */
-  rows: string[][]
-  /** A survey: its check button submits, if every row is answered. */
-  survey?: boolean
-  check?: string
-  resolve?: string
-  feedback?: string
-  /** The trial count next to "Check", as LiaScript shows it. */
-  counter?: string
-}
-
-/**
- * Wraps the fields and quiz buttons of the rendered course in links that name
- * them, and returns the quizzes. Runs in the page, so it is self-contained.
- * `checks` is false without solutions: then the quiz buttons are hidden, the
- * fields are still marked.
- */
-export function markFields(checks: boolean): QuizSpot[] {
-  const LINK = 'https://liaex.invalid/field/'
-
-  // the pdf runtime hides the quiz controls; hints have no text in the page yet
-  const style = document.createElement('style')
-  style.textContent =
-    '.lia-quiz__control{display:flex!important;align-items:center;gap:.5rem}' +
-    '.lia-quiz__control.liaex-off,.lia-quiz__hint{display:none!important}' +
-    // a matrix shrinks its feedback box to nothing
-    'a.liaex-feedback{display:block;height:1.6em;min-width:20em;margin-top:.25rem}' +
-    // room in the check button for its trial count
-    '.liaex-count{display:inline-block;width:1.4em;height:1.6em;vertical-align:-.38em;margin:-.3em 0 -.3em .2em}'
-  document.head.appendChild(style)
-
-  let count = 0
-  const link = (spec: object) => {
-    const a = document.createElement('a')
-    a.href = LINK + encodeURIComponent(JSON.stringify(Object.assign({ id: count++ }, spec)))
-    return a
-  }
-  type Spec = { name: string; [key: string]: unknown }
-
-  // Chrome prints no link around a lone form control, and LiaScript draws a
-  // field anew once it is moved. So an empty link is laid over each field,
-  // where nothing is redrawn: a gap of a gap text, HTML that LiaScript writes
-  // itself, gets it right behind, pulled back over the gap by a negative margin.
-  const follow = (el: Element, spec: Spec) => {
-    const a = link(spec)
-    const rect = el.getBoundingClientRect()
-    const style = getComputedStyle(el)
-    a.style.display = 'inline-block'
-    a.style.width = rect.width + 'px'
-    a.style.height = rect.height + 'px'
-    a.style.marginLeft = -(rect.width + parseFloat(style.marginRight || '0')) + 'px'
-    a.style.verticalAlign = style.verticalAlign
-    el.after(a)
-    return spec.name
-  }
-
-  // Anything else is Elm's, which finds its nodes by their place, but leaves
-  // trailing children be: the link is appended, and laid over the field.
-  // Horizontally in percent, as the paper is narrower than the screen.
-  const cover = (el: Element, spec: Spec) => {
-    const host = (el.matches('input, textarea') ? el.parentElement : el) as HTMLElement
-    if (getComputedStyle(host).position === 'static') host.style.position = 'relative'
-    const a = link(spec)
-    a.style.position = 'absolute'
-    a.style.display = 'block'
-    if (host === el) {
-      a.style.left = a.style.top = a.style.right = a.style.bottom = '0'
-    } else {
-      const outer = host.getBoundingClientRect()
-      const inner = el.getBoundingClientRect()
-      a.style.left = ((inner.left - outer.left - host.clientLeft) / host.clientWidth) * 100 + '%'
-      a.style.width = (inner.width / host.clientWidth) * 100 + '%'
-      a.style.top = inner.top - outer.top - host.clientTop + 'px'
-      a.style.height = inner.height + 'px'
-    }
-    host.appendChild(a)
-    return spec.name
-  }
-
-  const done = new Set<Element>()
-  const field = (el: Element, name: string, inline = false): string => {
-    const mark = inline && el.matches('input') ? follow : cover
-    done.add(el)
-    if (el.matches('.lia-dropdown')) {
-      const id = el.querySelector('[aria-controls]')?.getAttribute('aria-controls')
-      const list = (id && document.getElementById(id)) || el
-      return mark(el, {
-        kind: 'select',
-        name,
-        placeholder: el.querySelector('.lia-dropdown__selected')?.textContent?.trim(),
-        options: Array.from(list.querySelectorAll('.lia-dropdown__option'), (o) => (o.textContent || '').trim()),
-      })
-    }
-    el.removeAttribute('placeholder')
-    if (el.matches('textarea')) return mark(el, { kind: 'area', name })
-    if ((el as HTMLInputElement).type === 'checkbox') return mark(el, { kind: 'check', name })
-    return mark(el, { kind: 'text', name })
-  }
-  const radios = (els: ArrayLike<Element>, group: string) => {
-    Array.from(els).forEach((el, i) => {
-      done.add(el)
-      cover(el, { kind: 'radio', name: group, value: 'o' + i })
-    })
-    return group
-  }
-
-  const mains = Array.from(document.querySelectorAll('main.lia-slide__content'))
-  const sectionOf = (el: Element) => mains.indexOf(el.closest('main.lia-slide__content') as Element)
-
-  // The gaps of a gap text sit outside their quiz; their handlers name it:
-  // track: [["quiz",S],["input",Q]] … param: {id: G
-  const gaps = new Map<string, string[]>()
-  document.querySelectorAll('main.lia-slide__content [oninput], main.lia-slide__content [onclick]').forEach((el) => {
-    const handler = el.getAttribute('oninput') || el.getAttribute('onclick') || ''
-    const match = handler.match(/\["quiz",\d+\],\["input",(\d+)\]\][\s\S]*?\bid: ?(\d+)/)
-    if (!match || !el.matches('input, .lia-dropdown')) return
-    const s = sectionOf(el)
-    const key = s + '-' + match[1]
-    const list = gaps.get(key) || []
-    list[Number(match[2])] = field(el, 's' + s + 'q' + match[1] + 'g' + match[2], true)
-    gaps.set(key, list)
-  })
-
-  const quizzes: QuizSpot[] = []
-  document.querySelectorAll('main.lia-slide__content .lia-quiz').forEach((quiz) => {
-    const feedback = quiz.querySelector(':scope > [id^="lia-quiz-feedback-"]')
-    const control = quiz.querySelector(':scope > .lia-quiz__control')
-    const check = control?.querySelector('.lia-quiz__check')
-    // a survey has a submit button, but no feedback; a task has neither
-    const survey = (!feedback && check && quiz.querySelector('[aria-labelledby^="lia-survey-"]')?.getAttribute('aria-labelledby')) || ''
-    if (!feedback && !survey) {
-      control?.classList.add('liaex-off')
-      return
-    }
-
-    const s = sectionOf(quiz)
-    const q = Number(feedback ? feedback.id.split('-').pop() : survey.split(' ')[0].split('-')[3])
-    const type = (quiz.className.match(/\blia-quiz-(text|single-choice|multiple-choice|select|matrix|multi|generic)\b/) || [])[1] || ''
-    const name = 's' + s + (survey ? 'v' : 'q') + q
-    const spot: QuizSpot = { section: s, quiz: q, type, rows: [], survey: !!survey }
-
-    if (type === 'multi') {
-      spot.rows = [gaps.get(s + '-' + q) || []]
-    } else {
-      // a text survey has its field right in the quiz
-      const answers = quiz.querySelector(':scope > .lia-quiz__answers') || (survey ? quiz : null)
-      const rows = answers ? (type === 'matrix' ? Array.from(answers.querySelectorAll('tbody tr')) : [answers]) : []
-      rows.forEach((row, r) => {
-        const options = row.querySelectorAll('input[type=radio]')
-        spot.rows.push(
-          options.length
-            ? [radios(options, name + 'r' + r)]
-            : Array.from(row.querySelectorAll('input, textarea, .lia-dropdown'), (el, i) => field(el, name + 'r' + r + 'f' + i)),
-        )
-      })
-    }
-
-    const resolve = survey ? null : quiz.querySelector('.lia-quiz__resolve:not(.hide)')
-    if ((checks || survey) && type !== 'generic' && spot.rows.flat().length && check) {
-      spot.check = cover(check, { kind: 'button', name: name + 'check' })
-      if (!survey) {
-        const count = document.createElement('span')
-        count.className = 'liaex-count'
-        check.appendChild(count)
-        const look = getComputedStyle(check)
-        spot.counter = cover(count, { kind: 'counter', name: name + 'count', color: look.color, size: parseFloat(look.fontSize) * 0.75 })
-      }
-      if (resolve) spot.resolve = cover(resolve, { kind: 'button', name: name + 'resolve' })
-      const box = link({ kind: 'feedback', name: name + 'feedback' })
-      box.className = 'liaex-feedback'
-      ;(feedback || quiz).appendChild(box)
-      spot.feedback = name + 'feedback'
-    } else {
-      control?.classList.add('liaex-off')
-    }
-    quizzes.push(spot)
-  })
-
-  // surveys, tasks and anything else: fields without a check
-  const groups = new Map<string, Element[]>()
-  document
-    .querySelectorAll('main.lia-slide__content input, main.lia-slide__content textarea, main.lia-slide__content .lia-dropdown')
-    .forEach((el) => {
-      if (done.has(el) || el.closest('.lia-code, .ace_editor')) return
-      const type = (el as HTMLInputElement).type
-      if (/^(button|submit|reset|hidden|range|file|color|image)$/.test(type)) return
-      if (type === 'radio') {
-        const group = 'r' + ((el as HTMLInputElement).name || String(count)).replace(/\W/g, '_')
-        groups.set(group, (groups.get(group) || []).concat(el))
-      } else {
-        field(el, 'f' + count)
-      }
-    })
-  groups.forEach((els, group) => radios(els, group))
-
-  return quizzes
-}
 
 type Spec = {
   id: number
@@ -247,6 +47,10 @@ type Spec = {
   /** a counter takes the look of its button: a CSS color and the size in pt */
   color?: string
   size?: number
+  /** a feedback field carries its quiz, the solution and the language */
+  spot?: QuizSpot
+  meta?: any
+  lang?: string
 }
 
 // Only the mark: LiaScript draws the box. pdf-lib's own looks always stroke a
@@ -267,11 +71,11 @@ const radioLook: AppearanceProviderFor<PDFRadioGroup> = (_, widget) => {
 type Place = { x: number; y: number; width: number; height: number }
 
 /**
- * Swaps the links {@link markFields} left for form fields, and gives the quiz
- * buttons their scripts. `meta` is the course description (`json.meta`), the
- * texts follow the course language.
+ * Swaps the links {@link markFields} left in a printed PDF for form fields,
+ * and gives the quiz buttons their scripts. Null if the PDF has none of these
+ * links: printed without them, or by a browser that drops links.
  */
-export async function addForm(bytes: Uint8Array, quizzes: QuizSpot[], meta: any, lang = 'en'): Promise<Uint8Array> {
+export async function addForm(bytes: Uint8Array): Promise<Uint8Array | null> {
   const pdf = await PDFDocument.load(bytes)
   const form = pdf.getForm()
   const font = await pdf.embedFont(StandardFonts.Helvetica)
@@ -351,6 +155,8 @@ export async function addForm(bytes: Uint8Array, quizzes: QuizSpot[], meta: any,
     }
   }
 
+  if (!found.length) return null
+
   // in the order of the page, which is the order of the tab key
   for (const { spec, page, place } of found.sort((a, b) => a.spec.id - b.spec.id)) {
     try {
@@ -360,12 +166,16 @@ export async function addForm(bytes: Uint8Array, quizzes: QuizSpot[], meta: any,
     }
   }
 
-  const texts = (TEXTS as Record<string, Record<string, string>>)[lang] ?? (TEXTS as any)[lang.split('-')[0]] ?? TEXTS.en
   const kinds = new Map(found.map(({ spec }) => [spec.name, spec.kind]))
-  for (const spot of quizzes) {
+  for (const { spec } of found) {
+    const spot = spec.spot
+    if (!spot) continue
+
+    const lang = spec.lang || 'en'
+    const texts = (TEXTS as Record<string, Record<string, string>>)[lang] ?? (TEXTS as any)[lang.split('-')[0]] ?? TEXTS.en
     const scripts = spot.survey
       ? { check: surveyScript(spot, kinds, options, texts), resolve: null }
-      : quizScripts(spot, meta?.slides?.[spot.section]?.quiz?.[spot.quiz], options, texts)
+      : quizScripts(spot, spec.meta, options, texts)
     for (const [button, js] of [
       [spot.check, scripts?.check],
       [spot.resolve, scripts?.resolve],
