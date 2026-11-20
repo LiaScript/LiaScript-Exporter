@@ -188,6 +188,7 @@ function assemble(doc: Document, view: Window): Chapter[] {
   const formulas = extract.mathml(doc)
   const figures = extract.figures(doc)
   const inlineSvgs = extract.inlineSvgs(doc)
+  const canvases = extract.canvases(doc)
   const code = extract.code(doc, view)
   const terminals = extract.terminals(doc)
 
@@ -230,6 +231,10 @@ function assemble(doc: Document, view: Window): Chapter[] {
   swap(body, 'svg[data-inline-svg-index]', 'data-inline-svg-index', inlineSvgs, {
     alt: 'Graphic',
     figure: true,
+  })
+
+  swap(body, 'canvas[data-canvas-index]', 'data-canvas-index', canvases, {
+    alt: 'Drawing',
   })
 
   replaceFormulas(body, formulas)

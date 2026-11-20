@@ -663,6 +663,33 @@ export function inlineSvgs(doc: Document): Map<number, string> {
 }
 
 /**
+ * Extracts every `<canvas>` (matplotlib, script drawings) as a PNG data URL.
+ *
+ * A canvas keeps its picture only in the live page: a copy or a reader shows an
+ * empty box. Blank canvases (overlay layers) and tainted ones are left out, so
+ * the replacement pass drops them.
+ */
+export function canvases(doc: Document): Map<number, string> {
+  const images = new Map<number, string>()
+
+  tag(doc, 'canvas', 'data-canvas-index').forEach((el, index) => {
+    const canvas = el as HTMLCanvasElement
+    const blank = doc.createElement('canvas')
+    blank.width = canvas.width
+    blank.height = canvas.height
+
+    try {
+      const url = canvas.toDataURL('image/png')
+      if (url !== blank.toDataURL('image/png')) images.set(index, url)
+    } catch {
+      // tainted by a cross-origin image: unreadable, dropped like a blank one
+    }
+  })
+
+  return images
+}
+
+/**
  * Extracts SVG figures — the diagrams LiaScript draws from ASCII art.
  *
  * Indexed on the `<figure>` rather than the `<svg>` because the replacement

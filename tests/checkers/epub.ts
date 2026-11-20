@@ -174,6 +174,13 @@ export function checkEpub(source: string, options: CheckOptions = {}): CheckResu
   problems.many('data: URI printed in chapters', [...dataText])
   problems.many('references to missing files', [...brokenRefs])
 
+  // a canvas is empty outside the live page: the drawn one becomes an image,
+  // the blank one is dropped
+  const allRaw = raws.join('\n')
+  if (/<canvas\b/i.test(allRaw)) problems.add('canvas in the book', 'renders empty in a reader')
+  const drawings = allRaw.match(/alt="Drawing"/g)?.length ?? 0
+  if (drawings !== 1) problems.add('canvas drawings', `${drawings} images, expected 1`)
+
   if (options.deep) {
     const jar = epubcheckJar()
 

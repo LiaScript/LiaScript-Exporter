@@ -237,6 +237,18 @@ it, and not on its sibling.
   <text x="30" y="45">MKSvgText</text>
 </svg>
 
+Canvas: epub keeps only the drawn one, as an image, and drops the blank one.
+
+<canvas id="mk-canvas" width="200" height="80"></canvas>
+<canvas id="mk-canvas-blank" width="200" height="80"></canvas>
+
+<script>
+const ctx = document.getElementById('mk-canvas').getContext('2d')
+ctx.fillStyle = '#36c'
+ctx.fillRect(10, 10, 180, 60)
+""
+</script>
+
 ## Quizzes
 
 MKQuizIntro

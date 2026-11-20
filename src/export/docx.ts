@@ -344,6 +344,20 @@ async function toDOCX(
         videoIframeImages: videoIframeImagesData,
       } = data
 
+      // A clone loses a canvas' pixels: read them from the live page first.
+      // Blank (overlay) and tainted canvases get no entry and are dropped.
+      const canvasImagesData: [number, string][] = []
+      document.querySelectorAll('canvas').forEach((canvas, index) => {
+        canvas.setAttribute('data-canvas-index', String(index))
+        const blank = document.createElement('canvas')
+        blank.width = canvas.width
+        blank.height = canvas.height
+        try {
+          const url = canvas.toDataURL('image/png')
+          if (url !== blank.toDataURL('image/png')) canvasImagesData.push([index, url])
+        } catch (e) {}
+      })
+
       const bodyClone = document.body.cloneNode(true) as HTMLElement
 
       // The converter writes an image it reaches outside a paragraph twice
@@ -574,6 +588,11 @@ async function toDOCX(
         alt: 'SVG Graphic',
         wrapInFigure: true,
         figureStyle: 'margin: 1.5em auto; text-align: center; page-break-inside: avoid;',
+      })
+
+      // Replace <canvas> drawings (matplotlib, scripts) with their PNG
+      replaceWithImage('canvas[data-canvas-index]', 'data-canvas-index', canvasImagesData, {
+        alt: 'Drawing', wrapInFigure: true,
       })
 
       // Replace <lia-formula> with screenshot image (DOCX does not support MathML)

@@ -127,6 +127,10 @@ export function checkDocx(source: string, options: CheckOptions = {}): CheckResu
     [attr(pr, 'descr'), attr(pr, 'title')].filter((v): v is string => !!v),
   )
 
+  // the drawn canvas becomes one image, the blank one is dropped
+  const drawings = byName(document, 'cNvPr').filter((pr) => attr(pr, 'descr') === 'Drawing').length
+  if (drawings !== 1) problems.add('canvas drawings', `${drawings} images, expected 1`)
+
   const title = pkg.has('docProps/core.xml')
     ? textOf(byName(parseXml(pkg.text('docProps/core.xml')).doc!, 'title')[0])
     : null

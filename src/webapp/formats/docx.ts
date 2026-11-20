@@ -159,6 +159,7 @@ async function assemble(
   const formulas = await extract.formulas(doc, view)
   const figures = extract.figures(doc)
   const inlineSvgs = extract.inlineSvgs(doc)
+  const canvases = extract.canvases(doc)
   const code = extract.code(doc, view)
   const terminals = extract.terminals(doc)
 
@@ -201,6 +202,10 @@ async function assemble(
     inlineSvgs,
     { alt: 'Graphic' },
   )
+
+  swap(body, 'canvas[data-canvas-index]', 'data-canvas-index', canvases, {
+    alt: 'Drawing',
+  })
 
   replaceFormulas(body, formulas)
   replaceTerminals(body, terminals)
