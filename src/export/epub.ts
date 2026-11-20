@@ -162,6 +162,9 @@ async function useHttpAdapterInEpubLibrary(): Promise<void> {
       await (new Function('m', 'return import(m)') as (m: string) => Promise<any>)(entry)
     ).default
     axios.defaults.adapter = 'http'
+    // Wikimedia answers `axios/…` (and no agent at all) with 403
+    axios.defaults.headers.common['User-Agent'] =
+      'LiaScript-Exporter (https://github.com/LiaScript/LiaScript-Exporter)'
   } catch (e: any) {
     console.warn(`ePub: could not set the http adapter for axios (${e.message})`)
   }

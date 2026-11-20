@@ -57,7 +57,69 @@ export async function render(
 
   onProgress?.('Rendering course…')
 
-  return mount(job, onProgress)
+  const course = await mount(job, onProgress)
+
+  // Shown by an <img>, but fetched by both exporters to package it.
+  const sources = new Map<string, Promise<string>>()
+  await Promise.all(
+    Array.from(course.document.querySelectorAll('img[src]'), async (img) => {
+      const src = img.getAttribute('src')!
+      if (!sources.has(src)) sources.set(src, commonsSource(src))
+      img.setAttribute('src', await sources.get(src)!)
+    }),
+  )
+
+  return course
+}
+
+/**
+ * The file a Wikimedia Commons `Special:FilePath` link stands for.
+ *
+ * The link redirects twice without CORS headers, so `fetch()` fails where an
+ * `<img>` loads. The Commons API answers with CORS (`origin=*`) and names the
+ * file's own URL, which allows it. A requested `width` stays a thumbnail: the
+ * original can be many megabytes. Anything else, or a failed lookup, keeps
+ * `src` as it is.
+ */
+export async function commonsSource(
+  src: string,
+  fetch: typeof globalThis.fetch = globalThis.fetch,
+): Promise<string> {
+  let url: URL
+
+  try {
+    url = new URL(src)
+  } catch {
+    return src
+  }
+
+  const file =
+    /^commons\.(m\.)?wikimedia\.org$/.test(url.hostname) &&
+    url.pathname.match(/^\/wiki\/Special:FilePath\/(.+)$/i)
+
+  if (!file) return src
+
+  const width = url.searchParams.get('width')
+  const api = new URL('https://commons.wikimedia.org/w/api.php')
+  api.search = new URLSearchParams({
+    action: 'query',
+    format: 'json',
+    formatversion: '2',
+    origin: '*',
+    prop: 'imageinfo',
+    iiprop: 'url',
+    titles: 'File:' + decodeURIComponent(file[1]).replace(/_/g, ' '),
+    ...(width ? { iiurlwidth: width } : {}),
+  }).toString()
+
+  try {
+    const response = await fetch(api.href, { signal: AbortSignal.timeout(15000) })
+    const info = (await response.json()).query?.pages?.[0]?.imageinfo?.[0]
+
+    return info?.thumburl || info?.url || src
+  } catch {
+    return src
+  }
 }
 
 /** Mounts the render in a hidden iframe and waits for it to signal. */

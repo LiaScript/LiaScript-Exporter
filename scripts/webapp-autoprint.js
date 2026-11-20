@@ -77,27 +77,32 @@
 
       // A dropdown cannot open on paper: list its options. Fields stay drawn,
       // without the "?" placeholder. Same as the CLI (quizPaper in helper.ts).
-      document.querySelectorAll('.lia-dropdown').forEach(function (dropdown) {
-        var control = dropdown.querySelector('[aria-controls]')
-        var id = control && control.getAttribute('aria-controls')
-        var list = (id && document.getElementById(id)) || dropdown
-        var options = Array.prototype.map
-          .call(list.querySelectorAll('.lia-dropdown__option'), function (o) {
-            return o.textContent.trim()
-          })
-          .filter(Boolean)
-        if (list !== dropdown) list.remove()
-        dropdown.replaceWith('[ ' + options.join(' | ') + ' ]')
-      })
-      document.querySelectorAll('input, textarea').forEach(function (input) {
-        input.removeAttribute('placeholder')
-      })
+      // Right before printing, as there: LiaScript may still render a quiz
+      // anew in the meantime, which brings back "selection".
+      function quizPaper() {
+        document.querySelectorAll('.lia-dropdown').forEach(function (dropdown) {
+          var control = dropdown.querySelector('[aria-controls]')
+          var id = control && control.getAttribute('aria-controls')
+          var list = (id && document.getElementById(id)) || dropdown
+          var options = Array.prototype.map
+            .call(list.querySelectorAll('.lia-dropdown__option'), function (o) {
+              return o.textContent.trim()
+            })
+            .filter(Boolean)
+          if (list !== dropdown) list.remove()
+          dropdown.replaceWith('[ ' + options.join(' | ') + ' ]')
+        })
+        document.querySelectorAll('input, textarea').forEach(function (input) {
+          input.removeAttribute('placeholder')
+        })
+      }
 
       // `--pdf-timeout`: time for slow scripts, then two frames, so the
       // injected rules are laid out before printing.
       setTimeout(function () {
         requestAnimationFrame(function () {
           requestAnimationFrame(function () {
+            quizPaper()
             window.print()
           })
         })

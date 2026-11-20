@@ -174,6 +174,11 @@ export function checkEpub(source: string, options: CheckOptions = {}): CheckResu
   problems.many('data: URI printed in chapters', [...dataText])
   problems.many('references to missing files', [...brokenRefs])
 
+  // a Wikimedia redirect link instead of the packaged file: no image offline
+  if (/<img\b[^>]*\bsrc="[^"]*Special:FilePath/i.test(raws.join('\n'))) {
+    problems.add('image left as a Special:FilePath link', 'not packaged')
+  }
+
   // a canvas is empty outside the live page: the drawn one becomes an image,
   // the blank one is dropped
   const allRaw = raws.join('\n')

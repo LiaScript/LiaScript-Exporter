@@ -12,6 +12,7 @@ comment:  Network fixture (@network tests only): remote imports, scripts,
 script:   https://cdn.jsdelivr.net/chartist.js/latest/chartist.min.js
 link:     https://cdn.jsdelivr.net/chartist.js/latest/chartist.min.css
 import:   https://raw.githubusercontent.com/liaTemplates/ABCjs/main/README.md
+          https://raw.githubusercontent.com/LiaTemplates/Wikimedia/main/README.md
 -->
 
 # Network Test Course
@@ -29,6 +30,15 @@ MKNetImages
 Unfetchable (CORS-blocked) — must degrade to a labelled link, not vanish:
 
 ![MKNetImageCors](https://www.w3schools.com/html/pic_trulli.jpg)
+
+## Wikimedia
+
+MKNetWikimedia The template fetches the image after the render started, and
+Special:FilePath redirects twice without CORS headers.
+
+@Wikimedia.embed(File:Apple_cake.JPG)
+
+![MKNetWikimediaFilePath](https://commons.wikimedia.org/wiki/Special:FilePath/Apple_cake.JPG?width=300)
 
 ## Embeds
 
