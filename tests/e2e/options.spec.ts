@@ -240,6 +240,55 @@ test('pdf: --pdf-form makes quizzes and surveys a form that checks, resolves and
   expect(form.getFields().filter((field) => field instanceof PDFRadioGroup)).toHaveLength(5)
 })
 
+test('pdf: --pdf-form gets the solutions for a course URL and in a project', async () => {
+  test.setTimeout(2 * CHROME_TIMEOUT)
+
+  // the fixture course over http, as a URL input and as a project's course
+  const http = await import('node:http')
+  const dir = path.join(ROOT, 'tests/fixtures/course')
+  const server = http.createServer((req, res) => {
+    const file = path.join(dir, decodeURIComponent((req.url || '/').split('?')[0]))
+    if (!file.startsWith(dir) || !fs.existsSync(file) || fs.statSync(file).isDirectory()) {
+      res.statusCode = 404
+      return res.end()
+    }
+    res.end(fs.readFileSync(file))
+  })
+  await new Promise<void>((resolve) => server.listen(0, '127.0.0.1', resolve))
+  const url = `http://127.0.0.1:${(server.address() as { port: number }).port}/README.md`
+
+  const { PDFDocument, PDFButton, PDFName } = await import('pdf-lib')
+  const scripted = async (file: string) =>
+    (await PDFDocument.load(fs.readFileSync(file)))
+      .getForm()
+      .getFields()
+      .filter((f) => f instanceof PDFButton && /q\d+check$/.test(f.getName()) && f.acroField.getWidgets()[0].dict.has(PDFName.of('A')))
+      .length
+
+  try {
+    const out = path.join(OUT_DIR, 'pdf-form-url')
+    fs.rmSync(out + '.pdf', { force: true })
+    let run = await runCli(['-i', url, '-f', 'pdf', '--pdf-form', '-o', out], CHROME_TIMEOUT)
+    expect(run.code, run.log.slice(-2_000)).toBe(0)
+    expect(await scripted(out + '.pdf')).toBe(6)
+
+    const project = path.join(OUT_DIR, 'pdf-form-project')
+    fs.rmSync(project, { recursive: true, force: true })
+    fs.mkdirSync(project, { recursive: true })
+    fs.writeFileSync(path.join(project, 'project.yaml'), `title: Form\ncollection:\n  - url: ${url}\n`)
+    run = await runCli(
+      ['-i', path.join(project, 'project.yaml'), '-f', 'project', '--project-generate-pdf', '--pdf-form', '-o', path.join(project, 'index')],
+      CHROME_TIMEOUT,
+    )
+    expect(run.code, run.log.slice(-2_000)).toBe(0)
+    const pdfs = fs.readdirSync(path.join(project, 'assets/pdf'))
+    expect(pdfs).toHaveLength(1)
+    expect(await scripted(path.join(project, 'assets/pdf', pdfs[0]))).toBe(6)
+  } finally {
+    server.close()
+  }
+})
+
 test('docx: --docx-theme colors headings and links', async () => {
   test.setTimeout(CHROME_TIMEOUT)
 

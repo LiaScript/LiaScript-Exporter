@@ -53,6 +53,8 @@ Add this action to your workflow:
 | `pdf-landscape` | Landscape orientation | `false` |
 | `pdf-print-background` | Print background graphics | `false` |
 | `pdf-stylesheet` | Custom CSS file path | - |
+| `pdf-timeout` | Extra wait before printing in ms, e.g. for slow scripts | - |
+| `pdf-form` | Quizzes as a fillable form, checked with PDF JavaScript | `false` |
 
 ### Web Settings
 

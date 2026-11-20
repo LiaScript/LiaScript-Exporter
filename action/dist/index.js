@@ -385,6 +385,8 @@ function parseInputs() {
         'pdf-format': core.getInput('pdf-format') || 'A4',
         'pdf-stylesheet': core.getInput('pdf-stylesheet') || undefined,
         'pdf-theme': core.getInput('pdf-theme') || 'default',
+        'pdf-timeout': core.getInput('pdf-timeout') || undefined,
+        'pdf-form': getBooleanInput('pdf-form'),
         // RDF settings
         'rdf-format': core.getInput('rdf-format') || 'json-ld',
         'rdf-url': core.getInput('rdf-url') || undefined,

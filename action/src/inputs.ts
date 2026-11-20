@@ -45,6 +45,7 @@ export interface LiaScriptExporterArgs {
   'pdf-timeout'?: string;
   'pdf-stylesheet'?: string;
   'pdf-theme'?: string;
+  'pdf-form'?: boolean;
 
   // Project settings
   'project-no-meta'?: boolean;
@@ -143,6 +144,8 @@ export function parseInputs(): LiaScriptExporterArgs {
     'pdf-format': core.getInput('pdf-format') || 'A4',
     'pdf-stylesheet': core.getInput('pdf-stylesheet') || undefined,
     'pdf-theme': core.getInput('pdf-theme') || 'default',
+    'pdf-timeout': core.getInput('pdf-timeout') || undefined,
+    'pdf-form': getBooleanInput('pdf-form'),
 
     // RDF settings
     'rdf-format': core.getInput('rdf-format') || 'json-ld',

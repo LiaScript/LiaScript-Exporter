@@ -337,13 +337,14 @@ export class Exporter {
         await this.handleProjectInput(app, argument, format)
       } else if (!helper.isURL(argument.input)) {
         await this.handleFileInput(app, argument, format)
-      } else if (argument.format === SERVER_ONLY.PDF) {
+      } else if (argument.format === SERVER_ONLY.PDF && !argument['pdf-form']) {
         await serverExporter('pdf').exporter(argument)
         this.finish?.()
       } else if (argument.format === SERVER_ONLY.DOCX) {
         await serverExporter('docx').exporter(argument)
         this.finish?.()
-      } else if (argument.format === RDF.format) {
+      } else if (argument.format === RDF.format || argument.format === SERVER_ONLY.PDF) {
+        // a PDF form needs the solutions, so the course is parsed as for RDF
         await this.handleUrlInput(app, argument, format)
       } else {
         throw new Error(`URLs are not allowed as input for "${argument.format}"`)
@@ -373,7 +374,7 @@ export class Exporter {
     }
 
     // a PDF form checks its quizzes against their solutions
-    if (format === SERVER_ONLY.PDF && argument['pdf-form']) {
+    if (argument['pdf-form'] && (format === SERVER_ONLY.PDF || (format === SERVER_ONLY.PROJECT && argument['project-generate-pdf']))) {
       return STORAGE.FULL_JSON_META
     }
 

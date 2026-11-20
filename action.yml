@@ -69,6 +69,13 @@ inputs:
   pdf-stylesheet:
     description: 'Custom CSS file path'
     required: false
+  pdf-timeout:
+    description: 'Extra wait before printing in ms, e.g. for slow scripts'
+    required: false
+  pdf-form:
+    description: 'Quizzes as a fillable form, checked with PDF JavaScript'
+    required: false
+    default: 'false'
 
   # Web settings
   web-zip:

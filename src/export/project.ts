@@ -933,7 +933,7 @@ async function toCard(
       console.log('generate pdf of', argument.input, ' -> ', file)
 
       fs.ensureDirSync(at('assets/pdf'))
-      await PDF.exporter(argument)
+      await PDF.exporter(argument, course.data)
     }
 
     if (fs.existsSync(at(file))) downloads['pdf'] = file
