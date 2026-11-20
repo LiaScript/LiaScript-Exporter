@@ -52,6 +52,8 @@ export async function render(
   onProgress?.('Preparing course…')
 
   const job = await prepare(markdown, files, options)
+  // `--epub-timeout` / `--docx-timeout`, as in the CLI; options hold one format's only
+  job.delay = Number(options['epub-timeout'] || options['docx-timeout']) || 0
 
   onProgress?.('Rendering course…')
 
@@ -137,8 +139,11 @@ function mount(
 
           settled = true
           stopWatching()
-          onProgress?.('Extracting content…')
-          resolve({ document: doc, window: win, dispose })
+          // Extra wait for slow course scripts, after the ready signal like the CLI
+          setTimeout(() => {
+            onProgress?.('Extracting content…')
+            resolve({ document: doc, window: win, dispose })
+          }, job.delay || 0)
         },
         { once: true },
       )

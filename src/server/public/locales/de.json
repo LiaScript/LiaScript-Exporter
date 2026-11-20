@@ -180,6 +180,8 @@
   "settings.epub.authorPlaceholder": "Max Mustermann",
   "settings.epub.publisher": "Verlag",
   "settings.epub.publisherHint": "Verlag/Verlagshaus",
+  "settings.epub.timeout": "Timeout (ms)",
+  "settings.epub.timeoutHint": "Zusätzliche Wartezeit vor dem Export in ms, z. B. für langsame Skripte (Standard: keine)",
   "settings.docx.title": "DOCX-Einstellungen",
   "settings.docx.docTitle": "Dokumenttitel",
   "settings.docx.docTitleHint": "Titel des Word-Dokuments",

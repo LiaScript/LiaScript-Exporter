@@ -19,6 +19,7 @@ function initializeNumberInputs() {
     },
     { id: 'pdfScale', min: 0.1, max: 2, isInteger: false, value: 1 },
     { id: 'pdfTimeout', min: 0, max: null, isInteger: true, value: null },
+    { id: 'epubTimeout', min: 0, max: 120000, isInteger: true, value: null },
     { id: 'docxFontSize', min: 10, max: 100, isInteger: true, value: null },
     { id: 'docxTimeout', min: 0, max: 120000, isInteger: true, value: null },
   ]
