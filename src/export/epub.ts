@@ -872,21 +872,76 @@ async function toEPUB(
 
       const isRemote = (url: string) => /^(https?:|\/\/|mailto:)/i.test(url)
 
-      // Local audio and video point into this machine's file system (file://
-      // URLs), and WAV or WebM are no EPUB core media types anyway: name them
-      // instead. Remote media stay playable.
-      bodyClone.querySelectorAll('audio, video').forEach((el: Element) => {
+      // Audio, video and embedded pages: readers seldom play them, a remote
+      // one would have to be declared and an embedded page cannot be in a book
+      // at all, and inside a link (LiaScript wraps them in one) none of them is
+      // valid. Each becomes a line that names it, a link if it is remote, a
+      // YouTube video under its thumbnail, as in the web app.
+      bodyClone.querySelectorAll('audio, video, iframe').forEach((el: Element) => {
         const src =
           el.getAttribute('src') ||
           el.querySelector('source')?.getAttribute('src') ||
           ''
-        if (isRemote(src)) return
+        const figure = el.closest('figure')
+        const target = figure ?? el
+        const outer = target.parentElement?.tagName === 'A' ? target.parentElement : target
+        if (!src) {
+          outer.remove()
+          return
+        }
+
+        const described = el.getAttribute('title') || figure?.querySelector('figcaption')?.textContent || ''
+        const label =
+          described.trim() || decodeURIComponent(src.split(/[?#]/)[0].split('/').pop() || '') || 'Media'
+        const prefix = el.tagName === 'AUDIO' ? '♪ ' : el.tagName === 'VIDEO' ? '▶ ' : '🔗 '
 
         const p = document.createElement('p')
-        p.textContent =
-          (el.tagName === 'AUDIO' ? '♪ ' : '▶ ') +
-          (src.split(/[?#]/)[0].split('/').pop() || 'Media')
-        ;(el.closest('figure') ?? el).replaceWith(p)
+        p.setAttribute('style', 'text-align: center; margin: 0.5em 0;')
+        if (isRemote(src)) {
+          const a = document.createElement('a')
+          a.href = src
+          a.textContent = prefix + label
+          p.appendChild(a)
+        } else {
+          p.textContent = prefix + label
+        }
+
+        const youtube = src.match(/(?:youtube(?:-nocookie)?\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([\w-]{11})/)
+        if (youtube) {
+          const img = document.createElement('img')
+          img.src = `https://img.youtube.com/vi/${youtube[1]}/hqdefault.jpg`
+          img.alt = 'Video'
+          img.setAttribute('style', 'max-width: 100%; height: auto; display: block; margin: 0 auto;')
+          p.prepend(img)
+        }
+
+        outer.replaceWith(p)
+      })
+
+      // Hidden is hidden in a book too, and the library writes the bare
+      // attribute, which is no XML (the ChemLab template has one)
+      bodyClone.querySelectorAll('[hidden]').forEach((el: Element) => el.remove())
+
+      // A span takes no block (LiaScript's read-aloud effect puts a div in one)
+      bodyClone.querySelectorAll('span div').forEach((div: Element) => {
+        const span = document.createElement('span')
+        Array.from(div.attributes).forEach((a) => span.setAttribute(a.name, a.value))
+        while (div.firstChild) span.appendChild(div.firstChild)
+        div.replaceWith(span)
+      })
+
+      // A caption belongs to its figure, as its first or last child; one left
+      // elsewhere (after an embed became an image) moves there, or becomes text
+      bodyClone.querySelectorAll('figcaption').forEach((caption: Element) => {
+        if (caption.parentElement?.tagName === 'FIGURE') return
+        const figure = caption.closest('figure')
+        if (figure && !figure.querySelector(':scope > figcaption')) {
+          figure.appendChild(caption)
+        } else {
+          const p = document.createElement('p')
+          while (caption.firstChild) p.appendChild(caption.firstChild)
+          caption.replaceWith(p)
+        }
       })
 
       // Links to local files would point into this machine's file system;
@@ -1138,6 +1193,10 @@ async function toEPUB(
       for (const content of epub.content) {
         if (typeof content.data !== 'string') continue
 
+        // The same for inline SVG (the ChemLab template draws its controls in
+        // it): without its namespace it is an unknown element in XHTML.
+        content.data = content.data.replace(/<svg\b(?![^>]*\sxmlns=)/g, '<svg xmlns="http://www.w3.org/2000/svg"')
+
         content.data = content.data.replace(/<math\b[\s\S]*?<\/math>/g, (math: string) =>
           math
             .replace(/^<math\b(?![^>]*\sxmlns=)/, '<math xmlns="http://www.w3.org/1998/Math/MathML"')
@@ -1310,7 +1369,7 @@ function patchedOpfTemplate(version: 2 | 3, dir: string): string | undefined {
       fixed = fixed.replace(
         item,
         'href="<%= content.href %>" media-type="application/xhtml+xml"' +
-          `<% var props = [/<math\\b/.test(content.data || "") && "mathml", /<script\\b/.test(content.data || "") && "scripted"].filter(Boolean); %>` +
+          `<% var props = [/<math\\b/.test(content.data || "") && "mathml", /<script\\b/.test(content.data || "") && "scripted", /<svg\\b/.test(content.data || "") && "svg"].filter(Boolean); %>` +
           `<% if(props.length){ %> properties="<%= props.join(" ") %>"<% } %> />`,
       )
 
