@@ -148,6 +148,68 @@ test('pdf: width, height and page ranges', async () => {
   }
 })
 
+test('pdf: --pdf-form makes the quizzes a form that checks and resolves itself', async () => {
+  test.setTimeout(CHROME_TIMEOUT)
+
+  const file = await exportWith('pdf-form', ['-f', 'pdf', '--pdf-form'], 'pdf-form.pdf', CHROME_TIMEOUT)
+  const { PDFDocument, PDFName, PDFDict, PDFHexString, PDFString, PDFButton, PDFCheckBox, PDFRadioGroup, PDFDropdown } =
+    await import('pdf-lib')
+  const form = (await PDFDocument.load(fs.readFileSync(file))).getForm()
+
+  // A stand-in for the reader's document, as far as the scripts use it
+  const values = new Map<string, any>()
+  const fields = new Map(
+    form.getFields().map((field) => {
+      const name = field.getName()
+      values.set(
+        name,
+        field instanceof PDFCheckBox || field instanceof PDFRadioGroup
+          ? 'Off'
+          : field instanceof PDFDropdown
+            ? field.getSelected()[0]
+            : '',
+      )
+      const stub = {
+        get value() {
+          return values.get(name)
+        },
+        set value(value) {
+          values.set(name, value)
+        },
+        textColor: null as unknown,
+        checkThisBox: (_: number, on: boolean) => values.set(name, on ? 'Yes' : 'Off'),
+      }
+      return [name, stub]
+    }),
+  )
+  const doc = { getField: (name: string) => fields.get(name) ?? null }
+  const run = (button: string) => {
+    const action = form.getButton(button).acroField.getWidgets()[0].dict.lookup(PDFName.of('A'), PDFDict)
+    const js = action.lookup(PDFName.of('JS'))
+    new Function((js as typeof PDFHexString.prototype | typeof PDFString.prototype).decodeText()).call(doc)
+  }
+
+  const checks = form
+    .getFields()
+    .filter((field) => field instanceof PDFButton && field.getName().endsWith('check'))
+    .map((field) => field.getName().replace(/check$/, ''))
+
+  // text, single, multiple, select gap, text gaps, matrix; the generic one has no solution
+  expect(checks).toHaveLength(6)
+
+  for (const quiz of checks) {
+    run(quiz + 'check')
+    expect(values.get(quiz + 'feedback'), quiz).toBe('The correct answer has not yet been given')
+    run(quiz + 'resolve')
+    expect(values.get(quiz + 'feedback'), quiz).toBe('Resolved answer')
+    run(quiz + 'check')
+    expect(values.get(quiz + 'feedback'), quiz).toBe('Congratulations, that was the right answer')
+  }
+
+  // the single choice, three matrix rows, and the survey, which is fillable without a check
+  expect(form.getFields().filter((field) => field instanceof PDFRadioGroup)).toHaveLength(5)
+})
+
 test('docx: --docx-theme colors headings and links', async () => {
   test.setTimeout(CHROME_TIMEOUT)
 

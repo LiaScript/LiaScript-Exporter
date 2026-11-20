@@ -1,4 +1,5 @@
 import * as helper from './helper'
+import { addForm, markFields, QuizSpot } from './pdf-form'
 import * as COLOR from '../colorize'
 import type { ExportFS } from '../fs/types'
 import puppeteer, { Browser, Page } from 'puppeteer'
@@ -52,6 +53,11 @@ export function help() {
     null,
     '--pdf-timeout',
     `             Set an additional time horizon to wait until finished (default: none)`,
+  )
+  COLOR.command(
+    null,
+    '--pdf-form',
+    '                Quizzes as a fillable form, checked with PDF JavaScript',
   )
   COLOR.command(
     null,
@@ -181,6 +187,7 @@ export interface PdfExportArguments {
 
   'pdf-stylesheet'?: string
   'pdf-theme'?: string
+  'pdf-form'?: boolean
 }
 
 export const format = 'pdf'
@@ -204,7 +211,7 @@ export const format = 'pdf'
  * })
  * ```
  */
-export async function exporter(argument: PdfExportArguments) {
+export async function exporter(argument: PdfExportArguments, json?: any) {
   const fs = argument.fs!
 
   const dirname = fs.assetRoot()
@@ -335,7 +342,7 @@ export async function exporter(argument: PdfExportArguments) {
         await helper.sleep(argument['pdf-timeout'])
       }
 
-      await toPDF(fs, argument, page)
+      await toPDF(fs, argument, page, json)
     } else {
       console.log('Preview mode enabled - browser will remain open')
     }
@@ -380,7 +387,7 @@ export async function exporter(argument: PdfExportArguments) {
  * @param page - Puppeteer page instance containing the rendered content
  * @throws {Error} If PDF generation fails or media type emulation fails
  */
-async function toPDF(fs: ExportFS, argument: PdfExportArguments, page: Page) {
+async function toPDF(fs: ExportFS, argument: PdfExportArguments, page: Page, json?: any) {
   try {
     await page.emulateMediaType('screen')
   } catch (e) {
@@ -402,8 +409,14 @@ async function toPDF(fs: ExportFS, argument: PdfExportArguments, page: Page) {
     })
   })
 
-  // A dropdown cannot open on paper: list its options. Fields stay drawn.
-  await page.evaluate(`(${helper.quizPaper})(document.body, false)`)
+  // A form keeps every field and button for pdf-lib to fill in after printing;
+  // on plain paper a dropdown cannot open, so it lists its options.
+  let quizzes: QuizSpot[] = []
+  if (argument['pdf-form']) {
+    quizzes = await page.evaluate(markFields, !!json?.meta)
+  } else {
+    await page.evaluate(`(${helper.quizPaper})(document.body, false)`)
+  }
 
   try {
     // No `path:` here on purpose — letting Puppeteer write the file itself
@@ -442,7 +455,11 @@ async function toPDF(fs: ExportFS, argument: PdfExportArguments, page: Page) {
       omitBackground: argument['pdf-omitBackground'] ?? DEFAULT_OMIT_BACKGROUND,
     })
 
-    await fs.writeFileRaw(argument.output + '.pdf', new Uint8Array(pdf))
+    const bytes = argument['pdf-form']
+      ? await addForm(pdf, quizzes, json?.meta, json?.meta?.lang || json?.lia?.definition?.language)
+      : new Uint8Array(pdf)
+
+    await fs.writeFileRaw(argument.output + '.pdf', bytes)
 
     console.log(`PDF successfully generated: ${argument.output}.pdf`)
   } catch (e) {

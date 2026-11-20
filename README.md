@@ -760,6 +760,26 @@ $ liaex --format pdf \
 depending on the size of the course, this can take a while, please be patient...
 ```
 
+__`--pdf-form`__
+
+Turns the quizzes into a fillable PDF form. LiaScript's own __Check__ and
+solution buttons keep working in readers that run PDF JavaScript, such as Adobe
+Acrobat/Reader or Firefox: a check compares with the course's solution and
+shows LiaScript's feedback in the course language. Readers without JavaScript
+(macOS Preview, most mobile apps) still let learners fill in the form. Surveys
+and tasks become fillable fields as well.
+
+``` bash
+$ liaex --format pdf --pdf-form -i README.md
+```
+
+The solution button is there when the course shows it from the start (the
+default); one that appears only after some trials (`data-solution-button="3"`)
+or never is left out. Hints, custom feedback texts (`data-text-solved`, …) and
+quizzes checked by a script (`[[!]]`) are not part of the form. Form fields are
+written in Helvetica, which covers Latin-1 only: a selection quiz whose options
+it cannot write keeps its printed look.
+
 The following are puppeteer-specific settings (see [puppeteer PDF options](https://github.com/puppeteer/puppeteer/blob/main/docs/api.md#pagepdfoptions)):
 
 __`--pdf-scale`__ Scale of the webpage rendering. Defaults to 1. Must be between 0.1 and 2.

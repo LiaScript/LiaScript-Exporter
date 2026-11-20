@@ -240,7 +240,7 @@ export class Exporter {
         await WEB.exporter(argument, JSON.parse(json))
         break
       case SERVER_ONLY.PDF:
-        await serverExporter('pdf').exporter(argument)
+        await serverExporter('pdf').exporter(argument, JSON.parse(json))
         break
       case SERVER_ONLY.EPUB:
         await serverExporter('epub').exporter(argument, JSON.parse(json))
@@ -369,6 +369,11 @@ export class Exporter {
         (format === SERVER_ONLY.PROJECT &&
           (argument['project-generate-scorm12'] || argument['project-generate-scorm2004'])))
     ) {
+      return STORAGE.FULL_JSON_META
+    }
+
+    // a PDF form checks its quizzes against their solutions
+    if (format === SERVER_ONLY.PDF && argument['pdf-form']) {
       return STORAGE.FULL_JSON_META
     }
 

@@ -140,6 +140,7 @@ export function parseArguments(): Arguments {
     'pdf-timeout': argv['pdf-timeout'],
     'pdf-stylesheet': argv['pdf-stylesheet'],
     'pdf-theme': argv['pdf-theme'],
+    'pdf-form': argv['pdf-form'],
 
     // epub cases
     'epub-title': argv['epub-title'],

@@ -156,6 +156,8 @@
   "settings.pdf.themeYellow": "Yellow",
   "settings.pdf.timeout": "Timeout (ms)",
   "settings.pdf.timeoutHint": "Extra wait before export in ms, e.g. for slow scripts (default: none)",
+  "settings.pdf.form": "Quizzes as a Form",
+  "settings.pdf.formHint": "Fillable fields; check and solution buttons work in readers with PDF JavaScript, e.g. Acrobat or Firefox",
   "settings.pdf.preferCSSPageSize": "Prefer CSS @page Size",
   "settings.pdf.preferCSSPageSizeHint": "CSS page size takes precedence",
   "settings.pdf.omitBackground": "Transparent Background",

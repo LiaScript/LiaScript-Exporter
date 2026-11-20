@@ -1,0 +1,227 @@
+{
+"am": {
+"failed": "ትክክለኛው መልስ ገና አልተሰጠም",
+"resolved": "የተፈታ መልስ",
+"solved": "እንኳን ደስ አለዎት፣ ይህ ትክክለኛው መልስ ነው"
+},
+"ar": {
+"failed": "لم يتم إعطاء الإجابة الصحيحة بعد",
+"resolved": "إجابة تم حلها",
+"solved": "مبروك، هذه كانت الإجابة الصحيحة"
+},
+"bg": {
+"failed": "Все още не е даден правилният отговор",
+"resolved": "Решен отговор",
+"solved": "Поздравления, това беше правилният отговор"
+},
+"bn": {
+"failed": "সঠিক উত্তরটি এখনও দেওয়া হয়নি",
+"resolved": "সমাধানকৃত উত্তর",
+"solved": "অভিনন্দন, সেটা সঠিক উত্তর ছিল"
+},
+"ca": {
+"failed": "Encara no s'ha donat la resposta correcta",
+"resolved": "Resposta revelada",
+"solved": "Enhorabona, aquesta era la resposta correcta"
+},
+"cs": {
+"failed": "Správná odpověď ještě nebyla zadána",
+"resolved": "Odhalená odpověď",
+"solved": "Gratulujeme, to byla správná odpověď"
+},
+"da": {
+"failed": "Det rigtige svar er endnu ikke angivet",
+"resolved": "Afsløret svar",
+"solved": "Tillykke, det var det rigtige svar"
+},
+"de": {
+"failed": "Die richtige Antwort wurde noch nicht gegeben",
+"resolved": "Aufgelöste Antwort",
+"solved": "Herzlichen Glückwunsch, das war die richtige Antwort"
+},
+"el": {
+"failed": "Δεν έχει δοθεί ακόμη η σωστή απάντηση",
+"resolved": "Απάντηση που αποκαλύφθηκε",
+"solved": "Συγχαρητήρια, αυτή ήταν η σωστή απάντηση"
+},
+"en": {
+"failed": "The correct answer has not yet been given",
+"resolved": "Resolved answer",
+"solved": "Congratulations, that was the right answer"
+},
+"es": {
+"failed": "La respuesta correcta aún no ha sido dada",
+"resolved": "Respuesta resuelta",
+"solved": "Felicitaciones, esa fue la respuesta correcta"
+},
+"et": {
+"failed": "Õiget vastust pole veel antud",
+"resolved": "Lahendatud vastus",
+"solved": "Palju õnne, see oli õige vastus"
+},
+"eu": {
+"failed": "Oraindik ez da erantzun zuzena eman",
+"resolved": "Agerian jarritako erantzuna",
+"solved": "Zorionak, hori zen erantzun zuzena"
+},
+"fa": {
+"failed": "پاسخ درست هنوز داده نشده است",
+"resolved": "پاسخ حل شده",
+"solved": "تبریک می‌گویم، پاسخ درست بود"
+},
+"fi": {
+"failed": "Oikeaa vastausta ei ole vielä annettu",
+"resolved": "Paljastettu vastaus",
+"solved": "Onnittelut, vastaus oli oikein"
+},
+"fr": {
+"failed": "La réponse correcte n'a pas encore été donnée",
+"resolved": "Réponse résolue",
+"solved": "Félicitations, c'était la bonne réponse"
+},
+"ga": {
+"failed": "Níor tugadh an freagra ceart fós",
+"resolved": "Freagra nochta",
+"solved": "Comhghairdeas, ba é sin an freagra ceart"
+},
+"hi": {
+"failed": "अभी तक सही उत्तर नहीं दिया गया है",
+"resolved": "हल किया गया उत्तर",
+"solved": "बधाई हो, यह सही उत्तर था"
+},
+"hr": {
+"failed": "Točan odgovor još nije dan",
+"resolved": "Otkriveni odgovor",
+"solved": "Čestitamo, to je bio točan odgovor"
+},
+"hu": {
+"failed": "Még nem adtad meg a helyes választ",
+"resolved": "Felfedett válasz",
+"solved": "Gratulálunk, ez volt a helyes válasz"
+},
+"hy": {
+"failed": "Ճիշտ պատասխանը դեռևս չի տրվել",
+"resolved": "Լուծված պատասխան",
+"solved": "Շնորհավորում եմ, դա ճիշտ պատասխանն էր"
+},
+"it": {
+"failed": "La risposta corretta non è stata ancora fornita",
+"resolved": "Risposta rivelata",
+"solved": "Congratulazioni, questa era la risposta corretta"
+},
+"ja": {
+"failed": "まだ正解ではありません",
+"resolved": "解決済みの回答",
+"solved": "おめでとうございます、正解です"
+},
+"ka": {
+"failed": "სწორი პასუხი ჯერ არ არის მოწოდებული",
+"resolved": "ამოხსნილი პასუხი",
+"solved": "გილოცავთ, ეს იყო სწორი პასუხი"
+},
+"ko": {
+"failed": "정답이 아직 제시되지 않았습니다",
+"resolved": "정답 공개됨",
+"solved": "축하합니다. 정답입니다"
+},
+"lt": {
+"failed": "Teisingas atsakymas dar nepateiktas",
+"resolved": "Atskleistas atsakymas",
+"solved": "Sveikiname, tai buvo teisingas atsakymas"
+},
+"lv": {
+"failed": "Pareizā atbilde vēl nav sniegta",
+"resolved": "Atklātā atbilde",
+"solved": "Apsveicam, tā bija pareizā atbilde"
+},
+"ms": {
+"failed": "Jawapan yang betul belum diberikan",
+"resolved": "Jawapan diselesaikan",
+"solved": "Tahniah, itu jawapan yang betul"
+},
+"nb": {
+"failed": "Riktig svar er ikke gitt ennå",
+"resolved": "Avslørt svar",
+"solved": "Gratulerer, det var riktig svar"
+},
+"nl": {
+"failed": "Het juiste antwoord is nog niet gegeven",
+"resolved": "Opgelost antwoord",
+"solved": "Gefeliciteerd, dat was het juiste antwoord"
+},
+"pa": {
+"failed": "ਸਹੀ ਜਵਾਬ ਹਾਲੇ ਨਹੀਂ ਦਿੱਤਾ ਗਿਆ ਹੈ।",
+"resolved": "ਹੱਲ ਕੀਤਾ ਗਿਆ ਜਵਾਬ",
+"solved": "ਵਧਾਈ ਹੋ, ਇਹ ਸਹੀ ਜਵਾਬ ਸੀ।"
+},
+"pl": {
+"failed": "Nie podano jeszcze poprawnej odpowiedzi",
+"resolved": "Ujawniona odpowiedź",
+"solved": "Gratulacje, to była poprawna odpowiedź"
+},
+"pt": {
+"failed": "A resposta correta ainda não foi dada.",
+"resolved": "Resposta revelada",
+"solved": "Parabéns, essa foi a resposta certa."
+},
+"ro": {
+"failed": "Răspunsul corect nu a fost încă dat",
+"resolved": "Răspuns dezvăluit",
+"solved": "Felicitări, acesta a fost răspunsul corect"
+},
+"ru": {
+"failed": "Правильный ответ еще не дан",
+"resolved": "Раскрытый ответ",
+"solved": "Поздравляю, это был правильный ответ"
+},
+"sk": {
+"failed": "Správna odpoveď ešte nebola zadaná",
+"resolved": "Odhalená odpoveď",
+"solved": "Gratulujeme, to bola správna odpoveď"
+},
+"sl": {
+"failed": "Pravilen odgovor še ni bil podan",
+"resolved": "Razkrit odgovor",
+"solved": "Čestitamo, to je bil pravilen odgovor"
+},
+"sq": {
+"failed": "Përgjigjja e saktë nuk është dhënë ende",
+"resolved": "Përgjigjja e zbuluar",
+"solved": "Urime, kjo ishte përgjigjja e saktë"
+},
+"sv": {
+"failed": "Rätt svar har ännu inte angetts",
+"resolved": "Avslöjat svar",
+"solved": "Grattis, det var rätt svar"
+},
+"sw": {
+"failed": "Jibu sahihi bado halijatolewa",
+"resolved": "Jibu lililotatuliwa",
+"solved": "Hongera, hilo lilikuwa jibu sahihi"
+},
+"tr": {
+"failed": "Henüz doğru yanıt verilmedi",
+"resolved": "Açıklanan yanıt",
+"solved": "Tebrikler, doğru yanıt verdiniz"
+},
+"tw": {
+"failed": "正確的答案還沒有被給出",
+"resolved": "已顯示解答",
+"solved": "恭喜，這是正確答案"
+},
+"uk": {
+"failed": "Правильна відповідь ще не надана",
+"resolved": "Вирішена відповідь",
+"solved": "Вітаю, це була правильна відповідь"
+},
+"ur": {
+"failed": "صحیح جواب ابھی تک نہیں دیا گیا",
+"resolved": "حل شدہ جواب",
+"solved": "مبارک ہو، یہ درست جواب تھا"
+},
+"zh": {
+"failed": "尚未给出正确答案",
+"resolved": "已显示解答",
+"solved": "恭喜，这是正确答案"
+}
+}
