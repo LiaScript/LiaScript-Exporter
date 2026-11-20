@@ -327,6 +327,7 @@ async function toDOCX(
       videoIframeImages: toEntries(videoIframeImages),
     }
 
+    await page.evaluate(`(${helper.quizPaper})(document.body)`)
     await page.evaluate(`(${helper.docxPaper})(document.body)`)
 
     // Extract and process the full document HTML

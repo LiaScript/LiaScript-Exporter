@@ -295,6 +295,57 @@ export function themeColor(html: string, rgb: string | undefined): string {
  * Runs on the live page: it reads computed colors and ticked boxes. The CLI
  * hands it to Puppeteer as source, so it must not use anything from outside.
  */
+export function quizPaper(body: HTMLElement, inputs = true): void {
+  const doc = body.ownerDocument
+
+  // Quizzes on paper, as worksheets print them: buttons and feedback go, a
+  // selection lists its options, check boxes and radio buttons become symbols
+  // in front of their answer, a text field a line, a text area several lines.
+  // Self-contained: the CLI runs it in the page as `(${quizPaper})(body)`.
+  body
+    .querySelectorAll('.lia-quiz__check, .lia-quiz__resolve, .lia-quiz__hint, [id^="lia-quiz-feedback"]')
+    .forEach((el) => el.remove())
+  body.querySelectorAll('.lia-dropdown').forEach((dropdown) => {
+    const id = dropdown.querySelector('[aria-controls]')?.getAttribute('aria-controls')
+    // the option list sits beside the dropdown, or inside it
+    const list = (id && doc.getElementById(id)) || dropdown
+    const options = Array.from(list.querySelectorAll('.lia-dropdown__option'))
+      .map((option) => option.textContent?.trim())
+      .filter(Boolean)
+    if (list !== dropdown) list.remove()
+    dropdown.replaceWith(`[ ${options.join(' | ')} ]`)
+  })
+
+  // PDF keeps its drawn fields, only the "?" placeholder would look like an answer
+  if (!inputs) {
+    body.querySelectorAll('input, textarea').forEach((input) => input.removeAttribute('placeholder'))
+    return
+  }
+
+  body.querySelectorAll('input').forEach((input) => {
+    const type = input.getAttribute('type')
+    const mark = type === 'checkbox' ? (input.checked ? '☑ ' : '☐ ')
+      : type === 'radio' ? (input.checked ? '◉ ' : '○ ') : ' __________ '
+    // the symbol goes in front of its answer, not on a line of its own
+    const answer = input.nextElementSibling?.querySelector('p')
+    if (answer) {
+      answer.prepend(mark)
+      input.remove()
+    } else {
+      input.replaceWith(mark)
+    }
+  })
+  body.querySelectorAll('textarea').forEach((area) => {
+    const lines = doc.createElement('div')
+    for (let i = 0; i < (Number(area.getAttribute('rows')) || 3); i++) {
+      const line = doc.createElement('p')
+      line.textContent = '_'.repeat(40)
+      lines.appendChild(line)
+    }
+    area.replaceWith(lines)
+  })
+}
+
 export function docxPaper(body: HTMLElement): void {
   const doc = body.ownerDocument
   const view = doc.defaultView!
@@ -336,34 +387,6 @@ export function docxPaper(body: HTMLElement): void {
     Array.from(style).forEach((name) => {
       if (style.getPropertyValue(name) === 'inherit') style.removeProperty(name)
     })
-  })
-
-  // Quizzes on paper: buttons and feedback go, a selection lists its options,
-  // check boxes and radio buttons become symbols, text fields a line to write on
-  body
-    .querySelectorAll('.lia-quiz__check, .lia-quiz__resolve, .lia-quiz__hint, [id^="lia-quiz-feedback"]')
-    .forEach((el) => el.remove())
-  body.querySelectorAll('.lia-dropdown').forEach((dropdown) => {
-    const id = dropdown.querySelector('[aria-controls]')?.getAttribute('aria-controls')
-    const list = id ? doc.getElementById(id) : null
-    const options = Array.from(list?.querySelectorAll('.lia-dropdown__option') || [])
-      .map((option) => option.textContent?.trim())
-    list?.remove()
-    dropdown.replaceWith(`[ ${options.join(' | ')} ]`)
-  })
-  body.querySelectorAll('input, textarea').forEach((input) => {
-    const type = input.getAttribute('type')
-    const checked = (input as HTMLInputElement).checked
-    const mark = type === 'checkbox' ? (checked ? '☑ ' : '☐ ')
-      : type === 'radio' ? (checked ? '◉ ' : '○ ') : ' __________ '
-    // the symbol goes in front of its answer, not on a line of its own
-    const answer = input.nextElementSibling?.querySelector('p')
-    if (answer) {
-      answer.prepend(mark)
-      input.remove()
-    } else {
-      input.replaceWith(mark)
-    }
   })
 
   // A list item holding a <div> comes out empty (quizzes in lists). Code

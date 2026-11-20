@@ -4,7 +4,7 @@
  */
 import * as fs from 'node:fs'
 import { Fixture, LOCAL_FIXTURE, Method } from '../fixtures/course'
-import { checkRenderedMarkers, checkSectionTitles, findMarkers } from './markers'
+import { checkQuizPaper, checkRenderedMarkers, checkSectionTitles, findMarkers } from './markers'
 import { CheckOptions, CheckResult, Problems } from './types'
 
 export async function checkPdf(
@@ -109,6 +109,7 @@ const PDF_ENGINE_TEXT = {
 /** Section titles and markers of printed text; returns the markers found. */
 function checkPrintedText(problems: Problems, text: string, method: Method, fixture: Fixture): string[] {
   checkSectionTitles(problems, text, fixture)
+  checkQuizPaper(problems, text, false, fixture)
 
   const markers = findMarkers(text)
   checkRenderedMarkers(problems, 'pdf', method, markers, text, text, fixture)

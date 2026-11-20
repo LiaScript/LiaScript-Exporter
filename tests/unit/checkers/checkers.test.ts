@@ -162,6 +162,22 @@ describe('epub', () => {
     expect(problems).toContainEqual(expect.stringMatching(/^empty chapters: 1 × OEBPS\/3.xhtml/))
   })
 
+  it('reports an empty canvas and quizzes without their paper form', async () => {
+    const files = build.epub()
+    files['OEBPS/5.xhtml'] = String(files['OEBPS/5.xhtml'])
+      .replace('<img src="images/photo.jpg" alt="Drawing"/>', '<canvas width="9" height="9"></canvas>')
+      .replace(/_{10}/g, '')
+      .replace('[ blue | red | green ]', 'selection')
+    const { problems } = await check(files)
+    expect(problems).toEqual([
+      'canvas in the book: renders empty in a reader',
+      'canvas drawings: 0 images, expected 1',
+      'quiz selection: options not listed as [ blue | red | green ]',
+      'quiz text fields: 0 lines, expected 4',
+      'quiz text area: 0 lines, expected 3',
+    ])
+  })
+
   it('reports a chapter count that does not match the sections', async () => {
     const files = build.epub()
     files['OEBPS/content.opf'] = String(files['OEBPS/content.opf']).replace('<itemref idref="c18"/>', '')

@@ -1,5 +1,6 @@
 import {
   Fixture,
+  LOCAL_FIXTURE,
   MARKER_PATTERN,
   Method,
   RenderedFormat,
@@ -85,4 +86,24 @@ export function checkSourceMarkers(problems: Problems, found: string[], fixture:
     'missing markers',
     sourceMarkers(fixture).filter((marker) => !have.has(marker)),
   )
+}
+
+/**
+ * Quizzes on paper: a selection lists its options, and where the format cannot
+ * keep a drawn field (`lines`), each text field is a line to write on — the
+ * text quiz, two gaps and the survey text — and the survey text area three.
+ */
+export function checkQuizPaper(problems: Problems, text: string, lines: boolean, fixture: Fixture): void {
+  // only the local course has these quizzes
+  if (fixture.dir !== LOCAL_FIXTURE.dir) return
+
+  if (!/\[\s*blue\s*\|\s*red\s*\|\s*green\s*\]/.test(text)) {
+    problems.add('quiz selection', 'options not listed as [ blue | red | green ]')
+  }
+  if (!lines) return
+
+  const fields = text.match(/(?<!_)_{10}(?!_)/g)?.length ?? 0
+  if (fields !== 4) problems.add('quiz text fields', `${fields} lines, expected 4`)
+  const area = text.match(/_{40}/g)?.length ?? 0
+  if (area !== 3) problems.add('quiz text area', `${area} lines, expected 3`)
 }

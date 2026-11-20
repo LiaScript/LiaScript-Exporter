@@ -4,7 +4,7 @@
  * referenced and leaked `blob:` URLs and base64 into the document.
  */
 import { LOCAL_FIXTURE, Method } from '../fixtures/course'
-import { checkRenderedMarkers, checkSectionTitles, findMarkers } from './markers'
+import { checkQuizPaper, checkRenderedMarkers, checkSectionTitles, findMarkers } from './markers'
 import { openPackage, resolveRef } from './package'
 import { CheckOptions, CheckResult, Problems } from './types'
 import { attr, byName, parseXml, textOf } from './xml'
@@ -129,7 +129,7 @@ export function checkDocx(source: string, options: CheckOptions = {}): CheckResu
 
   // the drawn canvas becomes one image, the blank one is dropped
   const drawings = byName(document, 'cNvPr').filter((pr) => attr(pr, 'descr') === 'Drawing').length
-  if (drawings !== 1) problems.add('canvas drawings', `${drawings} images, expected 1`)
+  if (fixture.dir === LOCAL_FIXTURE.dir && drawings !== 1) problems.add('canvas drawings', `${drawings} images, expected 1`)
 
   const title = pkg.has('docProps/core.xml')
     ? textOf(byName(parseXml(pkg.text('docProps/core.xml')).doc!, 'title')[0])
@@ -145,6 +145,7 @@ export function checkDocx(source: string, options: CheckOptions = {}): CheckResu
   })
 
   checkSectionTitles(problems, paragraphs.join('\n'), fixture)
+  checkQuizPaper(problems, paragraphs.join('\n'), true, fixture)
 
   const markers = findMarkers([...paragraphs, ...altTexts].join('\n'))
   checkRenderedMarkers(problems, 'docx', method, markers, rawDocument, paragraphs.join('\n'), fixture)

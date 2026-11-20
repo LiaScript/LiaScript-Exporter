@@ -117,6 +117,12 @@ export function xapi(courseId = 'x'): Files {
   return files
 }
 
+/** A quiz on paper, as every document format prints the fixture's quizzes. */
+const QUIZ_PAPER = [
+  '[ blue | red | green ] __________ __________ __________ __________',
+  ...Array(3).fill('_'.repeat(40)),
+]
+
 const xhtml = (title: string, body: string) =>
   `<?xml version="1.0" encoding="UTF-8"?>
 <html xmlns="http://www.w3.org/1999/xhtml"><head><title>${title}</title></head>
@@ -138,7 +144,12 @@ export function epub(markers = goodMarkers('epub')): Files {
 
   COURSE.sections.forEach((title, i) => {
     const own = markers.filter((_, m) => m % COURSE.sections.length === i)
-    const image = i === 5 ? '<img src="images/photo.jpg" alt="photo"/>' : ''
+    // section 5 also carries the canvas drawing and the quizzes on paper
+    const image =
+      i === 5
+        ? '<img src="images/photo.jpg" alt="photo"/><img src="images/photo.jpg" alt="Drawing"/>' +
+          QUIZ_PAPER.map((line) => `<p>${line}</p>`).join('')
+        : ''
     files[`OEBPS/${i}.xhtml`] = xhtml(title, `<p>${own.join(' ')} text</p>${image}`)
     items.push(`<item id="c${i}" href="${i}.xhtml" media-type="application/xhtml+xml"/>`)
     spine.push(`<itemref idref="c${i}"/>`)
@@ -164,8 +175,9 @@ export function docx(markers = goodMarkers('docx')): Files {
   const body = [
     ...COURSE.sections.map(paragraph),
     paragraph(markers.join(' ')),
+    ...QUIZ_PAPER.map(paragraph),
     `<w:p><w:r><w:drawing><wp:inline><wp:docPr id="1" name="p" descr="photo"/>
-      <a:graphic><a:graphicData><pic:pic><pic:blipFill><a:blip r:embed="rId1"/></pic:blipFill></pic:pic></a:graphicData></a:graphic>
+      <a:graphic><a:graphicData><pic:pic><pic:nvPicPr><pic:cNvPr id="1" name="p" descr="Drawing"/></pic:nvPicPr><pic:blipFill><a:blip r:embed="rId1"/></pic:blipFill></pic:pic></a:graphicData></a:graphic>
     </wp:inline></w:drawing></w:r></w:p>`,
   ].join('')
 
@@ -235,7 +247,7 @@ export function pdf(lines: string[], title = COURSE.title): Uint8Array {
 
 /** The lines of a correct PDF: titles, then the markers a few per line. */
 export function pdfLines(markers = goodMarkers('pdf')): string[] {
-  const lines = [...COURSE.sections]
+  const lines = [...COURSE.sections, QUIZ_PAPER[0]]
   for (let i = 0; i < markers.length; i += 4) lines.push(markers.slice(i, i + 4).join(' '))
   return lines
 }

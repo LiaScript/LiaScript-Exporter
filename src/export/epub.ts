@@ -506,6 +506,8 @@ async function toEPUB(
       formulas: toEntries(formulaHtml),
       inlineSvgImages: toEntries(inlineSvgImages),
     }
+    await page.evaluate(`(${helper.quizPaper})(document.body)`)
+
     const chapters = await page.evaluate((data) => {
       const {
         svgImages: svgImagesData,
@@ -819,17 +821,8 @@ async function toEPUB(
       // A quiz cannot be answered in a book, and EPUB's XHTML rejects the live
       // widget markup: a radio <input> without `aria-checked`, `role` on a
       // <label>, block content (<div>, <h3>) inside a <label>. Choices and
-      // tasks keep a printed box that shows their state.
-      bodyClone.querySelectorAll('button, select, textarea').forEach((el: Element) => el.remove())
-      bodyClone.querySelectorAll('input').forEach((input: HTMLInputElement) => {
-        const kind = `${input.type} ${input.getAttribute('role') || ''} ${input.className}`
-        const mark = /radio/.test(kind)
-          ? input.checked ? '◉ ' : '○ '
-          : /checkbox/.test(kind)
-            ? input.checked ? '☑ ' : '☐ '
-            : ''
-        input.replaceWith(document.createTextNode(mark))
-      })
+      // tasks became printed boxes and lines before (quizPaper).
+      bodyClone.querySelectorAll('button, select').forEach((el: Element) => el.remove())
       bodyClone.querySelectorAll('[role]').forEach((el: Element) => {
         el.removeAttribute('role')
         Array.from(el.attributes).forEach((attribute) => {

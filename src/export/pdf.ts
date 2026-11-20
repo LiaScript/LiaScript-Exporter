@@ -402,6 +402,9 @@ async function toPDF(fs: ExportFS, argument: PdfExportArguments, page: Page) {
     })
   })
 
+  // A dropdown cannot open on paper: list its options. Fields stay drawn.
+  await page.evaluate(`(${helper.quizPaper})(document.body, false)`)
+
   try {
     // No `path:` here on purpose — letting Puppeteer write the file itself
     // would bypass the storage abstraction. Taking the bytes back and writing

@@ -18,6 +18,7 @@
  */
 
 import * as extract from './extract'
+import { quizPaper } from '../../export/helper'
 import { render, EMBED_SRC } from './render'
 import { build, Book, Chapter, Resource } from './epub-builder'
 
@@ -316,6 +317,9 @@ function unwrapFigures(body: HTMLElement): void {
  * a `role="radio"` input without `aria-checked` is an error in its own right.
  */
 function strand(body: HTMLElement): void {
+  // Choices, tasks and text fields become printed boxes and lines.
+  quizPaper(body)
+
   // Buttons do nothing on a page that cannot run scripts.
   body
     .querySelectorAll(
@@ -323,20 +327,7 @@ function strand(body: HTMLElement): void {
     )
     .forEach((el) => el.remove())
 
-  body.querySelectorAll('select, textarea').forEach((el) => el.remove())
-
-  // Choices and tasks keep a printed box that shows their state, as in the
-  // CLI; any other input goes.
-  body.querySelectorAll('input').forEach((input) => {
-    const kind = `${input.type} ${input.getAttribute('role') || ''} ${input.className}`
-    const mark = /radio/.test(kind)
-      ? input.checked ? '◉ ' : '○ '
-      : /checkbox/.test(kind)
-        ? input.checked ? '☑ ' : '☐ '
-        : ''
-
-    input.replaceWith(input.ownerDocument.createTextNode(mark))
-  })
+  body.querySelectorAll('select').forEach((el) => el.remove())
 
   // Whatever is left carries ARIA for a widget that no longer exists.
   // Charts (role="img") keep their aria-label, it becomes the alt of their image.
@@ -361,29 +352,8 @@ function strand(body: HTMLElement): void {
     label.replaceWith(div)
   })
 
-  dropdowns(body)
   tables(body)
   extract.stripHandlers(body)
-}
-
-/**
- * Prints a selection quiz's options in place: `[blue | red | green]`.
- *
- * The dropdown sits inside the sentence's `<p>` and holds its options as
- * `<div>`s, which a paragraph cannot contain; a book cannot open it anyway.
- */
-function dropdowns(body: HTMLElement): void {
-  body.querySelectorAll('.lia-dropdown').forEach((dropdown) => {
-    const options = Array.from(
-      dropdown.querySelectorAll('.lia-dropdown__option'),
-      (option) => option.textContent?.trim() ?? '',
-    ).filter(Boolean)
-
-    const span = dropdown.ownerDocument.createElement('span')
-    span.textContent = `[${options.join(' | ')}]`
-
-    dropdown.replaceWith(span)
-  })
 }
 
 /**

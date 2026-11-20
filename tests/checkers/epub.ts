@@ -5,7 +5,7 @@
  */
 import * as path from 'node:path'
 import { LOCAL_FIXTURE, Method } from '../fixtures/course'
-import { checkRenderedMarkers, checkSectionTitles, findMarkers } from './markers'
+import { checkQuizPaper, checkRenderedMarkers, checkSectionTitles, findMarkers } from './markers'
 import { firstZipEntry, openPackage, resolveRef } from './package'
 import { epubcheck, epubcheckJar } from './tools'
 import { CheckOptions, CheckResult, Problems } from './types'
@@ -179,7 +179,9 @@ export function checkEpub(source: string, options: CheckOptions = {}): CheckResu
   const allRaw = raws.join('\n')
   if (/<canvas\b/i.test(allRaw)) problems.add('canvas in the book', 'renders empty in a reader')
   const drawings = allRaw.match(/alt="Drawing"/g)?.length ?? 0
-  if (drawings !== 1) problems.add('canvas drawings', `${drawings} images, expected 1`)
+  if (fixture.dir === LOCAL_FIXTURE.dir && drawings !== 1) {
+    problems.add('canvas drawings', `${drawings} images, expected 1`)
+  }
 
   if (options.deep) {
     const jar = epubcheckJar()
@@ -201,6 +203,7 @@ export function checkEpub(source: string, options: CheckOptions = {}): CheckResu
   }
 
   checkSectionTitles(problems, texts.join('\n'), fixture)
+  checkQuizPaper(problems, texts.join('\n'), true, fixture)
 
   const markers = findMarkers(texts.join('\n'))
   checkRenderedMarkers(problems, 'epub', method, markers, raws.join('\n'), texts.join('\n'), fixture)

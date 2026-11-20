@@ -14,7 +14,7 @@
 
 import * as extract from './extract'
 import { render, EMBED_SRC } from './render'
-import { themeColor, docxPaper } from '../../export/helper'
+import { themeColor, docxPaper, quizPaper } from '../../export/helper'
 
 /** Where `scripts/copy-webapp-docx.js` puts the converter. */
 const CONVERTER = 'docx/html-to-docx.browser.js'
@@ -304,6 +304,7 @@ function strip(body: HTMLElement): void {
    * it needs first — `imageProcessing`, `createMediaFile`, `createFont`.
    * docxPaper turns quotes into boxes, and fixes quizzes and styles.
    */
+  quizPaper(body)
   docxPaper(body)
 
   body.querySelectorAll('img').forEach((img) => {
