@@ -765,9 +765,11 @@ __`--pdf-form`__
 Turns the quizzes into a fillable PDF form. LiaScript's own __Check__ and
 solution buttons keep working in readers that run PDF JavaScript, such as Adobe
 Acrobat/Reader or Firefox: a check compares with the course's solution and
-shows LiaScript's feedback in the course language. Readers without JavaScript
-(macOS Preview, most mobile apps) still let learners fill in the form. Surveys
-and tasks become fillable fields as well.
+shows LiaScript's feedback in the course language. As in LiaScript, a quiz that
+is solved or resolved is closed: its fields become read only. Surveys get their
+__Submit__ button, which closes the survey once every question (or every row of
+a matrix) is answered. Readers without JavaScript (macOS Preview, most mobile
+apps) still let learners fill in the form; tasks become fillable fields too.
 
 ``` bash
 $ liaex --format pdf --pdf-form -i README.md

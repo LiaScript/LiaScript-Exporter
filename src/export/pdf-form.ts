@@ -41,6 +41,8 @@ export interface QuizSpot {
   type: string
   /** Answer fields per row (a matrix has several, every other quiz one); a radio group counts once. */
   rows: string[][]
+  /** A survey: its check button submits, if every row is answered. */
+  survey?: boolean
   check?: string
   resolve?: string
   feedback?: string
@@ -160,41 +162,43 @@ export function markFields(checks: boolean): QuizSpot[] {
   document.querySelectorAll('main.lia-slide__content .lia-quiz').forEach((quiz) => {
     const feedback = quiz.querySelector(':scope > [id^="lia-quiz-feedback-"]')
     const control = quiz.querySelector(':scope > .lia-quiz__control')
-    // a survey or a task: fillable, nothing to check or submit
-    if (!feedback) {
+    const check = control?.querySelector('.lia-quiz__check')
+    // a survey has a submit button, but no feedback; a task has neither
+    const survey = (!feedback && check && quiz.querySelector('[aria-labelledby^="lia-survey-"]')?.getAttribute('aria-labelledby')) || ''
+    if (!feedback && !survey) {
       control?.classList.add('liaex-off')
       return
     }
 
     const s = sectionOf(quiz)
-    const q = Number(feedback.id.split('-').pop())
+    const q = Number(feedback ? feedback.id.split('-').pop() : survey.split(' ')[0].split('-')[3])
     const type = (quiz.className.match(/\blia-quiz-(text|single-choice|multiple-choice|select|matrix|multi|generic)\b/) || [])[1] || ''
-    const name = 's' + s + 'q' + q
-    const spot: QuizSpot = { section: s, quiz: q, type, rows: [] }
+    const name = 's' + s + (survey ? 'v' : 'q') + q
+    const spot: QuizSpot = { section: s, quiz: q, type, rows: [], survey: !!survey }
 
     if (type === 'multi') {
       spot.rows = [gaps.get(s + '-' + q) || []]
     } else {
-      const answers = quiz.querySelector(':scope > .lia-quiz__answers')
+      // a text survey has its field right in the quiz
+      const answers = quiz.querySelector(':scope > .lia-quiz__answers') || (survey ? quiz : null)
       const rows = answers ? (type === 'matrix' ? Array.from(answers.querySelectorAll('tbody tr')) : [answers]) : []
       rows.forEach((row, r) => {
         const options = row.querySelectorAll('input[type=radio]')
         spot.rows.push(
           options.length
             ? [radios(options, name + 'r' + r)]
-            : Array.from(row.querySelectorAll('input, .lia-dropdown'), (el, i) => field(el, name + 'r' + r + 'f' + i)),
+            : Array.from(row.querySelectorAll('input, textarea, .lia-dropdown'), (el, i) => field(el, name + 'r' + r + 'f' + i)),
         )
       })
     }
 
-    const resolve = quiz.querySelector('.lia-quiz__resolve:not(.hide)')
-    const check = quiz.querySelector('.lia-quiz__check')
-    if (checks && type !== 'generic' && spot.rows.flat().length && check) {
+    const resolve = survey ? null : quiz.querySelector('.lia-quiz__resolve:not(.hide)')
+    if ((checks || survey) && type !== 'generic' && spot.rows.flat().length && check) {
       spot.check = cover(check, { kind: 'button', name: name + 'check' })
       if (resolve) spot.resolve = cover(resolve, { kind: 'button', name: name + 'resolve' })
       const box = link({ kind: 'feedback', name: name + 'feedback' })
       box.className = 'liaex-feedback'
-      feedback.appendChild(box)
+      ;(feedback || quiz).appendChild(box)
       spot.feedback = name + 'feedback'
     } else {
       control?.classList.add('liaex-off')
@@ -330,8 +334,11 @@ export async function addForm(bytes: Uint8Array, quizzes: QuizSpot[], meta: any,
   }
 
   const texts = (TEXTS as Record<string, Record<string, string>>)[lang] ?? (TEXTS as any)[lang.split('-')[0]] ?? TEXTS.en
+  const kinds = new Map(found.map(({ spec }) => [spec.name, spec.kind]))
   for (const spot of quizzes) {
-    const scripts = quizScripts(spot, meta?.slides?.[spot.section]?.quiz?.[spot.quiz], options, texts)
+    const scripts = spot.survey
+      ? { check: surveyScript(spot, kinds, options, texts), resolve: null }
+      : quizScripts(spot, meta?.slides?.[spot.section]?.quiz?.[spot.quiz], options, texts)
     for (const [button, js] of [
       [spot.check, scripts?.check],
       [spot.resolve, scripts?.resolve],
@@ -347,6 +354,56 @@ export async function addForm(bytes: Uint8Array, quizzes: QuizSpot[], meta: any,
 
   // every field got its look when it was made; the defaults would draw borders again
   return pdf.save({ updateFieldAppearances: false })
+}
+
+const json = JSON.stringify
+
+/**
+ * What every script starts with. Like LiaScript, a quiz that is solved or
+ * resolved, or a survey that is submitted, is closed: `lock()` makes its fields
+ * read only, and `closed` keeps its buttons from doing anything after. ES5, as
+ * Acrobat's JavaScript is.
+ */
+function prelude(feedback: string | undefined, fields: string[], closedBy: string[]): string {
+  return (
+    `var d = this;\n` +
+    `function get(n) { var f = d.getField(n); return f ? f.value : ''; }\n` +
+    `function say(text, color) { var f = d.getField(${json(feedback)}); if (f) { f.textColor = color; f.value = text; } }\n` +
+    `function lock() { var n = ${json(Array.from(new Set(fields)))}; for (var i = 0; i < n.length; i++) { var f = d.getField(n[i]); if (f) f.readonly = true; } }\n` +
+    `var closed = ${json(closedBy)}.indexOf(get(${json(feedback)})) >= 0;\n`
+  )
+}
+
+/**
+ * The submit script of a survey: it closes the survey once every row has an
+ * answer, as LiaScript does, and otherwise says what is missing.
+ */
+export function surveyScript(
+  spot: QuizSpot,
+  kinds: Map<string, string>,
+  options: Map<string, string[]>,
+  texts: Record<string, string>,
+): string | null {
+  const rows = spot.rows.filter((row) => row.length)
+  if (!rows.length || rows.flat().some((name) => !kinds.has(name))) return null
+
+  const answered = (name: string) => {
+    const kind = kinds.get(name)
+    return kind === 'text' || kind === 'area'
+      ? `String(get(${json(name)})).replace(/^\\s+|\\s+$/g, '') != ''`
+      : kind === 'select'
+        ? `${json(options.get(name) || [])}.indexOf(get(${json(name)})) >= 0`
+        : `get(${json(name)}) != 'Off'`
+  }
+  const missing = spot.type === 'matrix' ? texts.unansweredMatrix : texts.unanswered
+
+  return (
+    prelude(spot.feedback, rows.flat(), [texts.submitted]) +
+    `if (!closed) {\n` +
+    `var ok = ${rows.map((row) => '(' + row.map(answered).join(' || ') + ')').join(' && ')};\n` +
+    `say(ok ? ${json(texts.submitted)} : ${json(missing)}, ok ? ['RGB', 0.4, 0.4, 0.4] : ['RGB', 0.75, 0.1, 0.1]);\n` +
+    `if (ok) lock();\n}`
+  )
 }
 
 type Answer = { name: string; kind: 'text' | 'radio' | 'check' | 'select'; want: string | boolean | string[] }
@@ -419,7 +476,6 @@ export function quizScripts(
 
   if (!answers.length || answers.some((a) => !a || !a.name || a.want === null || a.want === 'o-1')) return null
 
-  const json = JSON.stringify
   const test = (a: Answer) =>
     a.kind === 'text'
       ? `String(get(${json(a.name)})).replace(/^\\s+|\\s+$/g, '') == ${json(a.want)}`
@@ -433,16 +489,19 @@ export function quizScripts(
       ? `d.getField(${json(a.name)}).checkThisBox(0, ${a.want});`
       : `d.getField(${json(a.name)}).value = ${json(Array.isArray(a.want) ? a.want[0] : a.want)};`
 
-  const head =
-    `var d = this;\n` +
-    `function get(n) { var f = d.getField(n); return f ? f.value : ''; }\n` +
-    `function say(text, color) { var f = d.getField(${json(spot.feedback)}); if (f) { f.textColor = color; f.value = text; } }\n`
+  const head = prelude(spot.feedback, (answers as Answer[]).map((a) => a.name), [texts.solved, texts.resolved])
 
   return {
     check:
       head +
+      `if (!closed) {\n` +
       `var ok = ${(answers as Answer[]).map(test).join(' && ')};\n` +
-      `say(ok ? ${json(texts.solved)} : ${json(texts.failed)}, ok ? ['RGB', 0.1, 0.5, 0.2] : ['RGB', 0.75, 0.1, 0.1]);`,
-    resolve: head + (answers as Answer[]).map(solve).join('\n') + `\nsay(${json(texts.resolved)}, ['RGB', 0.4, 0.4, 0.4]);`,
+      `say(ok ? ${json(texts.solved)} : ${json(texts.failed)}, ok ? ['RGB', 0.1, 0.5, 0.2] : ['RGB', 0.75, 0.1, 0.1]);\n` +
+      `if (ok) lock();\n}`,
+    resolve:
+      head +
+      `if (!closed) {\n` +
+      (answers as Answer[]).map(solve).join('\n') +
+      `\nsay(${json(texts.resolved)}, ['RGB', 0.4, 0.4, 0.4]);\nlock();\n}`,
   }
 }

@@ -30,8 +30,12 @@ async function printed(specs: object[]): Promise<Uint8Array> {
 /** Runs a button's script against a stand-in for the reader's document. */
 function runner(form: ReturnType<PDFDocument['getForm']>) {
   const values = new Map<string, any>()
+  const readonly = new Set<string>()
   const doc = {
     getField: (name: string) => ({
+      set readonly(on: boolean) {
+        if (on) readonly.add(name)
+      },
       get value() {
         return values.get(name) ?? 'Off'
       },
@@ -46,7 +50,7 @@ function runner(form: ReturnType<PDFDocument['getForm']>) {
     const action = form.getButton(button).acroField.getWidgets()[0].dict.lookup(PDFName.of('A'), PDFDict)
     new Function((action.lookup(PDFName.of('JS')) as PDFString).decodeText()).call(doc)
   }
-  return { values, run }
+  return { values, readonly, run }
 }
 
 const TEXTS = {
@@ -112,7 +116,7 @@ describe('addForm', () => {
       meta,
       'en',
     )
-    const { values, run } = runner((await PDFDocument.load(bytes)).getForm())
+    const { values, readonly, run } = runner((await PDFDocument.load(bytes)).getForm())
 
     values.set('g0', ' schaumig ')
     values.set('g1', 'halbiert')
@@ -122,6 +126,11 @@ describe('addForm', () => {
     values.set('g1', 'geviertelt')
     run('k')
     expect(values.get('f')).toBe(TEXTS.solved)
+
+    // solved closes the quiz, as in LiaScript: read only, the buttons are done
+    expect([...readonly].sort()).toEqual(['g0', 'g1'])
+    run('x')
+    expect([values.get('f'), values.get('g0')]).toEqual([TEXTS.solved, ' schaumig '])
 
     values.clear()
     run('x')

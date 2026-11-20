@@ -148,7 +148,7 @@ test('pdf: width, height and page ranges', async () => {
   }
 })
 
-test('pdf: --pdf-form makes the quizzes a form that checks and resolves itself', async () => {
+test('pdf: --pdf-form makes quizzes and surveys a form that checks, resolves and submits', async () => {
   test.setTimeout(CHROME_TIMEOUT)
 
   const file = await exportWith('pdf-form', ['-f', 'pdf', '--pdf-form'], 'pdf-form.pdf', CHROME_TIMEOUT)
@@ -158,6 +158,7 @@ test('pdf: --pdf-form makes the quizzes a form that checks and resolves itself',
 
   // A stand-in for the reader's document, as far as the scripts use it
   const values = new Map<string, any>()
+  const locked = new Set<string>()
   const fields = new Map(
     form.getFields().map((field) => {
       const name = field.getName()
@@ -177,6 +178,9 @@ test('pdf: --pdf-form makes the quizzes a form that checks and resolves itself',
           values.set(name, value)
         },
         textColor: null as unknown,
+        set readonly(on: boolean) {
+          if (on) locked.add(name)
+        },
         checkThisBox: (_: number, on: boolean) => values.set(name, on ? 'Yes' : 'Off'),
       }
       return [name, stub]
@@ -189,24 +193,48 @@ test('pdf: --pdf-form makes the quizzes a form that checks and resolves itself',
     new Function((js as typeof PDFHexString.prototype | typeof PDFString.prototype).decodeText()).call(doc)
   }
 
-  const checks = form
+  const buttons = form
     .getFields()
     .filter((field) => field instanceof PDFButton && field.getName().endsWith('check'))
     .map((field) => field.getName().replace(/check$/, ''))
+  const quizzes = buttons.filter((name) => /q\d+$/.test(name))
+  const surveys = buttons.filter((name) => /v\d+$/.test(name))
 
   // text, single, multiple, select gap, text gaps, matrix; the generic one has no solution
-  expect(checks).toHaveLength(6)
+  expect(quizzes).toHaveLength(6)
 
-  for (const quiz of checks) {
+  for (const quiz of quizzes) {
     run(quiz + 'check')
     expect(values.get(quiz + 'feedback'), quiz).toBe('The correct answer has not yet been given')
     run(quiz + 'resolve')
     expect(values.get(quiz + 'feedback'), quiz).toBe('Resolved answer')
+    // resolved closes the quiz, as in LiaScript: read only, a check changes nothing
+    expect(locked.size, quiz).toBeGreaterThan(0)
+    run(quiz + 'check')
+    expect(values.get(quiz + 'feedback'), quiz).toBe('Resolved answer')
+
+    // the resolved answers are what the check takes for right
+    locked.clear()
+    values.set(quiz + 'feedback', '')
     run(quiz + 'check')
     expect(values.get(quiz + 'feedback'), quiz).toBe('Congratulations, that was the right answer')
   }
 
-  // the single choice, three matrix rows, and the survey, which is fillable without a check
+  // single, multiple, text and text area; each submits once it is answered
+  expect(surveys).toHaveLength(4)
+
+  for (const survey of surveys) {
+    run(survey + 'check')
+    expect(values.get(survey + 'feedback'), survey).toBe('This question must be answered before submitting.')
+
+    const field = form.getFields().find((f) => f.getName().startsWith(survey + 'r'))!
+    values.set(field.getName(), field instanceof PDFRadioGroup ? 'o0' : field instanceof PDFCheckBox ? 'Yes' : 'MKAnswer')
+    run(survey + 'check')
+    expect(values.get(survey + 'feedback'), survey).toBe('Thank you for your feedback!')
+    expect(locked.has(field.getName()), survey).toBe(true)
+  }
+
+  // the single choice, three matrix rows, and the single choice survey
   expect(form.getFields().filter((field) => field instanceof PDFRadioGroup)).toHaveLength(5)
 })
 

@@ -2,226 +2,361 @@
 "am": {
 "failed": "ትክክለኛው መልስ ገና አልተሰጠም",
 "resolved": "የተፈታ መልስ",
-"solved": "እንኳን ደስ አለዎት፣ ይህ ትክክለኛው መልስ ነው"
+"solved": "እንኳን ደስ አለዎት፣ ይህ ትክክለኛው መልስ ነው",
+"submitted": "ለአስተያየትዎ እናመሰግናለን!",
+"unanswered": "ከመላኩ በፊት ጥያቄው መመለስ አለበት።",
+"unansweredMatrix": "ከመላኩ በፊት እያንዳንዱ ረድፍ መመለስ አለበት።"
 },
 "ar": {
 "failed": "لم يتم إعطاء الإجابة الصحيحة بعد",
 "resolved": "إجابة تم حلها",
-"solved": "مبروك، هذه كانت الإجابة الصحيحة"
+"solved": "مبروك، هذه كانت الإجابة الصحيحة",
+"submitted": "شكرًا على ملاحظاتك!",
+"unanswered": "يجب الإجابة عن السؤال قبل الإرسال.",
+"unansweredMatrix": "يجب الإجابة عن كل صف قبل الإرسال."
 },
 "bg": {
 "failed": "Все още не е даден правилният отговор",
 "resolved": "Решен отговор",
-"solved": "Поздравления, това беше правилният отговор"
+"solved": "Поздравления, това беше правилният отговор",
+"submitted": "Благодарим за обратната връзка!",
+"unanswered": "Преди изпращане трябва да се отговори на въпроса.",
+"unansweredMatrix": "Преди изпращане трябва да се отговори на всеки ред."
 },
 "bn": {
 "failed": "সঠিক উত্তরটি এখনও দেওয়া হয়নি",
 "resolved": "সমাধানকৃত উত্তর",
-"solved": "অভিনন্দন, সেটা সঠিক উত্তর ছিল"
+"solved": "অভিনন্দন, সেটা সঠিক উত্তর ছিল",
+"submitted": "আপনার মতামতের জন্য ধন্যবাদ!",
+"unanswered": "জমা দেওয়ার আগে প্রশ্নটির উত্তর দিতে হবে।",
+"unansweredMatrix": "জমা দেওয়ার আগে প্রতিটি সারির উত্তর দিতে হবে।"
 },
 "ca": {
 "failed": "Encara no s'ha donat la resposta correcta",
 "resolved": "Resposta revelada",
-"solved": "Enhorabona, aquesta era la resposta correcta"
+"solved": "Enhorabona, aquesta era la resposta correcta",
+"submitted": "Gràcies pels teus comentaris!",
+"unanswered": "Cal respondre la pregunta abans de l'enviament.",
+"unansweredMatrix": "Cal respondre totes les files abans de l'enviament."
 },
 "cs": {
 "failed": "Správná odpověď ještě nebyla zadána",
 "resolved": "Odhalená odpověď",
-"solved": "Gratulujeme, to byla správná odpověď"
+"solved": "Gratulujeme, to byla správná odpověď",
+"submitted": "Děkujeme za zpětnou vazbu!",
+"unanswered": "Před odesláním je nutné odpovědět na otázku.",
+"unansweredMatrix": "Před odesláním je nutné odpovědět v každém řádku."
 },
 "da": {
 "failed": "Det rigtige svar er endnu ikke angivet",
 "resolved": "Afsløret svar",
-"solved": "Tillykke, det var det rigtige svar"
+"solved": "Tillykke, det var det rigtige svar",
+"submitted": "Tak for din feedback!",
+"unanswered": "Spørgsmålet skal besvares inden afsendelse.",
+"unansweredMatrix": "Alle rækker skal besvares inden afsendelse."
 },
 "de": {
 "failed": "Die richtige Antwort wurde noch nicht gegeben",
 "resolved": "Aufgelöste Antwort",
-"solved": "Herzlichen Glückwunsch, das war die richtige Antwort"
+"solved": "Herzlichen Glückwunsch, das war die richtige Antwort",
+"submitted": "Vielen Dank für dein Feedback!",
+"unanswered": "Die Frage muss vor dem Absenden beantwortet werden.",
+"unansweredMatrix": "Vor dem Absenden muss jede Zeile beantwortet werden."
 },
 "el": {
 "failed": "Δεν έχει δοθεί ακόμη η σωστή απάντηση",
 "resolved": "Απάντηση που αποκαλύφθηκε",
-"solved": "Συγχαρητήρια, αυτή ήταν η σωστή απάντηση"
+"solved": "Συγχαρητήρια, αυτή ήταν η σωστή απάντηση",
+"submitted": "Ευχαριστούμε για τα σχόλιά σου!",
+"unanswered": "Η ερώτηση πρέπει να απαντηθεί πριν από την υποβολή.",
+"unansweredMatrix": "Κάθε γραμμή πρέπει να απαντηθεί πριν από την υποβολή."
 },
 "en": {
 "failed": "The correct answer has not yet been given",
 "resolved": "Resolved answer",
-"solved": "Congratulations, that was the right answer"
+"solved": "Congratulations, that was the right answer",
+"submitted": "Thank you for your feedback!",
+"unanswered": "This question must be answered before submitting.",
+"unansweredMatrix": "Every row must be answered before submitting."
 },
 "es": {
 "failed": "La respuesta correcta aún no ha sido dada",
 "resolved": "Respuesta resuelta",
-"solved": "Felicitaciones, esa fue la respuesta correcta"
+"solved": "Felicitaciones, esa fue la respuesta correcta",
+"submitted": "¡Gracias por tus comentarios!",
+"unanswered": "La pregunta debe responderse antes del envío.",
+"unansweredMatrix": "Todas las filas deben responderse antes del envío."
 },
 "et": {
 "failed": "Õiget vastust pole veel antud",
 "resolved": "Lahendatud vastus",
-"solved": "Palju õnne, see oli õige vastus"
+"solved": "Palju õnne, see oli õige vastus",
+"submitted": "Täname tagasiside eest!",
+"unanswered": "Enne saatmist tuleb küsimusele vastata.",
+"unansweredMatrix": "Enne saatmist tuleb vastata igale reale."
 },
 "eu": {
 "failed": "Oraindik ez da erantzun zuzena eman",
 "resolved": "Agerian jarritako erantzuna",
-"solved": "Zorionak, hori zen erantzun zuzena"
+"solved": "Zorionak, hori zen erantzun zuzena",
+"submitted": "Eskerrik asko zure iritziagatik!",
+"unanswered": "Galderari erantzun behar zaio bidali aurretik.",
+"unansweredMatrix": "Errenkada guztiei erantzun behar zaie bidali aurretik."
 },
 "fa": {
 "failed": "پاسخ درست هنوز داده نشده است",
 "resolved": "پاسخ حل شده",
-"solved": "تبریک می‌گویم، پاسخ درست بود"
+"solved": "تبریک می‌گویم، پاسخ درست بود",
+"submitted": "از بازخورد شما سپاسگزاریم!",
+"unanswered": "پیش از ارسال باید به پرسش پاسخ داده شود.",
+"unansweredMatrix": "پیش از ارسال باید به همهٔ ردیف‌ها پاسخ داده شود."
 },
 "fi": {
 "failed": "Oikeaa vastausta ei ole vielä annettu",
 "resolved": "Paljastettu vastaus",
-"solved": "Onnittelut, vastaus oli oikein"
+"solved": "Onnittelut, vastaus oli oikein",
+"submitted": "Kiitos palautteestasi!",
+"unanswered": "Kysymykseen on vastattava ennen lähettämistä.",
+"unansweredMatrix": "Jokaiseen riviin on vastattava ennen lähettämistä."
 },
 "fr": {
 "failed": "La réponse correcte n'a pas encore été donnée",
 "resolved": "Réponse résolue",
-"solved": "Félicitations, c'était la bonne réponse"
+"solved": "Félicitations, c'était la bonne réponse",
+"submitted": "Merci pour vos commentaires !",
+"unanswered": "Il faut répondre à la question avant l'envoi.",
+"unansweredMatrix": "Il faut répondre à chaque ligne avant l'envoi."
 },
 "ga": {
 "failed": "Níor tugadh an freagra ceart fós",
 "resolved": "Freagra nochta",
-"solved": "Comhghairdeas, ba é sin an freagra ceart"
+"solved": "Comhghairdeas, ba é sin an freagra ceart",
+"submitted": "Go raibh maith agat as d'aiseolas!",
+"unanswered": "Caithfear an cheist a fhreagairt roimh sheoladh.",
+"unansweredMatrix": "Caithfear gach ró a fhreagairt roimh sheoladh."
 },
 "hi": {
 "failed": "अभी तक सही उत्तर नहीं दिया गया है",
 "resolved": "हल किया गया उत्तर",
-"solved": "बधाई हो, यह सही उत्तर था"
+"solved": "बधाई हो, यह सही उत्तर था",
+"submitted": "आपकी प्रतिक्रिया के लिए धन्यवाद!",
+"unanswered": "सबमिट करने से पहले प्रश्न का उत्तर दिया जाना चाहिए।",
+"unansweredMatrix": "सबमिट करने से पहले हर पंक्ति का उत्तर दिया जाना चाहिए।"
 },
 "hr": {
 "failed": "Točan odgovor još nije dan",
 "resolved": "Otkriveni odgovor",
-"solved": "Čestitamo, to je bio točan odgovor"
+"solved": "Čestitamo, to je bio točan odgovor",
+"submitted": "Hvala na povratnim informacijama!",
+"unanswered": "Prije slanja potrebno je odgovoriti na pitanje.",
+"unansweredMatrix": "Prije slanja potrebno je odgovoriti na svaki redak."
 },
 "hu": {
 "failed": "Még nem adtad meg a helyes választ",
 "resolved": "Felfedett válasz",
-"solved": "Gratulálunk, ez volt a helyes válasz"
+"solved": "Gratulálunk, ez volt a helyes válasz",
+"submitted": "Köszönjük a visszajelzésedet!",
+"unanswered": "Küldés előtt meg kell válaszolni a kérdést.",
+"unansweredMatrix": "Küldés előtt minden sort meg kell válaszolni."
 },
 "hy": {
 "failed": "Ճիշտ պատասխանը դեռևս չի տրվել",
 "resolved": "Լուծված պատասխան",
-"solved": "Շնորհավորում եմ, դա ճիշտ պատասխանն էր"
+"solved": "Շնորհավորում եմ, դա ճիշտ պատասխանն էր",
+"submitted": "Շնորհակալություն ձեր կարծիքի համար։",
+"unanswered": "Ուղարկելուց առաջ պետք է պատասխանել հարցին։",
+"unansweredMatrix": "Ուղարկելուց առաջ պետք է պատասխանել բոլոր տողերին։"
 },
 "it": {
 "failed": "La risposta corretta non è stata ancora fornita",
 "resolved": "Risposta rivelata",
-"solved": "Congratulazioni, questa era la risposta corretta"
+"solved": "Congratulazioni, questa era la risposta corretta",
+"submitted": "Grazie per il tuo feedback!",
+"unanswered": "È necessario rispondere alla domanda prima dell'invio.",
+"unansweredMatrix": "È necessario rispondere a ogni riga prima dell'invio."
 },
 "ja": {
 "failed": "まだ正解ではありません",
 "resolved": "解決済みの回答",
-"solved": "おめでとうございます、正解です"
+"solved": "おめでとうございます、正解です",
+"submitted": "ご意見をお寄せいただきありがとうございます！",
+"unanswered": "送信する前に質問に回答する必要があります。",
+"unansweredMatrix": "送信する前にすべての行に回答する必要があります。"
 },
 "ka": {
 "failed": "სწორი პასუხი ჯერ არ არის მოწოდებული",
 "resolved": "ამოხსნილი პასუხი",
-"solved": "გილოცავთ, ეს იყო სწორი პასუხი"
+"solved": "გილოცავთ, ეს იყო სწორი პასუხი",
+"submitted": "გმადლობთ გამოხმაურებისთვის!",
+"unanswered": "გაგზავნამდე აუცილებელია კითხვაზე პასუხის გაცემა.",
+"unansweredMatrix": "გაგზავნამდე აუცილებელია ყველა სტრიქონზე პასუხის გაცემა."
 },
 "ko": {
 "failed": "정답이 아직 제시되지 않았습니다",
 "resolved": "정답 공개됨",
-"solved": "축하합니다. 정답입니다"
+"solved": "축하합니다. 정답입니다",
+"submitted": "의견을 보내 주셔서 감사합니다!",
+"unanswered": "제출하기 전에 질문에 답해야 합니다.",
+"unansweredMatrix": "제출하기 전에 모든 행에 답해야 합니다."
 },
 "lt": {
 "failed": "Teisingas atsakymas dar nepateiktas",
 "resolved": "Atskleistas atsakymas",
-"solved": "Sveikiname, tai buvo teisingas atsakymas"
+"solved": "Sveikiname, tai buvo teisingas atsakymas",
+"submitted": "Dėkojame už atsiliepimą!",
+"unanswered": "Prieš pateikiant būtina atsakyti į klausimą.",
+"unansweredMatrix": "Prieš pateikiant būtina atsakyti į kiekvieną eilutę."
 },
 "lv": {
 "failed": "Pareizā atbilde vēl nav sniegta",
 "resolved": "Atklātā atbilde",
-"solved": "Apsveicam, tā bija pareizā atbilde"
+"solved": "Apsveicam, tā bija pareizā atbilde",
+"submitted": "Paldies par atsauksmi!",
+"unanswered": "Pirms iesniegšanas jāatbild uz jautājumu.",
+"unansweredMatrix": "Pirms iesniegšanas jāatbild uz katru rindu."
 },
 "ms": {
 "failed": "Jawapan yang betul belum diberikan",
 "resolved": "Jawapan diselesaikan",
-"solved": "Tahniah, itu jawapan yang betul"
+"solved": "Tahniah, itu jawapan yang betul",
+"submitted": "Terima kasih atas maklum balas anda!",
+"unanswered": "Soalan ini mesti dijawab sebelum dihantar.",
+"unansweredMatrix": "Setiap baris mesti dijawab sebelum dihantar."
 },
 "nb": {
 "failed": "Riktig svar er ikke gitt ennå",
 "resolved": "Avslørt svar",
-"solved": "Gratulerer, det var riktig svar"
+"solved": "Gratulerer, det var riktig svar",
+"submitted": "Takk for tilbakemeldingen din!",
+"unanswered": "Spørsmålet må besvares før innsending.",
+"unansweredMatrix": "Alle radene må besvares før innsending."
 },
 "nl": {
 "failed": "Het juiste antwoord is nog niet gegeven",
 "resolved": "Opgelost antwoord",
-"solved": "Gefeliciteerd, dat was het juiste antwoord"
+"solved": "Gefeliciteerd, dat was het juiste antwoord",
+"submitted": "Bedankt voor je feedback!",
+"unanswered": "De vraag moet vóór het verzenden worden beantwoord.",
+"unansweredMatrix": "Elke rij moet vóór het verzenden worden beantwoord."
 },
 "pa": {
 "failed": "ਸਹੀ ਜਵਾਬ ਹਾਲੇ ਨਹੀਂ ਦਿੱਤਾ ਗਿਆ ਹੈ।",
 "resolved": "ਹੱਲ ਕੀਤਾ ਗਿਆ ਜਵਾਬ",
-"solved": "ਵਧਾਈ ਹੋ, ਇਹ ਸਹੀ ਜਵਾਬ ਸੀ।"
+"solved": "ਵਧਾਈ ਹੋ, ਇਹ ਸਹੀ ਜਵਾਬ ਸੀ।",
+"submitted": "ਤੁਹਾਡੀ ਪ੍ਰਤੀਕਿਰਿਆ ਲਈ ਧੰਨਵਾਦ!",
+"unanswered": "ਜਮ੍ਹਾਂ ਕਰਨ ਤੋਂ ਪਹਿਲਾਂ ਸਵਾਲ ਦਾ ਜਵਾਬ ਦਿੱਤਾ ਜਾਣਾ ਲਾਜ਼ਮੀ ਹੈ।",
+"unansweredMatrix": "ਜਮ੍ਹਾਂ ਕਰਨ ਤੋਂ ਪਹਿਲਾਂ ਹਰ ਕਤਾਰ ਦਾ ਜਵਾਬ ਦਿੱਤਾ ਜਾਣਾ ਲਾਜ਼ਮੀ ਹੈ।"
 },
 "pl": {
 "failed": "Nie podano jeszcze poprawnej odpowiedzi",
 "resolved": "Ujawniona odpowiedź",
-"solved": "Gratulacje, to była poprawna odpowiedź"
+"solved": "Gratulacje, to była poprawna odpowiedź",
+"submitted": "Dziękujemy za opinię!",
+"unanswered": "Przed wysłaniem należy odpowiedzieć na pytanie.",
+"unansweredMatrix": "Przed wysłaniem należy udzielić odpowiedzi w każdym wierszu."
 },
 "pt": {
 "failed": "A resposta correta ainda não foi dada.",
 "resolved": "Resposta revelada",
-"solved": "Parabéns, essa foi a resposta certa."
+"solved": "Parabéns, essa foi a resposta certa.",
+"submitted": "Obrigado pelo seu feedback!",
+"unanswered": "A pergunta deve ser respondida antes do envio.",
+"unansweredMatrix": "Todas as linhas devem ser respondidas antes do envio."
 },
 "ro": {
 "failed": "Răspunsul corect nu a fost încă dat",
 "resolved": "Răspuns dezvăluit",
-"solved": "Felicitări, acesta a fost răspunsul corect"
+"solved": "Felicitări, acesta a fost răspunsul corect",
+"submitted": "Îți mulțumim pentru feedback!",
+"unanswered": "Înainte de trimitere trebuie să se răspundă la întrebare.",
+"unansweredMatrix": "Înainte de trimitere trebuie să se răspundă pe fiecare rând."
 },
 "ru": {
 "failed": "Правильный ответ еще не дан",
 "resolved": "Раскрытый ответ",
-"solved": "Поздравляю, это был правильный ответ"
+"solved": "Поздравляю, это был правильный ответ",
+"submitted": "Спасибо за ваш отзыв!",
+"unanswered": "Перед отправкой необходимо ответить на вопрос.",
+"unansweredMatrix": "Перед отправкой необходимо ответить в каждой строке."
 },
 "sk": {
 "failed": "Správna odpoveď ešte nebola zadaná",
 "resolved": "Odhalená odpoveď",
-"solved": "Gratulujeme, to bola správna odpoveď"
+"solved": "Gratulujeme, to bola správna odpoveď",
+"submitted": "Ďakujeme za spätnú väzbu!",
+"unanswered": "Pred odoslaním je potrebné odpovedať na otázku.",
+"unansweredMatrix": "Pred odoslaním je potrebné odpovedať v každom riadku."
 },
 "sl": {
 "failed": "Pravilen odgovor še ni bil podan",
 "resolved": "Razkrit odgovor",
-"solved": "Čestitamo, to je bil pravilen odgovor"
+"solved": "Čestitamo, to je bil pravilen odgovor",
+"submitted": "Hvala za povratne informacije!",
+"unanswered": "Pred pošiljanjem je treba odgovoriti na vprašanje.",
+"unansweredMatrix": "Pred pošiljanjem je treba odgovoriti v vsaki vrstici."
 },
 "sq": {
 "failed": "Përgjigjja e saktë nuk është dhënë ende",
 "resolved": "Përgjigjja e zbuluar",
-"solved": "Urime, kjo ishte përgjigjja e saktë"
+"solved": "Urime, kjo ishte përgjigjja e saktë",
+"submitted": "Faleminderit për mendimin tënd!",
+"unanswered": "Para dërgimit duhet t'i jepet përgjigje pyetjes.",
+"unansweredMatrix": "Para dërgimit duhet t'i jepet përgjigje çdo rreshti."
 },
 "sv": {
 "failed": "Rätt svar har ännu inte angetts",
 "resolved": "Avslöjat svar",
-"solved": "Grattis, det var rätt svar"
+"solved": "Grattis, det var rätt svar",
+"submitted": "Tack för din feedback!",
+"unanswered": "Frågan måste besvaras före inskickning.",
+"unansweredMatrix": "Alla rader måste besvaras före inskickning."
 },
 "sw": {
 "failed": "Jibu sahihi bado halijatolewa",
 "resolved": "Jibu lililotatuliwa",
-"solved": "Hongera, hilo lilikuwa jibu sahihi"
+"solved": "Hongera, hilo lilikuwa jibu sahihi",
+"submitted": "Asante kwa maoni yako!",
+"unanswered": "Swali linapaswa kujibiwa kabla ya kuwasilisha.",
+"unansweredMatrix": "Kila safu inapaswa kujibiwa kabla ya kuwasilisha."
 },
 "tr": {
 "failed": "Henüz doğru yanıt verilmedi",
 "resolved": "Açıklanan yanıt",
-"solved": "Tebrikler, doğru yanıt verdiniz"
+"solved": "Tebrikler, doğru yanıt verdiniz",
+"submitted": "Geri bildiriminiz için teşekkürler!",
+"unanswered": "Göndermeden önce soru yanıtlanmalıdır.",
+"unansweredMatrix": "Göndermeden önce her satır yanıtlanmalıdır."
 },
 "tw": {
 "failed": "正確的答案還沒有被給出",
 "resolved": "已顯示解答",
-"solved": "恭喜，這是正確答案"
+"solved": "恭喜，這是正確答案",
+"submitted": "感謝您的回饋！",
+"unanswered": "提交前必須回答此問題。",
+"unansweredMatrix": "提交前必須回答每一列。"
 },
 "uk": {
 "failed": "Правильна відповідь ще не надана",
 "resolved": "Вирішена відповідь",
-"solved": "Вітаю, це була правильна відповідь"
+"solved": "Вітаю, це була правильна відповідь",
+"submitted": "Дякуємо за ваш відгук!",
+"unanswered": "Перед надсиланням потрібно відповісти на запитання.",
+"unansweredMatrix": "Перед надсиланням потрібно відповісти в кожному рядку."
 },
 "ur": {
 "failed": "صحیح جواب ابھی تک نہیں دیا گیا",
 "resolved": "حل شدہ جواب",
-"solved": "مبارک ہو، یہ درست جواب تھا"
+"solved": "مبارک ہو، یہ درست جواب تھا",
+"submitted": "آپ کی رائے کا شکریہ!",
+"unanswered": "جمع کرانے سے پہلے سوال کا جواب دیا جانا ضروری ہے۔",
+"unansweredMatrix": "جمع کرانے سے پہلے ہر قطار کا جواب دیا جانا ضروری ہے۔"
 },
 "zh": {
 "failed": "尚未给出正确答案",
 "resolved": "已显示解答",
-"solved": "恭喜，这是正确答案"
+"solved": "恭喜，这是正确答案",
+"submitted": "感谢您的反馈！",
+"unanswered": "提交前必须回答此问题。",
+"unansweredMatrix": "提交前必须回答每一行。"
 }
 }
