@@ -87,7 +87,7 @@ describe('addForm', () => {
   })
 
   it('checks and resolves a gap text with a text and a select gap', async () => {
-    const spot: QuizSpot = { section: 0, quiz: 0, type: 'multi', rows: [['g0', 'g1']], check: 'k', resolve: 'x', feedback: 'f' }
+    const spot: QuizSpot = { section: 0, quiz: 0, type: 'multi', rows: [['g0', 'g1']], check: 'k', resolve: 'x', feedback: 'f', counter: 'n' }
     const meta = {
       lang: 'en',
       slides: [
@@ -111,6 +111,7 @@ describe('addForm', () => {
         { kind: 'button', name: 'k' },
         { kind: 'button', name: 'x' },
         { kind: 'feedback', name: 'f' },
+        { kind: 'counter', name: 'n', color: 'rgb(11, 122, 117)', size: 10 },
       ]),
       [spot],
       meta,
@@ -126,11 +127,14 @@ describe('addForm', () => {
     values.set('g1', 'geviertelt')
     run('k')
     expect(values.get('f')).toBe(TEXTS.solved)
+    // the trial count, as LiaScript shows it on its check button
+    expect(values.get('n')).toBe('2')
 
     // solved closes the quiz, as in LiaScript: read only, the buttons are done
     expect([...readonly].sort()).toEqual(['g0', 'g1'])
     run('x')
-    expect([values.get('f'), values.get('g0')]).toEqual([TEXTS.solved, ' schaumig '])
+    run('k')
+    expect([values.get('f'), values.get('g0'), values.get('n')]).toEqual([TEXTS.solved, ' schaumig ', '2'])
 
     values.clear()
     run('x')

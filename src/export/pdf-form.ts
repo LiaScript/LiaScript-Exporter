@@ -46,6 +46,8 @@ export interface QuizSpot {
   check?: string
   resolve?: string
   feedback?: string
+  /** The trial count next to "Check", as LiaScript shows it. */
+  counter?: string
 }
 
 /**
@@ -63,7 +65,9 @@ export function markFields(checks: boolean): QuizSpot[] {
     '.lia-quiz__control{display:flex!important;align-items:center;gap:.5rem}' +
     '.lia-quiz__control.liaex-off,.lia-quiz__hint{display:none!important}' +
     // a matrix shrinks its feedback box to nothing
-    'a.liaex-feedback{display:block;height:1.6em;min-width:20em;margin-top:.25rem}'
+    'a.liaex-feedback{display:block;height:1.6em;min-width:20em;margin-top:.25rem}' +
+    // room in the check button for its trial count
+    '.liaex-count{display:inline-block;width:1.4em;height:1.6em;vertical-align:-.38em;margin:-.3em 0 -.3em .2em}'
   document.head.appendChild(style)
 
   let count = 0
@@ -195,6 +199,13 @@ export function markFields(checks: boolean): QuizSpot[] {
     const resolve = survey ? null : quiz.querySelector('.lia-quiz__resolve:not(.hide)')
     if ((checks || survey) && type !== 'generic' && spot.rows.flat().length && check) {
       spot.check = cover(check, { kind: 'button', name: name + 'check' })
+      if (!survey) {
+        const count = document.createElement('span')
+        count.className = 'liaex-count'
+        check.appendChild(count)
+        const look = getComputedStyle(check)
+        spot.counter = cover(count, { kind: 'counter', name: name + 'count', color: look.color, size: parseFloat(look.fontSize) * 0.75 })
+      }
       if (resolve) spot.resolve = cover(resolve, { kind: 'button', name: name + 'resolve' })
       const box = link({ kind: 'feedback', name: name + 'feedback' })
       box.className = 'liaex-feedback'
@@ -226,7 +237,17 @@ export function markFields(checks: boolean): QuizSpot[] {
   return quizzes
 }
 
-type Spec = { id: number; name: string; kind: string; value?: string; options?: string[]; placeholder?: string }
+type Spec = {
+  id: number
+  name: string
+  kind: string
+  value?: string
+  options?: string[]
+  placeholder?: string
+  /** a counter takes the look of its button: a CSS color and the size in pt */
+  color?: string
+  size?: number
+}
 
 // Only the mark: LiaScript draws the box. pdf-lib's own looks always stroke a
 // border (black unless told otherwise, and width 0 is a hairline in PDF), and
@@ -262,7 +283,13 @@ export async function addForm(bytes: Uint8Array, quizzes: QuizSpot[], meta: any,
   const clear = { borderWidth: 0, borderColor: undefined, backgroundColor: undefined }
 
   const create = (spec: Spec, page: PDFPage, place: Place) => {
-    if (spec.kind === 'text' || spec.kind === 'area' || spec.kind === 'feedback') {
+    if (spec.kind === 'counter') {
+      const [r, g, b] = (spec.color?.match(/[\d.]+/g) || ['0', '0', '0']).map(Number)
+      const field = form.createTextField(spec.name)
+      field.enableReadOnly()
+      field.addToPage(page, { ...place, ...clear, font, textColor: rgb(r / 255, g / 255, b / 255) })
+      field.setFontSize(spec.size || 10)
+    } else if (spec.kind === 'text' || spec.kind === 'area' || spec.kind === 'feedback') {
       const field = form.createTextField(spec.name)
       if (spec.kind === 'area') field.enableMultiline()
       if (spec.kind === 'feedback') field.enableReadOnly()
@@ -495,6 +522,7 @@ export function quizScripts(
     check:
       head +
       `if (!closed) {\n` +
+      (spot.counter ? `var c = d.getField(${json(spot.counter)}); if (c) c.value = String((parseInt(c.value, 10) || 0) + 1);\n` : '') +
       `var ok = ${(answers as Answer[]).map(test).join(' && ')};\n` +
       `say(ok ? ${json(texts.solved)} : ${json(texts.failed)}, ok ? ['RGB', 0.1, 0.5, 0.2] : ['RGB', 0.75, 0.1, 0.1]);\n` +
       `if (ok) lock();\n}`,

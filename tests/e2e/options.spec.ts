@@ -206,12 +206,14 @@ test('pdf: --pdf-form makes quizzes and surveys a form that checks, resolves and
   for (const quiz of quizzes) {
     run(quiz + 'check')
     expect(values.get(quiz + 'feedback'), quiz).toBe('The correct answer has not yet been given')
+    expect(values.get(quiz + 'count'), quiz).toBe('1')
     run(quiz + 'resolve')
     expect(values.get(quiz + 'feedback'), quiz).toBe('Resolved answer')
     // resolved closes the quiz, as in LiaScript: read only, a check changes nothing
     expect(locked.size, quiz).toBeGreaterThan(0)
     run(quiz + 'check')
     expect(values.get(quiz + 'feedback'), quiz).toBe('Resolved answer')
+    expect(values.get(quiz + 'count'), quiz).toBe('1')
 
     // the resolved answers are what the check takes for right
     locked.clear()
