@@ -27,3 +27,7 @@ playwright-report/
 
 # LMS test lab downloads (Moodle sources, moodle-docker, OpenOlat schema)
 docker/lms/.cache/
+
+# local tool output (Playwright MCP, LiaScript DevServer chats)
+.playwright-mcp/
+.chats/
