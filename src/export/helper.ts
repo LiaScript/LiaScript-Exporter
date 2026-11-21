@@ -363,6 +363,109 @@ export function quizPaper(body: HTMLElement, inputs = true): void {
   })
 }
 
+/**
+ * Typesetting for paper, by the CLI and the web app before printing a PDF.
+ * Self-contained, both hand it to the page as source. Resolves when the
+ * images it adds have loaded.
+ */
+export function paperLayout(doc: Document = document): Promise<void> {
+  const style = doc.createElement('style')
+  style.textContent = [
+    // a heading stays with its text, a question with its answers
+    'h1,h2,h3,h4,h5,h6,header{break-after:avoid;break-inside:avoid}',
+    'p,li,blockquote,dd{orphans:3;widows:3}',
+    // where the browser has a dictionary: Firefox, not Chrome on Linux
+    'p,li,blockquote,dd,th,td{hyphens:auto}',
+    '.lia-paragraph:has(+ .lia-quiz,+ .lia-survey){break-after:avoid}',
+    // a table runs on over pages, under its head, and shrinks to the page
+    // width (--liaex-w, its narrowest width in em, set below), down to .6em,
+    // where its words break; a short word stays whole (--liaex-min)
+    '.lia-table-responsive{overflow:visible!important;max-height:none!important;container-type:inline-size}',
+    '.lia-table{break-inside:auto!important;font-size:clamp(.6em,calc(100cqi / var(--liaex-w,1)),1em)}',
+    '.lia-table thead,.lia-table th,.lia-table td{position:static!important}',
+    '.lia-table th,.lia-table td{min-width:var(--liaex-min,0)!important;padding:.4em .5em!important;overflow-wrap:anywhere}',
+    '.lia-table thead{display:table-header-group}',
+    '.lia-table tr{break-inside:avoid}',
+    // controls, also those of templates (Matplotlib in Pyodide)
+    '.lia-table__sort,.lia-code__copy,.lia-code__min-max,.lia-plot__switch{display:none!important}',
+    '[role=toolbar],.mpl-toolbar{display:none!important}',
+    '.liaex-media{display:none!important}',
+  ].join('\n')
+  doc.head.appendChild(style)
+
+  doc.querySelectorAll('.lia-table').forEach((table) => {
+    // the longest word of each column, at about .66em a (bold) letter, plus padding
+    const longest: number[] = []
+    table.querySelectorAll('tr').forEach((row) =>
+      Array.from(row.children).forEach((cell, i) => {
+        const word = Math.max(0, ...(cell.textContent || '').split(/\s+/).map((w) => w.length))
+        longest[i] = Math.max(longest[i] || 0, word)
+        // shortcut: whole up to 6 letters fits ~16 columns on A4, more get cut
+        ;(cell as HTMLElement).style.setProperty('--liaex-min', Math.min(word, 6) * 0.7 + 'em')
+      }),
+    )
+    const width = longest.reduce((sum, word) => sum + word * 0.66 + 1.1, 0)
+    ;(table as HTMLElement).style.setProperty('--liaex-w', String(width))
+  })
+
+  // A paragraph that introduces what follows ("…:", or code) stays with it,
+  // and a short program is not split
+  doc.querySelectorAll('.lia-paragraph').forEach((p) => {
+    if (/:\s*$/.test(p.textContent || '') || p.nextElementSibling?.querySelector('.lia-code__input')) {
+      ;(p as HTMLElement).style.breakAfter = 'avoid'
+    }
+  })
+  doc.querySelectorAll('.lia-code__input').forEach((input) => {
+    const block = input.closest('main > *') as HTMLElement | null
+    if (block && block.offsetHeight < 400) block.style.breakInside = 'avoid'
+  })
+
+  // Paper cannot play media: each names its file, a link if remote, a YouTube
+  // video under its thumbnail; the player goes
+  const images: HTMLImageElement[] = []
+  const youtube = /(?:youtube(?:-nocookie)?\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([\w-]{11})/
+  doc.querySelectorAll('audio, video, iframe').forEach((media) => {
+    const src = media.getAttribute('src') || media.querySelector('source')?.getAttribute('src') || ''
+    const video = src.match(youtube)
+    if (media.tagName === 'IFRAME' && !video) return
+    const name = media.getAttribute('title') || decodeURIComponent(src.split(/[?#]/)[0].split('/').pop() || '')
+    if (!name || src.startsWith('data:')) return
+
+    const label = doc.createElement('p')
+    const text = (media.tagName === 'AUDIO' ? '♪ ' : '▶ ') + (video && name === video[1] ? 'YouTube' : name)
+    if (/^(https?:)?\/\//.test(src)) {
+      const a = doc.createElement('a')
+      a.href = src
+      a.textContent = text
+      label.appendChild(a)
+    } else {
+      label.textContent = text
+    }
+    if (video) {
+      const img = doc.createElement('img')
+      img.src = `https://img.youtube.com/vi/${video[1]}/hqdefault.jpg`
+      img.alt = 'Video'
+      img.style.cssText = 'display:block;max-width:100%;height:auto'
+      label.prepend(img)
+      images.push(img)
+    }
+    // with the wrapper that keeps the player's 16:9
+    const player = media.closest('.lia-video-wrapper, .lia-iframe-wrapper') || media
+    player.classList.add('liaex-media')
+    player.after(label)
+  })
+
+  return Promise.all(
+    images.map(
+      (img) =>
+        new Promise<void>((resolve) => {
+          img.onload = img.onerror = () => resolve()
+          setTimeout(resolve, 10000)
+        }),
+    ),
+  ).then(() => undefined)
+}
+
 export function docxPaper(body: HTMLElement): void {
   const doc = body.ownerDocument
   const view = doc.defaultView!

@@ -61,20 +61,6 @@
         return
       }
 
-      // Paper cannot play media, which would otherwise leave no trace; name
-      // the file. Same as the CLI.
-      document.querySelectorAll('audio, video').forEach(function (media) {
-        var source = media.querySelector('source')
-        var src =
-          media.getAttribute('src') || (source && source.getAttribute('src')) || ''
-        var name = decodeURIComponent(src.split(/[?#]/)[0].split('/').pop() || '')
-        if (!name || src.indexOf('data:') === 0) return
-
-        var label = document.createElement('p')
-        label.textContent = (media.tagName === 'AUDIO' ? '♪ ' : '▶ ') + name
-        media.parentNode.insertBefore(label, media.nextSibling)
-      })
-
       // A dropdown cannot open on paper: list its options. Fields stay drawn,
       // without the "?" placeholder. Same as the CLI (quizPaper in helper.ts).
       // Right before printing, as there: LiaScript may still render a quiz
@@ -97,21 +83,29 @@
         })
       }
 
+      // Headings, tables and media for paper: the CLI's paperLayout
+      // (helper.ts), as source. Resolves once its thumbnails have loaded.
+      var paper = Promise.resolve(
+        options.paper && new Function('return (' + options.paper + ')')()(document),
+      )
+
       // `--pdf-timeout`: time for slow scripts, then two frames, so the
       // injected rules are laid out before printing.
       setTimeout(function () {
-        requestAnimationFrame(function () {
+        paper.then(function () {
           requestAnimationFrame(function () {
-            if (options.form) {
-              // --pdf-form: fields and buttons stay, each under a link that
-              // names it; the web app turns the saved PDF into the form.
-              // Source from the app's own bundle (markFields in
-              // src/export/pdf-form-marks.ts), self-contained.
-              new Function('return (' + options.form.mark + ')')()(options.form.meta)
-            } else {
-              quizPaper()
-            }
-            window.print()
+            requestAnimationFrame(function () {
+              if (options.form) {
+                // --pdf-form: fields and buttons stay, each under a link that
+                // names it; the web app turns the saved PDF into the form.
+                // Source from the app's own bundle (markFields in
+                // src/export/pdf-form-marks.ts), self-contained.
+                new Function('return (' + options.form.mark + ')')()(options.form.meta)
+              } else {
+                quizPaper()
+              }
+              window.print()
+            })
           })
         })
       }, options.delay || 0)

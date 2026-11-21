@@ -1,6 +1,7 @@
 'use strict'
 
 import { markFields } from '../../export/pdf-form-marks'
+import { paperLayout } from '../../export/helper'
 
 /**
  * Browser PDF export.
@@ -412,6 +413,8 @@ export function print(job: PrintJob): boolean {
       // The print tab's script is plain JavaScript beside the render, so the
       // marking travels as source; it is self-contained for that reason.
       form: job.form ? { mark: markFields.toString(), meta: job.form.meta } : null,
+      // typesetting for paper, the CLI's (helper.ts)
+      paper: paperLayout.toString(),
     }),
   )
 

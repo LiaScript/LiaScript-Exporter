@@ -53,7 +53,6 @@ export const NETWORK_FIXTURE: Fixture = {
       MKNetImageWikimedia: { reason: ALT_TEXT },
       MKNetImageCors: { reason: ALT_TEXT },
       MKNetWikimediaFilePath: { reason: ALT_TEXT },
-      MKNetYoutube: { reason: PRINT_EMBED_LABEL },
       MKNetEmbed: { reason: PRINT_EMBED_LABEL },
     },
     /** The live player, as for the local course. */
